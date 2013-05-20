@@ -1,4 +1,4 @@
-require('nez').realize 'Index', (subject, test, it, should) -> 
+require('nez').realize 'Notice', (subject, test, it, should) -> 
 
     it 'exports config() function', (done) -> 
 

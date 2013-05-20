@@ -1,8 +1,10 @@
 config = {}
 
+defaultSource  = -> 'the calling module'
+
 module.exports = configure = (opts = {}) ->
 
-    config.source    = opts.source
+    config.source    = opts.source || defaultSource()
     config.messenger = opts.messenger
 
     

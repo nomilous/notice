@@ -1,4 +1,4 @@
-require('nez').realize 'Configure', (Configure, test, context, path, Index, Notify) -> 
+require('nez').realize 'Configure', (Configure, test, context, path, Notice, Notify) -> 
 
     context 'notification source', (it) -> 
 
@@ -10,7 +10,20 @@ require('nez').realize 'Configure', (Configure, test, context, path, Index, Noti
                     notification.source.should.equal 'name'
                     test done
 
-            Index.notify 'message'
+            Notice 'message'
+
+
+        it 'defaults to the calling module', (done) -> 
+
+            Configure
+                messenger: (notification) -> 
+                    notification.source.should.not.equal 'the calling module'
+                    test done
+
+            Notice 'message'
+
+
+
 
 
 
