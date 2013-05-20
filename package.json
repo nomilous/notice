@@ -1,0 +1,18 @@
+{
+  "name": "notice",
+  "description": "[pending] local notification router",
+  "version": "0.0.0",
+  "author": "nomilous <nomilous@gmail.com>",
+  "contributors": [
+    {
+      "name": "nomilous",
+      "email": "nomilous@gmail.com"
+    }
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "nez": "0.0.7",
+    "should": "~1.2.2"
+  },
+  "repository": "git@github.com:nomilous/notice.git"
+}
