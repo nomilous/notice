@@ -1,15 +1,14 @@
 config = {}
 
-defaultSource  = require './default_source'
-localMessenger = require './local_messenger'
+defaultSource    = require './default_source'
+defaultMessenger = require './default_messenger'
+localMessenger   = require './local_messenger'
 
 module.exports = configure = (opts = {}) ->
 
     config.source    = opts.source      || defaultSource()
-    config.messenger = localMessenger() || opts.messenger
-
+    config.messenger = localMessenger() || opts.messenger || defaultMessenger
     
 Object.defineProperty configure, 'config',
     
     get: -> config
-
