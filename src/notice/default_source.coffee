@@ -6,11 +6,13 @@ module.exports = ->
 
         #
         # probably not windows friendly
+        # 
+        # match 'reluctantly' (?) for the shortest possible .*
+        # that preceeds a node_modules directory and return
+        # it's last path part
         #
 
-        console.log 'line --->', line
-
-        continue unless match = line.match /\((.*)\/node_modules\//
+        continue unless match = line.match /\((.*?)\/node_modules\//
         return path.basename match[1]
 
 
