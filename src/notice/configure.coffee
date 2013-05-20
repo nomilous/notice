@@ -1,6 +1,6 @@
 config = {}
 
-defaultSource  = -> 'the calling module'
+defaultSource  = require './default_source'
 
 module.exports = configure = (opts = {}) ->
 
