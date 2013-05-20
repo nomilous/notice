@@ -1,5 +1,4 @@
 module.exports = 
 
-    config: -> 
-    notify: -> 
-
+    config: require './config'
+    notify: require './notify'
