@@ -1,7 +1,7 @@
 {
   "name": "notice",
-  "description": "[pending] local notification router",
-  "version": "0.0.0",
+  "description": "local notification router",
+  "version": "0.0.1",
   "author": "nomilous <nomilous@gmail.com>",
   "contributors": [
     {
