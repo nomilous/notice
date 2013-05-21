@@ -2,6 +2,15 @@ require('nez').realize 'Configure', (Configure, test, context, path, Notice, Not
 
     context 'notification source', (it) -> 
 
+        it 'is mandatory', (done) -> 
+
+            try 
+                Configure()
+
+            catch error
+                error.should.match /requires opts\.source/
+                test done
+
         it 'can be configured', (done) -> 
 
             Configure 
@@ -11,18 +20,6 @@ require('nez').realize 'Configure', (Configure, test, context, path, Notice, Not
                     test done
 
             Notice 'message'
-
-
-        it 'defaults to the calling module', (done) -> 
-
-            Configure
-                messenger: (notification) -> 
-                    notification.source.should.not.equal 'the calling module'
-                    test done
-
-            Notice 'message'
-
-
 
 
 

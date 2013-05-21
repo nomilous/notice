@@ -1,9 +1,11 @@
+os     = require 'os'
 config = require('./configure').config
 
-module.exports = 
+module.exports = send: (msg = {}) -> 
 
-    sendMessage: -> 
+    msg.source = 
 
-        config.messenger
+        time: Date.now()
+        ref: config.source
 
-            source: config.source
+    config.messenger msg

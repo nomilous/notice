@@ -1,3 +1,1 @@
-require('nez').realize 'Notify', (Notify, test, context) -> 
-
-
+require('nez').realize 'Notify', (Notify, test, it) ->  
