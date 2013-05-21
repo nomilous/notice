@@ -25,3 +25,24 @@ require('nez').realize 'Notice', (Notice, test, it, should) ->
 
 
         Notice key: 'value'
+
+
+
+    it 'defines helpers for event stature', (done) -> 
+
+        Notice.configure 
+
+            source: 'TEST'
+            messenger: (message) -> 
+
+                message.stature.should.equal 'horrendous'
+                test done
+
+
+        Notice.horrendous()
+
+
+
+    it 'made me laugh'
+
+
