@@ -11,7 +11,8 @@ module.exports = configure = (opts = {}) ->
 
     config.source    = opts.source
     config.messenger = localMessenger() || opts.messenger || defaultMessenger
-    
+
+
 Object.defineProperty configure, 'config',
     
     get: -> config
