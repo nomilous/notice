@@ -1,16 +1,26 @@
-notify = require './notice/notify'
+configure = require './notice/configure'
+notify    = require './notice/notify'
 
-module.exports = notice = notify.send
+#
+# notice is the send() function
+#
 
-Object.defineProperty notice, 'configure', 
+notice           = notify.send
 
-    get: -> require './notice/configure'
-    enumerable: true
+#
+# it has additional functions nested as properties 
+#
 
-
-notice.event = 
+notice.configure = configure
+notice.event     = 
 
     good:   -> notify.send notify.format tenor: 'good', arguments
     normal: -> notify.send notify.format tenor: 'normal', arguments
     bad:    -> notify.send notify.format tenor: 'bad', arguments
+
+#
+# notice() is the exported module object
+#
+
+module.exports   = notice
 
