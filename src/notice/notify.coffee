@@ -1,11 +1,31 @@
 os     = require 'os'
 config = require('./configure').config
 
-module.exports = send: (msg = {}) -> 
+module.exports = 
 
-    msg.source = 
+    send: (label, description) -> 
 
-        time: Date.now()
-        ref: config.source
+        content = {}
 
-    config.messenger msg
+        if typeof label == 'string'
+            content.label = label
+        else 
+            content = label
+
+        if typeof description == 'string'
+            content.description = description
+
+        message = 
+
+            context: 
+                 type: 'event'
+
+            source:
+                time: Date.now()
+                ref: config.source
+
+        message.content = content
+
+        config.messenger message
+
+
