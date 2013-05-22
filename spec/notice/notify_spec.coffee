@@ -72,4 +72,25 @@ require('nez').realize 'Notify', (Notify, test, context, should, Configure) ->
              test done
 
 
+        it 'extends message.content with contents if arg two (if object)', (done) -> 
+
+            Notify.send 'gamma ray burst', 
+
+                detector: '#032'
+                time: 1369260919759
+                duration: 4112
+                SGB: 78.3408
+                SGL: 103.0231
+
+
+            MSG.content.should.eql 
+
+                label: 'gamma ray burst'
+                detector: '#032'
+                time: 1369260919759
+                duration: 4112
+                SGB: 78.3408
+                SGL: 103.0231
+
+            test done
 
