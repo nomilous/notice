@@ -1,4 +1,6 @@
-require('nez').realize 'Notice', (Notice, test, it, should) -> 
+require('nez').realize 'Notice', (Notice, test, context, should) -> 
+
+    it = context
 
     it 'exports config() function', (done) -> 
 
@@ -13,36 +15,38 @@ require('nez').realize 'Notice', (Notice, test, it, should) ->
             source: 'TEST'
             messenger: (message) -> 
 
-                #
-                # defaults inserted into message
-                #
-
-                message.source.ref.should.equal 'TEST'
-                should.exist message.source.time
-
-                message.key.should.equal 'value'
+                message.content.key.should.equal 'value'
                 test done
-
 
         Notice key: 'value'
 
 
 
-    it 'defines helpers for event stature', (done) -> 
+    context 'event messages', (has) -> 
 
+        MSG = null
         Notice.configure 
-
             source: 'TEST'
-            messenger: (message) -> 
+            messenger: (msg) -> 
+                MSG = msg
 
-                message.stature.should.equal 'horrendous'
-                test done
+        has 'helpers for event tenor', (done) -> 
 
+            Notice.event.good 'thing'
+            MSG.context.should.eql 
+                type: 'event'
+                tenor: 'good'
 
-        Notice.horrendous()
+            Notice.event.normal 'lunch', 'not a roast'
+            MSG.context.should.eql 
+                type: 'event'
+                tenor: 'normal'
 
+            Notice.event.bad 'the dish ran away WITHOUT the spoon', """
 
+                consequences unknown
+                TERMINATE SIMULATION
 
-    it 'made me laugh'
-
+            """
+            test done
 

@@ -1,31 +1,41 @@
-os     = require 'os'
 config = require('./configure').config
 
-module.exports = 
+module.exports = notify = 
 
-    send: (label, description) -> 
+    format: (context, args) -> 
+
+        try return args[0] if args[0].formatted
 
         content = {}
 
-        if typeof label == 'string'
-            content.label = label
+        if typeof args[0] == 'string'
+            content.label = args[0]
         else 
-            content = label
+            content = args[0]
 
-        if typeof description == 'string'
-            content.description = description
+        if typeof args[1] == 'string'
+            content.description = args[1]
 
-        message = 
+        if typeof context.type == 'undefined'
+            context.type = 'event' 
 
-            context: 
-                 type: 'event'
+        return {
 
+            context: context
+                
             source:
                 time: Date.now()
                 ref: config.source
 
-        message.content = content
+            content: content
 
-        config.messenger message
+            formatted: true
+
+        }
+
+    send: (label, description) -> 
+
+        config.messenger notify.format {}, arguments
+
 
 

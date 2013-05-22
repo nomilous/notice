@@ -16,16 +16,11 @@ require('nez').realize 'Configure', (Configure, test, context, path, Notice, Not
             Configure 
                 source: 'name'
                 messenger: (notification) -> 
-                    notification.source.should.equal 'name'
+                    notification.source.ref.should.equal 'name'
+                    notification.event.description.should.equal 'message'
                     test done
 
             Notice 'message'
-
-
-
-
-
-
 
 
 
