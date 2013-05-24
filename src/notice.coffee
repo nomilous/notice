@@ -14,9 +14,15 @@ notice           = notify.send
 notice.configure = configure
 notice.event     = 
 
-    good:   -> notify.send notify.format tenor: 'good', arguments
-    normal: -> notify.send notify.format tenor: 'normal', arguments
-    bad:    -> notify.send notify.format tenor: 'bad', arguments
+    good:   -> notify.send notify.format {type: 'event', tenor: 'good'}, arguments
+    normal: -> notify.send notify.format {type: 'event', tenor: 'normal'}, arguments
+    bad:    -> notify.send notify.format {type: 'event', tenor: 'bad'}, arguments
+
+notice.info     = 
+
+    good:   -> notify.send notify.format {type: 'info', tenor: 'good'}, arguments
+    normal: -> notify.send notify.format {type: 'info', tenor: 'normal'}, arguments
+    bad:    -> notify.send notify.format {type: 'info', tenor: 'bad'}, arguments
 
 #
 # notice() is the exported module object

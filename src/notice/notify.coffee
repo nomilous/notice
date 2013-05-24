@@ -22,7 +22,7 @@ module.exports = notify =
 
 
         if typeof context.type == 'undefined'
-            context.type = 'event' 
+            context.type = 'info' 
 
         return {
 

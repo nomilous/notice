@@ -22,7 +22,7 @@ require('nez').realize 'Notice', (Notice, test, context, should) ->
 
 
 
-    context 'event messages', (has) -> 
+    context 'event message', (has) -> 
 
         MSG = null
         Notice.configure 
@@ -50,3 +50,16 @@ require('nez').realize 'Notice', (Notice, test, context, should) ->
             """
             test done
 
+    context 'info message', (has) -> 
+
+        MSG = null
+        Notice.configure 
+            source: 'TEST'
+            messenger: (msg) -> 
+                MSG = msg
+
+        has 'helpers for info tenor', (done) -> 
+
+            Notice.info.bad 'test failed'
+            MSG.context.should.eql { type: 'info', tenor: 'bad' }
+            test done
