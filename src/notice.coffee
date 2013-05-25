@@ -24,6 +24,18 @@ notice.info     =
     normal: -> notify.send notify.format {type: 'info', tenor: 'normal'}, arguments
     bad:    -> notify.send notify.format {type: 'info', tenor: 'bad'}, arguments
 
+
+#
+# perhaps overkill
+# standard io - stick to pattern
+# 
+
+notice.stdio   =
+
+    good:   -> notify.send notify.format {type: 'stdout', tenor: 'good'}, arguments
+    normal: -> notify.send notify.format {type: 'stdout', tenor: 'normal'}, arguments
+    bad:    -> notify.send notify.format {type: 'stderr', tenor: 'bad'}, arguments
+
 #
 # notice() is the exported module object
 #
