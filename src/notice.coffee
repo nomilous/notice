@@ -24,6 +24,13 @@ notice.info     =
     normal: -> notify.send notify.format {type: 'info', tenor: 'normal'}, arguments
     bad:    -> notify.send notify.format {type: 'info', tenor: 'bad'}, arguments
 
+# 
+# TODO: optional/configurable STD pipes
+# 
+
+notice.stdout   = process.stdout
+notice.stderr   = process.stderr
+
 #
 # notice() is the exported module object
 #
