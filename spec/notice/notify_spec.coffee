@@ -31,13 +31,14 @@ require('nez').realize 'Notify', (Notify, test, context, should, Configure) ->
             test done
 
 
-        it 'defaults message context.type to "info"', (done) -> 
+        it 'defaults message context.type to "info" and context.tenor to "normal"', (done) -> 
 
             Notify.send 
                 discovery: 'complete'
                 proficiency: 4 / 7
 
             MSG.context.type.should.equal 'info'
+            MSG.context.tenor.should.equal 'normal'
             test done
 
 

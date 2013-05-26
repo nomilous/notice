@@ -22,7 +22,8 @@ module.exports = notify =
 
 
         if typeof context.type == 'undefined'
-            context.type = 'info' 
+            context.type  = 'info'
+            context.tenor = 'normal'
 
         return {
 
