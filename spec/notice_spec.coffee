@@ -2,33 +2,42 @@ require('nez').realize 'Notice', (Notice, test, context, should) ->
 
     it = context
 
-    it 'exports config() function', (done) -> 
-
-        Notice.configure.should.be.an.instanceof Function
-        test done
+    context 'exports a configure method', (that) -> 
 
 
-    it 'is a notifier', (done) -> 
+        that 'expects a hash of config', (done) -> 
 
-        Notice.configure 
+            try 
+                
+                Notice.configure()
 
-            source: 'TEST'
-            messenger: (message) -> 
+            catch error
 
-                message.content.key.should.equal 'value'
+                error.should.match /requires opts.source/
                 test done
 
-        Notice key: 'value'
 
+        that 'expects a callback to receive the configured notifier', (done) -> 
+
+            try 
+                
+                Notice.configure source: 'TEST'
+
+            catch error
+
+                error.should.match /requires callback to receive configured notifier/
+                test done
 
 
     context 'event message', (has) -> 
 
         MSG = null
-        Notice.configure 
+        Notice.configure(
             source: 'TEST'
             messenger: (msg) -> 
                 MSG = msg
+            -> 
+        )
 
         has 'helpers for event tenor', (done) -> 
 
@@ -53,10 +62,12 @@ require('nez').realize 'Notice', (Notice, test, context, should) ->
     context 'info message', (has) -> 
 
         MSG = null
-        Notice.configure 
+        Notice.configure(
             source: 'TEST'
             messenger: (msg) -> 
                 MSG = msg
+            ->
+        )
 
         has 'helpers for info tenor', (done) -> 
 

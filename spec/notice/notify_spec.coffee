@@ -2,12 +2,16 @@ require('nez').realize 'Notify', (Notify, test, context, should, Configure) ->
 
     MSG = null
 
-    Configure 
+    Configure( 
 
         source: 'MESSAGE SOURCE'
         messenger: (msg) -> 
 
             MSG = msg
+
+        (error, notifier) ->
+        
+    )
 
 
     context 'send()', (it) -> 

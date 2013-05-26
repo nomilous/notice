@@ -11,13 +11,26 @@ require('nez').realize 'Configure', (Configure, test, context, path, Notice, Not
                 error.should.match /requires opts\.source/
                 test done
 
+        it 'require a callback to receive the configured notifier', (done) -> 
+
+            try 
+                Configure source: 'TEST'
+            
+            catch error
+                error.should.match /requires callback to receive configured notifier/
+                test done
+
+
         it 'can be configured', (done) -> 
 
-            Configure 
+            Configure(
                 source: 'name'
                 messenger: (notification) -> 
                     notification.source.ref.should.equal 'name'
                     test done
+                    
+                (error, notifier) -> 
+            )
 
             Notice 'message'
 

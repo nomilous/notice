@@ -2,7 +2,7 @@ require('nez').realize 'DefaultMessenger', (DefaultMessenger, test, it, Notice) 
 
     it 'becomes the messenger if none is defined', (done) -> 
 
-        Notice.configure source: 'supplies'
+        Notice.configure {source: 'supplies'}, (error, notifier) ->
 
         swap = console.log
         console.log = (msg) -> 
