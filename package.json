@@ -9,8 +9,10 @@
       "email": "nomilous@gmail.com"
     }
   ],
-  "main":"lib/notice.js",
-  "dependencies": {},
+  "main": "lib/notice.js",
+  "dependencies": {
+    "inflection": "~1.2.6"
+  },
   "devDependencies": {
     "nez": "0.0.7",
     "should": "~1.2.2"

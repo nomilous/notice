@@ -1,0 +1,20 @@
+// 
+// Example personal message handler
+// 
+// $HOME/.notice/messengers.js
+//
+
+module.exports = {
+    
+    // 
+    // defines a message handler for messages 
+    // from 'Test Source 1'
+    // 
+
+    'Test Source 1': function(msg) {
+
+        console.log(msg);
+    
+    }
+
+}

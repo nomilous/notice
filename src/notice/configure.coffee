@@ -9,14 +9,16 @@ module.exports = configure = (opts, callback) ->
     
     if typeof opts.source == 'undefined'
 
-        throw new Error 'Notice.configure(opts, callback) requires opts.source'
+        throw new Error 'Notice.configure(opts, callback) requires config.source'
 
     if typeof callback != 'function'
 
          throw new Error 'Notice.configure(opts, callback) requires callback to receive configured notifier'
 
     config.source    = opts.source
-    config.messenger = localMessenger() || opts.messenger || defaultMessenger
+    config.messenger = localMessenger.find(config.source) || opts.messenger || defaultMessenger
+
+    return null
 
 
 Object.defineProperty configure, 'config',

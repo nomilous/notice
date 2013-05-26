@@ -1,17 +1,27 @@
-module.exports = -> 
+inflection     = require 'inflection'
+module.exports = 
 
-    try
+    find: (source) -> 
 
-        #
-        # users define the actual messenger
-        #
+        try
 
-        require "#{  process.env.HOME  }/.notice/messenger"
+            #
+            # users can define the actual messenger
+            #
 
-    catch error
+            messenger = require "#{  process.env.HOME  }/.notice/messengers"
 
-        #
-        # if they want to
-        #
+            unless typeof messenger[source] == 'function'
 
-        null
+                return null
+
+            return messenger[source]
+
+
+        catch error
+
+            #
+            # if they want to
+            #
+
+            null

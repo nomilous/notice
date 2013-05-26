@@ -1,6 +1,7 @@
-require('nez').realize 'Configure', (Configure, test, context, path, Notice, Notify) -> 
+require('nez').realize 'Configure', (Configure, test, context, LocalMessenger) -> 
 
-    context 'notification source', (it) -> 
+
+    context 'expects a config hash as arg1', (it) -> 
 
         it 'is mandatory', (done) -> 
 
@@ -8,31 +9,54 @@ require('nez').realize 'Configure', (Configure, test, context, path, Notice, Not
                 Configure()
 
             catch error
-                error.should.match /requires opts\.source/
+                error.should.match /requires config\.source/
                 test done
 
-        it 'require a callback to receive the configured notifier', (done) -> 
 
-            try 
+    context 'expects a callback as arg2', (it) -> 
+
+        it 'is mandatory', (done) -> 
+
+            try
                 Configure source: 'TEST'
-            
+
             catch error
                 error.should.match /requires callback to receive configured notifier/
                 test done
 
 
-        it 'can be configured', (done) -> 
 
-            Configure(
-                source: 'name'
-                messenger: (notification) -> 
-                    notification.source.ref.should.equal 'name'
-                    test done
+    context 'default configuration', (it) -> 
+
+        it 'first attempts to locate a local messenger', (done) ->
+
+            LocalMessenger.find = (source) -> 
+
+                source.should.equal 'TEST'
+                test done
+
+            Configure { source: 'TEST' }, -> 
+
+
+        
+
+
+
+
+
+
+        # it 'can be configured', (done) -> 
+
+        #     Configure(
+        #         source: 'name'
+        #         messenger: (notification) -> 
+        #             notification.source.ref.should.equal 'name'
+        #             test done
                     
-                (error, notifier) -> 
-            )
+        #         (error, notifier) -> 
+        #     )
 
-            Notice 'message'
+        #     Notice 'message'
 
 
     # context 'defaults', (it) -> 
