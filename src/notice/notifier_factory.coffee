@@ -1,3 +1,6 @@
+pipeline = require 'when/pipeline'
+
+
 module.exports = class NotifierFactory
 
     constructor: (@moo) -> 
@@ -10,7 +13,27 @@ module.exports = class NotifierFactory
 
             throw new Error "#{@constructor.name} requires config.messenger"
 
-        callback null, -> config.messenger.apply null, arguments
+
+        notifier = -> 
+
+            #
+            # notifier formats the message
+            #
+
+            message = content: {}
+            message.content.label       = arguments[0]
+            message.content.description = arguments[1]
+
+
+            #
+            # and sends it to the configured messenger
+            #
+
+            config.messenger message
+            
+
+
+        callback null, notifier
 
             
 
