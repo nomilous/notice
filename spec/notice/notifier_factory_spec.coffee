@@ -19,8 +19,9 @@ require('nez').realize 'NotifierFactory', (NotifierFactory, test, context, shoul
         it 'calls back with the notifier', (that) -> 
 
             RECEIVED = []
-           
-            new NotifierFactory().create { 
+
+            nf = new NotifierFactory()
+            nf.create { 
 
                 #
                 # notifierFactory.create() takes a hash of 
@@ -62,6 +63,20 @@ require('nez').realize 'NotifierFactory', (NotifierFactory, test, context, shoul
 
                     test done
 
+
+
+                that 'has a middleware registrar', (done) -> 
+
+                    middleware1 = (msg, next) -> msg.propery1 = 'value1'
+                    middleware2 = (msg, next) -> msg.propery2 = 'value2'
+
+                    notify.use middleware1
+                    notify.use middleware2
+
+                    nf.pipeline[0].should.equal middleware1
+                    nf.pipeline[1].should.equal middleware2
+
+                    test done
 
 
     

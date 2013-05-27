@@ -5,6 +5,8 @@ module.exports = class NotifierFactory
 
     constructor: (@moo) -> 
 
+        @pipeline = []
+
     create: (config, callback) -> 
 
         config ||= {}
@@ -30,10 +32,17 @@ module.exports = class NotifierFactory
             #
 
             config.messenger message
-            
+
+
+        #
+        # notifier has a middleware registrar
+        #
+
+        notifier.use = (fn) => @pipeline.push fn 
 
 
         callback null, notifier
 
-            
+
+
 
