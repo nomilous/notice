@@ -1,4 +1,4 @@
-require('nez').realize 'NotifierFactory', (NotifierFactory, test, context, should) -> 
+require('nez').realize 'NotifierFactory', (NotifierFactory, test, context, should, os) -> 
 
     context 'create()', (it) -> 
 
@@ -73,8 +73,8 @@ require('nez').realize 'NotifierFactory', (NotifierFactory, test, context, shoul
                     notify.use middleware1
                     notify.use middleware2
 
-                    nf.pipeline[0].should.equal middleware1
-                    nf.pipeline[1].should.equal middleware2
+                    should.exist nf.middleware[0]
+                    should.exist nf.middleware[1]
 
                     test done
 
@@ -94,7 +94,45 @@ require('nez').realize 'NotifierFactory', (NotifierFactory, test, context, shoul
                         test done
 
 
+                that 'passes the message through the registered middleware', (done) -> 
 
+
+                    RECEIVED = []
+
+                    notify.use (msg, next) -> 
+                        
+
+                        msg.source ||= {}
+                        msg.source.hostname = os.hostname()
+                        msg.source.type     = os.type()
+                        msg.source.platform = os.platform()
+                        msg.source.arch     = os.arch()
+
+                        msg.source.extinfo       ||= {} 
+                        msg.source.extinfo.uptime  = os.uptime()
+                        msg.source.extinfo.loadavg = os.loadavg()
+                        msg.source.extinfo.cpus    = os.cpus()
+
+                        #throw new Error 'um?'
+
+                        next msg
+
+                     
+                    notify 'LABEL', 'DESCRIPTION'
+
+                    setTimeout -> 
+
+                        RECEIVED[0].content.label.should.equal 'LABEL'
+                        RECEIVED[0].content.description.should.equal 'DESCRIPTION'
+                        
+                        #
+                        # this test may occasionally fail
+                        #
+                        RECEIVED[0].source.type.should.equal 'Darwin'
+                        test done
+                    
+
+                    ,10 # give it a moment
 
 
 

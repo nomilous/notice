@@ -1,11 +1,11 @@
+When     = require 'when'
 pipeline = require 'when/pipeline'
-
 
 module.exports = class NotifierFactory
 
     constructor: (@moo) -> 
 
-        @pipeline = []
+        @middleware = []
 
     create: (config, callback) -> 
 
@@ -16,7 +16,7 @@ module.exports = class NotifierFactory
             throw new Error "#{@constructor.name} requires config.messenger"
 
 
-        notifier = -> 
+        notifier = => 
 
             #
             # notifier formats the message
@@ -28,17 +28,49 @@ module.exports = class NotifierFactory
 
 
             #
-            # and sends it to the configured messenger
+            # calls the message back unless if there
+            # is no middleware registered
             #
 
-            config.messenger message
+            return config.messenger message unless @middleware.length > 0
+
+
+            #
+            # sends it down the middleware pipeline...
+            #
+
+            functions = []
+            pipeline( for fn in @middleware
+
+                functions.unshift fn
+                (msg) -> functions.pop() msg || message
+
+            ).then(
+
+                #
+                # ...and onward to the configured messenger
+                #
+
+                (finalMessage) -> config.messenger finalMessage
+
+                (error) -> console.log """
+
+                    ERROR IN MESSENGER MIDDLEWARE
+                    -----------------------------
+
+                                um?
+                                
+
+                """, error.stack, '\n'
+
+            )
 
 
         #
-        # notifier has a middleware registrar
+        # notifier has the middleware registrar as nested function
         #
 
-        notifier.use = (fn) => @register fn 
+        notifier.use = (fn) => @register fn
 
 
         callback null, notifier
@@ -47,7 +79,16 @@ module.exports = class NotifierFactory
     register: (fn) -> 
 
         throw new Error 'terminal middleware detected' unless @valid fn
-        @pipeline.push fn
+
+        #
+        # it wraps the middleware into a promise/deferral
+        #
+
+        @middleware.push (msg) -> 
+
+            deferral = When.defer()
+            fn msg, deferral.resolve
+            deferral.promise
 
 
     valid: (fn) -> 
