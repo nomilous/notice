@@ -67,8 +67,8 @@ require('nez').realize 'NotifierFactory', (NotifierFactory, test, context, shoul
 
                 that 'has a middleware registrar', (done) -> 
 
-                    middleware1 = (msg, next) -> msg.propery1 = 'value1'
-                    middleware2 = (msg, next) -> msg.propery2 = 'value2'
+                    middleware1 = (msg, next) -> msg.propery1 = 'value1' and next( msg )
+                    middleware2 = (msg, next) -> msg.propery2 = 'value2' and next( msg )
 
                     notify.use middleware1
                     notify.use middleware2
@@ -77,6 +77,25 @@ require('nez').realize 'NotifierFactory', (NotifierFactory, test, context, shoul
                     nf.pipeline[1].should.equal middleware2
 
                     test done
+
+
+                that 'throws if the middleware does not persist the pipeline', (done) -> 
+
+                    try
+                        
+                        notify.use (msg, next) -> 
+
+                            msg.some  = 'thing'
+                            msg.other = 'stuff'
+
+                    catch error
+
+                        error.should.match /terminal middleware detected/
+                        test done
+
+
+
+
 
 
     
