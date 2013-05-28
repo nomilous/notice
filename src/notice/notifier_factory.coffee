@@ -70,15 +70,15 @@ module.exports = class NotifierFactory
         # notifier has the middleware registrar as nested function
         #
 
-        notifier.use = (fn) => @register fn
+        notifier.use = (middleware) => @register middleware
 
 
         callback null, notifier
 
 
-    register: (fn) -> 
+    register: (middleware) -> 
 
-        throw new Error 'terminal middleware detected' unless @valid fn
+        throw new Error 'terminal middleware detected' unless @valid middleware
 
         #
         # it wraps the middleware into a promise/deferral
@@ -86,9 +86,15 @@ module.exports = class NotifierFactory
 
         @middleware.push (msg) -> 
 
+            #
+            # next - as passed into the middleware 
+            #        is the promise resolver
+            #
+
             deferral = When.defer()
-            fn msg, deferral.resolve
-            deferral.promise
+            next     = deferral.resolve
+            middleware msg, next
+            return deferral.promise
 
 
     valid: (fn) -> 
