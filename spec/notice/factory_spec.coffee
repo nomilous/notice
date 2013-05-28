@@ -1,4 +1,4 @@
-require('nez').realize 'NotifierFactory', (NotifierFactory, test, context, should, os) -> 
+require('nez').realize 'Factory', (Factory, test, context, should, os) -> 
 
     context 'create()', (it) -> 
 
@@ -7,7 +7,7 @@ require('nez').realize 'NotifierFactory', (NotifierFactory, test, context, shoul
 
             try
                 
-                new NotifierFactory().create()
+                new Factory().create()
 
             catch error 
 
@@ -20,7 +20,7 @@ require('nez').realize 'NotifierFactory', (NotifierFactory, test, context, shoul
 
             RECEIVED = []
 
-            nf = new NotifierFactory()
+            nf = new Factory()
             nf.create { 
 
                 #

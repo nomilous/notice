@@ -18,6 +18,3 @@ module.exports   = (opts, callback) ->
                 opts.messenger || 
                 defaultMessenger
 
-    factory = new NotifierFactory()
-    factory.create  messenger, opts, callback
-
