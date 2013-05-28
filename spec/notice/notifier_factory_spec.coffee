@@ -140,3 +140,23 @@ require('nez').realize 'NotifierFactory', (NotifierFactory, test, context, shoul
                     
 
                     ,10 # give it a moment
+
+
+                that 'survives a light callbackblat', (done) -> 
+
+                    setTimeout -> 
+
+                        RECEIVED = []
+                        notify 'hello?'
+
+                    ,100
+
+                    setTimeout ->
+
+                        RECEIVED[0].content.label.should.equal 'hello?'
+                        test done
+
+                    ,200
+
+
+

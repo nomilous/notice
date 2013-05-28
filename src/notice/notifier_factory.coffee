@@ -129,6 +129,10 @@ module.exports = class NotifierFactory
 
     register: (middleware) -> 
 
+        #
+        # ensure next() is called...  (this is not foolproof)
+        # 
+
         throw new Error 'terminal middleware detected' unless @valid middleware
 
         #

@@ -1,12 +1,11 @@
-config = {}
-
 localMessenger   = require './local_messenger'
 defaultMessenger = require './default_messenger'
+NotifierFactory  = require './notifier_factory'
 
-module.exports = configure = (opts, callback) ->
-    
+module.exports   = (opts, callback) ->
+
     opts || = {}
-    
+
     if typeof opts.source == 'undefined'
 
         throw new Error 'Notice.configure(opts, callback) requires config.source'
@@ -15,12 +14,10 @@ module.exports = configure = (opts, callback) ->
 
          throw new Error 'Notice.configure(opts, callback) requires callback to receive configured notifier'
 
-    config.source    = opts.source
-    config.messenger = localMessenger.find(config.source) || opts.messenger || defaultMessenger
+    messenger = localMessenger.find( opts.source ) || 
+                opts.messenger || 
+                defaultMessenger
 
-    return null
+    factory = new NotifierFactory()
+    factory.create  messenger, opts, callback
 
-
-Object.defineProperty configure, 'config',
-    
-    get: -> config

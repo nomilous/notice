@@ -2,7 +2,14 @@ require('nez').realize 'Notice', (Notice, test, context, should) ->
 
     it = context
 
+    it 'pipelines the message construction', (done) -> 
+
+        true.should.equal false
+        test done
+
     context 'exports a configure method', (that) -> 
+
+
 
 
         that 'expects a hash of config', (done) -> 
@@ -13,7 +20,7 @@ require('nez').realize 'Notice', (Notice, test, context, should) ->
 
             catch error
 
-                error.should.match /requires opts.source/
+                error.should.match /requires config.source/
                 test done
 
 
@@ -29,48 +36,48 @@ require('nez').realize 'Notice', (Notice, test, context, should) ->
                 test done
 
 
-    context 'event message', (has) -> 
+    # context 'event message', (has) -> 
 
-        MSG = null
-        Notice.configure(
-            source: 'TEST'
-            messenger: (msg) -> 
-                MSG = msg
-            -> 
-        )
+    #     MSG = null
+    #     Notice.configure(
+    #         source: 'TEST'
+    #         messenger: (msg) -> 
+    #             MSG = msg
+    #         -> 
+    #     )
 
-        has 'helpers for event tenor', (done) -> 
+    #     has 'helpers for event tenor', (done) -> 
 
-            Notice.event.good 'thing'
-            MSG.context.should.eql 
-                type: 'event'
-                tenor: 'good'
+    #         Notice.event.good 'thing'
+    #         MSG.context.should.eql 
+    #             type: 'event'
+    #             tenor: 'good'
 
-            Notice.event.normal 'lunch', 'not a roast'
-            MSG.context.should.eql 
-                type: 'event'
-                tenor: 'normal'
+    #         Notice.event.normal 'lunch', 'not a roast'
+    #         MSG.context.should.eql 
+    #             type: 'event'
+    #             tenor: 'normal'
 
-            Notice.event.bad 'the dish ran away WITHOUT the spoon', """
+    #         Notice.event.bad 'the dish ran away WITHOUT the spoon', """
 
-                consequences unknown
-                TERMINATE SIMULATION
+    #             consequences unknown
+    #             TERMINATE SIMULATION
 
-            """
-            test done
+    #         """
+    #         test done
 
-    context 'info message', (has) -> 
+    # context 'info message', (has) -> 
 
-        MSG = null
-        Notice.configure(
-            source: 'TEST'
-            messenger: (msg) -> 
-                MSG = msg
-            ->
-        )
+    #     MSG = null
+    #     Notice.configure(
+    #         source: 'TEST'
+    #         messenger: (msg) -> 
+    #             MSG = msg
+    #         ->
+    #     )
 
-        has 'helpers for info tenor', (done) -> 
+    #     has 'helpers for info tenor', (done) -> 
 
-            Notice.info.bad 'test failed'
-            MSG.context.should.eql { type: 'info', tenor: 'bad' }
-            test done
+    #         Notice.info.bad 'test failed'
+    #         MSG.context.should.eql { type: 'info', tenor: 'bad' }
+    #         test done

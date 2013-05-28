@@ -1,5 +1,4 @@
-require('nez').realize 'Configure', (Configure, test, context, LocalMessenger, DefaultMessenger) -> 
-
+require('nez').realize 'Configure', (Configure, test, context, LocalMessenger, DefaultMessenger, NotifierFactory) -> 
 
     context 'expects a config hash as arg1', (it) -> 
 
@@ -25,7 +24,6 @@ require('nez').realize 'Configure', (Configure, test, context, LocalMessenger, D
                 test done
 
 
-
     context 'default configuration', (it) -> 
 
 
@@ -41,28 +39,37 @@ require('nez').realize 'Configure', (Configure, test, context, LocalMessenger, D
             Configure { source: 'TEST' }, -> 
 
 
-        it 'falls back to using a provided messenger', (done) -> 
+        # it 'falls back to using a provided messenger', (done) -> 
+        #     m = (msg) -> 
+        #     NotifierFactory.prototype.create = (messenger, config) -> 
+        #         messenger.should.equal m
+        #         test done
+        #     Configure { 
+        #         source: 'TEST'
+        #         messenger: m
+        #     }, -> 
 
-            m = (msg) -> 
+
+        # it 'falls back to using the default handler at last', (done) -> 
+        #     NotifierFactory.prototype.create = (messenger, config) -> 
+        #         messenger.should.eql DefaultMessenger
+        #         test done
+        #     Configure { 
+        #         source: 'TEST'    
+        #     }, -> 
+
+
+    context 'callback', (it) -> 
+
+        it 'provides the message generator', (done) -> 
 
             Configure { 
 
                 source: 'TEST'
-                messenger: m
+                messenger: (msg) -> test done
 
-            }, -> 
+            }, (error, notify) -> 
 
-            Configure.config.messenger.should.equal m
-            test done
+                notify.info.normal 'test message'
 
 
-        it 'falls back to using the default handler at last', (done) -> 
-
-            Configure { 
-
-                source: 'TEST'    
-
-            }, -> 
-
-            Configure.config.messenger.should.equal DefaultMessenger
-            test done

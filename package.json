@@ -11,7 +11,8 @@
   ],
   "main": "lib/notice.js",
   "dependencies": {
-    "inflection": "~1.2.6"
+    "inflection": "~1.2.6",
+    "when": "~2.1.0"
   },
   "devDependencies": {
     "nez": "0.0.7",
