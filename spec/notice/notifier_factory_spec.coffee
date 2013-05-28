@@ -159,4 +159,49 @@ require('nez').realize 'NotifierFactory', (NotifierFactory, test, context, shoul
                     ,200
 
 
+                                                                # 
+                                                                #  really!! need this to
+                                                                #           hold off the
+                                                                #           next test...
+                                                                #
+                that 'survives a serously heavy callbackblat', (done) -> 
+
+                    class SpannerInTheWorks
+
+                    class AntiqueConduit
+
+                        constructor: (@mechanism) -> 
+                        send: (  -> => ->
+                            @mechanism.bigLever.pull.apply ( 
+                                new SpannerInTheWorks()
+                            ), arguments 
+                        )()()
+
+
+                    email = new AntiqueConduit bigLever: pull: -> notify.apply {spam:{spam:{spam:{}}}}, arguments
+
+
+                    require('when/sequence')( [
+
+                        -> 'wade through inbox'
+                        -> 'attemt search'
+                        -> 'whose it from again?'
+                        -> 'dammit, maybe i can search by peer recipient?'
+                        -> 'no, keep seaching by partial recollection of subject'
+                        -> 'aaaah, there it is'
+                        -> 'click reply'
+                        -> 'wait, no...'
+                        -> 'reply all'
+                        -> 'is that everyone?'
+                        -> 'search recipients!!'
+                        -> 'click send'
+
+                    ] ).then -> email.send 'subject', 'Hi all, ...'
+
+                    setTimeout ->
+
+                        RECEIVED.pop().content.description.should.equal 'Hi all, ...'
+
+                    ,30
+                    
 
