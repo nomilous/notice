@@ -38,12 +38,16 @@ module.exports = class NotifierFactory
                                           #       
                                           #       then the posibility may exist that
                                           #       the original message contents will
-                                          #       be modified any event chains that 
+                                          #       be modified by any event chains that 
                                           #       are set off in the interim.
                                           # 
                                           #       um? 2> 
                                           # 
                                           #       consider a deep copy
+                                          # 
+                                          #       also, some kind of introspection on
+                                          #       the pipeline lag may be a good idea
+                                          # 
                                           # 
             message.content.label       = arguments[0]
             message.content.description = arguments[1]
