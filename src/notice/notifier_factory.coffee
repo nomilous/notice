@@ -19,17 +19,39 @@ module.exports = class NotifierFactory
         notifier = => 
 
             #
-            # notifier formats the message
+            # notifier() creates a new message object
             #
 
             message = content: {}
+
+                                          #
+                                          # these args could be hazardous?? 
+                                          #
+                                          # TODO: understand exactly what v8 does with
+                                          #       args being cast into the closure. 
+                                          # 
+                                          #       if outside calls modify the contents 
+                                          #       of the source reference while messages
+                                          #       are lagged in the pipeline waiting
+                                          #       for middleware that broke out with
+                                          #       an async operation, 
+                                          #       
+                                          #       then the posibility may exist that
+                                          #       the original message contents will
+                                          #       be modified any event chains that 
+                                          #       are set off in the interim.
+                                          # 
+                                          #       um? 2> 
+                                          # 
+                                          #       consider a deep copy
+                                          # 
             message.content.label       = arguments[0]
             message.content.description = arguments[1]
 
 
             #
-            # calls the message back unless if there
-            # is no middleware registered
+            # calls the message back unless ifn't there's
+            # not no middleware registered
             #
 
             return config.messenger message unless @middleware.length > 0
@@ -39,11 +61,32 @@ module.exports = class NotifierFactory
             # sends it down the middleware pipeline...
             #
 
-            functions = []
+            functions = []  
             pipeline( for fn in @middleware
-
+                          # 
+                          #
+                          # the 'value' of fn (function reference) will 
+                          # be whichever was last in the array by the 
+                          # time the pipeline starts up
+                          # 
+                          # the pipeline would then call the last 
+                          # registered middleware function over and 
+                          # over 
+                          # 
+                          # so each reference is shifted into an array and 
+                          # popped back out in the same sequence as the 
+                          # pipeline traverses 
+                          #
+                          #
                 functions.unshift fn
-                (msg) -> functions.pop() msg || message
+
+                                        #
+                                        # message, as scoped by the surrounding
+                                        # notifier()'s closure, is passed into
+                                        # each middleware in turn
+                                        # 
+                                        # 
+                -> functions.pop()(  message  )
 
             ).then(
 
@@ -51,7 +94,7 @@ module.exports = class NotifierFactory
                 # ...and onward to the configured messenger
                 #
 
-                (finalMessage) -> config.messenger finalMessage
+                -> config.messenger message
 
                 (error) -> console.log """
 
@@ -59,7 +102,11 @@ module.exports = class NotifierFactory
                     -----------------------------
 
                                 um?
-                                
+
+                       should probably protect 
+                             from this
+
+                      MESSAGE WILL NOT BE SENT                                
 
                 """, error.stack, '\n'
 
@@ -110,10 +157,10 @@ module.exports = class NotifierFactory
         )[1..2].map (arg) -> arg.trim()
 
         #
-        # match for arg2(arg1) 
+        # match for call to next() 
         #
 
-        nextWasCalled = new RegExp "#{fnArgs[1]}\W*\\(\W*#{fnArgs[0]}\W*\\)"
+        nextWasCalled = new RegExp "#{fnArgs[1]}\W*\\(\W*\\)"
         return false unless fn.toString().match nextWasCalled
         return true
 

@@ -67,8 +67,8 @@ require('nez').realize 'NotifierFactory', (NotifierFactory, test, context, shoul
 
                 that 'has a middleware registrar', (done) -> 
 
-                    middleware1 = (msg, next) -> msg.propery1 = 'value1' and next( msg )
-                    middleware2 = (msg, next) -> msg.propery2 = 'value2' and next( msg )
+                    middleware1 = (msg, next) -> msg.propery1 = 'value1' and next()
+                    middleware2 = (msg, next) -> msg.propery2 = 'value2' and next()
 
                     notify.use middleware1
                     notify.use middleware2
@@ -115,7 +115,12 @@ require('nez').realize 'NotifierFactory', (NotifierFactory, test, context, shoul
 
                         #throw new Error 'um?'
 
-                        next msg
+                        next()
+
+                    notify.use (msg, next) -> 
+
+                        msg.also = 'THIS'
+                        next()
 
                      
                     notify 'LABEL', 'DESCRIPTION'
@@ -129,11 +134,9 @@ require('nez').realize 'NotifierFactory', (NotifierFactory, test, context, shoul
                         # this test may occasionally fail
                         #
                         RECEIVED[0].source.type.should.equal 'Darwin'
+                        RECEIVED[0].also.should.equal 'THIS'
+                        #console.log JSON.stringify RECEIVED, null, 2
                         test done
                     
 
                     ,10 # give it a moment
-
-
-
-    
