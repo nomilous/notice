@@ -167,18 +167,23 @@ require('nez').realize 'NotifierFactory', (NotifierFactory, test, context, shoul
                 that 'survives a serously heavy callbackblat', (done) -> 
 
                     class SpannerInTheWorks
-
+                    class Xpert
                     class AntiqueConduit
 
                         constructor: (@mechanism) -> 
                         send: (  -> => ->
-                            @mechanism.bigLever.pull.apply ( 
-                                new SpannerInTheWorks()
-                            ), arguments 
+                            @mechanism.bigLever.pull.evenHarder.apply ( 
+                                new SpannerInTheWorks(
+                                    new Xpert(
+                                        "no dude! ...you'll snap it"
+                                    )
+                                )
+                            ), arguments
+
                         )()()
 
 
-                    email = new AntiqueConduit bigLever: pull: -> notify.apply {spam:{spam:{spam:{}}}}, arguments
+                    email = new AntiqueConduit bigLever: pull: evenHarder: -> notify.apply {spam:{spam:{spam:{}}}}, arguments
 
 
                     require('when/sequence')( [
