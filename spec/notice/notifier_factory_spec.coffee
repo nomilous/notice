@@ -196,11 +196,11 @@ require('nez').realize 'NotifierFactory', (NotifierFactory, test, context, shoul
                         -> 'search recipients!!'
                         -> 'click send'
 
-                    ] ).then -> email.send 'subject', 'Hi all, ...'
+                    ] ).then -> email.send 'Re: Irrelevant and entirely forgettable original subject', 'Hi all, ...'
 
                     setTimeout ->
 
-                        RECEIVED.pop().content.description.should.equal 'Hi all, ...'
+                        RECEIVED.pop().content.label.should.match /entirely forgettable/
 
                     ,30
                     
