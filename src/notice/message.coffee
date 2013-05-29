@@ -1,33 +1,51 @@
+#
+# function decorator 
+#  - ensures fn() is only run once
+#    and only when passed a string
+#
+
+onceIfString = (fn) -> 
+    do (done = false) -> 
+        (value) -> unless done 
+            if done = typeof value is 'string'
+                fn value
+
+
+
 module.exports = class Message
 
     constructor: (label, description) -> 
 
-        content = 
-            label: if typeof label is 'string' then label
-            description: if typeof description is 'string' then description
-
-        Object.defineProperty this, 'content',
-            get: -> 
-                label:       content.label
-                description: content.description
+        content = {}
 
         #
         # set once (read only properties)
         #
         # - label
         # - description
+        # - type
         #
 
         Object.defineProperty this, 'label', 
-            get: -> content.label
-            set: (value) -> 
-                unless content.label?
-                    if typeof value is 'string'
-                        content.label = value
+            get: -> content.label   
+            set: onceIfString (value) -> content.label = value
+            # 
+            # couldn't pull this one off:
+            # 
+            # set: onceIf 'string', (value) -> content.label = value
 
         Object.defineProperty this, 'description', 
             get: -> content.description
-            set: (value) -> 
-                unless content.description?
-                    if typeof value is 'string'
-                        content.description = value 
+            set: onceIfString (value) -> 
+                content.description = value 
+
+
+        @label       = label
+        @description = description
+
+        
+        Object.defineProperty this, 'content',
+            get: -> 
+                label:       content.label
+                description: content.description
+

@@ -4,8 +4,9 @@ require('nez').realize 'Message', (Message, test, context, should) ->
 
         it 'can be defined on construction', (done) -> 
 
-            m = new Message 'LABEL'
+            m = new Message 'LABEL', 'DESCRIPTION'
             m.label.should.equal 'LABEL'
+            m.description.should.equal 'DESCRIPTION'
             test done
 
         it 'can be set, but only once', (done) -> 
