@@ -57,9 +57,8 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
 
                     notify 'arg1 string', 'arg2 string'
 
-                    RECEIVED[0].content.should.eql
-                        label:       'arg1 string'
-                        description: 'arg2 string'
+                    RECEIVED[0].label.should.equal 'arg1 string'
+                    RECEIVED[0].description.should.equal 'arg2 string'
 
                     test done
 
@@ -127,15 +126,15 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
 
                     setTimeout -> 
 
-                        RECEIVED[0].content.label.should.equal 'LABEL'
-                        RECEIVED[0].content.description.should.equal 'DESCRIPTION'
+                        RECEIVED[0].label.should.equal 'LABEL'
+                        RECEIVED[0].description.should.equal 'DESCRIPTION'
                         
                         #
                         # this test may occasionally fail
                         #
                         RECEIVED[0].source.type.should.equal 'Darwin'
                         RECEIVED[0].also.should.equal 'THIS'
-                        #console.log JSON.stringify RECEIVED, null, 2
+                        console.log JSON.stringify RECEIVED, null, 2
                         test done
                     
 
@@ -153,7 +152,7 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
 
                     setTimeout ->
 
-                        RECEIVED[0].content.label.should.equal 'hello?'
+                        RECEIVED[0].label.should.equal 'hello?'
                         test done
 
                     ,200
@@ -205,7 +204,7 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
 
                     setTimeout ->
 
-                        RECEIVED.pop().content.label.should.match /entirely forgettable/
+                        RECEIVED.pop().label.should.match /entirely forgettable/
 
                     ,30
                     

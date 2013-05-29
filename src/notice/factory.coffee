@@ -1,5 +1,6 @@
 When     = require 'when'
 pipeline = require 'when/pipeline'
+Message  = require './message'
 
 module.exports = class NotifierFactory
 
@@ -22,7 +23,7 @@ module.exports = class NotifierFactory
             # notifier() creates a new message object
             #
 
-            message = content: {}
+            message = new Message
 
                                           #
                                           # these args could be hazardous?? 
@@ -49,8 +50,8 @@ module.exports = class NotifierFactory
                                           #       the pipeline lag may be a good idea
                                           # 
                                           # 
-            message.content.label       = arguments[0]
-            message.content.description = arguments[1]
+            message.label       = arguments[0]
+            message.description = arguments[1]
 
 
             #

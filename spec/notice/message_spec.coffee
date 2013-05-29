@@ -1,0 +1,46 @@
+require('nez').realize 'Message', (Message, test, context, should) -> 
+
+    context 'label and description', (it) -> 
+
+        it 'can be defined on construction', (done) -> 
+
+            m = new Message 'LABEL'
+            m.label.should.equal 'LABEL'
+            test done
+
+        it 'can be set, but only once', (done) -> 
+
+            m             = new Message
+            m.label       = 'LABEL ONE'
+            m.label       = 'LABEL TWO'
+            m.description = 'DESCRIPTION ONE'
+            m.description = 'DESCRIPTION TWO'
+
+            m.label.should.equal 'LABEL ONE'
+            m.description.should.equal 'DESCRIPTION ONE'
+            test done
+
+        it 'will only be set with strings', (done) -> 
+
+            m             = new Message
+            m.label       = ['LABEL ONE']
+            m.description = ['DESCRIPTION ONE']
+
+            should.not.exist m.label
+            should.not.exist m.description
+            test done
+
+    context 'content', (it) -> 
+
+        it 'returns message content', (done) ->
+
+            m             = new Message
+            m.label       = 'LABEL ONE'
+            m.description = 'DESCRIPTION ONE'
+
+            m.content.should.eql 
+                label: 'LABEL ONE'
+                description: 'DESCRIPTION ONE'
+
+            test done
+
