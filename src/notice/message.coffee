@@ -14,38 +14,48 @@ onceIfString = (fn) ->
 
 module.exports = class Message
 
-    constructor: (label, description) -> 
+    #constructor: (properties = {}, composition = {}) -> 
+    constructor: ( properties = {} ) -> 
 
         content = {}
 
-        #
-        # set once (read only properties)
-        #
-        # - label
-        # - description
-        # - type
+        # 
+        # message composition: 
+        # 
+        #  - set once / then read only properties
         #
 
-        Object.defineProperty this, 'label', 
-            get: -> content.label   
-            set: onceIfString (value) -> content.label = value
-            # 
-            # couldn't pull this one off:
-            # 
-            # set: onceIf 'string', (value) -> content.label = value
+        composition = 
 
-        Object.defineProperty this, 'description', 
-            get: -> content.description
-            set: onceIfString (value) -> 
-                content.description = value 
+            content: ['label', 'description']
 
 
-        @label       = label
-        @description = description
+        for name in composition.content
+
+            do (name) => 
+
+                Object.defineProperty @, name, 
+
+                    get: -> content[name] || '' 
+                    set: onceIfString (value) -> content[name] = value
+
+                    # 
+                    # have another stab at this (for validations), later... 
+                    # 
+                    # set: onceIf 'string', (value) -> content.label = value
+                    # 
+
+            @[name] = properties[name]
 
         
         Object.defineProperty this, 'content',
+
+            #
+            # this can likely be improved
+            #
             get: -> 
-                label:       content.label
-                description: content.description
+                result = {}
+                for name in composition.content
+                    result[name] = content[name]
+                result
 

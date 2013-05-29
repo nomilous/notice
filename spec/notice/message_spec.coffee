@@ -1,13 +1,14 @@
 require('nez').realize 'Message', (Message, test, context, should) -> 
+    
 
     context 'label and description', (it) -> 
 
         it 'can be defined on construction', (done) -> 
 
-            m = new Message 'LABEL', 'DESCRIPTION'
+            m = new Message label: 'LABEL', description: 'DESCRIPTION'
             m.label.should.equal 'LABEL'
             m.description.should.equal 'DESCRIPTION'
-            test done
+            test done 
 
         it 'can be set, but only once', (done) -> 
 
@@ -27,8 +28,8 @@ require('nez').realize 'Message', (Message, test, context, should) ->
             m.label       = ['LABEL ONE']
             m.description = ['DESCRIPTION ONE']
 
-            should.not.exist m.label
-            should.not.exist m.description
+            m.label.should.equal ''
+            m.description.should.equal ''
             test done
 
     context 'content', (it) -> 
