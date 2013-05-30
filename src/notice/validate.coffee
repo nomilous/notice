@@ -1,18 +1,4 @@
-
-#
-# function decorator 
-# 
-# - ensures the provided arg is a Function
-# - returns false if not
-# 
-
-isFn = (fn) -> 
-    do -> (value) ->
-        return fn value if typeof value is 'function'
-        return false
-
-
-
+isFn           = require('./decorators').isFn
 module.exports = 
 
     #

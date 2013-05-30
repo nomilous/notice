@@ -1,16 +1,4 @@
-#
-# function decorator 
-#  - ensures fn() is only run once
-#    and only when passed a string
-#
-
-onceIfString = (fn) -> 
-    do (done = false) -> 
-        (value) -> unless done 
-            if done = typeof value is 'string'
-                fn value
-
-
+onceIfString   = require('./decorators').onceIfString
 
 module.exports = class Message
 
