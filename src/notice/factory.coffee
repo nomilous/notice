@@ -1,6 +1,7 @@
 When     = require 'when'
 pipeline = require 'when/pipeline'
 Message  = require './message'
+Validate = require './validate'
 
 module.exports = class NotifierFactory
 
@@ -155,22 +156,6 @@ module.exports = class NotifierFactory
 
     valid: (fn) -> 
 
-        #
-        # pull the args from the function signature
-        #
 
-        fnArgs = fn.toString().match(
-
-            /^function\W*\(\W*(.*)\W*,\W*(.*)\W*\)/ 
-
-        )[1..2].map (arg) -> arg.trim()
-
-        #
-        # match for call to next() 
-        #
-
-        nextWasCalled = new RegExp "#{fnArgs[1]}\W*\\(\W*\\)"
-        return false unless fn.toString().match nextWasCalled
-        return true
 
 
