@@ -78,25 +78,6 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
                     test done
 
 
-                that 'throws if the middleware does not persist the pipeline', (done) -> 
-
-                    #
-                    # must call next()
-                    #
-
-                    try
-                        
-                        notify.use (msg, next) -> 
-
-                            msg.some  = 'thing'
-                            msg.other = 'stuff'
-
-                    catch error
-
-                        error.should.match /terminal middleware detected/
-                        test done
-
-
                 that 'passes the message through the registered middleware', (done) -> 
 
 

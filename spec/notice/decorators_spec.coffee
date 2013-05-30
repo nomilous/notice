@@ -1,4 +1,4 @@
-require('nez').realize 'Decorators', (Decorators, test, context) -> 
+require('nez').realize 'Decorators', (Decorators, test, context, should) -> 
 
 
     context 'onceIfString( fn )', (it) -> 
@@ -39,8 +39,10 @@ require('nez').realize 'Decorators', (Decorators, test, context) ->
 
         it 'ensures the provided arg is a middleware function', (done) -> 
 
-            middleware = []
-            app = use: Decorators.isMiddleware (fn) -> middleware.push fn
+            isMiddleware = Decorators.isMiddleware
+            middleware   = []
+
+            app = use: isMiddleware (fn) -> middleware.push fn
 
             app.use () -> 
             middleware.length.should.equal 0
@@ -51,6 +53,49 @@ require('nez').realize 'Decorators', (Decorators, test, context) ->
             app.use (arg1, arg2) -> arg2()
             middleware.length.should.equal 1
 
-
-
             test done
+
+
+    context 'asResolver', (it) -> 
+
+        it 'wraps the provided function into a deferral and 
+            calls with the resolver as middleware `nextFn`', (done) -> 
+
+            asResolver = Decorators.asResolver
+            middleware = []
+
+            app = use: asResolver (fn) -> middleware.push fn
+
+            app.use (msg, next) -> 
+
+                msg.addsThis = 'IN the MIDDLE ware'
+                next msg
+
+            middleware[0]( startsWith: 'THIS' ).then (result) -> 
+
+                result.should.eql
+
+                    startsWith: 'THIS'
+                    addsThis: 'IN the MIDDLE ware'
+                
+                test done
+
+    context 'supports isMiddleWare and asResolver', (In) -> 
+
+        In 'conjunction', (done) -> 
+
+            asResolver   = Decorators.asResolver
+            isMiddleware = Decorators.isMiddleware
+
+            middleware = undefined
+            use = isMiddleware asResolver (m) -> middleware = m
+
+            use (msg, next) ->
+                msg.should.eql is: 'something'
+                next() 
+                test done
+
+            middleware( is: 'something' )
+
+
+

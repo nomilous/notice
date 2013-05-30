@@ -1,3 +1,4 @@
+Defer          = require('when').defer
 support        = require './support'
 module.exports = 
 
@@ -35,4 +36,19 @@ module.exports =
             unless support.callsFn next, middleware
                 return -> false
             fn middleware
+
+    #
+    # - wraps the provided function into a deferral and
+    #   calls with the resolver as the middleware `nextFn`
+    # - returns the promise
+    #
+
+    asResolver: (fn) -> 
+        (middleware) -> 
+            fn (msg) -> 
+                defer = Defer()
+                next  = defer.resolve
+                middleware msg, next
+                defer.promise
+                
 

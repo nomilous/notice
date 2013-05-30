@@ -1,7 +1,7 @@
-When         = require 'when'
 pipeline     = require 'when/pipeline'
 Message      = require './message'
 isMiddleWare = require('./decorators').isMiddleware
+asResolver   = require('./decorators').asResolver
 
 module.exports = class NotifierFactory
 
@@ -123,33 +123,7 @@ module.exports = class NotifierFactory
         # notifier has the middleware registrar as nested function
         #
 
-        notifier.use = isMiddleWare (middleware) => @register middleware
+        notifier.use = isMiddleWare asResolver (middleware) => @middleware.push middleware
 
 
         callback null, notifier
-
-
-    register: (middleware) -> 
-
-        #
-        # it wraps the middleware into a promise/deferral
-        #
-
-        @middleware.push (msg) -> 
-
-            #
-            # next - as passed into the middleware 
-            #        is the promise resolver
-            #
-
-            deferral = When.defer()
-            next     = deferral.resolve
-            middleware msg, next
-            return deferral.promise
-
-
-    valid: (fn) -> 
-
-
-
-
