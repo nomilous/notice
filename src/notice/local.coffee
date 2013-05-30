@@ -1,4 +1,3 @@
-inflection     = require 'inflection'
 module.exports = 
 
     find: (source) -> 
