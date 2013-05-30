@@ -1,7 +1,7 @@
-When     = require 'when'
-pipeline = require 'when/pipeline'
-Message  = require './message'
-Validate = require './validate'
+When         = require 'when'
+pipeline     = require 'when/pipeline'
+Message      = require './message'
+isMiddleWare = require('./decorators').isMiddleware
 
 module.exports = class NotifierFactory
 
@@ -123,19 +123,13 @@ module.exports = class NotifierFactory
         # notifier has the middleware registrar as nested function
         #
 
-        notifier.use = (middleware) => @register middleware
+        notifier.use = isMiddleWare (middleware) => @register middleware
 
 
         callback null, notifier
 
 
     register: (middleware) -> 
-
-        #
-        # ensure next() is called...  (this is not foolproof)
-        # 
-
-        throw new Error 'terminal middleware detected' unless Validate.middleware middleware
 
         #
         # it wraps the middleware into a promise/deferral

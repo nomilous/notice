@@ -34,3 +34,23 @@ require('nez').realize 'Decorators', (Decorators, test, context) ->
             f (x) -> 1 / y
             runCount.should.equal 1
             test done
+
+    context 'isMiddleware', (it) -> 
+
+        it 'ensures the provided arg is a middleware function', (done) -> 
+
+            middleware = []
+            app = use: Decorators.isMiddleware (fn) -> middleware.push fn
+
+            app.use () -> 
+            middleware.length.should.equal 0
+
+            app.use (msg, next) -> 
+            middleware.length.should.equal 0
+
+            app.use (arg1, arg2) -> arg2()
+            middleware.length.should.equal 1
+
+
+
+            test done
