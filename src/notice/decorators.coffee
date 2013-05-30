@@ -1,7 +1,6 @@
 module.exports = 
 
     #
-    # function decorator 
     #  - ensures fn() is only run once
     #    and only when passed a string
     #
@@ -14,8 +13,6 @@ module.exports =
 
 
     #
-    # function decorator 
-    # 
     # - ensures the provided arg is a Function
     # - returns false if not
     # 
