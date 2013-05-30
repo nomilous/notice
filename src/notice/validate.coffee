@@ -6,7 +6,7 @@
 # - returns false if not
 # 
 
-requiresFn = (fn) -> 
+isFn = (fn) -> 
     do -> (value) ->
         return fn value if typeof value is 'function'
         return false
@@ -21,7 +21,7 @@ module.exports =
     # ensure fn is valid as messenger middleware
     # 
 
-    middleware: requiresFn (fn) -> 
+    middleware: isFn (fn) -> 
 
         #
         # pull the args from the function signature

@@ -135,7 +135,7 @@ module.exports = class NotifierFactory
         # ensure next() is called...  (this is not foolproof)
         # 
 
-        throw new Error 'terminal middleware detected' unless @valid middleware
+        throw new Error 'terminal middleware detected' unless Validate.middleware middleware
 
         #
         # it wraps the middleware into a promise/deferral

@@ -80,6 +80,10 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
 
                 that 'throws if the middleware does not persist the pipeline', (done) -> 
 
+                    #
+                    # must call next()
+                    #
+
                     try
                         
                         notify.use (msg, next) -> 
@@ -134,7 +138,7 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
                         #
                         RECEIVED[0].source.type.should.equal 'Darwin'
                         RECEIVED[0].also.should.equal 'THIS'
-                        console.log JSON.stringify RECEIVED, null, 2
+                        #console.log JSON.stringify RECEIVED, null, 2
                         test done
                     
 
