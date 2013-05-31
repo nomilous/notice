@@ -1,1 +1,1 @@
-module.exports.configure = require './notice/configure'
+module.exports = new require('./notice/factory')

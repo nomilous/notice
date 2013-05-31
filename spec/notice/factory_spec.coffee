@@ -7,7 +7,7 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
 
             try
                 
-                new Factory().create()
+                new Factory.create()
 
             catch error 
 
@@ -20,8 +20,7 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
 
             RECEIVED = []
 
-            nf = new Factory()
-            nf.create { 
+            Factory.create { 
 
                 #
                 # notifierFactory.create() takes a hash of 
@@ -66,15 +65,7 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
 
                 that 'has a middleware registrar', (done) -> 
 
-                    middleware1 = (msg, next) -> msg.propery1 = 'value1' and next()
-                    middleware2 = (msg, next) -> msg.propery2 = 'value2' and next()
-
-                    notify.use middleware1
-                    notify.use middleware2
-
-                    should.exist nf.middleware[0]
-                    should.exist nf.middleware[1]
-
+                    notify.use.should.be.an.instanceof Function
                     test done
 
 
@@ -86,24 +77,12 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
                     notify.use (msg, next) -> 
                         
 
-                        msg.source ||= {}
-                        msg.source.hostname = os.hostname()
-                        msg.source.type     = os.type()
-                        msg.source.platform = os.platform()
-                        msg.source.arch     = os.arch()
-
-                        msg.source.extinfo       ||= {} 
-                        msg.source.extinfo.uptime  = os.uptime()
-                        msg.source.extinfo.loadavg = os.loadavg()
-                        msg.source.extinfo.cpus    = os.cpus()
-
-                        #throw new Error 'um?'
-
+                        msg.and  = 'THIS'
                         next()
 
                     notify.use (msg, next) -> 
 
-                        msg.also = 'THIS'
+                        msg.also = 'THAT'
                         next()
 
                      
@@ -111,86 +90,13 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
 
                     setTimeout -> 
 
-                        RECEIVED[0].label.should.equal 'LABEL'
-                        RECEIVED[0].description.should.equal 'DESCRIPTION'
-                        
-                        #
-                        # this test may occasionally fail
-                        #
-                        RECEIVED[0].source.type.should.equal 'Darwin'
-                        RECEIVED[0].also.should.equal 'THIS'
-                        #console.log JSON.stringify RECEIVED, null, 2
+                        RECEIVED[0].content.label.should.equal 'LABEL'
+                        RECEIVED[0].content.description.should.equal 'DESCRIPTION'
+
+                        RECEIVED[0].and.should.equal 'THIS'
+                        RECEIVED[0].also.should.equal 'THAT'
                         test done
                     
 
                     ,10 # give it a moment
-
-
-                that 'survives a light callbackblat', (done) -> 
-
-                    setTimeout -> 
-
-                        RECEIVED = []
-                        notify 'hello?'
-
-                    ,100
-
-                    setTimeout ->
-
-                        RECEIVED[0].label.should.equal 'hello?'
-                        test done
-
-                    ,200
-
-
-                                                                # 
-                                                                #  really!! need this to
-                                                                #           hold off the
-                                                                #           next test...
-                                                                #
-                that 'survives a serously heavy callbackblat', (done) -> 
-
-                    class SpannerInTheWorks
-                    class Xpert
-                    class AntiqueConduit
-
-                        constructor: (@mechanism) -> 
-                        send: (  -> => ->
-                            @mechanism.bigLever.pull.evenHarder.apply ( 
-                                new SpannerInTheWorks(
-                                    new Xpert(
-                                        "no dude! ...you'll snap it"
-                                    )
-                                )
-                            ), arguments
-
-                        )()()
-
-
-                    email = new AntiqueConduit bigLever: pull: evenHarder: -> notify.apply {spam:{spam:{spam:{}}}}, arguments
-
-
-                    require('when/sequence')( [
-
-                        -> 'wade through inbox'
-                        -> 'attemt search'
-                        -> 'whose it from again?'
-                        -> 'dammit, maybe i can search by peer recipient?'
-                        -> 'no, keep seaching by partial recollection of subject'
-                        -> 'aaaah, there it is'
-                        -> 'click reply'
-                        -> 'wait, no...'
-                        -> 'reply all'
-                        -> 'is that everyone?'
-                        -> 'search recipients!!'
-                        -> 'click send'
-
-                    ] ).then -> email.send 'Re: Irrelevant and entirely forgettable original subject', 'Hi all, ...'
-
-                    setTimeout ->
-
-                        RECEIVED.pop().label.should.match /entirely forgettable/
-
-                    ,30
-                    
 

@@ -1,3 +1,9 @@
-require('nez').realize 'Notice', (Notice, test, context, should) -> 
+require('nez').realize 'Notice', (Notice, test, it, should) -> 
+
+    it 'is', (done) -> 
+
+        console.log Notice.toString()
+
+        test done
 
     

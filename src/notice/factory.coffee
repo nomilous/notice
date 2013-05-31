@@ -3,15 +3,12 @@ Message      = require './message'
 isMiddleWare = require('./decorators').isMiddleware
 asResolver   = require('./decorators').asResolver
 
-module.exports = class NotifierFactory
-
-    constructor: (@moo) -> 
-
-        @middleware = []
+module.exports = NotifierFactory =
 
     create: (config, callback) -> 
 
-        config ||= {}
+        config   ||= {}
+        middleware = []
 
         unless typeof config.messenger == 'function'
 
@@ -19,6 +16,8 @@ module.exports = class NotifierFactory
 
 
         notifier = => 
+
+
 
             #
             # notifier() creates a new message object
@@ -60,7 +59,7 @@ module.exports = class NotifierFactory
             # not no middleware registered
             #
 
-            return config.messenger message unless @middleware.length > 0
+            return config.messenger message unless middleware.length > 0
 
 
             #
@@ -68,7 +67,7 @@ module.exports = class NotifierFactory
             #
 
             functions = []  
-            pipeline( for fn in @middleware
+            pipeline( for fn in middleware
                           # 
                           #
                           # the 'value' of fn (function reference) will 
@@ -123,7 +122,7 @@ module.exports = class NotifierFactory
         # notifier has the middleware registrar as nested function
         #
 
-        notifier.use = isMiddleWare asResolver (middleware) => @middleware.push middleware
+        notifier.use = isMiddleWare asResolver (fn) => middleware.push fn
 
 
         callback null, notifier
