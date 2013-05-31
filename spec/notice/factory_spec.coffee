@@ -41,7 +41,7 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
 
                 notify.info.normal( 'message' ).then (finalMessage) ->  
 
-                    finalMessage.context.label.should.equal 'message'
+                    finalMessage.context.title.should.equal 'message'
                     test done
 
             that 'survives middleware exceptions'
@@ -62,9 +62,9 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
                     next()
 
                  
-                notify.info.normal( 'LABEL', 'DESCRIPTION' ).then (msg) ->
+                notify.info.normal( 'TITLE', 'DESCRIPTION' ).then (msg) ->
 
-                    msg.context.label.should.equal 'LABEL'
+                    msg.context.title.should.equal 'TITLE'
                     msg.context.description.should.equal 'DESCRIPTION'
 
                     msg.and.should.equal 'THIS'

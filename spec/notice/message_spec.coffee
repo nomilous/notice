@@ -1,34 +1,34 @@
 require('nez').realize 'Message', (Message, test, context, should) -> 
     
 
-    context 'label and description', (it) -> 
+    context 'title and description', (it) -> 
 
         it 'can be defined on construction', (done) -> 
 
-            m = new Message label: 'LABEL', description: 'DESCRIPTION'
-            m.label.should.equal 'LABEL'
+            m = new Message title: 'TITLE', description: 'DESCRIPTION'
+            m.title.should.equal 'TITLE'
             m.description.should.equal 'DESCRIPTION'
             test done 
 
         it 'can be set, but only once', (done) -> 
 
             m             = new Message
-            m.label       = 'LABEL ONE'
-            m.label       = 'LABEL TWO'
+            m.title       = 'TITLE ONE'
+            m.title       = 'TITLE TWO'
             m.description = 'DESCRIPTION ONE'
             m.description = 'DESCRIPTION TWO'
 
-            m.label.should.equal 'LABEL ONE'
+            m.title.should.equal 'TITLE ONE'
             m.description.should.equal 'DESCRIPTION ONE'
             test done
 
         it 'will only be set with strings', (done) -> 
 
             m             = new Message
-            m.label       = ['LABEL ONE']
+            m.title       = ['TITLE ONE']
             m.description = ['DESCRIPTION ONE']
 
-            m.label.should.equal ''
+            m.title.should.equal ''
             m.description.should.equal ''
             test done
 
@@ -37,11 +37,11 @@ require('nez').realize 'Message', (Message, test, context, should) ->
         it 'returns message context', (done) ->
 
             m             = new Message
-            m.label       = 'LABEL ONE'
+            m.title       = 'TITLE ONE'
             m.description = 'DESCRIPTION ONE'
 
             m.context.should.eql 
-                label: 'LABEL ONE'
+                title: 'TITLE ONE'
                 description: 'DESCRIPTION ONE'
 
             test done

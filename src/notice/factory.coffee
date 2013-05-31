@@ -56,7 +56,7 @@ module.exports = Factory =
                                           #       the pipeline lag may be a good idea
                                           # 
                                           # 
-            message.label       = arguments[0]
+            message.title       = arguments[0]
             message.description = arguments[1]
 
 
