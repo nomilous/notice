@@ -3,7 +3,7 @@ require('nez').realize 'Notice', (Notice, test, it, should) ->
     it 'is a messaging middleware pipeline', (done) -> 
 
 
-        notice = Notice.create 'origin name'
+        notice = Notice.create 'Origin System'
 
 
         notice.use (msg, next) -> msg.key1 = 'VALUE1'; next()
@@ -22,6 +22,7 @@ require('nez').realize 'Notice', (Notice, test, it, should) ->
             msg.context.should.eql 
                 title:       'title'
                 description: 'description'
+                origin:      'Origin System'
                 type:        'event'
                 tenor:       'good'
 
