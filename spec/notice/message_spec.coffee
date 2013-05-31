@@ -34,13 +34,13 @@ require('nez').realize 'Message', (Message, test, context, should) ->
 
     context 'content', (it) -> 
 
-        it 'returns message content', (done) ->
+        it 'returns message context', (done) ->
 
             m             = new Message
             m.label       = 'LABEL ONE'
             m.description = 'DESCRIPTION ONE'
 
-            m.content.should.eql 
+            m.context.should.eql 
                 label: 'LABEL ONE'
                 description: 'DESCRIPTION ONE'
 

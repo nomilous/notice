@@ -5,7 +5,7 @@ module.exports = class Message
     #constructor: (properties = {}, composition = {}) -> 
     constructor: ( properties = {} ) -> 
 
-        content = {}
+        context = {}
 
         # 
         # message composition: 
@@ -15,35 +15,35 @@ module.exports = class Message
 
         composition = 
 
-            content: ['label', 'description']
+            context: ['label', 'description']
 
 
-        for name in composition.content
+        for name in composition.context
 
             do (name) => 
 
                 Object.defineProperty @, name, 
 
-                    get: -> content[name] || '' 
-                    set: onceIfString (value) -> content[name] = value
+                    get: -> context[name] || '' 
+                    set: onceIfString (value) -> context[name] = value
 
                     # 
                     # have another stab at this (for validations), later... 
                     # 
-                    # set: onceIf 'string', (value) -> content.label = value
+                    # set: onceIf 'string', (value) -> context.label = value
                     # 
 
             @[name] = properties[name]
 
         
-        Object.defineProperty this, 'content',
+        Object.defineProperty this, 'context',
 
             #
             # this can likely be improved
             #
             get: -> 
                 result = {}
-                for name in composition.content
-                    result[name] = content[name]
+                for name in composition.context
+                    result[name] = context[name]
                 result
 

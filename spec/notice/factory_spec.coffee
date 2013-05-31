@@ -21,7 +21,7 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
 
             that 'is used to send messages', (done) -> 
 
-                notify 'test message'
+                notify.info.normal 'test message'
                 test done
 
 
@@ -33,53 +33,40 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
 
             that 'returns the message "promise tail" from middleware pipeline', (done) ->
 
-                notify( 'message' ).then.should.be.an.instanceof Function
+                notify.info.normal( 'message' ).then.should.be.an.instanceof Function
                 test done
 
 
             that 'populates the tail resolver with the final message (post middleware)', (done) -> 
 
-                notify( 'message' ).then (finalMessage) ->  
+                notify.info.normal( 'message' ).then (finalMessage) ->  
 
-                    finalMessage.content.label.should.equal 'message'
+                    finalMessage.context.label.should.equal 'message'
                     test done
 
+            that 'survives middleware exceptions'
+            that 'enables tracable middleware'
 
 
+            that 'passes the message through the registered middleware', (done) -> 
 
 
-
-
-
-
-            # that 'passes the message through the registered middleware', (done) -> 
-
-
-            #     RECEIVED = []
-
-            #     notify.use (msg, next) -> 
+                notify.use (msg, next) -> 
                     
+                    msg.and  = 'THIS'
+                    next()
 
-            #         msg.and  = 'THIS'
-            #         next()
+                notify.use (msg, next) -> 
 
-            #     notify.use (msg, next) -> 
-
-            #         msg.also = 'THAT'
-            #         next()
+                    msg.also = 'THAT'
+                    next()
 
                  
-            #     notify 'LABEL', 'DESCRIPTION'
+                notify.info.normal( 'LABEL', 'DESCRIPTION' ).then (msg) ->
 
-            #     setTimeout -> 
+                    msg.context.label.should.equal 'LABEL'
+                    msg.context.description.should.equal 'DESCRIPTION'
 
-            #         RECEIVED[0].content.label.should.equal 'LABEL'
-            #         RECEIVED[0].content.description.should.equal 'DESCRIPTION'
-
-            #         RECEIVED[0].and.should.equal 'THIS'
-            #         RECEIVED[0].also.should.equal 'THAT'
-            #         test done
-                
-
-            #     ,10 # give it a moment
-
+                    msg.and.should.equal 'THIS'
+                    msg.also.should.equal 'THAT'
+                    test done

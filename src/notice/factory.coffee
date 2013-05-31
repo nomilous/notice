@@ -112,10 +112,26 @@ module.exports = Factory =
 
 
         #
-        # notifier has the middleware registrar as nested function
+        # returns with API wrap
         #
 
-        notifier.use = isMiddleWare asResolver (fn) -> middleware.push fn
+        return { 
+
+            #
+            # middleware registrar
+            #
+
+            use: isMiddleWare asResolver (fn) -> middleware.push fn
+
+            #
+            # generate info message
+            #
+
+            info: 
+                good:   -> notifier.apply null, arguments
+                normal: -> notifier.apply null, arguments
+                bad: -> notifier.apply null, arguments
+
+        }
 
 
-        return notifier
