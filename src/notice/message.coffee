@@ -15,7 +15,7 @@ module.exports = class Message
 
         composition = 
 
-            context: ['title', 'description', 'type', 'tenor']
+            context: ['title', 'description', 'origin', 'type', 'tenor']
 
 
         for name in composition.context

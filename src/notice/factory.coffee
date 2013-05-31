@@ -59,6 +59,7 @@ module.exports = Factory =
 
             message.title       = title
             message.description = description
+            message.origin      = origin
             message.type        = type
             message.tenor       = tenor
 

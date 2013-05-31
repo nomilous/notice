@@ -39,9 +39,10 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
 
             that 'populates the tail resolver with the final message (post middleware)', (done) -> 
 
-                notify.info.normal( 'message' ).then (finalMessage) ->  
+                notify.info.normal( 'message' ).then (finalMessage) -> 
 
                     finalMessage.context.title.should.equal 'message'
+                    finalMessage.context.origin.should.equal 'Message Origin'
                     test done
 
             that 'survives middleware exceptions'
