@@ -54,7 +54,6 @@ module.exports = class Message
                     context: this.context
                     payload: this
                 for name in composition.context
-                    result.context ||= {}
                     result.context[name] = context[name]
                 result
 

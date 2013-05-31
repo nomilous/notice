@@ -31,6 +31,7 @@ module.exports =
 
     isMiddleware: (fn) -> 
         (middleware) -> 
+            console.log 'TODO: silent ignore invalid middleware not good, make plan'
             unless next = support.argsOf( middleware )[1]
                 return -> false
             unless support.callsFn next, middleware
