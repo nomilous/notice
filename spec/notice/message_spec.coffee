@@ -39,10 +39,15 @@ require('nez').realize 'Message', (Message, test, context, should) ->
             m             = new Message
             m.title       = 'TITLE ONE'
             m.description = 'DESCRIPTION ONE'
+            m.type        = 'TYPE'
+            m.tenor       = 'TENOR'
 
             m.context.should.eql 
-                title: 'TITLE ONE'
+                title:       'TITLE ONE'
                 description: 'DESCRIPTION ONE'
+                type:        'TYPE'
+                tenor:       'TENOR'
+
 
             test done
 

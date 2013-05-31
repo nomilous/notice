@@ -14,7 +14,7 @@ module.exports = Factory =
 
         middleware = []
 
-        notifier = ->
+        notifier = (title, description, type, tenor) ->
 
             #
             # notifier() creates a new message object
@@ -56,8 +56,12 @@ module.exports = Factory =
                                           #       the pipeline lag may be a good idea
                                           # 
                                           # 
-            message.title       = arguments[0]
-            message.description = arguments[1]
+
+            message.title       = title
+            message.description = description
+            message.type        = type
+            message.tenor       = tenor
+
 
 
             #
@@ -128,9 +132,9 @@ module.exports = Factory =
             #
 
             info: 
-                good:   -> notifier.apply null, arguments
-                normal: -> notifier.apply null, arguments
-                bad: -> notifier.apply null, arguments
+                good:   (title, description) -> notifier title, description, 'info', 'good'
+                normal: (title, description) -> notifier title, description, 'info', 'normal'
+                bad:    (title, description) -> notifier title, description, 'info', 'bad'
 
         }
 
