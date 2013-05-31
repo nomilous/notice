@@ -31,17 +31,16 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
                 test done
 
 
-            that 'returns the promise tail from middleware pipeline', (done) ->
+            that 'returns the message "promise tail" from middleware pipeline', (done) ->
 
                 notify( 'message' ).then.should.be.an.instanceof Function
                 test done
 
 
-            that 'populates the resolver with the final message (post middleware)', (done) -> 
+            that 'populates the tail resolver with the final message (post middleware)', (done) -> 
 
                 notify( 'message' ).then (finalMessage) ->  
 
-                    console.log 'message: ----------->', finalMessage
                     finalMessage.content.label.should.equal 'message'
                     test done
 

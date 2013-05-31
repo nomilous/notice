@@ -1,4 +1,5 @@
 pipeline     = require 'when/pipeline'
+Defer        = require('when').defer
 Message      = require './message'
 isMiddleWare = require('./decorators').isMiddleware
 asResolver   = require('./decorators').asResolver
@@ -13,15 +14,22 @@ module.exports = Factory =
 
         middleware = []
 
-        notifier = => 
-
-
+        notifier = ->
 
             #
             # notifier() creates a new message object
             #
 
             message = new Message
+
+            #
+            # notifier() creates a deferral to be resolved
+            # upon completion of the message's traversal
+            # of the middleware pipeline
+            #
+
+            exit = Defer()
+
 
                                           #
                                           # these args could be hazardous?? 
@@ -57,7 +65,7 @@ module.exports = Factory =
             # and returns the promise handler
             #
 
-            functions = []  
+            functions = []
 
             return pipeline( for fn in middleware
                           # 
@@ -84,8 +92,23 @@ module.exports = Factory =
                                         # 
                                         # 
                 -> functions.pop()(  message  )
+                                        # 
+            ).then(                     # and then out the exit
+                                        # 
+                -> exit.resolve      message
+                -> exit.reject.apply null, arguments
+                -> exit.notify.apply null, arguments
+
+                #
+                # included a notify, 
+                # 
+                # But the notify input has not (yet/ifever) been made
+                # abailable to the message middleware.
+                #
 
             )
+
+            return exit.promise
 
 
         #
