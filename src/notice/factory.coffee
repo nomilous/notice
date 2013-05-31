@@ -129,13 +129,22 @@ module.exports = Factory =
             use: isMiddleWare asResolver (fn) -> middleware.push fn
 
             #
-            # generate info message
+            # message generators
             #
 
             info: 
                 good:   (title, description) -> notifier title, description, 'info', 'good'
                 normal: (title, description) -> notifier title, description, 'info', 'normal'
                 bad:    (title, description) -> notifier title, description, 'info', 'bad'
+
+            event: 
+                good:   (title, description) -> notifier title, description, 'event', 'good'
+                normal: (title, description) -> notifier title, description, 'event', 'normal'
+                bad:    (title, description) -> notifier title, description, 'event', 'bad'
+
+            #
+            # more... (after some use casing)
+            # 
 
         }
 

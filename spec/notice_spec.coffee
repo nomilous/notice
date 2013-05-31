@@ -1,8 +1,30 @@
 require('nez').realize 'Notice', (Notice, test, it, should) -> 
 
-    it 'is', (done) -> 
+    it 'is a messaging middleware pipeline', (done) -> 
 
-        notifier = Notice.create 'origin name'
-        test done
+
+        notice = Notice.create 'origin name'
+
+
+        notice.use (msg, next) -> msg.key1 = 'VALUE1'; next()
+        notice.use (msg, next) -> msg.key2 = 'VALUE2'; next()
+
+
+        sent = notice.event.good 'title', 'description'
+
+
+        sent.then (msg) -> 
+
+            msg.should.eql 
+                key1: 'VALUE1'
+                key2: 'VALUE2'
+
+            msg.context.should.eql 
+                title:       'title'
+                description: 'description'
+                type:        'event'
+                tenor:       'good'
+
+            test done
 
     
