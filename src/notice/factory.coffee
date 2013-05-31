@@ -3,17 +3,15 @@ Message      = require './message'
 isMiddleWare = require('./decorators').isMiddleware
 asResolver   = require('./decorators').asResolver
 
-module.exports = NotifierFactory =
+module.exports = Factory =
 
-    create: (config, callback) -> 
+    create: (origin) -> 
 
-        config   ||= {}
+        unless typeof origin is 'string' 
+
+            throw new Error 'Factory.create( origin ) require message origin as string'
+
         middleware = []
-
-        unless typeof config.messenger == 'function'
-
-            throw new Error "#{@constructor.name} requires config.messenger"
-
 
         notifier = => 
 
@@ -55,19 +53,13 @@ module.exports = NotifierFactory =
 
 
             #
-            # calls the message back unless ifn't there's
-            # not no middleware registered
-            #
-
-            return config.messenger message unless middleware.length > 0
-
-
-            #
             # sends it down the middleware pipeline...
+            # and returns the promise handler
             #
 
             functions = []  
-            pipeline( for fn in middleware
+
+            return pipeline( for fn in middleware
                           # 
                           #
                           # the 'value' of fn (function reference) will 
@@ -93,28 +85,6 @@ module.exports = NotifierFactory =
                                         # 
                 -> functions.pop()(  message  )
 
-            ).then(
-
-                #
-                # ...and onward to the configured messenger
-                #
-
-                -> config.messenger message
-
-                (error) -> console.log """
-
-                    ERROR IN MESSENGER MIDDLEWARE
-                    -----------------------------
-
-                                um?
-
-                       should probably protect 
-                             from this
-
-                      MESSAGE WILL NOT BE SENT                                
-
-                """, error.stack, '\n'
-
             )
 
 
@@ -122,7 +92,7 @@ module.exports = NotifierFactory =
         # notifier has the middleware registrar as nested function
         #
 
-        notifier.use = isMiddleWare asResolver (fn) => middleware.push fn
+        notifier.use = isMiddleWare asResolver (fn) -> middleware.push fn
 
 
-        callback null, notifier
+        return notifier

@@ -3,100 +3,84 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
     context 'create()', (it) -> 
 
 
-        it 'requires config.messenger as a message handler', (done) -> 
+        it 'requires origin name', (done) -> 
 
-            try
-                
-                new Factory.create()
+            try 
+                Factory.create()
 
-            catch error 
-
-                error.should.match /requires config\.messenger/
+            catch error
+                error.should.match /require message origin as string/
                 test done
 
 
-
-        it 'calls back with the notifier', (that) -> 
+        it 'returns a notifier', (that) -> 
 
             RECEIVED = []
-
-            Factory.create { 
-
-                #
-                # notifierFactory.create() takes a hash of 
-                # config which must include a messenger
-                # function
-                #
-
-                messenger: (message) -> RECEIVED.push message
-
-                #
-                # it calls back with a notifyier to 
-                # send messages
-                # 
-
-            }, (error, notify) -> 
+            notify = Factory.create( 'Message Origin' )
 
 
+            that 'is used to send messages', (done) -> 
 
-                that 'is used to send messages', (done) -> 
+                notify 'test message'
+                test done
 
-                    RECEIVED = []
 
-                    notify 'test message'
+            that 'has a middleware registrar', (done) -> 
 
-                    should.exist RECEIVED[0]
+                notify.use (msg, next) -> next() 
+                test done
+
+
+            that 'returns the promise tail from middleware pipeline', (done) ->
+
+                notify( 'message' ).then.should.be.an.instanceof Function
+                test done
+
+
+            that 'populates the resolver with the final message (post middleware)', (done) -> 
+
+                notify( 'message' ).then (finalMessage) ->  
+
+                    console.log 'message: ----------->', finalMessage
+                    finalMessage.content.label.should.equal 'message'
                     test done
 
 
 
-                that 'formats the message', (done) -> 
-
-                    RECEIVED = []
-
-                    notify 'arg1 string', 'arg2 string'
-
-                    RECEIVED[0].label.should.equal 'arg1 string'
-                    RECEIVED[0].description.should.equal 'arg2 string'
-
-                    test done
 
 
 
-                that 'has a middleware registrar', (done) -> 
-
-                    notify.use.should.be.an.instanceof Function
-                    test done
 
 
-                that 'passes the message through the registered middleware', (done) -> 
+
+            # that 'passes the message through the registered middleware', (done) -> 
 
 
-                    RECEIVED = []
+            #     RECEIVED = []
 
-                    notify.use (msg, next) -> 
-                        
-
-                        msg.and  = 'THIS'
-                        next()
-
-                    notify.use (msg, next) -> 
-
-                        msg.also = 'THAT'
-                        next()
-
-                     
-                    notify 'LABEL', 'DESCRIPTION'
-
-                    setTimeout -> 
-
-                        RECEIVED[0].content.label.should.equal 'LABEL'
-                        RECEIVED[0].content.description.should.equal 'DESCRIPTION'
-
-                        RECEIVED[0].and.should.equal 'THIS'
-                        RECEIVED[0].also.should.equal 'THAT'
-                        test done
+            #     notify.use (msg, next) -> 
                     
 
-                    ,10 # give it a moment
+            #         msg.and  = 'THIS'
+            #         next()
+
+            #     notify.use (msg, next) -> 
+
+            #         msg.also = 'THAT'
+            #         next()
+
+                 
+            #     notify 'LABEL', 'DESCRIPTION'
+
+            #     setTimeout -> 
+
+            #         RECEIVED[0].content.label.should.equal 'LABEL'
+            #         RECEIVED[0].content.description.should.equal 'DESCRIPTION'
+
+            #         RECEIVED[0].and.should.equal 'THIS'
+            #         RECEIVED[0].also.should.equal 'THAT'
+            #         test done
+                
+
+            #     ,10 # give it a moment
 
