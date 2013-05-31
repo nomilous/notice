@@ -43,7 +43,7 @@ module.exports = Factory =
             # of the middleware pipeline
             #
 
-            exit = Defer()
+            Done = Defer()
 
 
                                           #
@@ -98,8 +98,8 @@ module.exports = Factory =
                           # registered middleware function over and 
                           # over 
                           # 
-                          # so each reference is shifted into an array and 
-                          # popped back out in the same sequence as the 
+                          # so each reference is pushed into an array and 
+                          # shifted back out in the same sequence as the 
                           # pipeline traverses 
                           #
                           #
@@ -115,9 +115,9 @@ module.exports = Factory =
                                         # 
             ).then(                     # and then out the exit
                                         # 
-                -> exit.resolve      message
-                -> exit.reject.apply null, arguments
-                -> exit.notify.apply null, arguments
+                -> Done.resolve      message
+                -> Done.reject.apply null, arguments
+                -> Done.notify.apply null, arguments
 
                 #
                 # included a notify, 
@@ -128,7 +128,7 @@ module.exports = Factory =
 
             )
 
-            return exit.promise
+            return Done.promise
 
 
         #

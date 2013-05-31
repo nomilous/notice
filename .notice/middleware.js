@@ -24,7 +24,12 @@ module.exports = {
         // but
         // ===
         //
-        // call next()
+        // call next(), And if you choose to breakout in order to augment the
+        //              message with payload from a remote source, be sure to 
+        //              only call next() after your query callback data has
+        //              been appended to the msg.
+        //              
+        //              
         // 
 
         msg.anything = 'you want'
