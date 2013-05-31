@@ -11,7 +11,7 @@ module.exports = support =
 
             fn.toString().match(
 
-                /^function\W*\((.*)\)/ 
+                /function\W*\((.*)\)/ 
 
             )[1].split(',').map( 
 

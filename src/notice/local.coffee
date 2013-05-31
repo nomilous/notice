@@ -1,26 +1,17 @@
-module.exports = 
+module.exports = -> 
+    try
 
-    find: (source) -> 
+        #
+        # users can define HOME/.notice/middleware.js
+        #
 
-        try
-
-            #
-            # users can define the actual messenger
-            #
-
-            messenger = require "#{  process.env.HOME  }/.notice/messengers"
-
-            unless typeof messenger[source] == 'function'
-
-                return null
-
-            return messenger[source]
+        require "#{  process.env.HOME  }/.notice/middleware"
 
 
-        catch error
+    catch error
 
-            #
-            # if they want to
-            #
+        #
+        # if they want to
+        #
 
-            null
+        null
