@@ -1,6 +1,6 @@
 {
   "name": "notice",
-  "description": "local notification router",
+  "description": "messaging middleware pipeline",
   "version": "0.0.2",
   "author": "nomilous <nomilous@gmail.com>",
   "contributors": [

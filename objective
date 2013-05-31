@@ -5,7 +5,7 @@ require('nez').objective 'notice',
     assignTo: 'me'
     description: """
 
-    local notification router
+    messaging middleware pipeline
 
     """, (Requirement) -> 
 
