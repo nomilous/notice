@@ -47,3 +47,15 @@ module.exports = class Message
                     result[name] = context[name]
                 result
 
+        Object.defineProperty this, 'content', 
+
+            get: => 
+                result = 
+                    context: this.context
+                    payload: this
+                for name in composition.context
+                    result.context ||= {}
+                    result.context[name] = context[name]
+                result
+
+

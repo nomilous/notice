@@ -15,17 +15,15 @@ require('nez').realize 'Notice', (Notice, test, it, should) ->
 
         sent.then (msg) -> 
 
-            msg.should.eql 
-                key1: 'VALUE1'
-                key2: 'VALUE2'
-
-            msg.context.should.eql 
-                title:       'title'
-                description: 'description'
-                origin:      'Origin System'
-                type:        'event'
-                tenor:       'good'
+            msg.content.should.eql
+                context:
+                    title:       'title'
+                    description: 'description'
+                    origin:      'Origin System'
+                    type:        'event'
+                    tenor:       'good'
+                payload:
+                    key1: 'VALUE1'
+                    key2: 'VALUE2'
 
             test done
-
-    
