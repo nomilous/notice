@@ -1,6 +1,7 @@
 pipeline     = require 'when/pipeline'
 Defer        = require('when').defer
 Message      = require './message'
+Local        = require './local'
 isMiddleWare = require('./decorators').isMiddleware
 asResolver   = require('./decorators').asResolver
 
@@ -13,6 +14,20 @@ module.exports = Factory =
             throw new Error 'Factory.create( origin ) require message origin as string'
 
         middleware = []
+        after      = []
+
+        #
+        # load personal message middleware from 
+        # $HOME/.notice/middleware (if present)
+        #
+
+        if Local().default? then (
+
+            isMiddleWare asResolver (fn) -> after.push fn
+
+        ) Local().default
+
+
 
         notifier = (title, description, type, tenor) ->
 
@@ -71,8 +86,8 @@ module.exports = Factory =
             #
 
             functions = []
-
-            return pipeline( for fn in middleware
+            
+            return pipeline( for fn in middleware.concat after
                           # 
                           #
                           # the 'value' of fn (function reference) will 
@@ -88,7 +103,7 @@ module.exports = Factory =
                           # pipeline traverses 
                           #
                           #
-                functions.unshift fn
+                functions.push fn
 
                                         #
                                         # message, as scoped by the surrounding
@@ -96,7 +111,7 @@ module.exports = Factory =
                                         # each middleware in turn
                                         # 
                                         # 
-                -> functions.pop()(  message  )
+                -> functions.shift()(  message  )
                                         # 
             ).then(                     # and then out the exit
                                         # 

@@ -14,4 +14,4 @@ module.exports = ->
         # if they want to
         #
 
-        null
+        {}
