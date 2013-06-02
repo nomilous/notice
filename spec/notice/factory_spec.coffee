@@ -9,7 +9,7 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
                 Factory.create()
 
             catch error
-                error.should.match /require message origin as string/
+                error.should.match /require message originName as string/
                 test done
 
 

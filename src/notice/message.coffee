@@ -33,6 +33,9 @@ module.exports = class Message
                     # set: onceIf 'string', (value) -> context.label = value
                     # 
 
+
+        try for name of properties
+
             @[name] = properties[name]
 
         

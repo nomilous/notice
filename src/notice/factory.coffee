@@ -8,11 +8,24 @@ asResolver   = require('./decorators').asResolver
 
 module.exports = Factory =
 
-    create: (origin, defaultMiddleware) -> 
+    #
+    # create a message pipeline and 
+    # return the notifier (input) 
+    # function
+    # 
 
-        unless typeof origin is 'string' 
+    create: (originName, defaultFn) -> 
 
-            throw new Error 'Factory.create( origin ) require message origin as string'
+        #
+        # originName - The origin name for messages sent
+        # 
+        # defaultFn  - Default middleware receives the assembled
+        #              message (After all middleware processing)
+        #             
+
+        unless typeof originName is 'string' 
+
+            throw new Error 'Factory.create( originName ) require message originName as string'
 
         middleware = []
         assigned   = []
@@ -23,13 +36,18 @@ module.exports = Factory =
         # $HOME/.notice/middleware (if present)
         #
 
-        if Local()[origin]? 
+        if Local()[originName]? 
 
-          (isMiddleWare asResolver (fn) -> assigned.push fn) Local()[origin]
+            # 
+            # override defaultFn if $HOME/.notice/middleware defined
+            # 'originName': function(msg, next) { ... 
+            #
+
+            (isMiddleWare asResolver (fn) -> assigned.push fn) Local()[originName]
 
         else 
 
-          (isMiddleWare asResolver (fn) -> assigned.push fn) defaultMiddleware
+            (isMiddleWare asResolver (fn) -> assigned.push fn) defaultFn
 
 
         if Local().finally? then (
@@ -39,13 +57,13 @@ module.exports = Factory =
         ) Local().finally
 
 
-        notifier = (title, description, type, tenor) ->
+        notifier = (title, descriptionOr, type, tenor) ->
 
             #
             # notifier() creates a new message object
             #
 
-            message = new Message
+            message = new Message descriptionOr
 
             #
             # notifier() creates a deferral to be resolved
@@ -83,8 +101,8 @@ module.exports = Factory =
                                           # 
 
             message.title       = title
-            message.description = description
-            message.origin      = origin
+            message.description = descriptionOr
+            message.origin      = originName
             message.type        = type
             message.tenor       = tenor
 
