@@ -1,1 +1,3 @@
-module.exports = new require('./notice/factory')
+module.exports = 
+
+    create: (require './notice/factory').create

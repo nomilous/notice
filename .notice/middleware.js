@@ -8,8 +8,20 @@
 
 module.exports = { 
 
-    default: function( msg, next ) {
+    "origin name": function( msg, next ) {
 
+        // 
+        // override per 'origin name'
+        //
+
+        next();
+
+    },
+
+    finally: function( msg, next ) {
+
+        //
+        // is always run
         //
         // console.log( JSON.stringify( msg.content, null, 2 ) );
         // console.log( msg.context );

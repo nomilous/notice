@@ -5,15 +5,17 @@ Local        = require './local'
 isMiddleWare = require('./decorators').isMiddleware
 asResolver   = require('./decorators').asResolver
 
+
 module.exports = Factory =
 
-    create: (origin) -> 
+    create: (origin, defaultMiddleware) -> 
 
         unless typeof origin is 'string' 
 
             throw new Error 'Factory.create( origin ) require message origin as string'
 
         middleware = []
+        assigned   = []
         after      = []
 
         #
@@ -21,12 +23,20 @@ module.exports = Factory =
         # $HOME/.notice/middleware (if present)
         #
 
-        if Local().default? then (
+        if Local()[origin]? 
+
+          (isMiddleWare asResolver (fn) -> assigned.push fn) Local()[origin]
+
+        else 
+
+          (isMiddleWare asResolver (fn) -> assigned.push fn) defaultMiddleware
+
+
+        if Local().finally? then (
 
             isMiddleWare asResolver (fn) -> after.push fn
 
-        ) Local().default
-
+        ) Local().finally
 
 
         notifier = (title, description, type, tenor) ->
@@ -87,7 +97,7 @@ module.exports = Factory =
 
             functions = []
             
-            return pipeline( for fn in middleware.concat after
+            return pipeline( for fn in middleware.concat(assigned).concat after
                           # 
                           #
                           # the 'value' of fn (function reference) will 
