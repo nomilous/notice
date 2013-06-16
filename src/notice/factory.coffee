@@ -163,32 +163,20 @@ module.exports = Factory =
         # returns with API wrap
         #
 
-        return { 
+        api = (title, description) -> notifier title, description, 'info', 'normal'
 
-            #
-            # middleware registrar
-            #
+        api.use   = isMiddleWare asResolver (fn) -> middleware.push fn
+        api.info  = (title, description) -> notifier title, description, 'info', 'normal'
+        api.event = (title, description) -> notifier title, description, 'event', 'normal'
 
-            use: isMiddleWare asResolver (fn) -> middleware.push fn
+        api.info.normal  = api.info
+        api.info.good    = (title, description) -> notifier title, description, 'info', 'good'
+        api.info.bad     = (title, description) -> notifier title, description, 'info', 'bad'
 
-            #
-            # message generators
-            #
+        api.event.normal = api.event 
+        api.event.good   = (title, description) -> notifier title, description, 'event', 'good'
+        api.event.bad    = (title, description) -> notifier title, description, 'event', 'bad'
 
-            info: 
-                good:   (title, description) -> notifier title, description, 'info', 'good'
-                normal: (title, description) -> notifier title, description, 'info', 'normal'
-                bad:    (title, description) -> notifier title, description, 'info', 'bad'
 
-            event: 
-                good:   (title, description) -> notifier title, description, 'event', 'good'
-                normal: (title, description) -> notifier title, description, 'event', 'normal'
-                bad:    (title, description) -> notifier title, description, 'event', 'bad'
-
-            #
-            # more... (after some use casing)
-            # 
-
-        }
-
+        return api
 

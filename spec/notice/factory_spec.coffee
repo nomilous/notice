@@ -21,7 +21,7 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
 
             that 'is used to send messages', (done) -> 
 
-                notify.info.normal 'test message'
+                notify 'test message'
                 test done
 
 
@@ -30,6 +30,27 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
                 notify.use (msg, next) -> next() 
                 test done
 
+
+            that 'can further classify the message with type', (done) -> 
+
+                notify.use (msg, next) -> 
+
+                    msg.context.type.should.equal 'info'
+                    test done
+                    next()
+
+                notify.info 'test message'
+
+            that 'can further classify the message with tenor', (done) -> 
+
+                notify.use (msg, next) -> 
+
+                    msg.context.tenor.should.equal 'bad'
+                    test done
+                    next()
+
+                notify.info.bad 'test message'
+                
 
             that 'returns the message "promise tail" from middleware pipeline', (done) ->
 
