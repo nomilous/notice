@@ -3,7 +3,7 @@ notice
 
 messaging middleware pipeline
 
-### Pending Version 0.0.4 - (PRE RELEASE!)
+### Pending Version 0.0.5 - (PRE RELEASE!)
 
 
 Possible Future Features (still exploring)
