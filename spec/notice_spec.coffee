@@ -26,7 +26,6 @@ require('nez').realize 'Notice', (Notice, test, it, should) ->
             next()
 
 
-
         #
         # send an event down the pipeline
         #
