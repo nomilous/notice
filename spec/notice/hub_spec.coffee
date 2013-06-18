@@ -39,4 +39,43 @@ require('nez').realize 'Hub', (Hub, test, context, should, http) ->
                 error.should.match /OKGOOD1/
                 test done
 
+        context 'on connected socket', (it) -> 
+
+            SOCKET = 
+                disconnected: false
+                id: 'ID'
+                disconnect: -> SOCKET.disconnected = true
+                on: (event, callback) -> 
+                    if event == 'handshake' 
+                        callback 'SECRET', REMOTE: 'CONTEXT'
+
+
+            MOCK.on = (event, callback) -> if event == 'connection'
+
+                callback SOCKET
+
+
+            it "registers socket with hub on good handshake secret", (done) -> 
+
+                hub = Hub.create 'name', secret: 'SECRET'
+                
+                hub.socket.ID.should.equal SOCKET
+                hub.context.ID.should.eql REMOTE: 'CONTEXT'
+                test done
+
+
+            it 'disconnects the socket if the secret does not match', (done) -> 
+
+                hub = Hub.create 'name', secret: 'ETRESC'
+
+                hub.should.eql socket: {}, context: {}
+                SOCKET.disconnected.should.equal true
+                test done
+
+
+                        
+
+
+
+
 
