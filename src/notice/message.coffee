@@ -5,8 +5,6 @@ module.exports = class Message
     #constructor: (properties = {}, composition = {}) -> 
     constructor: ( properties = {} ) -> 
 
-        console.log 'new message', properties
-
         context = {}
 
         # 
