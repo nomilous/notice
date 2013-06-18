@@ -74,4 +74,14 @@ require('nez').realize 'Listen', (Listen, test, context, should, http, https, fs
                 error.should.match /OKGOOD/
                 test done
 
+        it 'returns the listening socketio', (done) -> 
 
+            listeningio = configure: ->
+
+            spy = io.listen
+            io.listen = -> 
+                io.listen = spy
+                return listeningio
+                
+            Listen( server: {} ).should.equal listeningio
+            test done

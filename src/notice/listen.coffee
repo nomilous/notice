@@ -24,21 +24,19 @@ start = (opts) ->
 
     http.createServer()
 
-listen   = (opts = {}) -> 
+module.exports = (opts = {}) -> 
 
-    opts.port     ||=  10001
-    opts.iface    ||= 'localhost'
+    opts.port  ||=  10001
+    opts.iface ||= 'localhost'
     
 
     #
-    # create server unless provided
+    # create server unless provided and bind socket.io
     #
 
     server = opts.server || start opts
     io     = socketio.listen server
-
     io.configure -> io.set 'log level', opts.loglevel || 1
-
 
 
     #
@@ -53,7 +51,5 @@ listen   = (opts = {}) ->
             console.log 'listening @ %s://%s:%s', 
                 transport, address, port
 
-    
+    return io
 
-
-module.exports = listen
