@@ -1,4 +1,4 @@
-require('nez').realize 'Listen', (Listen, test, context, should, http) -> 
+require('nez').realize 'Listen', (Listen, test, context, should, http, https, fs) -> 
 
     context 'http', (it) ->
 
@@ -7,15 +7,11 @@ require('nez').realize 'Listen', (Listen, test, context, should, http) ->
             spy = http.createServer
             http.createServer = -> 
                 http.createServer = spy
-                return {
 
-                    listen: (port, iface) ->  
-
-                        port.should.equal   10001
-                        iface.should.equal 'localhost'
-                        test done
-
-                }
+                return listen: (port, iface) ->  
+                    port.should.equal   10001
+                    iface.should.equal 'localhost'
+                    test done
 
             Listen()
 
@@ -28,4 +24,23 @@ require('nez').realize 'Listen', (Listen, test, context, should, http) ->
 
             Listen server: {}
             test done
+
+
+    context 'https', (it) -> 
+
+        it 'starts an https server if cert and key are supplied', (done) -> 
+
+            fs.readFileSync = -> return ''
+
+            spy = https.createServer
+            https.createServer = -> 
+                https.createServer = spy
+
+                return listen: -> test done
+
+            Listen 
+                cert: '/cert/file'
+                key:  '/key/file'
+
+
 

@@ -1,18 +1,41 @@
-http     = require 'http'
-start    = -> http.createServer()
+http      = require 'http'
+https     = require 'https'
+fs        = require 'fs'
+transport = 'http'
+
+start = (opts) -> 
+    
+    if opts.cert? and opts.key? 
+
+        try
+
+            transport = 'https'
+            return https.createServer
+
+                key:  fs.readFileSync opts.key
+                cert: fs.readFileSync opts.cert
+
+        catch error
+
+            console.log error
+
+            transport = 'http'
+
+    http.createServer()
 
 listen   = (opts = {}) -> 
 
-    opts.listen          ||= {}
-    opts.listen.port     ||=  10001
-    opts.listen.iface    ||= 'localhost'
+    opts.port     ||=  10001
+    opts.iface    ||= 'localhost'
     
 
     #
     # create server unless provided
     #
 
-    server = opts.server || start()
+    server = opts.server || start opts
+
+
 
 
     #
@@ -21,9 +44,11 @@ listen   = (opts = {}) ->
 
     unless opts.server?
 
-        server.listen opts.listen.port, opts.listen.iface,
+        server.listen opts.port, opts.iface, -> 
 
-            -> console.log 'listening', server.address()
+            {address, port} = server.address()
+            console.log 'listening @ %s://%s:%s', 
+                transport, address, port
 
     
 
