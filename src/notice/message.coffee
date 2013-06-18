@@ -5,6 +5,8 @@ module.exports = class Message
     #constructor: (properties = {}, composition = {}) -> 
     constructor: ( properties = {} ) -> 
 
+        console.log 'new message', properties
+
         context = {}
 
         # 
@@ -33,10 +35,11 @@ module.exports = class Message
                     # set: onceIf 'string', (value) -> context.label = value
                     # 
 
+        if typeof properties is 'object'
 
-        try for name of properties
+            try for name of properties
 
-            @[name] = properties[name]
+                @[name] = properties[name]
 
         
         Object.defineProperty this, 'context',

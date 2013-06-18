@@ -45,9 +45,13 @@ module.exports = Factory =
 
             (isMiddleWare asResolver (fn) -> assigned.push fn) Local()[originName]
 
-        else 
+        else if defaultFn instanceof Function
 
             (isMiddleWare asResolver (fn) -> assigned.push fn) defaultFn
+
+        else 
+
+            (isMiddleWare asResolver (fn) -> assigned.push fn) (msg, next) -> next()
 
 
         if Local().finally? then (
