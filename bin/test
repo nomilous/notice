@@ -1,6 +1,0 @@
-#!/usr/bin/env coffee
-
-require('../lib/notice').listen 'hub name',
-
-    cert: __dirname + '/../cert/develop-cert.pem'
-    key:  __dirname + '/../cert/develop-key.pem'

@@ -76,9 +76,9 @@ The HUB
 
 ```
 
-
-
-
+Notice = require 'notice'
+hub    = Notice.listen 'Hub Name', secret: '^X^'
+    
 
 
 ```
