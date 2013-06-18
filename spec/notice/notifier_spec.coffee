@@ -9,7 +9,7 @@ require('nez').realize 'Notifier', (Notifier, test, context, should, os) ->
                 Notifier.create()
 
             catch error
-                error.should.match /require message originName as string/
+                error.should.match /requires message originName as string/
                 test done
 
 

@@ -25,7 +25,7 @@ module.exports = Notifier =
 
         unless typeof originName is 'string' 
 
-            throw new Error 'Notifier.create( originName ) require message originName as string'
+            throw new Error 'Notifier.create( originName ) requires message originName as string'
 
         middleware = []
         assigned   = []
