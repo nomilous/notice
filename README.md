@@ -61,6 +61,7 @@ notice.use (msg, next) ->
 
 
 Possible Future Features (still exploring)
+------------------------------------------
 
 * flood protection
 * time in pipeline / backlog (introspection)
