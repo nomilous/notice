@@ -41,7 +41,9 @@ require('nez').realize 'Notice', (Notice, test, it, should) ->
 
         sent.then( 
 
-            done = (finalMessage) -> 
+            (finalMessage) -> 
+
+                console.log 'DONE', finalMessage.content
 
                 finalMessage.content.should.eql
 
@@ -59,6 +61,35 @@ require('nez').realize 'Notice', (Notice, test, it, should) ->
                 test done
 
 
-            failed = (error) -> 
+            (error) -> 
 
         )
+
+
+    it 'allows multiple sources', (done) -> 
+
+        source1 = Notice.create 'Source 1'
+        source2 = Notice.create 'Source 2'
+
+        MESSAGES = {}
+
+        source1.use (msg, next) -> 
+
+            MESSAGES[msg.context.origin] = msg
+            next()
+
+        source2.use (msg, next) -> 
+
+            MESSAGES[msg.context.origin] = msg
+            next()
+
+        sent1 = source1.event.good 'title', 'description'
+        sent2 = source2.event.good 'title', 'description'
+
+        sent2.then -> 
+
+            should.exist MESSAGES['Source 1']
+            should.exist MESSAGES['Source 2']
+            test done
+
+
