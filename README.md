@@ -9,8 +9,8 @@ notice
 messaging middleware pipeline
 
 
-The Notifier
-------------
+The Notifier (local)
+--------------------
 
 ```coffee
 
@@ -59,6 +59,15 @@ notice.use (msg, next) ->
 
 
 
+The Notifier (uplinked)
+-----------------------
+
+...
+
+The HUB
+-------
+
+...
 
 
 Possible Future Features (still exploring)
