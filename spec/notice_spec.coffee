@@ -43,8 +43,6 @@ require('nez').realize 'Notice', (Notice, test, it, should) ->
 
             (finalMessage) -> 
 
-                console.log 'DONE', finalMessage.content
-
                 finalMessage.content.should.eql
 
                     context:

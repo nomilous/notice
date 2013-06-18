@@ -1,4 +1,4 @@
-require('nez').realize 'Factory', (Factory, test, context, should, os) -> 
+require('nez').realize 'Notifier', (Notifier, test, context, should, os) -> 
 
     context 'create()', (it) -> 
 
@@ -6,7 +6,7 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
         it 'requires origin name', (done) -> 
 
             try 
-                Factory.create()
+                Notifier.create()
 
             catch error
                 error.should.match /require message originName as string/
@@ -16,7 +16,7 @@ require('nez').realize 'Factory', (Factory, test, context, should, os) ->
         it 'returns a notifier', (that) -> 
 
             RECEIVED = []
-            notify = Factory.create( 'Message Origin' )
+            notify = Notifier.create( 'Message Origin' )
 
 
             that 'is used to send messages', (done) -> 

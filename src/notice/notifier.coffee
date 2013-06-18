@@ -6,7 +6,7 @@ isMiddleWare = require('./decorators').isMiddleware
 asResolver   = require('./decorators').asResolver
 
 
-module.exports = Factory =
+module.exports = Notifier =
 
     #
     # create a message pipeline and 
@@ -25,7 +25,7 @@ module.exports = Factory =
 
         unless typeof originName is 'string' 
 
-            throw new Error 'Factory.create( originName ) require message originName as string'
+            throw new Error 'Notifier.create( originName ) require message originName as string'
 
         middleware = []
         assigned   = []
