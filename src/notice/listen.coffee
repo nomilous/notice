@@ -18,8 +18,6 @@ start = (opts) ->
 
         catch error
 
-            console.log error
-
             transport = 'http'
 
     http.createServer()

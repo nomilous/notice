@@ -1,6 +1,5 @@
+notifier = require './notice/notifier'
+hub      = require './notice/hub'
 
-
-module.exports = 
-
-    create: (require './notice/factory').create
-
+exports.create = notifier.create
+exports.listen = hub.create
