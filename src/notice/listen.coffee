@@ -1,6 +1,7 @@
 http      = require 'http'
 https     = require 'https'
 fs        = require 'fs'
+socketio  = require 'socket.io'
 transport = 'http'
 
 start = (opts) -> 
@@ -34,7 +35,9 @@ listen   = (opts = {}) ->
     #
 
     server = opts.server || start opts
+    io     = socketio.listen server
 
+    io.configure -> io.set 'log level', opts.loglevel || 1
 
 
 
