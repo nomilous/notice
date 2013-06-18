@@ -1,11 +1,12 @@
+### Version 0.0.7 - (unstable)
+
+`npm install notice`
+
+
 notice
 ======
 
 messaging middleware pipeline
-
-### Version 0.0.7 - (unstable)
-
-`npm install notice`
 
 
 The Notifier
