@@ -3,7 +3,8 @@
 require('../lib/notice').listen 'hub name',
     
     secret: '^X^'
-    iface:  '0.0.0.0'
-    port:   40404
-    cert:   __dirname + '/../cert/develop-cert.pem'
-    key:    __dirname + '/../cert/develop-key.pem'
+    loglevel: 3
+    # iface:  '0.0.0.0'
+    # port:   40404
+    # cert:   __dirname + '/../cert/develop-cert.pem'
+    # key:    __dirname + '/../cert/develop-key.pem'

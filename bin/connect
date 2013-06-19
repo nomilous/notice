@@ -1,0 +1,4 @@
+#!/usr/bin/env coffee
+
+require('../lib/notice/connect')()
+    
