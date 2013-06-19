@@ -1,4 +1,4 @@
 #!/usr/bin/env coffee
 
-require('../lib/notice/connect')()
+require('../lib/notice/connect') secret: '^y^'
     
