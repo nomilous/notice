@@ -9,15 +9,10 @@ require('nez').realize 'Listen', (Listen, test, context, should, http, https, fs
             spy = http.createServer
             http.createServer = -> 
                 http.createServer = spy
-                return {
-                    listen: (port, iface) ->  
-                        port.should.equal   10001
-                        iface.should.equal 'localhost'
-                    on: -> 
-                        # stop socket.io
-                        throw 'OKGOOD'
-                        
-                }
+                return on: -> 
+                    # stop socket.io
+                    throw 'OKGOOD'
+
 
             try Listen()
             catch error

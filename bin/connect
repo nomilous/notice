@@ -1,4 +1,7 @@
 #!/usr/bin/env coffee
 
-require('../lib/notice/connect') secret: '◊'
+require('../lib/notice/connect') 
+    
+    secret: '◊'
+    port: 10101
     

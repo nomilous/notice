@@ -6,7 +6,7 @@ module.exports = ->
     callback = arg for arg in arguments
 
     opts.port      ||=  10001
-    opts.hostname  ||= 'localhost'
+    opts.address   ||= 'localhost'
     opts.transport ||= 'http'
 
 
@@ -15,7 +15,7 @@ module.exports = ->
     #
 
     accepted  = false 
-    socket    = ioclient.connect "#{ opts.transport }://#{ opts.hostname }:#{ opts.port }"
+    socket    = ioclient.connect "#{ opts.transport }://#{ opts.address }:#{ opts.port }"
     
 
 

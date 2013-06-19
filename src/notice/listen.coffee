@@ -16,16 +16,16 @@ start = (opts) ->
                 key:  fs.readFileSync opts.key
                 cert: fs.readFileSync opts.cert
 
-        catch error
+        #catch error
 
-            transport = 'http'
-
+    transport = 'http'
     http.createServer()
 
-module.exports = (opts = {}) -> 
+module.exports = (opts, callback) -> 
 
-    opts.port  ||=  10001
-    opts.iface ||= 'localhost'
+    opts         ||=  {}
+    opts.port    ||=  null
+    opts.address ||= 'localhost'
     
 
     #
@@ -43,11 +43,19 @@ module.exports = (opts = {}) ->
 
     unless opts.server?
 
-        server.listen opts.port, opts.iface, -> 
+        server.on 'error', (error) -> callback error
+
+        server.listen opts.port, opts.address, -> 
 
             {address, port} = server.address()
             console.log 'listening @ %s://%s:%s', 
                 transport, address, port
+
+            callback null, 
+
+                transport: transport
+                address: address
+                port: port
 
     return io
 

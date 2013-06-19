@@ -6,8 +6,9 @@ module.exports.create = (hubName, opts = {}) ->
 
         throw new Error 'Notifier.listen( hubName, opts ) requires hubName as string'
 
-    io  = listen opts
-    hub = socket: {}, context: {}
+    opts ||= {}
+    hub  = socket: {}, context: {}
+    io = listen opts, (error, address) -> 
 
     io.on 'connection', (socket) -> 
 
@@ -24,4 +25,5 @@ module.exports.create = (hubName, opts = {}) ->
 
         socket.on 'disconnect', -> 
 
+    
     return hub
