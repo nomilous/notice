@@ -16,7 +16,7 @@ require('nez').realize 'Connect', (Connect, test, context, should) ->
             Connect()
 
 
-        it 'callsback on pre connected errors', (done) -> 
+        it 'callsback ERRORS before accepted handshake', (done) -> 
 
             spy = io.connect
             io.connect = (uri) -> 
@@ -30,18 +30,34 @@ require('nez').realize 'Connect', (Connect, test, context, should) ->
                 test done
 
 
-        it 'does not callback on post connected errors', (done) -> 
+        it 'does not callsback ERRORS after accepted handshake', (done) -> 
 
             spy = io.connect
             io.connect = (uri) -> 
                 io.connect = spy
-                on: (event, cb) -> 
-                    if event == 'connect' then cb()
-                    if event == 'error'   then setTimeout (-> cb new Error 'ENOCONNECT'), 10
+
+                MOCKSOCKET = 
+
+                    on: (event, cb) -> 
+
+                        if event == 'connect' then cb()
+                        if event == 'accept'  then MOCKSOCKET.handshakeReply = cb
+                        if event == 'error'   then setTimeout (-> cb new Error 'ENOCONNECT'), 10 
+
+                    emit: (event, args...) -> 
+
+                        if event == 'handshake'
+
+                            MOCKSOCKET.handshakeReply()
+
+                return MOCKSOCKET
+
 
             Connect (error) -> 
 
                 should.not.exist error
                 test done
+
+
 
 

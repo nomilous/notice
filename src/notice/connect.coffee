@@ -9,20 +9,48 @@ module.exports = ->
     opts.hostname  ||= 'localhost'
     opts.transport ||= 'http'
 
+
+    #
+    # flag remote side accepted handshake
+    #
+
+    accepted  = false 
     socket    = ioclient.connect "#{ opts.transport }://#{ opts.hostname }:#{ opts.port }"
-    connected = false 
+    
+
+
 
     socket.on 'error', (error) -> 
 
+        if typeof callback == 'function'
+
+            #
+            # callback error unless handshake complete
+            #
+        
+            callback error, null unless accepted
+
+
+
+
+    socket.on 'accept', -> 
+
         #
-        # callback connect error
+        # accept - reply from successful handshake / secret
         #
 
-        if typeof callback == 'function'
-        
-            callback error, null unless connected
+        accepted = true
+        if typeof callback == 'function' then callback()
+
+
+
 
     socket.on 'connect', -> 
 
-        connected = true
-        callback()
+        #
+        # connect, send handshake
+        # 
+
+        socket.emit 'handshake', opts.secret || '', context: 'pending'
+
+    
