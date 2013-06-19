@@ -1,6 +1,6 @@
 listen = require './listen'
 
-module.exports.create = (hubName, opts = {}) -> 
+module.exports.create = (hubName, opts, callback) -> 
     
     unless typeof hubName is 'string' 
 
@@ -10,7 +10,14 @@ module.exports.create = (hubName, opts = {}) ->
     hub  = socket: {}, context: {}
     io = listen opts, (error, address) -> 
 
+        callback error, address if typeof callback == 'function'
+
+            
+
+
     io.on 'connection', (socket) -> 
+
+
 
         socket.on 'handshake', (secret, context) -> 
 
@@ -22,6 +29,9 @@ module.exports.create = (hubName, opts = {}) ->
             else 
 
                 socket.disconnect()
+
+
+
 
         socket.on 'disconnect', -> 
 

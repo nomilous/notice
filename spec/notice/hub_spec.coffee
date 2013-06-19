@@ -26,7 +26,9 @@ require('nez').realize 'Hub', (Hub, test, context, should, http) ->
 
             configure: -> 
 
-        http.createServer = -> listen: ->
+        http.createServer = -> 
+            listen: ->
+            on: ->
         io.listen = -> MOCK
 
 
