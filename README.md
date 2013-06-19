@@ -91,6 +91,7 @@ Possible Future Features (still exploring)
 * time in pipeline / backlog (introspection)
 * as message receiver
 * tasks and escalations (with persistor plugin)
+* hubside pipeline promise
 * acknowledgability
 * resolvability
 
