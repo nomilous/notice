@@ -30,6 +30,7 @@ module.exports = Notifier =
         middleware = []
         assigned   = []
         after      = []
+        afterCount = undefined
 
         #
         # load personal message middleware from 
@@ -59,6 +60,10 @@ module.exports = Notifier =
             isMiddleWare asResolver (fn) -> after.push fn
 
         ) Local().finally
+
+        afterCount = after.length
+
+
 
 
         notifier = (title, descriptionOr, type, tenor) ->
@@ -181,6 +186,20 @@ module.exports = Notifier =
         api.event.good   = (title, description) -> notifier title, description, 'event', 'good'
         api.event.bad    = (title, description) -> notifier title, description, 'event', 'bad'
 
+        #
+        # registering middleware onto the end of the pipeline
+        # only one!
+        #
+
+        Object.defineProperty api, 'finally', 
+            set: isMiddleWare asResolver (fn) -> 
+
+                #
+                # only allow one final middleware
+                #
+                
+                return if after.length > afterCount
+                after[afterCount] = fn
 
         return api
 
