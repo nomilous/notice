@@ -9,7 +9,8 @@ module.exports = ->
     opts.hostname  ||= 'localhost'
     opts.transport ||= 'http'
 
-    socket = ioclient.connect "#{ opts.transport }://#{ opts.hostname }:#{ opts.port }"
+    socket    = ioclient.connect "#{ opts.transport }://#{ opts.hostname }:#{ opts.port }"
+    connected = false 
 
     socket.on 'error', (error) -> 
 
@@ -19,4 +20,9 @@ module.exports = ->
 
         if typeof callback == 'function'
         
-            callback error, null
+            callback error, null unless connected
+
+    socket.on 'connect', -> 
+
+        connected = true
+        callback()
