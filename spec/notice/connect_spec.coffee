@@ -32,6 +32,8 @@ require('nez').realize 'Connect', (Connect, test, context, should) ->
 
         it 'does not callsback ERRORS after accepted handshake', (done) -> 
 
+            HANDSHAKE = undefined
+
             spy = io.connect
             io.connect = (uri) -> 
                 io.connect = spy
@@ -48,14 +50,22 @@ require('nez').realize 'Connect', (Connect, test, context, should) ->
 
                         if event == 'handshake'
 
+                            HANDSHAKE = args
                             MOCKSOCKET.handshakeReply()
 
                 return MOCKSOCKET
 
 
-            Connect (error) -> 
+            Connect secret: ' ™i ', (error) -> 
 
                 should.not.exist error
+
+                done 'and sends secret in handshake', (stacks...) -> 
+
+                    HANDSHAKE[0].should.equal ' ™i '
+
+                    test stacks[0]
+
                 test done
 
 
