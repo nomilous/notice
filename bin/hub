@@ -2,7 +2,7 @@
 
 require('../lib/notice').listen 'hub name',
     
-    secret: '^X^'
+    secret: '◊'
     loglevel: 3
     # iface:  '0.0.0.0'
     # port:   40404
