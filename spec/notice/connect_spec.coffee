@@ -30,7 +30,7 @@ require('nez').realize 'Connect', (Connect, test, context, should) ->
                 test done
 
 
-        it 'does not callsback ERRORS after accepted handshake', (done) -> 
+        it 'does not callback ERRORS after accepted handshake', (done) -> 
 
             HANDSHAKE = undefined
 
@@ -60,11 +60,11 @@ require('nez').realize 'Connect', (Connect, test, context, should) ->
 
                 should.not.exist error
 
-                done 'and sends secret in handshake', (stacks...) -> 
+                done 'and sends secret in handshake', (ok) -> 
 
                     HANDSHAKE[0].should.equal ' ™i '
 
-                    test stacks[0]
+                    test ok
 
                 test done
 
