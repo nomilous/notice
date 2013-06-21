@@ -1,5 +1,4 @@
 listen = require './listen'
-asUniq = require('./decorators').asUniq
 
 module.exports.create = (hubName, opts, callback) -> 
     
@@ -18,11 +17,10 @@ module.exports.create = (hubName, opts, callback) ->
         hub.listening = address
         callback error, null if typeof callback == 'function'
 
-            
+
 
 
     io.on 'connection', (socket) -> 
-
 
 
         socket.on 'handshake', (secret, context) -> 
