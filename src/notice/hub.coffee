@@ -7,14 +7,17 @@ module.exports.create = (hubName, opts, callback) ->
         throw new Error 'Notifier.listen( hubName, opts ) requires hubName as string'
 
     opts ||= {}
-    hub  = socket: {}, context: {}
+    opts.hub  = 
+        socket: {}
+        context: {}
+
     io = listen opts, (error, address) -> 
 
         #
         # reference to the listening address on the hub
         # 
 
-        hub.listening = address
+        opts.hub.listening = address
         callback error, null if typeof callback == 'function'
 
 
@@ -27,8 +30,8 @@ module.exports.create = (hubName, opts, callback) ->
 
             if secret == opts.secret
 
-                hub.socket[  socket.id ] = socket
-                hub.context[ socket.id ] = context
+                opts.hub.socket[  socket.id ] = socket
+                opts.hub.context[ socket.id ] = context
 
                 socket.emit 'accept'
 
@@ -42,4 +45,4 @@ module.exports.create = (hubName, opts, callback) ->
         socket.on 'disconnect', -> 
 
     
-    return hub
+    return opts
