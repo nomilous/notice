@@ -27,10 +27,13 @@ require('nez').realize 'Hub', (Hub, test, context, should, http) ->
             configure: -> 
 
         http.createServer = -> 
-            listen: ->
+            listen: (port, host, cb) -> setTimeout cb, 10
+            address: -> address: 'ADDRESS', port: 'PORT'
             on: ->
         io.listen = -> MOCK
 
+
+        
 
         it 'subscribes to connecting sockets', (done) -> 
 
@@ -57,6 +60,18 @@ require('nez').realize 'Hub', (Hub, test, context, should, http) ->
                 callback SOCKET
 
 
+            it 'attaches the listeng address onto the ', (done) ->
+
+                hub = Hub.create 'name', secret: 'SECRET', -> 
+
+                    hub.listening.should.eql 
+                        transport: 'http'
+                        address: 'ADDRESS'
+                        port: 'PORT'
+
+                    test done
+
+
             it "registers socket with hub on good handshake secret", (done) -> 
 
                 hub = Hub.create 'name', secret: 'SECRET'
@@ -73,7 +88,6 @@ require('nez').realize 'Hub', (Hub, test, context, should, http) ->
                 hub.should.eql socket: {}, context: {}
                 SOCKET.disconnected.should.equal true
                 test done
-
 
                         
 

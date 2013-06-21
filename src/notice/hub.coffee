@@ -10,7 +10,12 @@ module.exports.create = (hubName, opts, callback) ->
     hub  = socket: {}, context: {}
     io = listen opts, (error, address) -> 
 
-        callback error, address if typeof callback == 'function'
+        #
+        # reference to the listening address on the hub
+        # 
+
+        hub.listening = address
+        callback error, null if typeof callback == 'function'
 
             
 
