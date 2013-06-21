@@ -1,4 +1,5 @@
 listen = require './listen'
+asUniq = require('./decorators').asUniq
 
 module.exports.create = (hubName, opts, callback) -> 
     
@@ -30,6 +31,8 @@ module.exports.create = (hubName, opts, callback) ->
 
                 hub.socket[  socket.id ] = socket
                 hub.context[ socket.id ] = context
+
+                socket.emit 'accept'
 
             else 
 

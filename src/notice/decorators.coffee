@@ -66,3 +66,5 @@ module.exports =
             inject = [uuid.v1()]
             inject.push arg for arg in arguments
             fn.apply this, inject
+
+

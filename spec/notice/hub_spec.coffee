@@ -46,10 +46,13 @@ require('nez').realize 'Hub', (Hub, test, context, should, http) ->
 
         context 'on connected socket', (it) -> 
 
+            SENT = events: []
+
             SOCKET = 
                 disconnected: false
                 id: 'ID'
                 disconnect: -> SOCKET.disconnected = true
+                emit: -> SENT.events.push arguments
                 on: (event, callback) -> 
                     if event == 'handshake' 
                         callback 'SECRET', REMOTE: 'CONTEXT'
@@ -88,6 +91,15 @@ require('nez').realize 'Hub', (Hub, test, context, should, http) ->
                 hub.should.eql socket: {}, context: {}
                 SOCKET.disconnected.should.equal true
                 test done
+
+
+            it 'sends accept if the secret matches', (done) -> 
+
+                SENT.events = []
+                hub  = Hub.create 'name', secret: 'SECRET', -> 
+
+                    SENT.events[0].should.eql '0': 'accept'
+                    test done
 
                         
 

@@ -42,6 +42,8 @@ module.exports = ->
         accepted = true
         if typeof callback == 'function' then callback()
 
+        console.log 'accepted'
+
 
 
 
