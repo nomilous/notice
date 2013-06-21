@@ -1,4 +1,5 @@
 Defer          = require('when').defer
+uuid           = require 'node-uuid'
 support        = require './support'
 module.exports = 
 
@@ -54,3 +55,14 @@ module.exports =
                 defer.promise
                 
 
+    #
+    # - injects a uuid as arg1
+    # 
+    # TODO: move to also 
+    # 
+
+    asUniq: (fn) -> 
+        -> 
+            inject = [uuid.v1()]
+            inject.push arg for arg in arguments
+            fn.apply this, inject

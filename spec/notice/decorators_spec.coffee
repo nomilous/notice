@@ -98,4 +98,20 @@ require('nez').realize 'Decorators', (Decorators, test, context, should) ->
             middleware( is: 'something' )
 
 
+    context 'asUniq( fn )', (it) -> 
+
+        it 'injects a unique id', (done) -> 
+
+            asUniq = Decorators.asUniq
+
+            class Test
+                constructor: asUniq (@id, @arg) -> 
+
+            test1 = new Test 'ARG'
+            test2 = new Test 'ARG'
+
+            should.exist test1.id
+            test1.id.should.not.equal test2.id
+            test done
+
 
