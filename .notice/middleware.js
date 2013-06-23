@@ -31,10 +31,8 @@ module.exports = {
         // do anything: 
         // ============
         // 
-        // require 'hubot', 'hipchat', 'growl', 'socket.io', 'graphite', 'umm?'
+        // require 'hubot', 'statsd', socket.io', 'umm?', 'big', 'pile', 'of things'
         //
-        // but
-        // ===
         //
         // call next(), And if you choose to breakout in order to augment the
         //              message with payload from a remote source, be sure to 
