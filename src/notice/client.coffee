@@ -1,8 +1,24 @@
+connector = require './connector'
+
 module.exports = 
 
-    connect: -> 
+    connect: (title, opts, callback) -> 
 
-        console.log 'Notice.connect', arguments
-        callback = arg for arg in arguments
-        callback null, notice: 'CLIENT'
+        connector.connect
+
+            transport: opts.transport
+            address: opts.address
+            port: opts.port
+
+            (error, socket) -> 
+
+                if error?
+
+                    console.log error
+
+                    return callback error
+
+                console.log 'connected', socket.id
+
+                callback null, notice: 'CLIENT'
         

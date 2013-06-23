@@ -1,6 +1,6 @@
 io = require 'socket.io-client'
 
-require('nez').realize 'Connect', (Connect, test, context, should) -> 
+require('nez').realize 'Connector', (Connector, test, context, should) -> 
 
     context 'default', (it) -> 
 
@@ -13,7 +13,7 @@ require('nez').realize 'Connect', (Connect, test, context, should) ->
                 test done
                 on: ->
 
-            Connect()
+            Connector.connect()
 
 
         it 'callsback ERRORS before accepted handshake', (done) -> 
@@ -24,7 +24,7 @@ require('nez').realize 'Connect', (Connect, test, context, should) ->
                 on: (event, callback) -> 
                     if event == 'error' then callback new Error 'ENOCONNECT'
 
-            Connect (error) -> 
+            Connector.connect (error) -> 
 
                 error.should.match /ENOCONNECT/
                 test done
@@ -56,7 +56,7 @@ require('nez').realize 'Connect', (Connect, test, context, should) ->
                 return MOCKSOCKET
 
 
-            Connect secret: ' ™i ', (error) -> 
+            Connector.connect secret: ' ™i ', (error) -> 
 
                 should.not.exist error
 

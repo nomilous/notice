@@ -1,7 +1,24 @@
-require('nez').realize 'Client', (Client, test, context) -> 
+require('nez').realize 'Client', (Client, test, context, Connector) -> 
 
-    context 'in CONTEXT', (does) ->
+    context 'connect()', (it) ->
 
-        does 'an EXPECTATION', (done) ->
+        it 'makes a connection', (done) ->
 
-            test done
+            Connector.connect = (opts, callback) -> 
+
+                opts.should.eql 
+
+                    transport: 'https'
+                    address: 'localhost'
+                    port: 10001 
+
+                test done
+
+
+            Client.connect 'title', 
+
+                transport: 'https'
+                address: 'localhost'
+                port: 10001
+
+                (error, client) -> 
