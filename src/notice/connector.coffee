@@ -1,5 +1,10 @@
-ioclient = require 'socket.io-client'
+#
+# enable https connections to servers with selfsigned certs...  
+#
 
+require('https').globalAgent.options.rejectUnauthorized = false
+
+ioclient       = require 'socket.io-client'
 module.exports =
 
     connect: -> 
