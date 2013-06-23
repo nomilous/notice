@@ -7,7 +7,7 @@ require('nez').realize 'Client', (Client, test, context, Connector) ->
             Connector.connect = (opts, callback) -> 
 
                 opts.should.eql 
-
+                    secret: undefined
                     transport: 'https'
                     address: 'localhost'
                     port: 10001 

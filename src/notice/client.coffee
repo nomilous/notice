@@ -6,6 +6,7 @@ module.exports =
 
         connector.connect
 
+            secret: opts.secret
             transport: opts.uplink.transport
             address: opts.uplink.address
             port: opts.uplink.port
