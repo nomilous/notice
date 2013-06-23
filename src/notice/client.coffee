@@ -15,10 +15,10 @@ module.exports =
                 if error?
 
                     console.log error
-
                     return callback error
 
-                console.log 'connected', socket.id
 
+
+                console.log 'connected', socket.id
                 callback null, notice: 'CLIENT'
         
