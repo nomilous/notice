@@ -6,19 +6,14 @@ module.exports =
 
         connector.connect
 
-            transport: opts.transport
-            address: opts.address
-            port: opts.port
+            transport: opts.uplink.transport
+            address: opts.uplink.address
+            port: opts.uplink.port
 
-            (error, socket) -> 
+            (error, uplink) -> 
 
-                if error?
+                return callback error if error?
 
-                    console.log error
-                    return callback error
-
-
-
-                console.log 'connected', socket.id
+                console.log 'connected', uplink.socket.sessionid
                 callback null, notice: 'CLIENT'
         
