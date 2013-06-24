@@ -1,0 +1,15 @@
+#!/usr/bin/env coffee
+
+require('../lib/notice/client').connect 'Client Name',
+        
+    connect:
+        secret: '◊'
+        port: 10101
+    
+    (error, notice) -> 
+
+        throw error if error?
+
+        notice.event.good 'online!'
+
+
