@@ -8,9 +8,11 @@ onConnected = (title, opts, uplink, callback) ->
     # assign pipeline final middleware ....
     #
     
-    notice  = notifier.create title
+    notice = notifier.create title
 
     notice.finally = (msg, next) -> 
+
+        console.log 'sending message:', JSON.stringify msg.content, null, 2
 
         #
         # a notification has been generated,
