@@ -1,4 +1,19 @@
-connector = require './connector'
+connector   = require './connector'
+notifier    = require './notifier'
+
+onConnected = (title, opts, uplink, callback) -> 
+
+    #
+    # connected to the hub, create a notifier and 
+    # assign pipeline final middleware ....
+    #
+    
+    notice  = notifier.create title
+
+    notice.finally = (msg, next) -> next()
+
+    callback null, notice
+
 
 module.exports = 
 
@@ -14,7 +29,4 @@ module.exports =
             (error, uplink) -> 
 
                 return callback error if error?
-
-                console.log 'connected', uplink.socket.sessionid
-                callback null, notice: 'CLIENT'
-        
+                onConnected title, opts, uplink, callback
