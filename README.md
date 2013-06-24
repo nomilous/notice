@@ -90,8 +90,10 @@ Possible Future Features (still exploring)
 * flood protection
 * time in pipeline / backlog (introspection)
 * as message receiver
-* tasks and escalations (with persistor plugin)
+* tasks and escalations (with persistor plugin / state machine)
 * hubside pipeline promise
-* acknowledgability
-* resolvability
+* acknowledgability / take (state)
+* updatability
+* resolvability            (state)
+* expire / escalate        (state)
 
