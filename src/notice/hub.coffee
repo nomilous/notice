@@ -35,11 +35,22 @@ module.exports.create = (hubName, opts, callback) ->
         (error, address) -> 
 
             #
-            # reference to the listening address on the hub
+            # socket is up and listening for remote notifiers,
+            # 
+            # * create externally accessable reference to the 
+            #   listening address (may have defaulted, port
+            #   would then be unknown to the caller)
+            # 
+            # * callback with the hubside pipeline / notifier
+            #   to provide caller with access to the middleware
+            #   registrar
             # 
 
-            opts.hub.listening = address
-            callback error, null if typeof callback == 'function'
+            opts.listening = address
+            
+            if typeof callback == 'function'
+
+                callback error, notice
 
 
 

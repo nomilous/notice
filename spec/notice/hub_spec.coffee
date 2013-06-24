@@ -81,11 +81,28 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
                 callback SOCKET
 
 
-            it 'attaches the listeng address onto the ', (done) ->
+            it 'calls back with the hubside notifier', (done) -> 
 
-                opts = Hub.create 'name', listen: secret: 'SECRET', -> 
+                NOTIFIER = -> 'moo'
 
-                    opts.hub.listening.should.eql 
+                spy = Notifier.create
+                Notifier.create = (title) -> 
+                    Notifier.create = spy
+                    NOTIFIER
+
+                Hub.create 'name', listen: secret: 'SECRET', (error, notice) -> 
+
+                    notice().should.equal 'moo'
+                    test done
+
+
+            it 'attaches ref to the listening address', (done) ->
+
+                opts = listen: secret: 'SECRET'
+
+                Hub.create 'name', opts, (error, notice) -> 
+
+                    opts.listening.should.eql 
                         transport: 'http'
                         address: 'ADDRESS'
                         port: 'PORT'
@@ -93,28 +110,10 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
                     test done
 
 
-            it "registers socket with hub on good handshake secret", (done) -> ->
-
-                opts = Hub.create 'name', listen: secret: 'SECRET'
-                
-                opts.hub.socket.ID.should.equal SOCKET
-                opts.hub.context.ID.should.eql REMOTE: 'CONTEXT'
-                test done
-
-
-            it 'disconnects the socket if the secret does not match', (done) -> ->
-
-                opts = Hub.create 'name', listen: secret: 'ETRESC'
-
-                opts.hub.should.eql socket: {}, context: {}
-                SOCKET.disconnected.should.equal true
-                test done
-
-
             it 'sends accept if the secret matches', (done) -> 
 
                 SENT.events = []
-                opts  = Hub.create 'name', listen: secret: 'SECRET', -> 
+                Hub.create 'name', listen: secret: 'SECRET', -> 
 
                     SENT.events[0].should.eql '0': 'accept'
                     test done
