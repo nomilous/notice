@@ -1,4 +1,4 @@
-require('nez').realize 'Client', (Client, test, context, Connector, Notifier) -> 
+require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Message) -> 
 
     context 'connect()', (it) ->
 
@@ -27,9 +27,9 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier) ->
 
     context 'onConnect()', (it) -> 
 
-
-        SOCKET = {}
-        NOTICE = {}
+        EMITTED = {}
+        SOCKET  = emit: (event, args...) -> EMITTED[event] = args
+        NOTICE  = {}
         Connector.connect = (opts, callback) -> callback null, SOCKET
         Notifier.create = (title) -> NOTICE.title = title; return NOTICE
 
@@ -62,5 +62,47 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier) ->
 
                     notice.finally.should.be.an.instanceof Function
                     test done
+
+
+        it 'emits notifications onto the socket', (done) -> 
+
+            Client.connect 'title',
+
+                connect:
+
+                    transport: 'https'
+                    address: 'localhost'
+                    port: 10001
+
+                (error, notice) -> 
+
+                    #
+                    # asif the notifier itself called the middleware
+                    #
+
+                    notice.finally(
+
+                        new Message
+
+                            title: 'title'
+                            description: 'description'
+                            origin: 'origin'
+                            type: 'info'
+                            tenor: 'normal'               
+
+                        ->
+
+                            EMITTED.info[0].context.should.eql
+
+                                title: 'title'
+                                description: 'description'
+                                origin: 'origin'
+                                type: 'info'
+                                tenor: 'normal'
+
+                            test done
+
+                    )
+
 
 

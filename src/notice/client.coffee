@@ -10,7 +10,17 @@ onConnected = (title, opts, uplink, callback) ->
     
     notice  = notifier.create title
 
-    notice.finally = (msg, next) -> next()
+    notice.finally = (msg, next) -> 
+
+        #
+        # a notification has been generated,
+        # transmit it over the socket
+        #
+
+        type = msg.context.type
+        uplink.emit type, msg.content
+        next()
+
 
     callback null, notice
 
