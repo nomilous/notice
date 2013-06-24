@@ -6,10 +6,10 @@ module.exports =
 
         connector.connect
 
-            secret: opts.secret
-            transport: opts.uplink.transport
-            address: opts.uplink.address
-            port: opts.uplink.port
+            secret:    opts.connect.secret
+            transport: opts.connect.transport
+            address:   opts.connect.address
+            port:      opts.connect.port
 
             (error, uplink) -> 
 

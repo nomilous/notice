@@ -2,10 +2,11 @@
 
 require('../lib/notice').listen 'hub name',
     
-    secret: '◊'
-    loglevel: 3
-    address:  '0.0.0.0'
-    port:   10101
-    # cert:   __dirname + '/../cert/develop-cert.pem'
-    # key:    __dirname + '/../cert/develop-key.pem'
+    listen: 
+        secret: '◊'
+        loglevel: 3
+        address:  '0.0.0.0'
+        port:   10101
+        # cert:   __dirname + '/../cert/develop-cert.pem'
+        # key:    __dirname + '/../cert/develop-key.pem'
 

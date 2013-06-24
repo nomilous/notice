@@ -17,7 +17,7 @@ require('nez').realize 'Client', (Client, test, context, Connector) ->
 
             Client.connect 'title', 
 
-                uplink:
+                connect:
                     transport: 'https'
                     address: 'localhost'
                     port: 10001

@@ -65,7 +65,7 @@ require('nez').realize 'Hub', (Hub, test, context, should, http) ->
 
             it 'attaches the listeng address onto the ', (done) ->
 
-                opts = Hub.create 'name', secret: 'SECRET', -> 
+                opts = Hub.create 'name', listen: secret: 'SECRET', -> 
 
                     opts.hub.listening.should.eql 
                         transport: 'http'
@@ -77,7 +77,7 @@ require('nez').realize 'Hub', (Hub, test, context, should, http) ->
 
             it "registers socket with hub on good handshake secret", (done) -> 
 
-                opts = Hub.create 'name', secret: 'SECRET'
+                opts = Hub.create 'name', listen: secret: 'SECRET'
                 
                 opts.hub.socket.ID.should.equal SOCKET
                 opts.hub.context.ID.should.eql REMOTE: 'CONTEXT'
@@ -86,7 +86,7 @@ require('nez').realize 'Hub', (Hub, test, context, should, http) ->
 
             it 'disconnects the socket if the secret does not match', (done) -> 
 
-                opts = Hub.create 'name', secret: 'ETRESC'
+                opts = Hub.create 'name', listen: secret: 'ETRESC'
 
                 opts.hub.should.eql socket: {}, context: {}
                 SOCKET.disconnected.should.equal true
@@ -96,7 +96,7 @@ require('nez').realize 'Hub', (Hub, test, context, should, http) ->
             it 'sends accept if the secret matches', (done) -> 
 
                 SENT.events = []
-                opts  = Hub.create 'name', secret: 'SECRET', -> 
+                opts  = Hub.create 'name', listen: secret: 'SECRET', -> 
 
                     SENT.events[0].should.eql '0': 'accept'
                     test done

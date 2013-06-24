@@ -1,10 +1,13 @@
 #!/usr/bin/env coffee
 
-require('../lib/notice/connector').connect 
-    
-    secret: '◊'
-    port: 10101
+require('../lib/notice/client').connect 'clientname',
+        
+    connect:
+        secret: '◊'
+        port: 10101
     
     (error, link) -> 
 
-        console.log connected: id: link.socket.sessionid
+        console.log error
+
+        console.log link
