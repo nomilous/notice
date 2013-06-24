@@ -1,4 +1,5 @@
-listen = require './listen'
+listen   = require './listen'
+Notifier = require './notifier'
 
 module.exports.create = (hubName, opts, callback) -> 
     
@@ -16,6 +17,13 @@ module.exports.create = (hubName, opts, callback) ->
         #
         # socket: {}
         # context: {}
+
+    #
+    # hubside message pipeline
+    #
+
+    notice = Notifier.create hubName
+
 
     io = listen 
 
@@ -53,9 +61,27 @@ module.exports.create = (hubName, opts, callback) ->
                 socket.disconnect()
 
 
-        socket.on 'info',  (payload) -> console.log 'INFO',  payload
-        socket.on 'event', (payload) -> console.log 'EVENT', payload
+        for event in ['info', 'event']
 
+            do (event) -> 
+
+                #
+                # inbound event from the socket are directed into
+                # the middleware pipeline
+                #
+
+                socket.on event, (payload) -> 
+
+                    title  = payload.context.title
+                    tenor  = payload.context.tenor
+
+                    #
+                    # TODO: origin? hmmmm
+                    #
+
+                    #origin = payload.context.origin
+
+                    notice[event][tenor] title, payload
 
 
 

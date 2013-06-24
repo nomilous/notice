@@ -1,6 +1,6 @@
 io = require 'socket.io'
 
-require('nez').realize 'Hub', (Hub, test, context, should, http) -> 
+require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) -> 
 
     context 'create()', (it) -> 
 
@@ -15,6 +15,24 @@ require('nez').realize 'Hub', (Hub, test, context, should, http) ->
             catch error
                 error.should.match /requires hubName as string/
                 test done
+
+    
+    context 'hubside pipeline', (it) -> 
+
+        it 'is created', (done) -> 
+
+            spy = Notifier.create
+            Notifier.create = (title) -> 
+                Notifier.create = spy
+                title.should.equal title
+                throw 'go no futher'
+
+            try Hub.create 'title'
+            catch error
+
+                error.should.match /go no futher/
+                test done
+
 
     context 'listening', (it) -> 
 
@@ -100,6 +118,34 @@ require('nez').realize 'Hub', (Hub, test, context, should, http) ->
 
                     SENT.events[0].should.eql '0': 'accept'
                     test done
+
+
+            it 'feeds received messages into the pipeline', (done) -> 
+
+                spy = Notifier.create
+                Notifier.create = (title) -> 
+                    Notifier.create = spy
+
+                    #
+                    # spy on notice.info.normal()
+                    #
+                    info: normal: -> test done
+
+
+                SOCKET.on = (event, callback) -> 
+                    if event == 'handshake' 
+                        callback 'SECRET', REMOTE: 'CONTEXT'
+
+                    #
+                    # respond to info subscription with 
+                    # mock inbound info message
+                    #
+                    if event == 'info' then callback
+                        context:
+                            title: 'TITLE'
+                            tenor: 'normal'
+
+                Hub.create 'name', listen: secret: 'SECRET', -> 
 
                         
 
