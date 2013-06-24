@@ -9,9 +9,13 @@ module.exports.create = (hubName, opts, callback) ->
     opts               ||= {}
     opts.listen        ||= {}
     opts.listen.secret ||= ''
-    opts.hub  = 
-        socket: {}
-        context: {}
+    opts.hub = {} 
+    # opts.hub =
+        #
+        # probably dont need these... (yet)
+        #
+        # socket: {}
+        # context: {}
 
     io = listen 
 
@@ -39,14 +43,18 @@ module.exports.create = (hubName, opts, callback) ->
 
             if secret == opts.listen.secret
 
-                opts.hub.socket[  socket.id ] = socket
-                opts.hub.context[ socket.id ] = context
+                # opts.hub.socket[  socket.id ] = socket
+                # opts.hub.context[ socket.id ] = context
 
                 socket.emit 'accept'
 
             else 
 
                 socket.disconnect()
+
+
+        socket.on 'info',  (payload) -> console.log 'INFO',  payload
+        socket.on 'event', (payload) -> console.log 'EVENT', payload
 
 
 

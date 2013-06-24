@@ -53,13 +53,16 @@ module.exports =
 
             connected = false
 
-            return unless accepted
+            unless accepted
 
                 #
                 # connection never fully established 
-                #
+                # error out
+                # 
 
-                callback new Error 'disconnect or failed secret', null
+                return callback new Error 'disconnect or failed secret', null
+
+
 
 
 
@@ -70,11 +73,22 @@ module.exports =
             #
 
             connected = true
-            accepted  = true
 
-            if typeof callback == 'function' 
+            unless accepted
 
-                callback null, socket
+                #
+                # new connection
+                #
+
+                accepted = true
+                callback null, socket if typeof callback == 'function'
+                return
+
+            #
+            # recovered connection
+            #  
+
+            console.log 'TODO: handle recovered connection!'
 
 
 

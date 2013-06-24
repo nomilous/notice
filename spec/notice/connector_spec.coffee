@@ -30,13 +30,12 @@ require('nez').realize 'Connector', (Connector, test, context, should) ->
                 test done
 
 
-        it 'does not callback ERRORS after accepted handshake', (done) -> 
+        context 'after accepted handshake', (it) -> 
 
             HANDSHAKE = undefined
 
             spy = io.connect
             io.connect = (uri) -> 
-                io.connect = spy
 
                 MOCKSOCKET = 
 
@@ -44,7 +43,12 @@ require('nez').realize 'Connector', (Connector, test, context, should) ->
 
                         if event == 'connect' then cb()
                         if event == 'accept'  then MOCKSOCKET.handshakeReply = cb
-                        if event == 'error'   then setTimeout (-> cb new Error 'ENOCONNECT'), 10 
+                        if event == 'error'   then setTimeout (-> 
+
+                            io.connect = spy
+                            cb new Error 'ENOCONNECT'
+
+                        ), 10 
 
                     emit: (event, args...) -> 
 
@@ -52,22 +56,36 @@ require('nez').realize 'Connector', (Connector, test, context, should) ->
 
                             HANDSHAKE = args
                             MOCKSOCKET.handshakeReply()
+                            MOCKSOCKET.handshakeReply()  # twice for 'only callsback on first accept'
 
                 return MOCKSOCKET
 
-
-            Connector.connect secret: ' ™i ', (error) -> 
-
-                should.not.exist error
-
-                done 'and sends secret in handshake', (ok) -> 
-
-                    HANDSHAKE[0].should.equal ' ™i '
-
-                    test ok
-
-                test done
+            it 'does not callback errors', (done) -> 
 
 
+                Connector.connect secret: ' ™i ', (error) -> 
+
+                    should.not.exist error
+
+                    done 'and sends secret in handshake', (ok) -> 
+
+                        HANDSHAKE[0].should.equal ' ™i '
+                        test ok
+
+                    test done
+
+
+            it 'only callsback on first accept', (done) -> 
+
+                count = 0
+
+                Connector.connect secret: ' ™i ', (error, socket) -> count++
+
+                setTimeout (-> 
+
+                    count.should.equal 1
+                    test done
+
+                ), 10
 
 

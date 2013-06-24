@@ -75,7 +75,7 @@ require('nez').realize 'Hub', (Hub, test, context, should, http) ->
                     test done
 
 
-            it "registers socket with hub on good handshake secret", (done) -> 
+            it "registers socket with hub on good handshake secret", (done) -> ->
 
                 opts = Hub.create 'name', listen: secret: 'SECRET'
                 
@@ -84,7 +84,7 @@ require('nez').realize 'Hub', (Hub, test, context, should, http) ->
                 test done
 
 
-            it 'disconnects the socket if the secret does not match', (done) -> 
+            it 'disconnects the socket if the secret does not match', (done) -> ->
 
                 opts = Hub.create 'name', listen: secret: 'ETRESC'
 
