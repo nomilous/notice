@@ -6,15 +6,15 @@ module.exports.create = (hubName, opts, callback) ->
 
         throw new Error 'Notifier.listen( hubName, opts ) requires hubName as string'
 
-    opts ||= {}
-    opts.listen ||= {}
+    opts               ||= {}
+    opts.listen        ||= {}
+    opts.listen.secret ||= ''
     opts.hub  = 
         socket: {}
         context: {}
 
     io = listen 
 
-        secret:  opts.listen.secret
         address: opts.listen.address
         port:    opts.listen.port
         cert:    opts.listen.cert
