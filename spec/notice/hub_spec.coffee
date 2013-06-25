@@ -24,7 +24,7 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
             spy = Notifier.create
             Notifier.create = (title) -> 
                 Notifier.create = spy
-                title.should.equal title
+                title.should.equal 'title::inbound'
                 throw 'go no futher'
 
             try Hub.create 'title'
@@ -50,50 +50,39 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
             on: ->
         io.listen = -> MOCK
 
+        SENT = events: []
 
-        
+        SOCKET = 
+            disconnected: false
+            id: 'ID'
+            disconnect: -> SOCKET.disconnected = true
+            emit: -> SENT.events.push arguments
+            on: (event, callback) -> 
+                if event == 'handshake' 
+                    callback 'SECRET', REMOTE: 'CONTEXT'
 
-        it 'subscribes to connecting sockets', (done) -> 
 
-            MOCK.on = (event) -> if event == 'connection' then throw 'OKGOOD1'
+        MOCK.on = (event, callback) -> if event == 'connection'
 
-            try Hub.create 'name'
-            catch error 
-                error.should.match /OKGOOD1/
+            callback SOCKET
+
+
+        it 'calls back with the hubside inbound notifier', (done) -> 
+
+            NOTIFIER = -> 'moo'
+
+            spy = Notifier.create
+            Notifier.create = (title) -> 
+                Notifier.create = spy
+                NOTIFIER
+
+            Hub.create 'name', listen: secret: 'SECRET', (error, notice) -> 
+
+                notice().should.equal 'moo'
                 test done
 
+
         context 'on connected socket', (it) -> 
-
-            SENT = events: []
-
-            SOCKET = 
-                disconnected: false
-                id: 'ID'
-                disconnect: -> SOCKET.disconnected = true
-                emit: -> SENT.events.push arguments
-                on: (event, callback) -> 
-                    if event == 'handshake' 
-                        callback 'SECRET', REMOTE: 'CONTEXT'
-
-
-            MOCK.on = (event, callback) -> if event == 'connection'
-
-                callback SOCKET
-
-
-            it 'calls back with the hubside notifier', (done) -> 
-
-                NOTIFIER = -> 'moo'
-
-                spy = Notifier.create
-                Notifier.create = (title) -> 
-                    Notifier.create = spy
-                    NOTIFIER
-
-                Hub.create 'name', listen: secret: 'SECRET', (error, notice) -> 
-
-                    notice().should.equal 'moo'
-                    test done
 
 
             it 'attaches ref to the listening address', (done) ->
@@ -119,6 +108,19 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
                     test done
 
 
+            it 'creates a response pipeline', (done) -> 
+
+                NOTIFIERS = {}
+                spy = Notifier.create
+                Notifier.create = (title) -> NOTIFIERS[title] = 1
+
+                Hub.create 'hub name', listen: secret: 'SECRET', -> 
+
+                    Notifier.create = spy
+                    NOTIFIERS['hub name::outbound'].should.equal 1
+                    test done
+
+
             it 'feeds received messages into the pipeline', (done) -> 
 
                 spy = Notifier.create
@@ -128,7 +130,8 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
                     #
                     # spy on notice.info.normal()
                     #
-                    info: normal: -> test done
+                    info: normal: -> 
+                        test done
 
 
                 SOCKET.on = (event, callback) -> 

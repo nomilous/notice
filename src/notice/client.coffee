@@ -12,7 +12,7 @@ onConnected = (title, opts, uplink, callback) ->
 
     notice.finally = (msg, next) -> 
 
-        # console.log 'sending message:', JSON.stringify msg.content, null, 2
+        console.log 'sending message:', JSON.stringify msg.content, null, 2
 
         #
         # a notification has been generated,
@@ -22,7 +22,6 @@ onConnected = (title, opts, uplink, callback) ->
         type = msg.context.type
         uplink.emit type, msg.content
         next()
-
 
     callback null, notice
 

@@ -1,28 +1,34 @@
-listen   = require './listen'
-Notifier = require './notifier'
+listen     = require './listen'
+Notifier   = require './notifier'
 
 module.exports.create = (hubName, opts, callback) -> 
-    
+
     unless typeof hubName is 'string' 
 
         throw new Error 'Notifier.listen( hubName, opts ) requires hubName as string'
+
+
+    responders = {}
+    responder  = (context, socket, callback) -> 
+
+        #
+        # creates a response pipeline back to the remote notifier
+        #
+
+        responders[socket.id] = Notifier.create "#{ hubName }::outbound"
+        callback()
+
 
     opts               ||= {}
     opts.listen        ||= {}
     opts.listen.secret ||= ''
     opts.hub = {} 
-    # opts.hub =
-        #
-        # probably dont need these... (yet)
-        #
-        # socket: {}
-        # context: {}
 
     #
-    # hubside message pipeline
+    # hubside message pipeline (INBOUND)
     #
 
-    notice = Notifier.create hubName
+    inbound = Notifier.create "#{ hubName }::inbound"
 
 
     io = listen 
@@ -50,7 +56,7 @@ module.exports.create = (hubName, opts, callback) ->
             
             if typeof callback == 'function'
 
-                callback error, notice
+                callback error, inbound
 
 
 
@@ -62,10 +68,11 @@ module.exports.create = (hubName, opts, callback) ->
 
             if secret == opts.listen.secret
 
-                # opts.hub.socket[  socket.id ] = socket
-                # opts.hub.context[ socket.id ] = context
+                #
+                # remote notifier authenticated
+                #
 
-                socket.emit 'accept'
+                responder context, socket, -> socket.emit 'accept'
 
             else 
 
@@ -92,7 +99,7 @@ module.exports.create = (hubName, opts, callback) ->
 
                     #origin = payload.context.origin
 
-                    notice[event][tenor] title, payload
+                    inbound[event][tenor] title, payload
 
 
 
