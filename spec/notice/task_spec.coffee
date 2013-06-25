@@ -1,7 +1,12 @@
 require('nez').realize 'Task', (Task, test, context) -> 
 
-    context 'create()', (it) ->
+    context 'contructor', (it) ->
 
-        it 'creates a task', (done) -> 
+        it 'creates a task with unique id', (done) -> 
 
-            Task.create 'title'
+            a = new Task 'title', {}
+            z = new Task 'title', {}
+
+            z.id.should.not.equal a.id
+            test done
+            

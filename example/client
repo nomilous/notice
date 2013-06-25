@@ -83,7 +83,6 @@ require('../lib/notice/client').connect 'Client Name',
                                     'THE RISE OF JERICHO': -11000
                                     preboreal: -9000
                                     boreal: -8000
-                                    'INVENTION OF THE WHEEL': -7000
                                     atlantic: -5000
                                     'SUMERIAN CUNEIFORM AND THE INVENTION OF WRITING': -5000
                                     'STONE AGE ENDS': -5000

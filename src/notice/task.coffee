@@ -1,8 +1,7 @@
 {asUniq} = require './decorators'
 
-module.exports = create: asUniq (id, title) -> 
 
-    console.log 'create task', 
+module.exports = class Task 
 
-        id:    id
-        title: title
+    constructor: asUniq (@id, @title, @opts) -> 
+    
