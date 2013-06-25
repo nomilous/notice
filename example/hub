@@ -14,5 +14,8 @@ require('../lib/notice').listen 'hub name',
 
         remotes.use (msg, next) -> 
 
-            console.log msg
+            # console.log msg
+
+            msg.reply.info '42'
+
             next()

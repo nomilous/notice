@@ -69,7 +69,8 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
 
         it 'calls back with the hubside inbound notifier', (done) -> 
 
-            NOTIFIER = -> 'moo'
+            NOTIFIER = 
+                use: -> 'moo'
 
             spy = Notifier.create
             Notifier.create = (title) -> 
@@ -78,7 +79,7 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
 
             Hub.create 'name', listen: secret: 'SECRET', (error, notice) -> 
 
-                notice().should.equal 'moo'
+                notice.use().should.equal 'moo'
                 test done
 
 
@@ -112,7 +113,9 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
 
                 NOTIFIERS = {}
                 spy = Notifier.create
-                Notifier.create = (title) -> NOTIFIERS[title] = 1
+                Notifier.create = (title) -> 
+                    NOTIFIERS[title] = 1
+                    use: ->
 
                 Hub.create 'hub name', listen: secret: 'SECRET', -> 
 
@@ -126,6 +129,7 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
                 spy = Notifier.create
                 Notifier.create = (title) -> 
                     Notifier.create = spy
+                    use: ->
 
                     #
                     # spy on notice.info.normal()
@@ -148,10 +152,4 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
                             tenor: 'normal'
 
                 Hub.create 'name', listen: secret: 'SECRET', -> 
-
-                        
-
-
-
-
 

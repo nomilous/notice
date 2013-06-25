@@ -8,14 +8,28 @@ module.exports.create = (hubName, opts, callback) ->
         throw new Error 'Notifier.listen( hubName, opts ) requires hubName as string'
 
 
-    responders = {}
-    responder  = (context, socket, callback) -> 
+    responders      = {}
+    createResponder = (context, socket, callback) -> 
 
         #
         # creates a response pipeline back to the remote notifier
         #
 
-        responders[socket.id] = Notifier.create "#{ hubName }::outbound"
+        outbound = Notifier.create "#{ hubName }::outbound"
+
+        outbound.finally = (msg, next) -> 
+
+            type = msg.context.type
+            socket.emit type, msg.content
+            next()
+
+        responders[socket.id] = 
+
+            notice: outbound
+            context: context
+            connected: true
+
+
         callback()
 
 
@@ -24,19 +38,35 @@ module.exports.create = (hubName, opts, callback) ->
     opts.listen.secret ||= ''
     opts.hub = {} 
 
+
     #
     # hubside message pipeline (INBOUND)
     #
 
     inbound = Notifier.create "#{ hubName }::inbound"
 
+    inbound.use (msg, next) -> 
+
+        #
+        #TEMPORARY1
+        # 
+        # first middleware makes responder accessable 
+        # as property of the message
+        #
+
+        responder = responders[msg['socket.id']]
+        msg.setResponder = responder.notice
+        delete msg['socket.id']
+        next()
+
 
     io = listen 
 
-        address: opts.listen.address
-        port:    opts.listen.port
-        cert:    opts.listen.cert
-        key:     opts.listen.key
+        loglevel: opts.listen.loglevel
+        address:  opts.listen.address
+        port:     opts.listen.port
+        cert:     opts.listen.cert
+        key:      opts.listen.key
 
         (error, address) -> 
 
@@ -72,7 +102,7 @@ module.exports.create = (hubName, opts, callback) ->
                 # remote notifier authenticated
                 #
 
-                responder context, socket, -> socket.emit 'accept'
+                createResponder context, socket, -> socket.emit 'accept'
 
             else 
 
@@ -98,6 +128,14 @@ module.exports.create = (hubName, opts, callback) ->
                     #
 
                     #origin = payload.context.origin
+
+                    #
+                    #TEMPORARY1                    
+                    # 
+                    # storage key for message responder
+                    #
+
+                    payload['socket.id'] = socket.id
 
                     inbound[event][tenor] title, payload
 

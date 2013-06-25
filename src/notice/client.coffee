@@ -32,6 +32,7 @@ module.exports =
 
         connector.connect
 
+            loglevel:  opts.connect.loglevel
             secret:    opts.connect.secret
             transport: opts.connect.transport
             address:   opts.connect.address

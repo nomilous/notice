@@ -18,6 +18,9 @@ module.exports = class Message
             context: ['title', 'description', 'origin', 'type', 'tenor']
 
 
+        reply = undefined
+
+
         for name in composition.context
 
             do (name) => 
@@ -60,5 +63,18 @@ module.exports = class Message
                 for name in composition.context
                     result.context[name] = context[name]
                 result
+
+
+        Object.defineProperty this, 'setResponder', 
+
+            set: (value) -> reply = value unless reply?
+
+        Object.defineProperty this, 'reply', 
+
+            enumerable:  true
+            get:         -> reply
+            
+                
+
 
 
