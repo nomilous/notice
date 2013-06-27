@@ -20,7 +20,7 @@ onConnected = (title, opts, uplink, callback) ->
         #
 
         type = msg.context.type
-        uplink.emit type, msg.content
+        uplink.emit type, msg.context, msg
         next()
 
     callback null, notice

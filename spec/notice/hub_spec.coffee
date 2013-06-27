@@ -147,9 +147,9 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
                     # mock inbound info message
                     #
                     if event == 'info' then callback
-                        context:
-                            title: 'TITLE'
-                            tenor: 'normal'
+                        title: 'TITLE'
+                        tenor: 'normal'
+                        {}
 
                 Hub.create 'name', listen: secret: 'SECRET', -> 
 

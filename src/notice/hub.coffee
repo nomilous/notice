@@ -20,7 +20,7 @@ module.exports.create = (hubName, opts, callback) ->
         outbound.finally = (msg, next) -> 
 
             type = msg.context.type
-            socket.emit type, msg.content
+            socket.emit type, msg.context, msg
             next()
 
         responders[socket.id] = 
@@ -118,10 +118,10 @@ module.exports.create = (hubName, opts, callback) ->
                 # the middleware pipeline
                 #
 
-                socket.on event, (payload) -> 
+                socket.on event, (context, msg) -> 
 
-                    title  = payload.context.title
-                    tenor  = payload.context.tenor
+                    title  = context.title
+                    tenor  = context.tenor
 
                     #
                     # TODO: origin? hmmmm
@@ -135,9 +135,9 @@ module.exports.create = (hubName, opts, callback) ->
                     # storage key for message responder
                     #
 
-                    payload['socket.id'] = socket.id
+                    msg['socket.id'] = socket.id
 
-                    inbound[event][tenor] title, payload
+                    inbound[event][tenor] title, msg
 
 
 
