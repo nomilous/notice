@@ -186,6 +186,8 @@ module.exports = Notifier =
         api.event.good   = (title, description) -> notifier title, description, 'event', 'good'
         api.event.bad    = (title, description) -> notifier title, description, 'event', 'bad'
 
+        api.task         = () -> console.log 'TASK', arguments
+
         #
         # registering middleware onto the end of the pipeline
         # only one!
