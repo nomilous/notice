@@ -7,6 +7,7 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Me
             Connector.connect = (opts, callback) -> 
 
                 opts.should.eql 
+                    loglevel: undefined
                     secret: undefined
                     transport: 'https'
                     address: 'localhost'
@@ -60,7 +61,7 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Me
 
                 (error, notice) -> 
 
-                    notice.finally.should.be.an.instanceof Function
+                    notice.last.should.be.an.instanceof Function
                     test done
 
 
@@ -80,25 +81,52 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Me
                     # asif the notifier itself called the middleware
                     #
 
-                    notice.finally(
+                    notice.last(
 
                         new Message
+
+                            #
+                            # context
+                            # 
 
                             title: 'title'
                             description: 'description'
                             origin: 'origin'
                             type: 'info'
-                            tenor: 'normal'               
+                            tenor: 'normal'
+
+                            #
+                            # payload
+                            #
+
+                            key1: 'value1'
+                            key2: 'value2'           
 
                         ->
 
-                            EMITTED.info[0].context.should.eql
+                           
+
+                            #
+                            # context as event arg1
+                            #  
+
+                            EMITTED.info[0].should.eql
 
                                 title: 'title'
                                 description: 'description'
                                 origin: 'origin'
                                 type: 'info'
                                 tenor: 'normal'
+                                direction: undefined
+
+                            #
+                            # payload as event arg1
+                            #  
+
+                            EMITTED.info[1].key1.should.eql 'value1'
+                            EMITTED.info[1].key2.should.eql 'value2'
+
+
 
                             test done
 

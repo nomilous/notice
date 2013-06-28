@@ -10,7 +10,13 @@ onConnected = (title, opts, uplink, callback) ->
     
     notice = notifier.create title
 
-    notice.finally = (msg, next) -> 
+    notice.first = (msg, next) -> 
+
+        msg.direction = 'out'
+        next()
+
+
+    notice.last = (msg, next) -> 
 
         console.log 'sending message:', JSON.stringify msg.content, null, 2
 
