@@ -24,7 +24,7 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
             spy = Notifier.create
             Notifier.create = (title) -> 
                 Notifier.create = spy
-                title.should.equal 'title::inbound'
+                title.should.equal 'title'
                 throw 'go no futher'
 
             try Hub.create 'title'
@@ -120,7 +120,7 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
                 Hub.create 'hub name', listen: secret: 'SECRET', -> 
 
                     Notifier.create = spy
-                    NOTIFIERS['hub name::outbound'].should.equal 1
+                    NOTIFIERS['hub name'].should.equal 1
                     test done
 
 

@@ -15,7 +15,7 @@ module.exports.create = (hubName, opts, callback) ->
         # creates a response pipeline back to the remote notifier
         #
 
-        outbound = Notifier.create "#{ hubName }::outbound"
+        outbound = Notifier.create hubName
 
         outbound.finally = (msg, next) -> 
 
@@ -43,7 +43,7 @@ module.exports.create = (hubName, opts, callback) ->
     # hubside message pipeline (INBOUND)
     #
 
-    inbound = Notifier.create "#{ hubName }::inbound"
+    inbound = Notifier.create hubName
 
     inbound.use (msg, next) -> 
 
@@ -120,14 +120,11 @@ module.exports.create = (hubName, opts, callback) ->
 
                 socket.on event, (context, msg) -> 
 
-                    title  = context.title
-                    tenor  = context.tenor
-
-                    #
-                    # TODO: origin? hmmmm
-                    #
-
-                    #origin = payload.context.origin
+                    msg.direction = 'in'
+                    msg.origin    = context.origin
+                    title         = context.title
+                    tenor         = context.tenor
+                    
 
                     #
                     #TEMPORARY1                    
