@@ -15,7 +15,7 @@ module.exports = class Message
 
         composition = 
 
-            context: ['title', 'description', 'origin', 'type', 'tenor']
+            context: ['title', 'description', 'origin', 'type', 'tenor', 'direction']
 
 
         reply = undefined

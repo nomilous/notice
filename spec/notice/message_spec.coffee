@@ -42,6 +42,7 @@ require('nez').realize 'Message', (Message, test, context, should) ->
             m.origin      = 'ORIGIN'
             m.type        = 'TYPE'
             m.tenor       = 'TENOR'
+            m.direction   = 'DIRECTION'
 
             m.context.should.eql 
                 title:       'TITLE ONE'
@@ -49,6 +50,7 @@ require('nez').realize 'Message', (Message, test, context, should) ->
                 origin:      'ORIGIN'
                 type:        'TYPE'
                 tenor:       'TENOR'
+                direction:   'DIRECTION'
 
 
             test done
