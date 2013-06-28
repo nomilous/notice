@@ -65,7 +65,9 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Me
                     test done
 
 
-        it 'emits notifications onto the socket', (done) -> 
+        it 'emits outbound notifications onto the socket', (done) -> 
+
+            EMITTED.info = []
 
             Client.connect 'title',
 
@@ -94,6 +96,7 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Me
                             origin: 'origin'
                             type: 'info'
                             tenor: 'normal'
+                            direction: 'out'
 
                             #
                             # payload
@@ -117,7 +120,7 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Me
                                 origin: 'origin'
                                 type: 'info'
                                 tenor: 'normal'
-                                direction: undefined
+                                direction: 'out'
 
                             #
                             # payload as event arg1
@@ -125,12 +128,36 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Me
 
                             EMITTED.info[1].key1.should.eql 'value1'
                             EMITTED.info[1].key2.should.eql 'value2'
-
-
-
                             test done
 
                     )
 
+        it 'does not emit notifications onto the socket if they are not outbound', (done) -> 
 
+            EMITTED.info = []
 
+            Client.connect 'title',
+
+                connect:
+
+                    transport: 'https'
+                    address: 'localhost'
+                    port: 10001
+
+                (error, notice) -> 
+
+                    notice.last(
+
+                        new Message
+                            title: 'title'
+                            description: 'description'
+                            origin: 'origin'
+                            type: 'info'
+                            tenor: 'normal'
+                            direction: 'in'         
+
+                        ->
+                        
+                            EMITTED.info.length.should.equal 0
+                            test done
+                    )

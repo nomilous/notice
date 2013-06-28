@@ -20,14 +20,13 @@ onConnected = (title, opts, uplink, callback) ->
 
         console.log 'sending message:', JSON.stringify msg.content, null, 2
 
-        #
-        # a notification has been generated,
-        # transmit it over the socket
-        #
+        if msg.direction == 'out'
 
-        type = msg.context.type
-        uplink.emit type, msg.context, msg
+            type = msg.context.type
+            uplink.emit type, msg.context, msg
+
         next()
+
 
     callback null, notice
 
