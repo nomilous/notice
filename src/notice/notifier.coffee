@@ -14,55 +14,54 @@ module.exports = Notifier =
     # function
     # 
 
-    create: (originName, defaultFn) -> 
+    create: (origin, defaultFn) -> 
 
         #
-        # originName - The origin name for messages sent
+        # origin     - The message origin
         # 
         # defaultFn  - Default middleware receives the assembled
         #              message (After all middleware processing)
         #             
 
-        unless typeof originName is 'string' 
+        unless typeof origin is 'string' 
 
-            throw new Error 'Notifier.create( originName ) requires message originName as string'
+            throw new Error 'Notifier.create( origin ) requires message origin as string'
+
+        first      = []
+        firstCount = undefined
 
         middleware = []
-        assigned   = []
-        after      = []
-        afterCount = undefined
+
+        last       = []
+        lastCount  = undefined
 
         #
         # load personal message middleware from 
         # $HOME/.notice/middleware (if present)
         #
 
-        if Local()[originName]? 
+        if Local()[origin]? 
 
             # 
             # override defaultFn if $HOME/.notice/middleware defined
-            # 'originName': function(msg, next) { ... 
+            # 'origin': function(msg, next) { ... 
             #
 
-            (isMiddleWare asResolver (fn) -> assigned.push fn) Local()[originName]
+            (isMiddleWare asResolver (fn) -> first.push fn) Local()[origin]
 
         else if defaultFn instanceof Function
 
-            (isMiddleWare asResolver (fn) -> assigned.push fn) defaultFn
-
-        else 
-
-            (isMiddleWare asResolver (fn) -> assigned.push fn) (msg, next) -> next()
+            (isMiddleWare asResolver (fn) -> first.push fn) defaultFn
 
 
         if Local().finally? then (
 
-            isMiddleWare asResolver (fn) -> after.push fn
+            isMiddleWare asResolver (fn) -> last.push fn
 
         ) Local().finally
 
-        afterCount = after.length
-
+        firstCount = first.length
+        lastCount  = last.length
 
 
 
@@ -111,7 +110,7 @@ module.exports = Notifier =
 
             message.title       = title
             message.description = descriptionOr
-            message.origin      = originName
+            message.origin      = origin
             message.type        = type
             message.tenor       = tenor
 
@@ -124,7 +123,7 @@ module.exports = Notifier =
 
             functions = []
             
-            return pipeline( for fn in middleware.concat(assigned).concat after
+            return pipeline( for fn in first.concat(middleware).concat last
                           # 
                           #
                           # the 'value' of fn (function reference) will 
@@ -188,20 +187,20 @@ module.exports = Notifier =
 
         api.task         = () -> console.log 'TASK', arguments
 
+
         #
-        # registering middleware onto the end of the pipeline
-        # only one!
+        # once-only register first and last middleware 
         #
 
-        Object.defineProperty api, 'finally', 
+        Object.defineProperty api, 'first', 
             set: isMiddleWare asResolver (fn) -> 
+                return if first.length > firstCount
+                first.unshift fn
 
-                #
-                # only allow one final middleware
-                #
-                
-                return if after.length > afterCount
-                after[afterCount] = fn
+        Object.defineProperty api, 'last', 
+            set: isMiddleWare asResolver (fn) -> 
+                return if last.length > lastCount
+                last[lastCount] = fn
 
         return api
 

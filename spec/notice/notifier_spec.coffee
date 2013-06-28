@@ -9,7 +9,7 @@ require('nez').realize 'Notifier', (Notifier, test, context, should, os) ->
                 Notifier.create()
 
             catch error
-                error.should.match /requires message originName as string/
+                error.should.match /requires message origin as string/
                 test done
 
 
@@ -93,21 +93,38 @@ require('nez').realize 'Notifier', (Notifier, test, context, should, os) ->
                     msg.also.should.equal 'THAT'
                     test done
 
+            that 'allows (once only) reg of middleware to run at the beginning of the pipeline', (done) -> 
+
+                c = 0 
+                n = Notifier.create 'test'
+
+                n.use       (msg, next) -> msg.one   = ++c; next()
+                n.use       (msg, next) -> msg.two   = ++c; next()
+                n.first   = (msg, next) -> msg.start = ++c; next()
+                n.use       (msg, next) -> msg.three = ++c; next()
+                n.first   = (msg, next) -> msg.start = 'IGNORED'; next()
+
+                n.info('test').then (msg) ->
+
+                    #console.log  msg
+                    msg.start.should.equal 1
+                    test done
+
+
             that 'allows (once only) reg of middleware to run at the end of the pipeline', (done) -> 
 
                 c = 0 
                 n = Notifier.create 'test'
 
                 n.use       (msg, next) -> msg.one   = ++c; next()
-                n.finally = (msg, next) -> msg.end   = ++c; next()
+                n.last    = (msg, next) -> msg.end   = ++c; next()
                 n.use       (msg, next) -> msg.two   = ++c; next()
                 n.use       (msg, next) -> msg.three = ++c; next()
-                n.finally = (msg, next) -> msg.end   = 'IGNORED'; next()
+                n.last    = (msg, next) -> msg.end   = 'IGNORED'; next()
 
                 n.info('test').then (msg) ->
 
                     #console.log  msg
                     msg.end.should.equal 4
                     test done
-
 
