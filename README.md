@@ -129,8 +129,8 @@ The Notifier `with uplink`
 ```
 
 
-Possible Future Features (still exploring)
-------------------------------------------
+The Future (general intensions)
+-------------------------------
 
 * flood protection
 * time in pipeline / backlog (introspection)
@@ -141,4 +141,5 @@ Possible Future Features (still exploring)
 * updatability
 * resolvability            (state)
 * expire / escalate        (state)
+* mobile APIs (systems are more commonly composed **people** than software)
 
