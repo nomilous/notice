@@ -57,12 +57,15 @@ notice.event 'title', { description: 'description', more: ['th','ings'] }
 Per user / daemon middleware can be defined at `$HOME/.notice/middleware.js`, [(example)](https://github.com/nomilous/notice/blob/master/.notice/middleware.js).
 
 
+
+
+
 The Distributable Notifier
 ==========================
 
 
-The Notifier Hub
-----------------
+The Hub
+-------
 
 `Notice.listen(hubName, opts, callback)`
 
@@ -119,8 +122,8 @@ Notice.listen 'Hub Name',
 
 
 
-The Notifier Client
--------------------
+The Client
+----------
 
 ```
 
