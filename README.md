@@ -1,10 +1,10 @@
-[objective](https://github.com/nomilous/notice/blob/master/objective)
+`npm install notice`
 
 ### Version 0.0.7
 
 **unstable** - api changes may occur (without deprecation warnings)
 
-`npm install notice`
+[objective](https://github.com/nomilous/notice/blob/master/objective)
 
 notice
 ======
@@ -141,5 +141,7 @@ The Future (general intensions)
 * updatability
 * resolvability            (state)
 * expire / escalate        (state)
-* mobile APIs (systems are more commonly composed **people** than software)
+* mobile APIs (systems are more commonly composed **of people** than software)
+* requirejs / amdefine to enable browserside notifier client
+
 
