@@ -127,7 +127,7 @@ The Client
 
 `Notice.connect(clientName, opts, callback)`
 
-```
+```coffee
 
 Notice.connect 'Client Name',
         
