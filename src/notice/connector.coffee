@@ -63,9 +63,6 @@ module.exports =
                 return callback new Error 'disconnect or failed secret', null
 
 
-
-
-
         socket.on 'accept', -> 
 
             #

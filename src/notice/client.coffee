@@ -10,15 +10,13 @@ onConnected = (title, opts, uplink, callback) ->
     
     notice = notifier.create title
 
+
     notice.first = (msg, next) -> 
 
         msg.direction = 'out'
         next()
 
-
     notice.last = (msg, next) -> 
-
-        console.log 'sending message:', JSON.stringify msg.content, null, 2
 
         if msg.direction == 'out'
 
@@ -26,6 +24,25 @@ onConnected = (title, opts, uplink, callback) ->
             uplink.emit type, msg.context, msg
 
         next()
+
+
+    for event in ['info', 'event']
+
+            do (event) -> 
+
+                #
+                # inbound event from the socket are directed into
+                # the middleware pipeline
+                #
+
+                uplink.on event, (context, msg) -> 
+
+                    msg.direction = 'in'
+                    msg.origin    = context.origin
+                    title         = context.title
+                    tenor         = context.tenor
+
+                    notice[event][tenor] title, msg
 
 
     callback null, notice

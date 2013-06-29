@@ -1,6 +1,6 @@
 {
   "name": "notice",
-  "description": "messaging middleware pipeline",
+  "description": "A middleware based communications scaffold.",
   "version": "0.0.7",
   "author": "nomilous <nomilous@gmail.com>",
   "contributors": [

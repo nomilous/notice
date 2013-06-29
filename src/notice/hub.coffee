@@ -17,7 +17,12 @@ module.exports.create = (hubName, opts, callback) ->
 
         outbound = Notifier.create hubName
 
-        outbound.finally = (msg, next) -> 
+        outbound.first = (msg, next) -> 
+
+            msg.direction = 'out'
+            next()
+
+        outbound.last = (msg, next) -> 
 
             type = msg.context.type
             socket.emit type, msg.context, msg
@@ -140,5 +145,3 @@ module.exports.create = (hubName, opts, callback) ->
 
         socket.on 'disconnect', -> 
 
-    
-    return opts

@@ -108,7 +108,7 @@ Notice.listen 'Hub Name',
 
         hub.use (msg, next) -> 
 
-            console.log 'from:', msg.context.origin, msg
+            console.log 'RECEIVE:', msg.context.origin, msg
 
             #
             # reply across the response pipeline

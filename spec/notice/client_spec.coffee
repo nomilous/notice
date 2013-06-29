@@ -29,7 +29,9 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Me
     context 'onConnect()', (it) -> 
 
         EMITTED = {}
-        SOCKET  = emit: (event, args...) -> EMITTED[event] = args
+        SOCKET  = 
+            emit: (event, args...) -> EMITTED[event] = args
+            on: (event, callback) -> 
         NOTICE  = {}
         Connector.connect = (opts, callback) -> callback null, SOCKET
         Notifier.create = (title) -> NOTICE.title = title; return NOTICE
@@ -157,7 +159,7 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Me
                             direction: 'in'         
 
                         ->
-                        
+
                             EMITTED.info.length.should.equal 0
                             test done
                     )
