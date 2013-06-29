@@ -1,6 +1,8 @@
 #!/usr/bin/env coffee
 
-require('../lib/notice/client').connect 'Client Name',
+Notice = require '../lib/notice'
+
+Notice.connect 'Client Name',
         
     connect:
 
@@ -12,81 +14,28 @@ require('../lib/notice/client').connect 'Client Name',
 
         throw error if error?
 
-        notice.event.good 'start', 
+        #
+        # assign middleware to process messages
+        # -------------------------------------
+        # 
+        # * client has only one middleware pipeline
+        # * messages define context.direction (in|out)
+        #
 
-            'Solar System':
+        notice.use (msg, next) ->
 
-                precambrian:
-                    accretion: -4570000000
-                    'SOLAR MAIN SEQUENCE START': -4550000000
-                    hadean: -4500000000
-                    'COLLOSAL LAGRANGIAN PLANITISMAL IMPACT': -4500000000
-                    archean:
-                        'EARTHS CRUST STABALIZES': -4400000000
-                        eoarchean: -3750000000
-                        paleoarchean: -3600000000
-                        'MAGNETIC FIELD ESTABLISHED': -3500000000
-                        'EARLIEST KNOWN BACTERIA': -3460000000
-                        mesoarchean: -3100000000
-                        'PROTO CONTINENTS': 3000000000
-                        neoarchean: -2750000000
-                    proterozoic: 
-                        paleoproterozoic: -2500000000
-                        'EARLIEST MITOSIS': -2100000000
-                        mesoproterozoic: -1600000000
-                        'RODINIA AND MIROVIA': -1000000000
-                        neoproterozoic: -1000000000
-                        'FIRST ALGEA': -1000000000
+            switch msg.context.direction
 
-                phanerozoic:
-                    paleazoic:
-                        chambrian: 
-                            'THE CHAMBRIAN EXPLOSION': -530000000
-                            ordovician: -490000000
-                            'ORDOVICIAN-SILURIAN MASS EXTINCTION EVENT': -450000000
-                            silurian: -450000000
-                            devonian: -420000000
-                            'FIRST CREATURE TOOK A BREATH OF AIR': -420000000
-                            'LATE DEVONIAN MASS EXTINCTION EVENT': -360000000
-                            carboniferous: -360000000
-                            permian: -300000000
-                        mesozoic:
-                            'PERMIAN-TRIASSIC MASS EXTINCTION EVENT': -251000000
-                            'FIRST DINOSOAR': -225000000
-                            triassic: -200000000
-                            'TRIASSIC-JURASSIC MASS EXTINCTION EVENT': -205000000
-                            'PANGEA DIVIDES': -180000000
-                            jurassic: -150000000
-                            cretaceous: -69000000
-                            'TYRANNOSAURUS REX': -68000000  
-                        cenozoic:
-                            paleogene:
-                                'CRETACEOUS-TERTIARY MASS EXTINCTION EVENT': -65000000
-                                'FIRST PRIMATE': -60000000
-                                paleocene: -59000000
-                                'WHALES RETURN TO THE OCEAN': -49000000
-                                eocene: -34000000
-                                oligocene: -23000000
-                            neogene:
-                                miocene: -6500000
-                                pliocene: -2800000
-                            quaternary:
-                                pleistocene:
-                                    'HOMO HABILIS': -2300000
-                                    gelasian: -1800000
-                                    calabrian: -781000
-                                    'HOMO SAPIENS': -200000
-                                    ionian: -126000
-                                    'VENUS OF HOHLE FELS': -40000
-                                    tarantian: -11700
-                                holocene:
-                                    'THE RISE OF JERICHO': -11000
-                                    preboreal: -9000
-                                    boreal: -8000
-                                    atlantic: -5000
-                                    'SUMERIAN CUNEIFORM AND THE INVENTION OF WRITING': -5000
-                                    'STONE AGE ENDS': -5000
-                                    subboreal: -2500
-                                    'DEATH OF SOCRATES': -2410
-                                    'FIRST COUNCIL OF NICAEA': -2336
+                when 'out' then console.log 'SEND:   ', msg.context.title, msg
 
+                when 'in'  then console.log 'RECEIVE:', msg.context.origin, msg
+
+
+            next()
+
+
+        #
+        # send an event message
+        #
+
+        notice.event 'connect', hello: "i'm online"

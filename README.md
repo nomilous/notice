@@ -84,7 +84,7 @@ Notice.listen 'Hub Name',
     listen:
 
         secret:   '◊'
-        port:     12345
+        port:     10101
         address:  '0.0.0.0'
         cert:   __dirname + '/cert/develop-cert.pem'
         key:    __dirname + '/cert/develop-key.pem'
@@ -125,11 +125,49 @@ Notice.listen 'Hub Name',
 The Client
 ----------
 
+`Notice.connect(clientName, opts, callback)`
+
 ```
 
+Notice.connect 'Client Name',
+        
+    connect:
+
+        secret:      '◊'
+        port:       10101
+        transport: 'https'
+    
+    (error, notice) -> 
+
+        throw error if error?
+
+        #
+        # assign middleware to process messages
+        # -------------------------------------
+        # 
+        # * client has only one middleware pipeline
+        # * messages define context.direction (in|out)
+        #   to distinguish between inbound an outbound 
+        #   messages
+        #
+
+        notice.use (msg, next) ->
+
+            switch msg.context.direction
+
+                when 'out' then console.log 'SEND:   ', msg.context.title, msg
+
+                when 'in'  then console.log 'RECEIVE:', msg.context.origin, msg
 
 
+            next()
 
+
+        #
+        # send an event message
+        #
+
+        notice.event 'connect', hello: "i'm online"
 
 
 ```

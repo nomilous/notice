@@ -1,21 +1,50 @@
 #!/usr/bin/env coffee
 
-require('../lib/notice').listen 'hub name',
+Notice = require '../lib/notice'
     
-    listen: 
-        secret: '◊'
-        loglevel: 3
+Notice.listen 'Hub Name', 
+
+    #
+    # Configure with opts.listen
+    # -------------------------- 
+    # 
+    #  * Using socket.io
+    #  * PENDING: adaptor abstraction to enable transport plugins
+    #
+
+    listen:
+
+        secret:   '◊'
+        port:     10101
         address:  '0.0.0.0'
-        port:   10101
         cert:   __dirname + '/../cert/develop-cert.pem'
         key:    __dirname + '/../cert/develop-key.pem'
 
-    (error, remotes) -> 
 
-        remotes.use (msg, next) -> 
+    #
+    # Callback receives listening hub
+    # -------------------------------
+    # 
+    # * hub is the interface to remote notifiers
+    # * ... precise api design still in progress
+    #
 
-            # console.log msg
+    (error, hub) -> 
 
-            msg.reply.info '42'
+        throw error if error?
 
+        #
+        # assign middleware to handle arriving messages
+        #
+
+        hub.use (msg, next) -> 
+
+            console.log 'RECEIVE:', msg.context.origin, msg
+
+            #
+            # reply across the response pipeline
+            #
+
+            msg.reply.info 'title', hello: msg.context.origin
             next()
+
