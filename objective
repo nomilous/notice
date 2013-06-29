@@ -2,10 +2,10 @@
 
 require('nez').objective 'notice', 
 
-    assignTo: 'me'
     description: """
 
-    messaging middleware pipeline
+    Develop a communications and state management scaffold to 
+    enable the  creation / configuration of highly manageable 
+    distributed systems.
 
-    """, (Requirement) -> 
-
+    """, -> 

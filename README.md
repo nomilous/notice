@@ -1,12 +1,15 @@
-### Version 0.0.7 - (unstable)
+[objective](https://github.com/nomilous/notice/blob/master/objective)
+
+### Version 0.0.7
+
+**unstable** - api changes may occur (without deprecation warnings)
 
 `npm install notice`
-
 
 notice
 ======
 
-A messaging middleware pipeline.
+A middleware based communications scaffold.
 
 
 Standalone Notifier
