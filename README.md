@@ -12,8 +12,8 @@ notice
 A middleware based communications scaffold.
 
 
-Standalone Notifier
--------------------
+The Standalone Notifier
+-----------------------
 
 `notice = Notice.create(originName, defaultMiddleware)`
 
@@ -57,9 +57,12 @@ notice.event 'title', { description: 'description', more: ['th','ings'] }
 Per user / daemon middleware can be defined at `$HOME/.notice/middleware.js`, [(example)](https://github.com/nomilous/notice/blob/master/.notice/middleware.js).
 
 
+The Distributable Notifier
+==========================
 
-Notifier Hub
-------------
+
+The Notifier Hub
+----------------
 
 `Notice.listen(hubName, opts, callback)`
 
@@ -116,8 +119,8 @@ Notice.listen 'Hub Name',
 
 
 
-The Notifier `with uplink`
---------------------------
+The Notifier Client
+-------------------
 
 ```
 
@@ -129,8 +132,10 @@ The Notifier `with uplink`
 ```
 
 
-The Future (general intensions)
--------------------------------
+The Future
+==========
+
+### possible features / general intensions
 
 * flood protection
 * time in pipeline / backlog (introspection)
