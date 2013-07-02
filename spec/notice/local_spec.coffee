@@ -29,9 +29,9 @@ require('nez').realize 'Local', (Local, test, context, should, fs, Notice) ->
 
 
 
-    context 'integrations', (that) -> 
+    context 'integrations', (it) -> 
 
-        that 'can be defined $HOME/.notice/middleware.js', (done) -> 
+        it 'loads local environment middleware from $HOME/.notice/middleware.js', (done) -> 
 
             clearCache()
             spy = fs.readFileSync
@@ -43,7 +43,7 @@ require('nez').realize 'Local', (Local, test, context, should, fs, Notice) ->
             notice = Notice.create( 'origin' )
 
 
-        that 'allows definition of middleware that runs for all origins', (done) -> 
+        it 'allows definition of middleware that runs for all origins', (done) -> 
 
             clearCache()
             spy = fs.readFileSync
@@ -79,7 +79,7 @@ require('nez').realize 'Local', (Local, test, context, should, fs, Notice) ->
             ), 10
 
 
-        that 'allows middleware that runs only for specific origins', (done) -> 
+        it 'allows middleware that runs only for specific origins', (done) -> 
 
             clearCache()
             spy = fs.readFileSync
@@ -115,7 +115,7 @@ require('nez').realize 'Local', (Local, test, context, should, fs, Notice) ->
             ), 10
 
 
-        that 'runs after all other middleware', (done) -> 
+        it 'runs after all other middleware', (done) -> 
 
             clearCache()
             spy = fs.readFileSync
