@@ -47,22 +47,20 @@ module.exports = Notifier =
             # 'origin': function(msg, next) { ... 
             #
 
-            (isMiddleWare asResolver (fn) -> first.push fn) Local()[origin]
+            (isMiddleWare asResolver (fn) -> last.push fn) Local()[origin]
 
         else if defaultFn instanceof Function
 
-            (isMiddleWare asResolver (fn) -> first.push fn) defaultFn
+            (isMiddleWare asResolver (fn) -> last.push fn) defaultFn
 
-
-        if Local().finally? then (
+        if Local().all? then (
 
             isMiddleWare asResolver (fn) -> last.push fn
 
-        ) Local().finally
+        ) Local().all
 
         firstCount = first.length
         lastCount  = last.length
-
 
 
         notifier = (title, descriptionOr, type, tenor) ->

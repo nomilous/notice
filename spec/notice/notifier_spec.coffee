@@ -15,24 +15,27 @@ require('nez').realize 'Notifier', (Notifier, test, context, should, os) ->
 
         it 'returns a notifier', (that) -> 
 
-            RECEIVED = []
-            notify = Notifier.create( 'Message Origin' )
-
-
             that 'is used to send messages', (done) -> 
 
+                notify = Notifier.create( 'Message Origin' )
                 notify 'test message'
                 test done
 
 
             that 'has a middleware registrar', (done) -> 
 
-                notify.use (msg, next) -> next() 
-                test done
+                notify = Notifier.create( 'Message Origin' )
+                notify.use (msg, next) -> 
+                    next()
+                    test done
+                notify 'test message'
+
+                
 
 
             that 'can further classify the message with type', (done) -> 
 
+                notify = Notifier.create( 'Message Origin' )
                 notify.use (msg, next) -> 
 
                     msg.context.type.should.equal 'info'
@@ -41,38 +44,32 @@ require('nez').realize 'Notifier', (Notifier, test, context, should, os) ->
 
                 notify.info 'test message'
 
-            that 'can further classify the message with tenor', (done) -> 
-
-                notify.use (msg, next) -> 
-
-                    msg.context.tenor.should.equal 'bad'
-                    test done
-                    next()
-
-                notify.info.bad 'test message'
-                
+            
 
             that 'returns the message "promise tail" from middleware pipeline', (done) ->
 
+                notify = Notifier.create( 'Message Origin' )
                 notify.info.normal( 'message' ).then.should.be.an.instanceof Function
                 test done
 
 
             that 'populates the tail resolver with the final message (post middleware)', (done) -> 
 
+                notify = Notifier.create( 'Message Origin' )
                 notify.info.normal( 'message' ).then (finalMessage) -> 
 
                     finalMessage.context.title.should.equal 'message'
                     finalMessage.context.origin.should.equal 'Message Origin'
+
                     test done
 
-            that 'survives middleware exceptions'
-            that 'enables tracable middleware'
+            # # that 'survives middleware exceptions'
+            # # that 'enables tracable middleware'
 
 
             that 'passes the message through the registered middleware', (done) -> 
 
-
+                notify = Notifier.create( 'Message Origin' )
                 notify.use (msg, next) -> 
                     
                     msg.and  = 'THIS'
@@ -127,4 +124,5 @@ require('nez').realize 'Notifier', (Notifier, test, context, should, os) ->
                     #console.log  msg
                     msg.end.should.equal 4
                     test done
+
 

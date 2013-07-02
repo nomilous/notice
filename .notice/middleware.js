@@ -1,48 +1,49 @@
 // 
 // Example personal message middleware
-//
-// - Always loaded last on the middleware pipeline
 // 
 // $HOME/.notice/middleware.js
 //
 
-module.exports = { 
+module.exports = {
 
-    "origin name": function( msg, next ) {
+    // 
+    // Middleware per 'origin name'
+    // ----------------------------
+    //
+    // Optional
+    // 
+    // * This will override the `defaultFn` middleware as
+    //   assigned at creation of the notifier.
+    //   
+    //    ie. notice = Notice.create(originName, defaultFn)
+    // 
+    // * This will run after all other middleware as assigned 
+    //   using the `notice.use(middlewareFn)` registrar.
+    // 
 
-        // 
-        // override per 'origin name'
-        //
+    'origin name': function( msg, next ) {
 
         next();
 
     },
 
-    finally: function( msg, next ) {
+
+    // 
+    // Middleware for all 'origin name's
+    // ---------------------------------
+    //
+    // Optional
+    // 
+    // * This will always run, irrespective of the message origin
+    // * This will run after all middleware
+    //
+
+    all: function( msg, next ) {
 
         //
-        // is always run
+        // always run, no matter the origin name of the message
         //
-        // console.log( JSON.stringify( msg.content, null, 2 ) );
-        // console.log( msg.context );
-        // console.log( msg );
-        //
-        // 
-        // do anything: 
-        // ============
-        // 
-        // require 'hubot', 'statsd', socket.io', 'umm?', 'big', 'pile', 'of things'
-        //
-        //
-        // call next(), And if you choose to breakout in order to augment the
-        //              message with payload from a remote source, be sure to 
-        //              only call next() after your query callback data has
-        //              been appended to the msg.
-        //              
-        //              
-        // 
 
-        msg.anything = 'you want'
         next();
 
     }

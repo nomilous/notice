@@ -5,7 +5,16 @@ module.exports = ->
         # users can define HOME/.notice/middleware.js
         #
 
-        require "#{  process.env.HOME  }/.notice/middleware"
+        middleware = require "#{  process.env.HOME  }/.notice/middleware"
+        processed  = {}
+
+        if middleware.all? 
+
+            processed.all = middleware.all
+
+            
+
+        return processed
 
 
     catch error
