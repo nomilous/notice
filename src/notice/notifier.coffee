@@ -47,7 +47,7 @@ module.exports = Notifier =
             # 'origin': function(msg, next) { ... 
             #
 
-            (isMiddleWare asResolver (fn) -> last.push fn) Local()[origin]
+            (isMiddleWare asResolver (fn) -> last.push fn) Local()[origin].fn
 
         else if defaultFn instanceof Function
 

@@ -10,6 +10,57 @@ require('nez').realize 'Local', (Local, test, context, should, fs, Notice) ->
 
 
 
+    context 'local.all', (it) -> 
+
+        it 'contains definition of the local middleware to be assigned to all pipelines', (done) -> 
+
+            clearCache()
+            spy = fs.readFileSync
+            fs.readFileSync = (file) -> 
+                fs.readFileSync = spy
+                return """
+
+                module.exports = {
+
+                    all: function( msg, next ) {
+
+                        msg.append_a_property = 'value'
+                        next();
+
+                    }
+
+                }
+                """
+
+            Local().all.toString().should.match /msg.append_a_property = 'value'/
+            test done
+
+
+    context 'local.*', (it) -> 
+
+        it 'returns defaults the match spec and middleware fn per origin name', (done) ->
+
+            clearCache()
+            spy = fs.readFileSync
+            fs.readFileSync = (file) -> 
+                fs.readFileSync = spy
+                return """
+
+                module.exports = {
+
+                    originName: function( msg, next ) {
+
+                        //moo
+                        next();
+
+                    }
+
+                }
+                """
+
+            Local().originName.matchAll.should.eql origin: 'originName'
+            Local().originName.fn.should.match /moo/
+            test done
 
 
 

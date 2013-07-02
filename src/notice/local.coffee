@@ -16,7 +16,10 @@ module.exports = ->
 
             continue if key == 'all'
 
-            processed[key] = middleware[key]
+            processed[key] = if typeof middleware[key] == 'function'
+
+                matchAll: origin: key
+                fn: middleware[key]
 
         return processed
 
