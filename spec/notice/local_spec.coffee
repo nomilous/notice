@@ -8,7 +8,28 @@ require('nez').realize 'Local', (Local, test, context, should, fs, Notice) ->
 
         delete require.cache[process.env.HOME + '/.notice/middleware.js']
 
-    context 'loads environment middleware', (that) -> 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    context 'integrations', (that) -> 
 
         that 'can be defined $HOME/.notice/middleware.js', (done) -> 
 
@@ -93,6 +114,49 @@ require('nez').realize 'Local', (Local, test, context, should, fs, Notice) ->
 
             ), 10
 
-        
+
+        that 'runs after all other middleware', (done) -> 
+
+            clearCache()
+            spy = fs.readFileSync
+            fs.readFileSync = (file) -> 
+                fs.readFileSync = spy
+                return """
+
+                module.exports = {
+
+                    'origin name': function(msg, next) {
+
+                        msg.property = 'value'
+                        next();
+
+                    }
+
+                }
+                """
+
+            notice  = Notice.create( 'origin name' )
+            DEFINED = []
+
+            notice.use (msg, next) -> 
+
+                DEFINED['in middleware'] = property: msg.property
+                next()
+
+
+            notice.info('test1').then (msg) -> 
+
+                DEFINED['in final message'] = property: msg.property
+
+
+            setTimeout (->
+
+                should.not.exist DEFINED['in middleware'].property
+                DEFINED['in final message'].property.should.equal 'value'
+                test done
+
+            ), 10
+
+
 
 
