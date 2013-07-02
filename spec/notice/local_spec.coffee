@@ -1,6 +1,12 @@
 require('nez').realize 'Local', (Local, test, context, should, fs, Notice) -> 
 
-    clearCache = -> delete require.cache[process.env.HOME + '/.notice/middleware.js']
+    clearCache = -> 
+        
+        #
+        # clear the already required 'local' from the require cache 
+        #
+
+        delete require.cache[process.env.HOME + '/.notice/middleware.js']
 
     context 'loads environment middleware', (that) -> 
 
@@ -35,20 +41,58 @@ require('nez').realize 'Local', (Local, test, context, should, fs, Notice) ->
 
                 }
                 """
-                test done
 
             notice1  = Notice.create( 'origin one' )
             notice2  = Notice.create( 'origin two' )
-            RECEIVED = []
+            RECEIVED = {}
 
-            notice1.info('test1').then (msg) -> RECEIVED.push msg
-            notice1.info('test2').then (msg) -> RECEIVED.push msg
+            notice1.info('test1').then (msg) -> RECEIVED[msg.context.origin] = msg
+            notice2.info('test2').then (msg) -> RECEIVED[msg.context.origin] = msg
 
             setTimeout (->
 
-                RECEIVED[0].property.should.equal 'value'
-                RECEIVED[1].property.should.equal 'value'
+                RECEIVED['origin one'].property.should.equal 'value'
+                RECEIVED['origin two'].property.should.equal 'value'
                 test done
 
             ), 10
+
+
+        that 'allows middleware that runs only for specific origins', (done) -> 
+
+            clearCache()
+            spy = fs.readFileSync
+            fs.readFileSync = (file) -> 
+                fs.readFileSync = spy
+                return """
+
+                module.exports = {
+
+                    'origin name': function(msg, next) {
+
+                        msg.property = 'value'
+                        next();
+
+                    }
+
+                }
+                """
+
+            notice1  = Notice.create( 'origin name' )
+            notice2  = Notice.create( 'another origin name' )
+            RECEIVED = {}
+
+            notice1.info('test1').then (msg) -> RECEIVED[ msg.context.origin ] = msg
+            notice2.info('test2').then (msg) -> RECEIVED[ msg.context.origin ] = msg
+
+            setTimeout (->
+
+                RECEIVED['origin name'].property.should.equal 'value'
+                should.not.exist RECEIVED['another origin name'].property
+                test done
+
+            ), 10
+
+        
+
 

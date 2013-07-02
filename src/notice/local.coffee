@@ -12,7 +12,11 @@ module.exports = ->
 
             processed.all = middleware.all
 
-            
+        for key of middleware
+
+            continue if key == 'all'
+
+            processed[key] = middleware[key]
 
         return processed
 
