@@ -19,16 +19,11 @@ require('nez').realize 'Local', (Local, test, context, should, fs, Notice) ->
             fs.readFileSync = (file) -> 
                 fs.readFileSync = spy
                 return """
-
                 module.exports = {
-
                     all: function( msg, next ) {
-
                         msg.append_a_property = 'value'
                         next();
-
                     }
-
                 }
                 """
 
@@ -36,48 +31,73 @@ require('nez').realize 'Local', (Local, test, context, should, fs, Notice) ->
             test done
 
 
-    context 'local.*', (it) -> 
+    # 
+    # context 'local.*', (it) -> 
 
-        it 'returns defaults the match spec and middleware fn per origin name', (done) ->
+    #     it 'returns defaults the match spec and middleware fn per origin name', (done) ->
 
-            clearCache()
-            spy = fs.readFileSync
-            fs.readFileSync = (file) -> 
-                fs.readFileSync = spy
-                return """
+    #         clearCache()
+    #         spy = fs.readFileSync
+    #         fs.readFileSync = (file) -> 
+    #             fs.readFileSync = spy
+    #             return """
 
-                module.exports = {
+    #             module.exports = {
+    #                 originName: function( msg, next ) {
+    #                     //moo
+    #                     next();
+    #                 }
+    #             }
+    #             """
 
-                    originName: function( msg, next ) {
-
-                        //moo
-                        next();
-
-                    }
-
-                }
-                """
-
-            Local().originName.matchAll.should.eql origin: 'originName'
-            Local().originName.fn.should.match /moo/
-            test done
+    #         Local().originName.matchAll.should.eql origin: 'originName'
+    #         Local().originName.fn.should.match /moo/
+    #         test done
 
 
+    #     it 'returns middlewares per origin name if array is defined', (done) ->
 
+    #         clearCache()
+    #         spy = fs.readFileSync
+    #         fs.readFileSync = (file) -> 
+    #             fs.readFileSync = spy
+    #             return """
 
+    #             module.exports = {
 
+    #                 originName: [{ 
+    #                         matchAll: {
+    #                             type: 'event',
+    #                             tenor: 'good'
+    #                         },
+    #                         fn: function( msg, next ) { 
+    #                             //handle good
+    #                             next();
+    #                         }
 
+    #                     },{
+    #                         matchAll: {
+    #                             type: 'event',
+    #                             tenor: 'bad'
+    #                         },
+    #                         fn: function( msg, next ) { 
+    #                             //handle bad
+    #                             next();
+    #                         }
+    #                     }
+    #                 ]
+    #             }
+    #             """
 
+    #         Local().originName[0].fn.toString().should.match /handle good/
+    #         Local().originName[0].matchAll.should.eql type: 'event', tenor: 'good'
 
-
-
-
-
-
-
-
-
-
+    #         Local().originName[1].fn.toString().should.match /handle bad/
+    #         Local().originName[1].matchAll.should.eql type: 'event', tenor: 'bad'
+    #         test done
+    # 
+    # 
+    # no, not yet... (rabbit hole!)
 
 
     context 'integrations', (it) -> 

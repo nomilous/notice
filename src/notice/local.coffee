@@ -1,4 +1,9 @@
+validate = (arrayOfMiddleware) -> 
+
+    return arrayOfMiddleware
+
 module.exports = -> 
+    
     try
 
         #
@@ -16,10 +21,20 @@ module.exports = ->
 
             continue if key == 'all'
 
-            processed[key] = if typeof middleware[key] == 'function'
+            processed[key] = 
 
-                matchAll: origin: key
-                fn: middleware[key]
+                if typeof middleware[key] == 'function'
+
+                    matchAll: origin: key
+                    fn: middleware[key]
+
+                else if middleware[key] instanceof Array
+
+                    validate middleware[key]
+
+                else
+
+                    undefined
 
         return processed
 

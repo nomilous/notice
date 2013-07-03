@@ -19,7 +19,12 @@ module.exports = {
     // 
     // * This will run after all other middleware as assigned 
     //   using the `notice.use(middlewareFn)` registrar.
-    // 
+    //
+    // * This will run as matched with the hubName for the case 
+    //   of a hubside pipeline. `msg.context.direction` is set 
+    //   to either 'in' or 'out' per messages arriving or departing.
+    //   Inbound message retains the origin name of the source.
+    //   
 
     'origin name': function( msg, next ) {
 
