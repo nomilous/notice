@@ -26,7 +26,7 @@ onConnected = (title, opts, uplink, callback) ->
         next()
 
 
-    for event in ['info', 'event']
+    for event in ['info', 'event', 'task']
 
             do (event) -> 
 

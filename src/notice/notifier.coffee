@@ -183,7 +183,12 @@ module.exports = Notifier =
         api.event.good   = (title, description) -> notifier title, description, 'event', 'good'
         api.event.bad    = (title, description) -> notifier title, description, 'event', 'bad'
 
-        api.task         = () -> console.log 'TASK not yet implemented', arguments
+        #
+        # temporary task as message
+        #
+
+        api.task         = (title, description) -> notifier title, description, 'task',  'normal'
+        api.task.normal  = (title, description) -> notifier title, description, 'task',  'normal'
 
 
         #
