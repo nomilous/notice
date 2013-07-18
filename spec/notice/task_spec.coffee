@@ -1,12 +1,15 @@
 require('nez').realize 'Task', (Task, test, context) -> 
 
-    context 'contructor', (it) ->
+    context 'create()', (it) ->
 
         it 'creates a task with unique id', (done) -> 
 
-            a = new Task 'title', {}
-            z = new Task 'title', {}
+            a = Task.create 'title', {}
+            z = Task.create 'title', {}
+
+            console.log a.id = 1
+            console.log a
 
             z.id.should.not.equal a.id
             test done
-            
+

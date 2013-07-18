@@ -2,8 +2,10 @@ pipeline     = require 'when/pipeline'
 Defer        = require('when').defer
 Message      = require './message'
 Local        = require './local'
+task         = require './task'
 isMiddleWare = require('./decorators').isMiddleware
 asResolver   = require('./decorators').asResolver
+
 
 
 module.exports = Notifier =
@@ -183,12 +185,8 @@ module.exports = Notifier =
         api.event.good   = (title, description) -> notifier title, description, 'event', 'good'
         api.event.bad    = (title, description) -> notifier title, description, 'event', 'bad'
 
-        #
-        # temporary task as message
-        #
-
-        api.task         = (title, description) -> notifier title, description, 'task',  'normal'
-        api.task.normal  = (title, description) -> notifier title, description, 'task',  'normal'
+        api.task         = (title, opts) -> task.create notifier, title, opts
+        
 
 
         #

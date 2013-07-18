@@ -1,7 +1,18 @@
 {asUniq} = require './decorators'
 
+#
+# task factory
+# 
 
-module.exports = class Task 
+exports.create = asUniq (id, notifier, title, opts) -> 
 
-    constructor: asUniq (@id, @title, @opts) -> 
-    
+    console.log createTask: arguments
+
+    task = new Object
+
+    Object.defineProperty task, 'id', 
+        enumerable: true
+        writable: false
+        value: id
+
+
