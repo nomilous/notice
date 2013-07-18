@@ -7,9 +7,11 @@ require('nez').realize 'Task', (Task, test, context) ->
             a = Task.create 'title', {}
             z = Task.create 'title', {}
 
-            console.log a.id = 1
-            console.log a
-
             z.id.should.not.equal a.id
+            test done
+
+        it 'returns a promise', (done) -> 
+
+            Task.create('title', {}).then.should.be.an.instanceof Function
             test done
 

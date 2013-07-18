@@ -1,4 +1,5 @@
 {asUniq} = require './decorators'
+{defer}  = require 'when' 
 
 #
 # task factory
@@ -6,13 +7,39 @@
 
 exports.create = asUniq (id, notifier, title, opts) -> 
 
-    console.log createTask: arguments
+    #
+    # task is a deferral
+    #
 
-    task = new Object
+    task = defer()
 
-    Object.defineProperty task, 'id', 
+    #
+    # assign id to promise
+    #
+
+    Object.defineProperty task.promise, 'id', 
         enumerable: true
         writable: false
         value: id
+
+
+    #
+    # TEMPORARY
+    #
+
+    setTimeout (->
+
+        task.resolve 'TEST'
+
+    ), 100
+
+
+    #
+    # return the promise
+    # 
+
+    task.promise
+
+
 
 
