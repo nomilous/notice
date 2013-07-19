@@ -3,9 +3,11 @@
 
 #
 # task factory
-# 
+#  
 
-exports.create = asUniq (id, notifier, title, opts) -> 
+exports.createTask = asUniq (id, title, opts, notifier) -> 
+
+    console.log createTask: arguments
 
     #
     # task is a deferral
@@ -22,16 +24,9 @@ exports.create = asUniq (id, notifier, title, opts) ->
         writable: false
         value: id
 
+    opts.id = id
 
-    #
-    # TEMPORARY
-    #
-
-    setTimeout (->
-
-        task.resolve 'TEST'
-
-    ), 100
+    notifier title, opts, 'task', 'normal'
 
 
     #
