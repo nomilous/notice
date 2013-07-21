@@ -2,7 +2,6 @@ pipeline     = require 'when/pipeline'
 Defer        = require('when').defer
 Message      = require './message'
 Local        = require './local'
-taskFactory  = require './task_factory'
 isMiddleWare = require('./decorators').isMiddleware
 asResolver   = require('./decorators').asResolver
 
@@ -185,8 +184,6 @@ module.exports = Notifier =
         api.event.good   = (title, description) -> notifier title, description, 'event', 'good'
         api.event.bad    = (title, description) -> notifier title, description, 'event', 'bad'
 
-        api.task         = (title, opts) -> taskFactory.createTask title, opts, notifier
-        
 
         #
         # once-only register first and last middleware 

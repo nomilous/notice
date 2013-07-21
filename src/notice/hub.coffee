@@ -114,7 +114,7 @@ module.exports.create = (hubName, opts, callback) ->
                 socket.disconnect()
 
 
-        for event in ['info', 'event', 'task']
+        for event in ['info', 'event']
 
             do (event) -> 
 
