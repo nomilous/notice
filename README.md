@@ -178,6 +178,7 @@ The Future
 
 ### possible features / general intensions
 
+* named middleware (can be added and removed from the pipeline)
 * flood protection
 * time in pipeline / backlog (introspection)
 * as message receiver
