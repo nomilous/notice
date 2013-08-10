@@ -180,6 +180,7 @@ The Future
 
 * flood protection
 * time in pipeline / backlog (introspection)
+* error / exception detecion in pipeline (carried out on the promise)
 * as message receiver
 * tasks and escalations (with persistor plugin / state machine)
 * hubside pipeline promise
