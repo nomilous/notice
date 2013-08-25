@@ -1,6 +1,6 @@
 `npm install notice`
 
-### Version 0.0.7
+### Version 0.0.8
 
 **unstable** - api changes may occur (without deprecation warnings)
 
@@ -25,12 +25,6 @@ The Standalone Notifier
 # Create a notifier with default middleware
 # -----------------------------------------
 # 
-#  * If $HOME/.notice/middleware.js defines middleware
-#    for the same originName it will override this 
-#    default middleware. 
-# 
-#    see 'Local Environment Middleware' below
-#
 
 notice = Notice.create 'Origin Name', (msg, next) -> 
     
@@ -49,15 +43,30 @@ notice = Notice.create 'Origin Name', (msg, next) ->
 notice.info 'title', 'description'
 notice.event 'title', { description: 'description', more: ['th','ings'] }
 
+#
+# Emit a message and do nothing until all middleware processed it
+# ---------------------------------------------------------------
+# 
+# * As a message bus
+# 
+# * As an assembly line.
+#
+# * Averts the often perplexing problem of referenced data changing after 
+#   it was emitted (via event.EventEmitter) but while the subscriber(s)
+#   are still using it. 
+# 
+
+notice.event( 'event name', { complex: 'Object' } ).then (msg) -> 
+    
+    #
+    # All subscribed middlewares have processed the message
+    # -----------------------------------------------------
+    # 
+    # * Some may have modified it (assembly line)
+    # * The final resulting message `msg` was passed into this function
+    # 
+
 ```
-
-
-### Local Environment Middleware
-
-Per user / daemon middleware can be defined at `$HOME/.notice/middleware.js`, [(example)](https://github.com/nomilous/notice/blob/master/.notice/middleware.js).
-
-
-
 
 
 The Distributable Notifier
@@ -178,6 +187,7 @@ The Future
 
 ### possible features / general intensions
 
+* named middleware (can be added and removed from the pipeline)
 * flood protection
 * time in pipeline / backlog (introspection)
 * error / exception detecion in pipeline (carried out on the promise)
