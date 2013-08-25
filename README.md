@@ -25,12 +25,6 @@ The Standalone Notifier
 # Create a notifier with default middleware
 # -----------------------------------------
 # 
-#  * If $HOME/.notice/middleware.js defines middleware
-#    for the same originName it will override this 
-#    default middleware. 
-# 
-#    see 'Local Environment Middleware' below
-#
 
 notice = Notice.create 'Origin Name', (msg, next) -> 
     
@@ -50,13 +44,6 @@ notice.info 'title', 'description'
 notice.event 'title', { description: 'description', more: ['th','ings'] }
 
 ```
-
-
-### Local Environment Middleware
-
-Per user / daemon middleware can be defined at `$HOME/.notice/middleware.js`, [(example)](https://github.com/nomilous/notice/blob/master/.notice/middleware.js).
-
-
 
 
 

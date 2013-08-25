@@ -1,7 +1,7 @@
 pipeline     = require 'when/pipeline'
 Defer        = require('when').defer
 Message      = require './message'
-Local        = require './local'
+# Local        = require './local'
 isMiddleWare = require('./decorators').isMiddleware
 asResolver   = require('./decorators').asResolver
 
@@ -36,29 +36,9 @@ module.exports = Notifier =
         last       = []
         lastCount  = undefined
 
-        #
-        # load personal message middleware from 
-        # $HOME/.notice/middleware (if present)
-        #
-
-        if Local()[origin]? 
-
-            # 
-            # override defaultFn if $HOME/.notice/middleware defined
-            # 'origin': function(msg, next) { ... 
-            #
-
-            (isMiddleWare asResolver (fn) -> last.push fn) Local()[origin].fn
-
-        else if defaultFn instanceof Function
+        if defaultFn instanceof Function
 
             (isMiddleWare asResolver (fn) -> last.push fn) defaultFn
-
-        if Local().all? then (
-
-            isMiddleWare asResolver (fn) -> last.push fn
-
-        ) Local().all
 
         firstCount = first.length
         lastCount  = last.length
