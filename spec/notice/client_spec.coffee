@@ -1,6 +1,24 @@
-require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Message) -> 
+#require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Message) -> 
 
-    context 'connect()', (it) ->
+should    = require 'should'
+
+Connector = require '../../lib/notice/connector'
+Notifier  = require '../../lib/notice/notifier'
+Client    = require '../../lib/notice/client'
+Message   = require '../../lib/notice/message'
+
+describe 'Client', ->
+
+    beforeEach -> 
+        @connect = Connector.connect
+        @create  = Notifier.create
+
+
+    afterEach ->
+        Connector.connect = @connect
+        Notifier.create   = @create
+
+    context 'connect()', ->
 
         it 'makes a connection', (done) ->
 
@@ -13,7 +31,7 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Me
                     address: 'localhost'
                     port: 10001 
 
-                test done
+                done()
 
 
             Client.connect 'title', 
@@ -26,15 +44,17 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Me
                 (error, client) -> 
 
 
-    context 'onConnect()', (it) -> 
+    context 'onConnect()', -> 
 
-        EMITTED = {}
-        SOCKET  = 
-            emit: (event, args...) -> EMITTED[event] = args
-            on: (event, callback) -> 
-        NOTICE  = {}
-        Connector.connect = (opts, callback) -> callback null, SOCKET
-        Notifier.create = (title) -> NOTICE.title = title; return NOTICE
+        beforeEach ->
+
+            @EMITTED = {}
+            @SOCKET  = 
+                emit: (event, args...) => @EMITTED[event] = args
+                on: (event, callback) -> 
+            @NOTICE  = {}
+            Connector.connect = (opts, callback) => callback null, @SOCKET
+            Notifier.create = (title) => @NOTICE.title = title; return @NOTICE
 
 
         it 'creates a notifier', (done) -> 
@@ -49,11 +69,16 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Me
                 (error, notice) -> 
 
                     notice.title.should.equal 'title'
-                    test done
+                    done()
 
 
         it 'assigns final middleware to notifier', (done) -> 
 
+            Notifier.create = (title) -> 
+                notifier = {}
+                Object.defineProperty notifier, 'last', 
+                    set: (value) -> done()
+
             Client.connect 'title',
 
                 connect:
@@ -62,14 +87,11 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Me
                     port: 10001
 
                 (error, notice) -> 
-
-                    notice.last.should.be.an.instanceof Function
-                    test done
 
 
         it 'emits outbound notifications onto the socket', (done) -> 
 
-            EMITTED.info = []
+            @EMITTED.info = []
 
             Client.connect 'title',
 
@@ -79,7 +101,7 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Me
                     address: 'localhost'
                     port: 10001
 
-                (error, notice) -> 
+                (error, notice) => 
 
                     #
                     # asif the notifier itself called the middleware
@@ -107,7 +129,7 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Me
                             key1: 'value1'
                             key2: 'value2'           
 
-                        ->
+                        =>
 
                            
 
@@ -115,7 +137,7 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Me
                             # context as event arg1
                             #  
 
-                            EMITTED.info[0].should.eql
+                            @EMITTED.info[0].should.eql
 
                                 title: 'title'
                                 description: 'description'
@@ -128,15 +150,15 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Me
                             # payload as event arg1
                             #  
 
-                            EMITTED.info[1].key1.should.eql 'value1'
-                            EMITTED.info[1].key2.should.eql 'value2'
-                            test done
+                            @EMITTED.info[1].key1.should.eql 'value1'
+                            @EMITTED.info[1].key2.should.eql 'value2'
+                            done()
 
                     )
 
         it 'does not emit notifications onto the socket if they are not outbound', (done) -> 
 
-            EMITTED.info = []
+            @EMITTED.info = []
 
             Client.connect 'title',
 
@@ -146,7 +168,7 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Me
                     address: 'localhost'
                     port: 10001
 
-                (error, notice) -> 
+                (error, notice) => 
 
                     notice.last(
 
@@ -158,8 +180,11 @@ require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Me
                             tenor: 'normal'
                             direction: 'in'         
 
-                        ->
+                        =>
 
-                            EMITTED.info.length.should.equal 0
-                            test done
+                            @EMITTED.info.length.should.equal 0
+                            done()
+
+
                     )
+

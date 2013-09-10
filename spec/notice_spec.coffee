@@ -1,4 +1,9 @@
-require('nez').realize 'Notice', (Notice, test, it, should) -> 
+#require('nez').realize 'Notice', (Notice, test, it, should) -> 
+
+should = require 'should'
+Notice = require '../lib/notice'
+
+describe 'Notice', ->
 
 
     it 'is a (messaging|????ing) middleware pipeline', (done) -> 
@@ -55,7 +60,7 @@ require('nez').realize 'Notice', (Notice, test, it, should) ->
                         key1: 'VALUE1'
                         key2: 'VALUE2'
 
-                test done
+                done()
 
 
             (error) -> 
@@ -87,6 +92,6 @@ require('nez').realize 'Notice', (Notice, test, it, should) ->
 
             should.exist MESSAGES['Source 1']
             should.exist MESSAGES['Source 2']
-            test done
+            done()
 
 

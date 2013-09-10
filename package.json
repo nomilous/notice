@@ -1,7 +1,7 @@
 {
   "name": "notice",
   "description": "A middleware based communications scaffold.",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "author": "nomilous <nomilous@gmail.com>",
   "contributors": [
     {
@@ -18,7 +18,10 @@
   },
   "devDependencies": {
     "nez": "0.0.7",
-    "should": "~1.2.2"
+    "should": "~1.2.2",
+    "hound": "~1.0.4",
+    "coffee-script": "~1.6.3",
+    "mocha": "~1.12.1"
   },
   "repository": "git@github.com:nomilous/notice.git"
 }

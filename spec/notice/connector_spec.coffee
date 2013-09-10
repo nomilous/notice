@@ -1,8 +1,12 @@
 io = require 'socket.io-client'
 
-require('nez').realize 'Connector', (Connector, test, context, should) -> 
+# require('nez').realize 'Connector', (Connector, test, context, should) -> 
+should   = require 'should'
+Connector = require '../../lib/notice/connector'
 
-    context 'default', (it) -> 
+describe 'Connector', ->
+
+    context 'default',-> 
 
         it 'connects to http://localhost:10001', (done) -> 
 
@@ -10,7 +14,7 @@ require('nez').realize 'Connector', (Connector, test, context, should) ->
             io.connect = (uri) -> 
                 io.connect = spy
                 uri.should.equal "http://localhost:10001"
-                test done
+                done()
                 on: ->
 
             Connector.connect()
@@ -27,52 +31,53 @@ require('nez').realize 'Connector', (Connector, test, context, should) ->
             Connector.connect (error) -> 
 
                 error.should.match /ENOCONNECT/
-                test done
+                done()
 
 
-        context 'after accepted handshake', (it) -> 
+        context 'after accepted handshake',-> 
 
-            HANDSHAKE = undefined
+            before ->
 
-            spy = io.connect
-            io.connect = (uri) -> 
+                @HANDSHAKE = undefined
 
-                MOCKSOCKET = 
+                spy = io.connect
+                io.connect = (uri) => 
 
-                    on: (event, cb) -> 
+                    @MOCKSOCKET = 
 
-                        if event == 'connect' then cb()
-                        if event == 'accept'  then MOCKSOCKET.handshakeReply = cb
-                        if event == 'error'   then setTimeout (-> 
+                        on: (event, cb) => 
 
-                            io.connect = spy
-                            cb new Error 'ENOCONNECT'
+                            if event == 'connect' then cb()
+                            if event == 'accept'  then @MOCKSOCKET.handshakeReply = cb
+                            if event == 'error'   then setTimeout (-> 
 
-                        ), 10 
+                                io.connect = spy
+                                cb new Error 'ENOCONNECT'
 
-                    emit: (event, args...) -> 
+                            ), 10 
 
-                        if event == 'handshake'
+                        emit: (event, args...) => 
 
-                            HANDSHAKE = args
-                            MOCKSOCKET.handshakeReply()
-                            MOCKSOCKET.handshakeReply()  # twice for 'only callsback on first accept'
+                            if event == 'handshake'
 
-                return MOCKSOCKET
+                                @HANDSHAKE = args
+                                @MOCKSOCKET.handshakeReply()
+                                @MOCKSOCKET.handshakeReply()  # twice for 'only callsback on first accept'
+
+                    return @MOCKSOCKET
 
             it 'does not callback errors', (done) -> 
-
 
                 Connector.connect secret: ' ™i ', (error) -> 
 
                     should.not.exist error
+                    done()
 
-                    done 'and sends secret in handshake', (ok) -> 
 
-                        HANDSHAKE[0].should.equal ' ™i '
-                        test ok
+            it 'sends secret in handshake', (done) -> 
 
-                    test done
+                @HANDSHAKE[0].should.equal ' ™i '
+                done()
 
 
             it 'only callsback on first accept', (done) -> 
@@ -84,7 +89,7 @@ require('nez').realize 'Connector', (Connector, test, context, should) ->
                 setTimeout (-> 
 
                     count.should.equal 1
-                    test done
+                    done()
 
                 ), 10
 

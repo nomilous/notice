@@ -1,7 +1,12 @@
-require('nez').realize 'Decorators', (Decorators, test, context, should) -> 
+#require('nez').realize 'Decorators', (Decorators, test, context, should) -> 
 
 
-    context 'onceIfString( fn )', (it) -> 
+Decorators = require '../../lib/notice/decorators'
+should     = require 'should'
+
+describe 'Decorators', ->
+
+    context 'onceIfString( fn )',-> 
 
         it 'ensures the fn is only run once, and only if a string is passed', (done) -> 
 
@@ -16,10 +21,10 @@ require('nez').realize 'Decorators', (Decorators, test, context, should) ->
             fn 'runs with this'
             fn 'but not again'
             VALUES.should.eql [ 'runs with this' ]
-            test done
+            done()
 
 
-    context 'isFn( fn )', (it) -> 
+    context 'isFn( fn )',-> 
 
         it 'ensures the provided arg is a Function', (done) -> 
 
@@ -33,9 +38,9 @@ require('nez').realize 'Decorators', (Decorators, test, context, should) ->
             runCount.should.equal 0
             f (x) -> 1 / y
             runCount.should.equal 1
-            test done
+            done()
 
-    context 'isMiddleware', (it) -> 
+    context 'isMiddleware',-> 
 
         it 'ensures the provided arg is a middleware function', (done) -> 
 
@@ -53,10 +58,10 @@ require('nez').realize 'Decorators', (Decorators, test, context, should) ->
             app.use (arg1, arg2) -> arg2()
             middleware.length.should.equal 1
 
-            test done
+            done()
 
 
-    context 'asResolver', (it) -> 
+    context 'asResolver', -> 
 
         it 'wraps the provided function into a deferral and 
             calls with the resolver as middleware `nextFn`', (done) -> 
@@ -78,11 +83,11 @@ require('nez').realize 'Decorators', (Decorators, test, context, should) ->
                     startsWith: 'THIS'
                     addsThis: 'IN the MIDDLE ware'
                 
-                test done
+                done()
 
-    context 'supports isMiddleWare and asResolver', (In) -> 
+    context 'supports isMiddleWare and asResolver',-> 
 
-        In 'conjunction', (done) -> 
+        it 'conjunction', (done) -> 
 
             asResolver   = Decorators.asResolver
             isMiddleware = Decorators.isMiddleware
@@ -93,12 +98,12 @@ require('nez').realize 'Decorators', (Decorators, test, context, should) ->
             use (msg, next) ->
                 msg.should.eql is: 'something'
                 next() 
-                test done
+                done()
 
             middleware( is: 'something' )
 
 
-    context 'asUniq( fn )', (it) -> 
+    context 'asUniq( fn )', -> 
 
         it 'injects a unique id', (done) -> 
 
@@ -112,6 +117,6 @@ require('nez').realize 'Decorators', (Decorators, test, context, should) ->
 
             should.exist test1.id
             test1.id.should.not.equal test2.id
-            test done
+            done()
 
 
