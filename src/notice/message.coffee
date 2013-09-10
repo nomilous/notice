@@ -5,6 +5,42 @@ module.exports = class Message
     #constructor: (properties = {}, composition = {}) -> 
     constructor: ( properties = {} ) -> 
 
+        #
+        # TODO: enable flagging a message as 'expects reply'
+        # --------------------------------------------------
+        #
+        # * For the case of standalone, nothing happens
+        # 
+        # * For the case of client as source, the message resolver 
+        #   does not fire till after the hubside roundtrip
+        # 
+        # * For the case of hub as source, to particular client
+        #   same as form client.
+        # 
+        # * For the case of hub as source broadcasting to all clients
+        #   fire the resolver on first response (with taken/missed 
+        #   secondary acks back to each respondant)
+        # 
+        #   eg 
+        #   
+        #     notice.event( 'distributed assembly', 
+        #
+        #         expectReply: true
+        # 
+        #     ).then (msg) -> 
+        # 
+        #         msg.should.eql
+        # 
+        #            has:   'gone round trip'
+        #            first: 'down the local pipeline'
+        #            then:  'down the remote pipeline'
+        #            and:   'back again to here'
+        #            with:  'all payload ammendents'
+        # 
+        # 
+        # TODO: persistable promises (for scaling the above)
+        #
+
         context = {}
 
         # 
