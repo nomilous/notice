@@ -1,23 +1,30 @@
 io = require 'socket.io'
 
-require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) -> 
+# require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) -> 
 
-    context 'create()', (it) -> 
+should   = require 'should'
+Hub      = require '../../lib/notice/hub'
+http     = require 'http'
+Notifier = require '../../lib/notice/notifier'
+
+describe 'Hub', ->
+
+    context 'create()', -> 
 
         it 'is an exported function', (done) -> 
 
             Hub.create.should.be.an.instanceof Function
-            test done
+            done()
 
         it 'requires a name', (done) -> 
 
             try Hub.create()
             catch error
                 error.should.match /requires hubName as string/
-                test done
+                done()
 
     
-    context 'hubside pipeline', (it) -> 
+    context 'hubside pipeline', -> 
 
         it 'is created', (done) -> 
 
@@ -31,10 +38,10 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
             catch error
 
                 error.should.match /go no futher/
-                test done
+                done()
 
 
-    context 'listening', (it) -> 
+    context 'listening', -> 
 
         MOCK = 
 
@@ -80,10 +87,10 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
             Hub.create 'name', listen: secret: 'SECRET', (error, notice) -> 
 
                 notice.use().should.equal 'moo'
-                test done
+                done()
 
 
-        context 'on connected socket', (it) -> 
+        context 'on connected socket', -> 
 
 
             it 'attaches ref to the listening address', (done) ->
@@ -97,7 +104,7 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
                         address: 'ADDRESS'
                         port: 'PORT'
 
-                    test done
+                    done()
 
 
             it 'sends accept if the secret matches', (done) -> 
@@ -106,7 +113,7 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
                 Hub.create 'name', listen: secret: 'SECRET', -> 
 
                     SENT.events[0].should.eql '0': 'accept'
-                    test done
+                    done()
 
 
             it 'creates a response pipeline', (done) -> 
@@ -121,7 +128,7 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
 
                     Notifier.create = spy
                     NOTIFIERS['hub name'].should.equal 1
-                    test done
+                    done()
 
 
             it 'feeds received messages into the pipeline', (done) -> 
@@ -135,7 +142,7 @@ require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) ->
                     # spy on notice.info.normal()
                     #
                     info: normal: -> 
-                        test done
+                        done()
 
 
                 SOCKET.on = (event, callback) -> 

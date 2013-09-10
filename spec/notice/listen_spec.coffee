@@ -1,8 +1,16 @@
 io = require 'socket.io'  # <---------------- weird name, cannot inject
 
-require('nez').realize 'Listen', (Listen, test, context, should, http, https, fs) -> 
+# require('nez').realize 'Listen', (Listen, test, context, should, http, https, fs) -> 
 
-    context 'http', (it) ->
+Listen  = require '../../lib/notice/listen'
+should  = require 'should'
+http    = require 'http'
+https   = require 'https'
+fs      = require 'fs'
+
+describe 'Listen', ->
+
+    context 'http', ->
 
         it 'starts an http server with default config', (done) -> 
 
@@ -17,7 +25,7 @@ require('nez').realize 'Listen', (Listen, test, context, should, http, https, fs
             try Listen()
             catch error
                 error.should.match /OKGOOD/
-                test done
+                done()
 
         it 'uses the supplied server', (done) -> 
 
@@ -29,11 +37,11 @@ require('nez').realize 'Listen', (Listen, test, context, should, http, https, fs
             try Listen server: on: -> throw 'OKGOOD'
             catch error
                 error.should.match /OKGOOD/
-                test done
+                done()
             
 
 
-    context 'https', (it) -> 
+    context 'https', -> 
 
         it 'starts an https server if cert and key are supplied', (done) -> 
 
@@ -52,10 +60,10 @@ require('nez').realize 'Listen', (Listen, test, context, should, http, https, fs
                 key:  '/key/file'
             catch error
                 error.should.match /OKGOOD/
-                test done
+                done()
 
 
-    context 'socket.io', (it) -> 
+    context 'socket.io', -> 
 
         it 'listens', (done) -> 
 
@@ -67,7 +75,7 @@ require('nez').realize 'Listen', (Listen, test, context, should, http, https, fs
             try Listen server: {}
             catch error
                 error.should.match /OKGOOD/
-                test done
+                done()
 
         it 'returns the listening socketio', (done) -> 
 
@@ -79,5 +87,5 @@ require('nez').realize 'Listen', (Listen, test, context, should, http, https, fs
                 return listeningio
                 
             Listen( server: {} ).should.equal listeningio
-            test done
+            done()
 

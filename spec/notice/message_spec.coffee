@@ -1,14 +1,18 @@
-require('nez').realize 'Message', (Message, test, context, should) -> 
+#require('nez').realize 'Message', (Message, test, context, should) -> 
     
+Message = require '../../lib/notice/message'
+should  = require 'should'
 
-    context 'title and description', (it) -> 
+describe 'Message', -> 
+
+    context 'title and description', -> 
 
         it 'can be defined on construction', (done) -> 
 
             m = new Message title: 'TITLE', description: 'DESCRIPTION'
             m.title.should.equal 'TITLE'
             m.description.should.equal 'DESCRIPTION'
-            test done 
+            done()
 
         it 'can be set, but only once', (done) -> 
 
@@ -20,7 +24,7 @@ require('nez').realize 'Message', (Message, test, context, should) ->
 
             m.title.should.equal 'TITLE ONE'
             m.description.should.equal 'DESCRIPTION ONE'
-            test done
+            done()
 
         it 'will only be set with strings', (done) -> 
 
@@ -30,9 +34,9 @@ require('nez').realize 'Message', (Message, test, context, should) ->
 
             m.title.should.equal ''
             m.description.should.equal ''
-            test done
+            done()
 
-    context 'content', (it) -> 
+    context 'content', -> 
 
         it 'returns message context', (done) ->
 
@@ -53,5 +57,5 @@ require('nez').realize 'Message', (Message, test, context, should) ->
                 direction:   'DIRECTION'
 
 
-            test done
+            done()
 
