@@ -71,10 +71,6 @@ module.exports = class Message
 
         Object.defineProperty this, 'reply', 
 
-            enumerable:  true
+            enumerable:  false
             get:         -> reply
-            
-                
-
-
 

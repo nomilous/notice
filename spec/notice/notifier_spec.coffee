@@ -1,6 +1,12 @@
-require('nez').realize 'Notifier', (Notifier, test, context, should, os) -> 
+# require('nez').realize 'Notifier', (Notifier, test, context, should, os) -> 
 
-    context 'create()', (it) -> 
+os       = require 'os'
+Notifier = require '../../lib/notice/notifier'
+should   = require 'should'
+
+describe 'Notifier', -> 
+
+    context 'create()', -> 
 
 
         it 'requires origin name', (done) -> 
@@ -10,50 +16,51 @@ require('nez').realize 'Notifier', (Notifier, test, context, should, os) ->
 
             catch error
                 error.should.match /requires message origin as string/
-                test done
+                done()
 
 
-        it 'returns a notifier', (that) -> 
 
-            that 'is used to send messages', (done) -> 
+        context 'returns a notifier', -> 
+
+            it 'is used to send messages', (done) -> 
 
                 notify = Notifier.create( 'Message Origin' )
                 notify 'test message'
-                test done
+                done()
 
 
-            that 'has a middleware registrar', (done) -> 
+            it 'has a middleware registrar', (done) -> 
 
                 notify = Notifier.create( 'Message Origin' )
                 notify.use (msg, next) -> 
                     next()
-                    test done
+                    done()
                 notify 'test message'
 
                 
 
 
-            that 'can further classify the message with type', (done) -> 
+            it 'can further classify the message with type', (done) -> 
 
                 notify = Notifier.create( 'Message Origin' )
                 notify.use (msg, next) -> 
 
                     msg.context.type.should.equal 'info'
-                    test done
+                    done()
                     next()
 
                 notify.info 'test message'
 
             
 
-            that 'returns the message "promise tail" from middleware pipeline', (done) ->
+            it 'returns the message "promise tail" from middleware pipeline', (done) ->
 
                 notify = Notifier.create( 'Message Origin' )
                 notify.info.normal( 'message' ).then.should.be.an.instanceof Function
-                test done
+                done()
 
 
-            that 'populates the tail resolver with the final message (post middleware)', (done) -> 
+            it 'populates the tail resolver with the final message (post middleware)', (done) -> 
 
                 notify = Notifier.create( 'Message Origin' )
                 notify.info.normal( 'message' ).then (finalMessage) -> 
@@ -61,13 +68,13 @@ require('nez').realize 'Notifier', (Notifier, test, context, should, os) ->
                     finalMessage.context.title.should.equal 'message'
                     finalMessage.context.origin.should.equal 'Message Origin'
 
-                    test done
+                    done()
 
-            # # that 'survives middleware exceptions'
-            # # that 'enables tracable middleware'
+            it 'survives middleware exceptions'
+            it 'enables tracable middleware'
 
 
-            that 'passes the message through the registered middleware', (done) -> 
+            it 'passes the message through the registered middleware', (done) -> 
 
                 notify = Notifier.create( 'Message Origin' )
                 notify.use (msg, next) -> 
@@ -88,9 +95,9 @@ require('nez').realize 'Notifier', (Notifier, test, context, should, os) ->
 
                     msg.and.should.equal 'THIS'
                     msg.also.should.equal 'THAT'
-                    test done
+                    done()
 
-            that 'allows (once only) reg of middleware to run at the beginning of the pipeline', (done) -> 
+            it 'allows (once only) reg of middleware to run at the beginning of the pipeline', (done) -> 
 
                 c = 0 
                 n = Notifier.create 'test'
@@ -105,10 +112,10 @@ require('nez').realize 'Notifier', (Notifier, test, context, should, os) ->
 
                     #console.log  msg
                     msg.start.should.equal 1
-                    test done
+                    done()
 
 
-            that 'allows (once only) reg of middleware to run at the end of the pipeline', (done) -> 
+            it 'allows (once only) reg of middleware to run at the end of the pipeline', (done) -> 
 
                 c = 0 
                 n = Notifier.create 'test'
@@ -123,6 +130,6 @@ require('nez').realize 'Notifier', (Notifier, test, context, should, os) ->
 
                     #console.log  msg
                     msg.end.should.equal 4
-                    test done
+                    done()
 
 
