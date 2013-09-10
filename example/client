@@ -40,7 +40,17 @@ Notice.connect 'Client Name',
 
             switch msg.context.direction
 
-                when 'out' then console.log 'SENDING: ', msg.context.title, msg
+                when 'out' 
+
+                    #
+                    # something unique for hub to key clients
+                    # ---------------------------------------
+                    # 
+
+                    msg.pid = process.pid
+                    console.log 'SENDING: ', msg.context.title, msg
+
+                    # ps. pid may not be the best option...
 
                 when 'in'  then console.log 'RECEIVE:', msg.context.origin, msg
 
