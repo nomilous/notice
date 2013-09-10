@@ -22,6 +22,15 @@ createClient = (title, opts) ->
             
             if msg.direction == 'out'
 
+                #
+                # TODO: strip context (it was/shouldBe sent on handshake)
+                # 
+                #       - some context should remain (title, type)
+                #       - no point in sending the origin on each message
+                #       - allows for much more context at no extra cost
+                #       - keep in pending persistance layer in mind here
+                #
+
                 type = msg.context.type
                 uplink.emit type, msg.context, msg
 
@@ -38,6 +47,13 @@ createClient = (title, opts) ->
                 #
 
                 uplink.on event, (context, msg) -> 
+
+                    #
+                    # TODO: reconstitute context (stripped from all but handshake)
+                    #       
+                    #       - assuming hub also provides its context to client
+                    #         (this is inbound to client message)
+                    #
 
                     msg.direction = 'in'
                     msg.origin    = context.origin

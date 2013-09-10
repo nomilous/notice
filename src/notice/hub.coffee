@@ -27,6 +27,16 @@ module.exports.create = (hubName, opts, callback) ->
             responder.last = (msg, next) -> 
 
                 type = msg.context.type
+
+                #
+                # TODO: strip context (it was/shouldBe sent on handshake)
+                # 
+                #       - some context should remain (title, type)
+                #       - no point in sending the origin on each message
+                #       - allows for much more context at no extra cost
+                #       - keep in pending persistance layer in mind here
+                #
+
                 socket.emit type, msg.context, msg
                 next()
 
@@ -134,6 +144,10 @@ module.exports.create = (hubName, opts, callback) ->
                 #
 
                 socket.on event, (context, msg) -> 
+
+                    #
+                    # TODO: reconstitute context
+                    # 
 
                     msg.direction = 'in'
                     msg.origin    = context.origin
