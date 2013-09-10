@@ -1,7 +1,7 @@
 connector   = require './connector'
 notifier    = require './notifier'
 
-onConnected = (title, opts, uplink, callback) -> 
+createClient = (title, opts) -> 
 
     #
     # connected to the hub, create a notifier and 
@@ -11,22 +11,24 @@ onConnected = (title, opts, uplink, callback) ->
     notice = notifier.create title
 
 
-    notice.first = (msg, next) -> 
+    onConnected: (uplink, callback) -> 
 
-        msg.direction = 'out'
-        next()
+        notice.first = (msg, next) -> 
+            
+            msg.direction = 'out'
+            next()
 
-    notice.last = (msg, next) -> 
+        notice.last = (msg, next) -> 
+            
+            if msg.direction == 'out'
 
-        if msg.direction == 'out'
+                type = msg.context.type
+                uplink.emit type, msg.context, msg
 
-            type = msg.context.type
-            uplink.emit type, msg.context, msg
-
-        next()
+            next()
 
 
-    for event in ['info', 'event']
+        for event in ['info', 'event']
 
             do (event) -> 
 
@@ -45,12 +47,14 @@ onConnected = (title, opts, uplink, callback) ->
                     notice[event][tenor] title, msg
 
 
-    callback null, notice
+        callback null, notice
 
 
 module.exports = 
 
     connect: (title, opts, callback) -> 
+
+        client = createClient title, opts
 
         connector.connect
 
@@ -63,4 +67,4 @@ module.exports =
             (error, uplink) -> 
 
                 return callback error if error?
-                onConnected title, opts, uplink, callback
+                client.onConnected uplink, callback

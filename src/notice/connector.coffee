@@ -26,6 +26,10 @@ module.exports =
         opts.address   ||= 'localhost'
         opts.transport ||= 'http'
 
+        opts.onConnect    ||= ->
+        opts.onReconnect  ||= ->
+        opts.onDisconnect ||= ->
+
 
         #
         # flag remote side accepted handshake
@@ -59,6 +63,8 @@ module.exports =
                 # error out
                 # 
 
+                opts.onDisconnect socket: socket
+
                 return callback new Error 'disconnect or failed secret', null
 
 
@@ -72,20 +78,14 @@ module.exports =
 
             unless accepted
 
-                #
-                # new connection
-                #
-
                 accepted = true
+
+                opts.onConnect socket: socket
                 callback null, socket if typeof callback == 'function'
                 return
 
-            #
-            # recovered connection
-            #  
 
-            console.log 'TODO: handle recovered connection!'
-
+            opts.onReconnect socket: socket
 
 
         socket.on 'connect', -> 

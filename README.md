@@ -123,7 +123,7 @@ Notice.listen 'Hub Name',
             # reply across the response pipeline
             #
 
-            msg.reply.info 'title', {pay: 'load'}
+            msg.context.responder.info 'reply title', {pay: 'load'}
             next()
 
 
