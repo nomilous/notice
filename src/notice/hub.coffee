@@ -9,31 +9,41 @@ module.exports.create = (hubName, opts, callback) ->
 
 
     responders      = {}
-    createResponder = (context, socket, callback) -> 
+    assignResponder = (context, socket, callback) -> 
 
         #
-        # creates a response pipeline back to the remote notifier
+        # creates response pipeline back to the remote notifier
         #
 
-        outbound = Notifier.create hubName
+        unless responder = responders[socket.id]
 
-        outbound.first = (msg, next) -> 
+            responder = Notifier.create hubName
 
-            msg.direction = 'out'
-            next()
+            responder.first = (msg, next) -> 
 
-        outbound.last = (msg, next) -> 
+                msg.direction = 'out'
+                next()
 
-            type = msg.context.type
-            socket.emit type, msg.context, msg
-            next()
+            responder.last = (msg, next) -> 
 
-        responders[socket.id] = 
+                type = msg.context.type
+                socket.emit type, msg.context, msg
+                next()
 
-            notice: outbound
-            context: context
-            connected: true
+            responders[socket.id] = 
 
+                notice: responder
+
+                #
+                # TODO: per remote client context 
+                # 
+                #       - stored locally (at hub)
+                #       - created on handshake
+                #       - not yet accessable 
+                #
+
+                context: context
+                connected: true
 
         callback()
 
@@ -107,7 +117,7 @@ module.exports.create = (hubName, opts, callback) ->
                 # remote notifier authenticated
                 #
 
-                createResponder context, socket, -> socket.emit 'accept'
+                assignResponder context, socket, -> socket.emit 'accept'
 
             else 
 

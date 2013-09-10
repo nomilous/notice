@@ -71,6 +71,10 @@ describe 'Hub', ->
 
         MOCK.on = (event, callback) -> if event == 'connection'
 
+            #
+            # mock connect immediately
+            #
+
             callback SOCKET
 
 
@@ -116,7 +120,7 @@ describe 'Hub', ->
                     done()
 
 
-            it 'creates a response pipeline', (done) -> 
+            it 'creates a response pipeline on the first connect', (done) -> 
 
                 NOTIFIERS = {}
                 spy = Notifier.create

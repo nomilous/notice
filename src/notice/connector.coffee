@@ -34,7 +34,6 @@ module.exports =
         accepted  = false
         connected = false
         socket    = ioclient.connect "#{ opts.transport }://#{ opts.address }:#{ opts.port }"
-        
 
 
 

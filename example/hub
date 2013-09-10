@@ -45,6 +45,6 @@ Notice.listen 'Hub Name',
             # reply across the response pipeline
             #
 
-            msg.reply.info 'title', hello: msg.context.origin
+            msg.context.responder.info 'title', hello: msg.context.origin
             next()
 

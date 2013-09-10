@@ -42,6 +42,16 @@ module.exports = class Message
 
                 @[name] = properties[name]
 
+
+        Object.defineProperty this, 'setResponder', 
+
+            #
+            # for the hub, assign notifier for messaging the
+            # remote client
+            #
+
+            set: (value) -> reply = value unless reply?
+
         
         Object.defineProperty this, 'context',
 
@@ -52,7 +62,14 @@ module.exports = class Message
                 result = {}
                 for name in composition.context
                     result[name] = context[name]
+
+                #
+                # access to responder on each msg context 
+                #
+
+                result.responder = reply if reply?
                 result
+
 
         Object.defineProperty this, 'content', 
 
@@ -65,12 +82,7 @@ module.exports = class Message
                 result
 
 
-        Object.defineProperty this, 'setResponder', 
-
-            set: (value) -> reply = value unless reply?
-
         Object.defineProperty this, 'reply', 
 
-            enumerable:  false
             get:         -> reply
 
