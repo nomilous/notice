@@ -22,17 +22,30 @@ Notice.connect 'Client Name',
         # * messages define context.direction (in|out)
         #
 
+        notice.use (msg, next) -> 
+
+            if msg.context.title == 'reconnect'
+
+                #
+                # restart the example hub
+                #
+
+                msg.hello = 'Me again. I waited for your restart... :)'
+
+            next()
+
+
+
         notice.use (msg, next) ->
 
             switch msg.context.direction
 
-                when 'out' then console.log 'SEND:   ', msg.context.title, msg
+                when 'out' then console.log 'SENDING: ', msg.context.title, msg
 
                 when 'in'  then console.log 'RECEIVE:', msg.context.origin, msg
 
 
             next()
-
 
         #
         # send an event message

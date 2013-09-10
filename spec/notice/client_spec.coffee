@@ -24,12 +24,10 @@ describe 'Client', ->
 
             Connector.connect = (opts, callback) -> 
 
-                opts.should.eql 
-                    loglevel: undefined
-                    secret: undefined
-                    transport: 'https'
-                    address: 'localhost'
-                    port: 10001 
+                opts.transport.should.equal 'https'
+                opts.address.should.equal 'localhost'
+                opts.port.should.equal 10001
+                should.exist opts.onReconnect
 
                 done()
 

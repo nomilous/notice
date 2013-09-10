@@ -45,6 +45,11 @@ Notice.listen 'Hub Name',
             # reply across the response pipeline
             #
 
-            msg.context.responder.info 'title', hello: msg.context.origin
+            switch msg.context.title
+
+                when 'reconnect' then 
+
+                else msg.context.responder.info 'title', hello: msg.context.origin
+
             next()
 

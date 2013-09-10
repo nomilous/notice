@@ -66,6 +66,17 @@ createClient = (title, opts) ->
         callback null, notice
 
 
+    onReconnected: ({socket}) -> 
+
+        #
+        # emit reconnect notification down the pipeline, the implementations
+        # local middleware can ammend this message before it gets emitted
+        # hubward
+        #
+
+        notice.event 'reconnect'
+
+
 module.exports = 
 
     connect: (title, opts, callback) -> 
@@ -74,11 +85,13 @@ module.exports =
 
         connector.connect
 
-            loglevel:  opts.connect.loglevel
-            secret:    opts.connect.secret
-            transport: opts.connect.transport
-            address:   opts.connect.address
-            port:      opts.connect.port
+            loglevel:    opts.connect.loglevel
+            secret:      opts.connect.secret
+            transport:   opts.connect.transport
+            address:     opts.connect.address
+            port:        opts.connect.port
+
+            onReconnect: client.onReconnected
 
             (error, uplink) -> 
 
