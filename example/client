@@ -40,21 +40,22 @@ Notice.connect 'Client Name',
             next()
 
 
+        # # 
+        # # * if the hubside restarts in under 2 seconds then
+        # #   this disconnect notification will arrive there.
+        # # 
         # 
-        # * if the hubside restarts in under 2 seconds then
-        #   this disconnect notification will arrive there.
-        # 
-        
-        notice.use (msg, next) -> 
-        
-            return next() unless msg.event == 'disconnect'
-        
-            setTimeout (->
-        
-                msg.ahem = 'i was disconnected...'
-                next()
-        
-            ), 2000
+        # notice.use (msg, next) -> 
+        #
+        #     return next() unless msg.event == 'disconnect'
+        #
+        #     setTimeout (->
+        #
+        #         msg.ahem = 'i was disconnected...'
+        #         next()
+        #
+        #     ), 2000
+        #
 
 
         notice.use (msg, next) ->
