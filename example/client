@@ -24,7 +24,7 @@ Notice.connect 'Client Name',
 
         notice.use (msg, next) -> 
 
-            if msg.context.title == 'reconnect'
+            if msg.event == 'reconnect'
 
                 #
                 # restart the example hub
@@ -38,7 +38,7 @@ Notice.connect 'Client Name',
 
         notice.use (msg, next) ->
 
-            switch msg.context.direction
+            switch msg.direction
 
                 when 'out' 
 
@@ -48,7 +48,7 @@ Notice.connect 'Client Name',
                     # 
 
                     msg.pid = process.pid
-                    console.log 'SENDING: ', msg.context.title, msg
+                    console.log 'SENDING: ', msg.event, msg
 
                     # ps. pid may not be the best option...
 

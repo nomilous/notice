@@ -53,7 +53,7 @@ require('../lib/notice').listen 'Hub Name',
                                                 #
 
 
-            switch msg.context.title
+            switch msg.event
 
                 when 'reconnect' 
                     send.info 'thanks', thank4: 'waiting'

@@ -88,6 +88,14 @@ module.exports = class Message
 
             set: (value) -> reply = value unless reply?
 
+
+        Object.defineProperty this, 'event', get: => 
+
+            @title if @type == 'event' 
+
+        Object.defineProperty this, 'info', get: => 
+
+            @title if @type == 'info' 
         
         Object.defineProperty this, 'context',
 
