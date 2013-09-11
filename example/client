@@ -24,6 +24,11 @@ Notice.connect 'Client Name',
 
         notice.use (msg, next) -> 
 
+            if msg.event == 'connect'
+
+                msg.hello = "i'm online"
+
+
             if msg.event == 'reconnect'
 
                 #

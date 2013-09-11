@@ -18,7 +18,7 @@ describe 'Client', ->
         Connector.connect = @connect
         Notifier.create   = @create
 
-    context 'connect()', ->
+    xcontext 'connect()', ->
 
         it 'makes a connection', (done) ->
 
@@ -46,17 +46,22 @@ describe 'Client', ->
 
         beforeEach ->
 
-            @EMITTED = {}
-            @SOCKET  = 
-                emit: (event, args...) => @EMITTED[event] = args
-                on: (event, callback) -> 
-            @NOTICE  = {}
-            Connector.connect = (opts, callback) => callback null, @SOCKET
-            Notifier.create = (title) => @NOTICE.title = title; return @NOTICE
+            # @EMITTED = {}
+            # @SOCKET  = 
+            #     emit: (event, args...) => @EMITTED[event] = args
+            #     on: (event, callback) -> 
+            # @NOTICE  = {}
+            # Connector.connect = (opts, callback) => callback null, @SOCKET
+            # Notifier.create = (title) => @NOTICE.title = title; return @NOTICE
 
 
         it 'creates a notifier', (done) -> 
 
+            Notifier.create = (title) -> 
+
+                title.should.equal 'title'
+                done()
+
             Client.connect 'title',
 
                 connect:
@@ -66,16 +71,20 @@ describe 'Client', ->
 
                 (error, notice) -> 
 
-                    notice.title.should.equal 'title'
-                    done()
 
 
         it 'assigns final middleware to notifier', (done) -> 
 
+
             Notifier.create = (title) -> 
+
                 notifier = {}
                 Object.defineProperty notifier, 'last', 
                     set: (value) -> done()
+
+            Connector.connect = ({onAssign}) -> 
+
+                onAssign socket: on: ->
 
             Client.connect 'title',
 
@@ -87,102 +96,49 @@ describe 'Client', ->
                 (error, notice) -> 
 
 
-        it 'emits outbound notifications onto the socket', (done) -> 
 
-            @EMITTED.info = []
+        it 'forwards inbound messages from the socket onto the message bus', (done) -> 
 
-            Client.connect 'title',
+            Notifier.create = (title) -> 
 
-                connect:
+                notifier = 
+                    last: ->
+                    info: good: (title, msg) ->
 
-                    transport: 'https'
-                    address: 'localhost'
-                    port: 10001
+                        title.should.equal 'title'
+                        msg.should.eql data: {}, direction: 'in', origin: 'origin' 
+                        done()
 
-                (error, notice) => 
 
-                    #
-                    # asif the notifier itself called the middleware
-                    #
+            Connector.connect = ({onAssign}) -> 
 
-                    notice.last(
+                #
+                # mock socket
+                #
 
-                        new Message
+                onAssign socket: on: (event, listener) ->
 
-                            #
-                            # context
-                            # 
+                    if event == 'info'
 
-                            title: 'title'
-                            description: 'description'
-                            origin: 'origin'
-                            type: 'info'
-                            tenor: 'normal'
-                            direction: 'out'
+                        #
+                        # info message immediately 'arrives'
+                        # 
 
-                            #
-                            # payload
-                            #
+                        listener(
 
-                            key1: 'value1'
-                            key2: 'value2'           
+                            {type: 'info', origin: 'origin', title: 'title', tenor: 'good'}
+                            {data: {}}
 
-                        =>
-
-                           
-
-                            #
-                            # context as event arg1
-                            #  
-
-                            @EMITTED.info[0].should.eql
-
-                                title: 'title'
-                                description: 'description'
-                                origin: 'origin'
-                                type: 'info'
-                                tenor: 'normal'
-                                direction: 'out'
-
-                            #
-                            # payload as event arg1
-                            #  
-
-                            @EMITTED.info[1].key1.should.eql 'value1'
-                            @EMITTED.info[1].key2.should.eql 'value2'
-                            done()
-
-                    )
-
-        it 'does not emit notifications onto the socket if they are not outbound', (done) -> 
-
-            @EMITTED.info = []
+                        )
 
             Client.connect 'title',
 
                 connect:
-
                     transport: 'https'
                     address: 'localhost'
                     port: 10001
 
-                (error, notice) => 
-
-                    notice.last(
-
-                        new Message
-                            title: 'title'
-                            description: 'description'
-                            origin: 'origin'
-                            type: 'info'
-                            tenor: 'normal'
-                            direction: 'in'         
-
-                        =>
-
-                            @EMITTED.info.length.should.equal 0
-                            done()
+                (error, notice) -> 
 
 
-                    )
-
+        

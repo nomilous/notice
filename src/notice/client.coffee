@@ -6,90 +6,104 @@ createClient = (title, opts) ->
     
     notice = notifier.create title
 
-    assign: (deferral, uplink, callback) -> 
+    onAssign: ({socket}) -> 
 
-        notice.first = (msg, next) -> 
-            
-            msg.direction = 'out'
-            next()
+        #
+        # * assign socket to notifier
+        # * return promise that resolves with the assigned notifier
+        #
 
-        notice.last = (msg, next) -> 
-            
-            if msg.direction == 'out'
+        assigning = defer()
 
-                #
-                # TODO: strip context (it was/shouldBe sent on handshake)
-                # 
-                #       - some context should remain (title, type)
-                #       - no point in sending the origin on each message
-                #       - allows for much more context at no extra cost
-                #       - keep in pending persistance layer in mind here
-                #
+        process.nextTick ->
 
-                type = msg.context.type
-                uplink.emit type, msg.context, msg
+            notice.first = (msg, next) -> 
+                
+                msg.direction = 'out'
+                next()
 
-            next()
-
-
-        for event in ['info', 'event']
-
-            do (event) -> 
-
-                #
-                # inbound event from the socket are directed into
-                # the middleware pipeline
-                #
-
-                uplink.on event, (context, msg) -> 
+            notice.last = (msg, next) -> 
+                
+                if msg.direction == 'out'
 
                     #
-                    # TODO: reconstitute context (stripped from all but handshake)
-                    #       
-                    #       - assuming hub also provides its context to client
-                    #         (this is inbound to client message)
+                    # TODO: strip context (it was/shouldBe sent on handshake)
+                    # 
+                    #       - some context should remain (title, type)
+                    #       - no point in sending the origin on each message
+                    #       - allows for much more context at no extra cost
+                    #       - keep in pending persistance layer in mind here
                     #
 
-                    msg.direction = 'in'
-                    msg.origin    = context.origin
-                    title         = context.title
-                    tenor         = context.tenor
+                    type = msg.context.type
+                    socket.emit type, msg.context, msg
 
-                    notice[event][tenor] title, msg
+                next()
 
-        deferral.resolve()
 
-        callback null, notice
+            for event in ['info', 'event']
+
+                do (event) -> 
+
+                    #
+                    # inbound event from the socket are directed into
+                    # the middleware pipeline
+                    #
+
+                    socket.on event, (context, msg) -> 
+
+                        #
+                        # TODO: reconstitute context (stripped from all but handshake)
+                        #       
+                        #       - assuming hub also provides its context to client
+                        #         (this is inbound to client message)
+                        #
+
+                        msg.direction = 'in'
+                        msg.origin    = context.origin
+                        title         = context.title
+                        tenor         = context.tenor
+
+                        notice[event][tenor] title, msg
+
+            assigning.resolve notice
+
+
+        assigning.promise
+
 
     onConnect: ({socket}) ->
 
         #
-        # notifier is assigned and handshake is complete
-        #
+        # * notifier is assigned and handshake is complete
+        # * returns promise
+        # 
 
-        notice.event 'connect'
+        return notice.event 'connect'
 
 
     onReconnect: ({socket}) -> 
 
         #
-        # emit reconnect notification down the pipeline, the implementations
-        # local middleware can ammend this message before it gets emitted
-        # hubward
+        # * emit reconnect notification down the pipeline, the implementations
+        #   local middleware can ammend this message before it gets emitted
+        #   hubward
+        # * returns promise
         #
 
-        notice.event 'reconnect'
+        return notice.event 'reconnect'
 
 
     onDisconnect: ({socket}) -> 
 
         #
-        # this event is primary for local middlewares, it may or may not reach
-        # the other side of the socket (which has just disconnected, but may have 
-        # re-established by the time the local pipeline traversal is complete)
-        #
+        # * this event is primary for local middlewares, it may or may not reach
+        #   the other side of the socket (which has just disconnected, but may have 
+        #   re-established by the time the local pipeline traversal is complete)
+        # * return promsie
+        # 
 
-        notice.event 'disconnect'
+        return notice.event 'disconnect'
 
 
 module.exports = 
@@ -106,20 +120,10 @@ module.exports =
             address:      opts.connect.address
             port:         opts.connect.port
 
+            onAssign:     client.onAssign
             onConnect:    client.onConnect
             onReconnect:  client.onReconnect
             onDisconnect: client.onDisconnect
 
-            (error, uplink) -> 
+            callback
 
-                assigning = defer()
-
-                process.nextTick -> 
-
-                    if error? 
-                        assigning.reject error
-                        return callback error
-                    
-                    client.assign assigning, uplink, callback
-
-                assigning.promise

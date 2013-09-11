@@ -2,6 +2,8 @@
 # enable https connections to servers with selfsigned certs...  
 #
 
+pipeline = require 'when/pipeline'
+
 require('https').globalAgent.options.rejectUnauthorized = false
 
 ioclient       = require 'socket.io-client'
@@ -26,7 +28,8 @@ module.exports =
         opts.address   ||= 'localhost'
         opts.transport ||= 'http'
 
-        opts.onConnect    ||= ->
+        opts.onAssign     ||= -> 
+        opts.onConnect    ||= -> 
         opts.onReconnect  ||= ->
         opts.onDisconnect ||= ->
 
@@ -81,16 +84,20 @@ module.exports =
             unless accepted
 
                 accepted = true
-                callback( null, socket ).then -> 
 
-                    #
-                    # * onConnect fires after then notifier is assigned
-                    # * assignment is async to enable n-tier proxy pipelines (later...)
-                    #
+                pipeline([
 
-                    opts.onConnect socket: socket
+                    (        ) -> opts.onAssign  socket: socket
+                    (notifier) -> callback null, notifier
+                    (        ) -> opts.onConnect socket: socket
+                
+                ]).then(
 
-                return
+                    (result) -> 
+                    (error) -> callback error
+
+                )
+
 
 
             opts.onReconnect socket: socket

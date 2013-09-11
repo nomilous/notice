@@ -39,7 +39,7 @@ require('../lib/notice').listen 'Hub Name',
 
         hub.use (msg, next) -> 
 
-            console.log 'RECEIVED:', msg.context.origin, msg
+            console.log 'RECEIVED:', msg.context.origin, msg.event, msg
 
             pid = msg.pid
 
