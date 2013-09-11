@@ -65,7 +65,9 @@ module.exports =
 
                 opts.onDisconnect socket: socket
 
-                return callback new Error 'disconnect or failed secret', null
+                return callback new Error 'could not connect or failed secret', null
+
+            opts.onDisconnect socket: socket
 
 
         socket.on 'accept', -> 

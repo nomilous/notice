@@ -10,8 +10,7 @@ createClient = (title, opts) ->
     
     notice = notifier.create title
 
-
-    onConnected: (uplink, callback) -> 
+    onConnect: (uplink, callback) -> 
 
         notice.first = (msg, next) -> 
             
@@ -66,7 +65,7 @@ createClient = (title, opts) ->
         callback null, notice
 
 
-    onReconnected: ({socket}) -> 
+    onReconnect: ({socket}) -> 
 
         #
         # emit reconnect notification down the pipeline, the implementations
@@ -77,6 +76,17 @@ createClient = (title, opts) ->
         notice.event 'reconnect'
 
 
+    onDisconnect: ({socket}) -> 
+
+        #
+        # this event is primary for local middlewares, it may or may not reach
+        # the other side of the socket (which has just disconnected, but may have 
+        # re-established by the time the local pipeline traversal is complete)
+        #
+
+        notice.event 'disconnect'
+
+
 module.exports = 
 
     connect: (title, opts, callback) -> 
@@ -85,15 +95,16 @@ module.exports =
 
         connector.connect
 
-            loglevel:    opts.connect.loglevel
-            secret:      opts.connect.secret
-            transport:   opts.connect.transport
-            address:     opts.connect.address
-            port:        opts.connect.port
+            loglevel:     opts.connect.loglevel
+            secret:       opts.connect.secret
+            transport:    opts.connect.transport
+            address:      opts.connect.address
+            port:         opts.connect.port
 
-            onReconnect: client.onReconnected
+            onReconnect:  client.onReconnect
+            onDisconnect: client.onDisconnect
 
             (error, uplink) -> 
 
                 return callback error if error?
-                client.onConnected uplink, callback
+                client.onConnect uplink, callback
