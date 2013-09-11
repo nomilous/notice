@@ -169,3 +169,14 @@ module.exports.create = (hubName, opts, callback) ->
 
         socket.on 'disconnect', -> 
 
+            #
+            # notify responder it is no longer connected 
+            # to the remote client
+            #
+
+            if responder = responders[socket.id]
+
+                responder.notice.event 'disconnect'
+                # responder.connected = false
+
+

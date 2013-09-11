@@ -43,22 +43,33 @@ require('../lib/notice').listen 'Hub Name',
 
             pid = msg.pid
 
-            unless send = clients[pid]
+            unless responder = clients[pid]
 
-                clients[pid] = send = msg.context.responder
+                clients[pid] = responder = msg.context.responder
 
                                                 #
                                                 # keep this, it's for talking to 
                                                 # the client
                                                 #
 
-
             switch msg.event
 
-                when 'reconnect' 
-                    send.info 'thanks', thank4: 'waiting'
+                when 'connect', 'reconnect'
+
+                    responder.use (msg, next) -> 
+
+                        if msg.event == 'disconnect'
+
+                            console.log 'disconnect from remote process at pid', pid
+
+                        next()
+
+                    if msg.event == 'reconnect'
+
+                        responder.info 'thanks', thanks4: 'waiting'
+                    
                 
-                else 
-                    send.info 'greetings', hello: msg.context.origin
+                    else 
+                        responder.info 'greetings', hello: msg.context.origin
 
             next()
