@@ -77,4 +77,4 @@ Notice.connect 'Client Name',
         # send an event message
         #
 
-        notice.event 'connect', hello: "i'm online"
+        notice.event 'first message', data: {}

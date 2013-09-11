@@ -81,9 +81,15 @@ module.exports =
             unless accepted
 
                 accepted = true
+                callback( null, socket ).then -> 
 
-                opts.onConnect socket: socket
-                callback null, socket if typeof callback == 'function'
+                    #
+                    # * onConnect fires after then notifier is assigned
+                    # * assignment is async to enable n-tier proxy pipelines (later...)
+                    #
+
+                    opts.onConnect socket: socket
+
                 return
 
 

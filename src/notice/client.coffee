@@ -1,16 +1,12 @@
 connector   = require './connector'
 notifier    = require './notifier'
+{defer}     = require 'when'
 
 createClient = (title, opts) -> 
-
-    #
-    # connected to the hub, create a notifier and 
-    # assign pipeline final middleware ....
-    #
     
     notice = notifier.create title
 
-    onConnect: (uplink, callback) -> 
+    assign: (deferral, uplink, callback) -> 
 
         notice.first = (msg, next) -> 
             
@@ -61,8 +57,17 @@ createClient = (title, opts) ->
 
                     notice[event][tenor] title, msg
 
+        deferral.resolve()
 
         callback null, notice
+
+    onConnect: ({socket}) ->
+
+        #
+        # notifier is assigned and handshake is complete
+        #
+
+        notice.event 'connect'
 
 
     onReconnect: ({socket}) -> 
@@ -101,10 +106,20 @@ module.exports =
             address:      opts.connect.address
             port:         opts.connect.port
 
+            onConnect:    client.onConnect
             onReconnect:  client.onReconnect
             onDisconnect: client.onDisconnect
 
             (error, uplink) -> 
 
-                return callback error if error?
-                client.onConnect uplink, callback
+                assigning = defer()
+
+                process.nextTick -> 
+
+                    if error? 
+                        assigning.reject error
+                        return callback error
+                    
+                    client.assign assigning, uplink, callback
+
+                assigning.promise

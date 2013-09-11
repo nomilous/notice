@@ -72,6 +72,7 @@ describe 'Connector', ->
 
                     should.not.exist error
                     done()
+                    then: ->
 
 
             it 'sends secret in handshake', (done) -> 
@@ -84,7 +85,9 @@ describe 'Connector', ->
 
                 count = 0
 
-                Connector.connect secret: ' ™i ', (error, socket) -> count++
+                Connector.connect secret: ' ™i ', (error, socket) -> 
+                    count++
+                    then: ->
 
                 setTimeout (-> 
 
