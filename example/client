@@ -78,8 +78,8 @@ Notice.connect 'Client Name',
 
             next()
 
-        #
-        # send an event message
-        #
+        # #
+        # # send an event message
+        # #
 
-        notice.event 'first message', data: {}
+        # notice.event 'first message', data: {}
