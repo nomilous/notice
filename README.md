@@ -4,8 +4,6 @@
 
 **unstable** - api changes may occur (without deprecation warnings)
 
-[objective](https://github.com/nomilous/notice/blob/master/objective)
-
 notice
 ======
 
