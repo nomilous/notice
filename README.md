@@ -2,7 +2,7 @@
 
 ### Version 0.0.10
 
-**unstable** - api changes may occur (without deprecation warnings)
+**unstable** - api changes almost certainly will occur (without deprecation warnings)
 
 notice
 ======
