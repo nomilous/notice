@@ -109,6 +109,6 @@ module.exports =
             # connect, send handshake
             # 
 
-            socket.emit 'handshake', opts.secret || '', context: 'pending'
+            socket.emit 'handshake', opts.secret || '', opts.context
 
         

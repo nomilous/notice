@@ -1,7 +1,7 @@
 {
   "name": "notice",
   "description": "A middleware based communications scaffold.",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "author": "nomilous <nomilous@gmail.com>",
   "contributors": [
     {

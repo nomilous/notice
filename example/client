@@ -3,6 +3,10 @@
 Notice = require '../lib/notice'
 
 Notice.connect 'Client Name',
+
+    context: 
+
+        details: 'of client'
         
     connect:
 

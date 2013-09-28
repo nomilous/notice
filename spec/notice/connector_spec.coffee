@@ -68,16 +68,25 @@ describe 'Connector', ->
 
             it 'does not callback errors', (done) -> 
 
-                Connector.connect secret: ' ™i ', (error) -> 
+                Connector.connect 
+                    secret: ' ™i '
+                    context: details: 'of client'
 
-                    should.not.exist error
-                    done()
-                    then: ->
+                    (error) -> 
+
+                        should.not.exist error
+                        done()
+                        then: ->
 
 
             it 'sends secret in handshake', (done) -> 
 
                 @HANDSHAKE[0].should.equal ' ™i '
+                done()
+
+            it 'sends context in handshake', (done) -> 
+
+                @HANDSHAKE[1].should.eql { details: 'of client' } 
                 done()
 
 
