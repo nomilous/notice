@@ -125,7 +125,7 @@ module.exports =
             # * sent on handshake
             #
 
-            origin:       opts.client
+            origin:       opts.origin
 
             onAssign:     client.onAssign
             onConnect:    client.onConnect

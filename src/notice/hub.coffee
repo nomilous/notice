@@ -182,6 +182,6 @@ module.exports.create = (hubName, opts, callback) ->
             if responder = responders[socket.id]
 
                 responder.notice.event 'disconnect'
-                # responder.connected = false
+                responder.connected = false
 
 
