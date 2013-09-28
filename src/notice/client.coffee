@@ -3,8 +3,6 @@ notifier    = require './notifier'
 {defer}     = require 'when'
 
 createClient = (title, opts) -> 
-
-    console.log CREATE_CLIENT: opts
     
     notice = notifier.create title
 
@@ -123,11 +121,11 @@ module.exports =
             port:         opts.connect.port
 
             #
-            # * client context
+            # * origin context
             # * sent on handshake
             #
 
-            context:      opts.context
+            origin:       opts.client
 
             onAssign:     client.onAssign
             onConnect:    client.onConnect

@@ -9,7 +9,7 @@ module.exports.create = (hubName, opts, callback) ->
 
 
     responders      = {}
-    assignResponder = (context, socket, callback) -> 
+    assignResponder = (origin, socket, callback) -> 
 
         #
         # creates response pipeline back to the remote notifier
@@ -52,7 +52,7 @@ module.exports.create = (hubName, opts, callback) ->
                 #       - not yet accessable 
                 #
 
-                context: context
+                origin: origin
                 connected: true
 
         callback()
@@ -80,7 +80,13 @@ module.exports.create = (hubName, opts, callback) ->
         #
 
         responder = responders[msg['socket.id']]
+
         msg.setResponder = responder.notice
+        Object.defineProperty msg, 'originContext', 
+            enumareable: false
+            get: -> responder.origin
+                    
+
         delete msg['socket.id']
         next()
 
@@ -119,7 +125,7 @@ module.exports.create = (hubName, opts, callback) ->
     io.on 'connection', (socket) -> 
 
 
-        socket.on 'handshake', (secret, context) -> 
+        socket.on 'handshake', (secret, origin) -> 
 
             if secret == opts.listen.secret
 
@@ -127,7 +133,7 @@ module.exports.create = (hubName, opts, callback) ->
                 # remote notifier authenticated
                 #
 
-                assignResponder context, socket, -> socket.emit 'accept'
+                assignResponder origin, socket, -> socket.emit 'accept'
 
             else 
 
@@ -149,11 +155,10 @@ module.exports.create = (hubName, opts, callback) ->
                     # TODO: reconstitute context
                     # 
 
-                    msg.direction = 'in'
-                    msg.origin    = context.origin
-                    title         = context.title
-                    tenor         = context.tenor
-                    
+                    msg.direction     = 'in'
+                    msg.origin        = context.origin
+                    title             = context.title
+                    tenor             = context.tenor
 
                     #
                     #TEMPORARY1                    

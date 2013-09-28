@@ -70,7 +70,7 @@ describe 'Connector', ->
 
                 Connector.connect 
                     secret: ' ™i '
-                    context: details: 'of client'
+                    origin: details: 'of client'
 
                     (error) -> 
 
