@@ -85,6 +85,7 @@ describe 'notifier', ->
 
             .then (newMessage) -> 
 
+                # console.log newMessage
                 newMessage.should.eql 
 
                     _type:     'pheeew'
@@ -204,7 +205,7 @@ describe 'notifier', ->
                 msg.array.should.eql [1, 'new 2', 3]
                 done()
 
-        it.only 'returns the promise of a message traversing the middleware pipeline', (done) -> 
+        it 'returns the promise of a message traversing the middleware pipeline', (done) -> 
 
             Notifier = notifier 
                 messages:
@@ -234,7 +235,7 @@ describe 'notifier', ->
                     _type: 'makeThing'
                     step1: 'done'
                     step2: 'done'
-                    
+
                 done()
 
 

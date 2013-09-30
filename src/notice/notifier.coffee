@@ -30,6 +30,7 @@ module.exports.notifier  = (config = {}) ->
                 # sends the msg down the middleware pipeline
                 # 
 
+                return message unless regSequence # no middleware
                 return pipeline( for title of list
                     do (title) -> 
                         deferred ({resolve}, msg = message) -> 
@@ -67,6 +68,14 @@ module.exports.notifier  = (config = {}) ->
                     #
 
                     list[middleware.title] = middleware.fn
+
+                    #
+                    # although the sequence was not used as key in the list
+                    # it should still be incremented to inform the presence
+                    # of middleware
+                    #
+
+                    regSequence++
 
 
             #
