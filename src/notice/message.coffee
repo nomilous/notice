@@ -10,7 +10,7 @@ module.exports.message  = (config = {}) ->
 
             create: deferred ({resolve, reject, notify}, properties) -> 
 
-                before = deferred ({resolve, reject}, msg = {}) -> 
+                before = deferred ({resolve, reject}, msg) -> 
                     return resolve msg unless typeof config.beforeCreate == 'function' 
                     config.beforeCreate msg, (error) -> 
                         if error? then return reject error
@@ -34,7 +34,7 @@ module.exports.message  = (config = {}) ->
                     
                 pipeline([
 
-                    (   ) -> before()
+                    (   ) -> before { }
                     (msg) -> assign msg
                     (msg) -> after  msg
 
