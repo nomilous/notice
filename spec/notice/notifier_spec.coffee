@@ -165,11 +165,45 @@ describe 'notifier', ->
                 fn: (msg, next) -> next()
 
             mmm = _notifier().middleware['Assembly Line 6']
-            
+
             mmm['arrange into single file'] {}, ->
             mmm['squirt the product in']    {}, ->
             mmm['put a lid on it']          {}, done
-    
+        
+
+        it 'sequence is preserved when replacing middleware', (done) -> 
+
+            {sequence, deferred} = require 'also'
+            five = notifier().create 'Assembly Line 5'
+            five.use (msg, next) -> 
+                msg.array.push 1
+                next()
+            five.use 
+                title: 'REPLACE ME'
+                fn: (msg, next) -> 
+                    msg.array.push 2
+                    next()
+            five.use 
+                title: 'x'
+                fn: (msg, next) -> 
+                    msg.array.push 3
+                    next()
+            five.use 
+                title: 'REPLACE ME'
+                fn: (msg, next) -> 
+                    msg.array.push 'new 2'
+                    next()
+
+            mmm = _notifier().middleware['Assembly Line 5']
+            msg = array: []
+            sequence( for key of mmm
+                do (key) -> deferred ({resolve}) ->    
+                    mmm[key] msg, resolve
+            ).then ->
+
+                msg.array.should.eql [1, 'new 2', 3]
+                done()
+
 
 return
 os       = require 'os'
