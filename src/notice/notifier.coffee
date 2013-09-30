@@ -1,4 +1,5 @@
-{message} = require './message' 
+{pipeline, deferred} = require 'also'
+{message}  = require './message' 
 
 testable                 = undefined
 module.exports._notifier = -> testable
@@ -22,6 +23,24 @@ module.exports.notifier  = (config = {}) ->
             
             regSequence = 0
             local.middleware[originCode] = list = {}
+
+            traverse = (message) -> 
+
+                #
+                # sends the msg down the middleware pipeline
+                # 
+
+                return pipeline( for title of list
+                    do (title) -> 
+                        deferred ({resolve}, msg = message) -> 
+
+                            #
+                            # TODO: catch errors / reject
+                            # 
+
+                            list[title] msg, -> resolve msg
+                )
+
 
             notifier = use: (middleware) -> 
 
@@ -50,14 +69,29 @@ module.exports.notifier  = (config = {}) ->
                     list[middleware.title] = middleware.fn
 
 
-
+            #
+            # create a function for each defined message type
+            # -----------------------------------------------
+            # 
+            # * returns a promise that resolves with the message
+            #   after it traversed all registered middleware
+            # 
+            # * TODO: if an error occurs on the pipeline the promise 
+            #   is rejected and the remaining middlewares will
+            #   not receive the message
+            #   
+            #
 
             for type of config.messages
                 continue if type == 'use'
                 do (type) -> 
                     notifier[type] = (payload) -> 
                         payload._type = type
-                        local.messageTypes[type].create payload
+                        return pipeline([
+                            (   ) -> local.messageTypes[type].create payload
+                            (msg) -> traverse msg
+                        ])
+                        
 
 
 

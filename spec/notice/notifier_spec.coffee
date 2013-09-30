@@ -204,6 +204,39 @@ describe 'notifier', ->
                 msg.array.should.eql [1, 'new 2', 3]
                 done()
 
+        it.only 'returns the promise of a message traversing the middleware pipeline', (done) -> 
+
+            Notifier = notifier 
+                messages:
+                    makeThing: 
+                        beforeCreate: (msg, done) ->
+                            msg.serialNo = '0000000000001'
+                            done()
+
+            four = Notifier.create 'Assembly Line 4'
+            four.use (msg, next) -> 
+                msg.step1 = 'done'
+                next()
+            four.use title: 'step2', fn: (msg, next) ->
+                msg.step2 = 'done'
+                next()
+
+            four.makeThing
+
+                colour: 'red'
+
+            .then (result) -> 
+
+                result.should.eql
+
+                    serialNo: '0000000000001'
+                    colour: 'red'
+                    _type: 'makeThing'
+                    step1: 'done'
+                    step2: 'done'
+                    
+                done()
+
 
 return
 os       = require 'os'
