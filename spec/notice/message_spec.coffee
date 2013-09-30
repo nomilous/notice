@@ -30,6 +30,18 @@ describe 'Message', ->
         done()
 
 
+    it 'can have predefined properties', (done) -> 
+
+        Message = message 
+            properties:
+                defaultProperty: 'defaultValue'
+
+        m = new Message property1: 'value1'
+        m.should.eql 
+            defaultProperty: 'defaultValue'
+            property1: 'value1'
+
+        done()
 
 
 xdescribe 'Message', -> 

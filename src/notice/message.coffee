@@ -8,9 +8,10 @@ module.exports.message  = (config = {}) ->
 
         Message: class Message 
 
-            constructor: (params) -> 
+            constructor: (properties) -> 
 
-                @[key] = params[key] for key of params
+                @[key] = config.properties[key] for key of config.properties
+                @[key] = properties[key] for key of properties
     
 
     testable = local
