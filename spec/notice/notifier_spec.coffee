@@ -239,6 +239,20 @@ describe 'notifier', ->
                 done()
 
 
+        it 'rejects on failing middleware', (done) -> 
+
+            Notifier = notifier messages: info: {}
+            broken = Notifier.create 'broken pipeline'
+            broken.use (msg, next) -> 
+                throw new Error 'ka-pow!'
+                next()
+
+            broken.info().then (->), (error) ->
+
+                error.message.should.equal 'ka-pow!'
+                done()
+
+
 return
 os       = require 'os'
 Notifier = require '../../lib/notice/notifier'

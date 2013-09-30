@@ -33,13 +33,16 @@ module.exports.notifier  = (config = {}) ->
                 return message unless regSequence # no middleware
                 return pipeline( for title of list
                     do (title) -> 
-                        deferred ({resolve}, msg = message) -> 
+                        deferred ({resolve, reject}, msg = message) -> 
 
                             #
                             # TODO: catch errors / reject
                             # 
 
-                            list[title] msg, -> resolve msg
+                            try list[title] msg, -> resolve msg
+                            catch error
+                                reject error
+
                 )
 
 
@@ -94,7 +97,7 @@ module.exports.notifier  = (config = {}) ->
             for type of config.messages
                 continue if type == 'use'
                 do (type) -> 
-                    notifier[type] = (payload) -> 
+                    notifier[type] = (payload = {}) -> 
                         payload._type = type
                         return pipeline([
                             (   ) -> local.messageTypes[type].create payload
