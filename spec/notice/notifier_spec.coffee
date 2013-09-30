@@ -1,3 +1,18 @@
+{_notifier, notifier} = require '../../lib/notice/notifier'
+should   = require 'should'
+
+describe 'notifier', -> 
+
+    context 'create()', -> 
+
+        it 'requires an originCode', (done) -> 
+
+            Notifier = notifier()
+
+            try Notifier.create()
+            catch error
+                error.should.match /requires originCode as string/
+                done()
 
 
 
@@ -9,12 +24,7 @@
 
 
 
-
-
-
-
-
-
+    
 
 return
 os       = require 'os'

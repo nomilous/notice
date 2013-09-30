@@ -1,11 +1,20 @@
 
+testable                 = undefined
+module.exports._notifier = -> testable
+module.exports.notifier  = (config = {}) ->
 
+    testable = local = 
 
+        create: (originCode) ->
+        
+            throw new Error( 
+                'Notifier.create( originCode ) requires originCode as string'
+            ) unless typeof originCode is 'string'
+            
 
+    return api = 
 
-
-
-
+        create: local.create
 
 
 
