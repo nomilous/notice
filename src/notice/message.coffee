@@ -10,11 +10,16 @@ module.exports.message  = (config = {}) ->
 
             constructor: (properties) -> 
 
-                @[key] = config.properties[key] for key of config.properties
+                for key of config.properties
+                    if config.properties[key].default?
+                        @[key] = config.properties[key].default
+                        if config.properties[key].hidden
+                            Object.defineProperty @, key, 
+                                enumerable: false
+
                 @[key] = properties[key] for key of properties
 
-                if config.hidden? then for key in config.hidden
-                    Object.defineProperty @, key, enumerable: false
+
     
 
     testable = local

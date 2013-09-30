@@ -34,11 +34,12 @@ describe 'Message', ->
 
         Message = message 
             properties:
-                defaultProperty: 'defaultValue'
+                property3: 
+                    default: 'defaultValue'
 
         m = new Message property1: 'value1'
         m.should.eql 
-            defaultProperty: 'defaultValue'
+            property3: 'defaultValue'
             property1: 'value1'
 
         done()
@@ -48,7 +49,8 @@ describe 'Message', ->
 
         Message = message 
             properties:
-                prop: 1
+                prop: 
+                    default: 1
 
         m = new Message prop: 2
         m.prop.should.eql 2
@@ -58,18 +60,17 @@ describe 'Message', ->
     it 'can set properties to not be enumerated by serializers', (done) -> 
 
         Message = message 
-            hidden: ['internalCode']
             properties:
-                internalCode: 'R'
+                internalCode: 
+                    default: 'R'
+                    hidden:  true
 
         m = new Message
         m.internalCode.should.equal 'R'
+        m.internalCode = 'X'
+        m.internalCode.should.equal 'X'
         m.should.eql {}
         done()
-
-
-
-
 
 
 xdescribe 'Message', -> 
