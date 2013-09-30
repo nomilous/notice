@@ -119,6 +119,26 @@ describe 'notifier', ->
             nine.use.should.be.an.instanceof Function
             done()
 
+
+        it 'registers anonymous middleware with a sequence number', (done) -> 
+
+            eight = notifier().create 'Assembly Line 8'
+            eight.use (msg, next) -> 
+
+                ### a middleware function ###
+                next()
+
+            eight.use (msg, next) -> 'SECOND MIDDLEWARE'
+
+            m1 = _notifier().middleware['Assembly Line 8'][1]
+            m1.should.be.an.instanceof Function
+            m1.should.match /a middleware function/
+
+            m2 = _notifier().middleware['Assembly Line 8'][2]
+            m2().should.equal 'SECOND MIDDLEWARE'
+            done()
+            
+
     
 
 return

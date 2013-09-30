@@ -20,10 +20,20 @@ module.exports.notifier  = (config = {}) ->
             ) if local.middleware[originCode]?
 
             
-
+            sequence = 0
             local.middleware[originCode] = {}
 
-            notifier = use: ->
+            notifier = use: (middleware) -> 
+
+                if typeof middleware == 'function'
+
+                    #
+                    # anonymous middleware is registered with sequence number
+                    #
+
+                    local.middleware[originCode][++sequence] = middleware
+
+
 
             for type of config.messages
                 continue if type == 'use'
