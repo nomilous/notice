@@ -63,8 +63,11 @@ describe 'Message', ->
                 internalCode: 'R'
 
         m = new Message
+        m.internalCode.should.equal 'R'
         m.should.eql {}
         done()
+
+
 
 
 
