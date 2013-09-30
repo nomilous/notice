@@ -55,6 +55,19 @@ describe 'Message', ->
         done()
 
 
+    it 'can set properties to not be enumerated by serializers', (done) -> 
+
+        Message = message 
+            hidden: ['internalCode']
+            properties:
+                internalCode: 'R'
+
+        m = new Message
+        m.should.eql {}
+        done()
+
+
+
 
 xdescribe 'Message', -> 
 

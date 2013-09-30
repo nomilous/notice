@@ -12,6 +12,9 @@ module.exports.message  = (config = {}) ->
 
                 @[key] = config.properties[key] for key of config.properties
                 @[key] = properties[key] for key of properties
+
+                if config.hidden? then for key in config.hidden
+                    Object.defineProperty @, key, enumerable: false
     
 
     testable = local
