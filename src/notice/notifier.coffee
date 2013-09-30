@@ -16,12 +16,12 @@ module.exports.notifier  = (config = {}) ->
             ) unless typeof originCode is 'string'
 
             throw new Error(
-                "Notifier.create('#{originCode}') is not a unique originCode"
+                "Notifier.create('#{originCode}') is already defined"
             ) if local.middleware[originCode]?
 
             
-            sequence = 0
-            local.middleware[originCode] = {}
+            regSequence = 0
+            local.middleware[originCode] = list = {}
 
             notifier = use: (middleware) -> 
 
@@ -31,7 +31,7 @@ module.exports.notifier  = (config = {}) ->
                     # anonymous middleware is registered with sequence number
                     #
 
-                    local.middleware[originCode][++sequence] = middleware
+                    list[++regSequence] = middleware
 
                 else
 
@@ -47,8 +47,7 @@ module.exports.notifier  = (config = {}) ->
                     # this will overwrite existing middleware by the same title
                     #
 
-                    local.middleware[originCode][middleware.title] = middleware.fn
-
+                    list[middleware.title] = middleware.fn
 
 
 

@@ -105,7 +105,7 @@ describe 'notifier', ->
             catch π
 
                 should.exist _notifier().middleware.bakery
-                π.should.match /is not a unique originCode/
+                π.should.match /is already defined/
                 done()
 
 
