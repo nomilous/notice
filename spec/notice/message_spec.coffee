@@ -105,6 +105,18 @@ describe 'Message', ->
                 done()
 
 
+        it 'beforeCreate and afterCreate can fail the message creation', (done) -> 
+
+            Message = message 
+                beforeCreate: (msg, done) ->  
+                    done new Error 'darn, no DB to save initial message state'
+
+            Message.create( 'helloo-oo-oo': 'bat flies out' ).then (->), (error) ->
+
+                error.message.should.equal 'darn, no DB to save initial message state'
+                done()
+
+
 xdescribe 'Message', -> 
 
     context 'title and description', -> 
