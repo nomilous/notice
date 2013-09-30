@@ -87,6 +87,7 @@ describe 'notifier', ->
 
                 newMessage.should.eql 
 
+                    _type:     'pheeew'
                     id:        'new database record id'
                     createdAt: 'wrist watch'
                     defcon:     1
@@ -137,7 +138,18 @@ describe 'notifier', ->
             m2 = _notifier().middleware['Assembly Line 8'][2]
             m2().should.equal 'SECOND MIDDLEWARE'
             done()
-            
+
+
+        it 'throws on titled middleware registration without title and fn', (done) -> 
+
+            seven = notifier().create 'Assembly Line 7'
+            try seven.use 
+                titel: 'troubled speller'
+                fn: (msg, next) ->
+            catch error
+                error.should.match /requires middleware.title and middleware.fn/
+                done()
+
 
     
 

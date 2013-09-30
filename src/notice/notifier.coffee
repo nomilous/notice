@@ -33,12 +33,24 @@ module.exports.notifier  = (config = {}) ->
 
                     local.middleware[originCode][++sequence] = middleware
 
+                else
+
+                    #
+                    # titled middleware 
+                    #
+
+                    throw new Error(
+
+                        "Notifier.use(middleware) requires middleware.title and middleware.fn"
+
+                    ) unless middleware? and middleware.title? and middleware.fn?
 
 
             for type of config.messages
                 continue if type == 'use'
                 do (type) -> 
                     notifier[type] = (payload) -> 
+                        payload._type = type
                         local.messageTypes[type].create payload
 
 
