@@ -65,15 +65,15 @@ module.exports.notifier  = (config = {}) ->
                 )
 
 
-            notifier = use: (middleware) -> 
+            notifier = use: (opts, fn) -> 
 
-                if typeof middleware == 'function'
+                if typeof opts == 'function'
 
                     #
                     # anonymous middleware is registered with sequence number
                     #
 
-                    list[++regSequence] = middleware
+                    list[++regSequence] = opts
 
                 else
 
@@ -82,14 +82,17 @@ module.exports.notifier  = (config = {}) ->
                     #
 
                     throw new Error(
-                        "Notifier.use(middleware) requires middleware.title and middleware.fn"
-                    ) unless middleware? and middleware.title? and middleware.fn?
+                        "Notifier.use(opts, fn) requires opts.title and fn"
+                    ) unless ( 
+                        opts? and opts.title? and 
+                        fn? and typeof fn == 'function'
+                    )
 
                     #
                     # this will overwrite existing middleware by the same title
                     #
 
-                    list[middleware.title] = middleware.fn
+                    list[opts.title] = fn
 
                     #
                     # although the sequence was not used as key in the list

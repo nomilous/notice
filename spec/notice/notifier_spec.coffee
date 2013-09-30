@@ -146,9 +146,9 @@ describe 'notifier', ->
             seven = notifier().create 'Assembly Line 7'
             try seven.use 
                 titel: 'troubled speller'
-                fn: (msg, next) ->
+                (msg, next) ->
             catch error
-                error.should.match /requires middleware.title and middleware.fn/
+                error.should.match /requires opts.title and fn/
                 done()
 
 
@@ -157,13 +157,13 @@ describe 'notifier', ->
             six = notifier().create 'Assembly Line 6'
             six.use 
                 title: 'arrange into single file'
-                fn: (msg, next) -> next()
+                (msg, next) -> next()
             six.use
                 title: 'squirt the product in'
-                fn: (msg, next) -> next()
+                (msg, next) -> next()
             six.use
                 title: 'put a lid on it'
-                fn: (msg, next) -> next()
+                (msg, next) -> next()
 
             mmm = _notifier().middleware['Assembly Line 6']
 
@@ -181,17 +181,17 @@ describe 'notifier', ->
                 next()
             five.use 
                 title: 'REPLACE ME'
-                fn: (msg, next) -> 
+                (msg, next) -> 
                     msg.array.push 2
                     next()
             five.use 
                 title: 'x'
-                fn: (msg, next) -> 
+                (msg, next) -> 
                     msg.array.push 3
                     next()
             five.use 
                 title: 'REPLACE ME'
-                fn: (msg, next) -> 
+                (msg, next) -> 
                     msg.array.push 'new 2'
                     next()
 
@@ -218,7 +218,7 @@ describe 'notifier', ->
             four.use (msg, next) -> 
                 msg.step1 = 'done'
                 next()
-            four.use title: 'step2', fn: (msg, next) ->
+            four.use title: 'step2', (msg, next) ->
                 msg.step2 = 'done'
                 next()
 
