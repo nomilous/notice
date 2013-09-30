@@ -108,7 +108,16 @@ describe 'notifier', ->
                 done()
 
 
+        it 'provides middleware registrar', (done) -> 
 
+            Notifier = notifier
+                messages:
+                    use: 'this message definition is ignored'
+
+            nine = Notifier.create 'Assembly Line 9'
+
+            nine.use.should.be.an.instanceof Function
+            done()
 
     
 

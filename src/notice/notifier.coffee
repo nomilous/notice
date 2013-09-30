@@ -19,11 +19,14 @@ module.exports.notifier  = (config = {}) ->
                 "Notifier.create('#{originCode}') is not a unique originCode"
             ) if local.middleware[originCode]?
 
-            notifier = {}
+            
 
             local.middleware[originCode] = {}
 
+            notifier = use: ->
+
             for type of config.messages
+                continue if type == 'use'
                 do (type) -> 
                     notifier[type] = (payload) -> 
                         local.messageTypes[type].create payload
