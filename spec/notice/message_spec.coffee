@@ -1,9 +1,38 @@
 #require('nez').realize 'Message', (Message, test, context, should) -> 
     
-Message = require '../../lib/notice/message'
+{_message, message} = require '../../lib/notice/message'
 should  = require 'should'
 
+describe 'message', -> 
+
+    it 'is a class factory (and testable)', (done) -> 
+
+        Message = message() 
+        m = new Message
+        m.should.be.an.instanceof _message().Message
+        done()
+
+
 describe 'Message', -> 
+
+    it 'is created with a set of properties', (done) -> 
+
+        Message = message()
+
+        m = new Message
+            property1: 'value1'
+            property2: 'value2'
+
+        m.should.eql 
+            property1: 'value1'
+            property2: 'value2'
+
+        done()
+
+
+
+
+xdescribe 'Message', -> 
 
     context 'title and description', -> 
 

@@ -1,6 +1,6 @@
 `npm install notice`
 
-### Version 0.0.10
+### Version 0.0.11
 
 **unstable** - api changes almost certainly will occur (without deprecation warnings)
 

@@ -1,3 +1,29 @@
+
+
+testable                = undefined
+module.exports._message = -> testable
+module.exports.message  = (config = {}) ->
+
+    local = 
+
+        Message: class Message 
+
+            constructor: (params) -> 
+
+                @[key] = params[key] for key of params
+    
+
+    testable = local
+
+    return local.Message
+
+
+
+
+
+
+
+return
 onceIfString   = require('./decorators').onceIfString
 
 module.exports = class Message
