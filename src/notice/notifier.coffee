@@ -14,12 +14,25 @@ module.exports.notifier  = (config = {}) ->
                 'Notifier.create( originCode ) requires originCode as string'
             ) unless typeof originCode is 'string'
 
-            #
-            # * create pre-defined message types
-            #
+
+            notifier = {}
 
             for type of config.messages
-                local.messageTypes[type] = message config.messages[type]
+                do (type) -> 
+                    notifier[type] = (payload) -> 
+                        local.messageTypes[type].create payload
+
+
+
+            return notifier
+
+
+    #
+    # * create pre-defined message types
+    #
+
+    for type of config.messages
+        local.messageTypes[type] = message config.messages[type]
 
 
     return api = 

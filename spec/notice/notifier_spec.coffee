@@ -37,6 +37,13 @@ describe 'notifier', ->
 
     context 'create()', -> 
 
+        beforeEach -> 
+            @now = Date.now
+
+        afterEach -> 
+            Date.now = @now
+
+
         it 'requires an originCode', (done) -> 
 
             Notifier = notifier()
@@ -47,8 +54,46 @@ describe 'notifier', ->
                 done()
 
 
+        it 'creates a function to send each defined message type', (done) ->
+
+            Date.now = -> 'wrist watch'
+
+            Notifier = notifier 
+                messages:
+                    pheeew: 
+                        properties:
+                            sourceHost: 
+                                hidden:  'true'
+                                default: require('os').hostname()
+                        afterCreate: (msg, done) ->
+
+                            #
+                            # eg. push the new message to a database
+                            #     before sending it.
+                            #
+
+                            msg.id        = 'new database record id'
+                            msg.createdAt = Date.now() 
+                            done()
 
 
+            instance = Notifier.create 'originCode'
+            instance.pheeew
+
+                defcon:  1
+                change: -4
+
+            .then (newMessage) -> 
+
+                newMessage.should.eql 
+
+                    id:        'new database record id'
+                    createdAt: 'wrist watch'
+                    defcon:     1
+                    change:     -4
+
+                #console.log newMessage.sourceHost
+                done()
 
 
 
