@@ -44,6 +44,18 @@ describe 'Message', ->
         done()
 
 
+    it 'predefined default values are overridden', (done) ->
+
+        Message = message 
+            properties:
+                prop: 1
+
+        m = new Message prop: 2
+        m.prop.should.eql 2
+        done()
+
+
+
 xdescribe 'Message', -> 
 
     context 'title and description', -> 
