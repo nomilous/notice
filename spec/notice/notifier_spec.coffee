@@ -3,6 +3,38 @@ should   = require 'should'
 
 describe 'notifier', -> 
 
+    context 'factory', -> 
+
+        it 'creates the Notifier object', (done) -> 
+
+            Notifier = notifier()
+            done()
+
+
+        it 'allows message type definitions', (done) -> 
+
+            Notifier = notifier
+                messages: 
+                    event:       {}
+                    info:        {}
+                    alert:       {}
+                    assign:      {}
+                    mollycoddle: {}
+                    placate:     {}
+
+
+            instance = Notifier.create 'originCode'
+
+            should.exist _notifier().messageTypes.event
+            should.exist _notifier().messageTypes.info
+            should.exist _notifier().messageTypes.alert
+            should.exist _notifier().messageTypes.assign
+            should.exist _notifier().messageTypes.mollycoddle
+            should.exist _notifier().messageTypes.placate
+            done()
+
+
+
     context 'create()', -> 
 
         it 'requires an originCode', (done) -> 
@@ -13,7 +45,6 @@ describe 'notifier', ->
             catch error
                 error.should.match /requires originCode as string/
                 done()
-
 
 
 

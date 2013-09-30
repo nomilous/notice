@@ -1,3 +1,4 @@
+{message} = require './message' 
 
 testable                 = undefined
 module.exports._notifier = -> testable
@@ -5,12 +6,21 @@ module.exports.notifier  = (config = {}) ->
 
     testable = local = 
 
+        messageTypes: {}
+
         create: (originCode) ->
         
             throw new Error( 
                 'Notifier.create( originCode ) requires originCode as string'
             ) unless typeof originCode is 'string'
-            
+
+            #
+            # * create pre-defined message types
+            #
+
+            for type of config.messages
+                local.messageTypes[type] = message config.messages[type]
+
 
     return api = 
 

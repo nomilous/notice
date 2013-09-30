@@ -13,7 +13,8 @@
   "dependencies": {
     "socket.io": "~0.9.16",
     "socket.io-client": "~0.9.16",
-    "node-uuid": "~1.4.0"
+    "node-uuid": "~1.4.0",
+    "also": "0.0.12"
   },
   "devDependencies": {
     "nez": "0.0.7",
