@@ -36,14 +36,21 @@ module.exports.notifier  = (config = {}) ->
                 else
 
                     #
-                    # titled middleware 
+                    # titled middleware
                     #
 
                     throw new Error(
-
                         "Notifier.use(middleware) requires middleware.title and middleware.fn"
-
                     ) unless middleware? and middleware.title? and middleware.fn?
+
+                    #
+                    # this will overwrite existing middleware by the same title
+                    #
+
+                    local.middleware[originCode][middleware.title] = middleware.fn
+
+
+
 
 
             for type of config.messages

@@ -151,6 +151,24 @@ describe 'notifier', ->
                 done()
 
 
+        it 'registers titled middleware', (done) -> 
+
+            six = notifier().create 'Assembly Line 6'
+            six.use 
+                title: 'arrange into single file'
+                fn: (msg, next) -> next()
+            six.use
+                title: 'squirt the product in'
+                fn: (msg, next) -> next()
+            six.use
+                title: 'put a lid on it'
+                fn: (msg, next) -> next()
+
+            mmm = _notifier().middleware['Assembly Line 6']
+            
+            mmm['arrange into single file'] {}, ->
+            mmm['squirt the product in']    {}, ->
+            mmm['put a lid on it']          {}, done
     
 
 return
