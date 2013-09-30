@@ -7,15 +7,21 @@ module.exports.notifier  = (config = {}) ->
     testable = local = 
 
         messageTypes: {}
+        middleware:   {}
 
         create: (originCode) ->
         
             throw new Error( 
-                'Notifier.create( originCode ) requires originCode as string'
+                'Notifier.create(originCode) requires originCode as string'
             ) unless typeof originCode is 'string'
 
+            throw new Error(
+                "Notifier.create('#{originCode}') is not a unique originCode"
+            ) if local.middleware[originCode]?
 
             notifier = {}
+
+            local.middleware[originCode] = {}
 
             for type of config.messages
                 do (type) -> 

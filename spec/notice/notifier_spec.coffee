@@ -63,7 +63,7 @@ describe 'notifier', ->
                     pheeew: 
                         properties:
                             sourceHost: 
-                                hidden:  'true'
+                                hidden:  true
                                 default: require('os').hostname()
                         afterCreate: (msg, done) ->
 
@@ -96,6 +96,16 @@ describe 'notifier', ->
                 done()
 
 
+        it 'creates middleware storage and throws on duplicate originCode', (done) -> 
+
+            Notifier = notifier()
+            Notifier.create 'bakery'
+            try Notifier.create 'bakery'
+            catch π
+
+                should.exist _notifier().middleware.bakery
+                π.should.match /is not a unique originCode/
+                done()
 
 
 
