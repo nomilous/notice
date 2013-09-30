@@ -10,6 +10,9 @@ module.exports.message  = (config = {}) ->
 
             constructor: (properties) -> 
 
+                if typeof config.beforeCreate == 'function'
+                    config.beforeCreate @
+
                 for key of config.properties
                     if config.properties[key].default?
                         @[key] = config.properties[key].default

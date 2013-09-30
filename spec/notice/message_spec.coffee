@@ -73,6 +73,22 @@ describe 'Message', ->
         done()
 
 
+    it 'calls beforeCreate ahead of property assignment', (done) -> 
+
+        Message = message 
+            beforeCreate: (msg) -> 
+                msg.preAssigned = 'value'
+            properties:
+                internalCode: 
+                    default: 'R'
+                    hidden:  true
+
+        m = new Message
+        m.should.eql preAssigned: 'value'
+        m.internalCode.should.equal 'R'
+        done()
+
+
 xdescribe 'Message', -> 
 
     context 'title and description', -> 
