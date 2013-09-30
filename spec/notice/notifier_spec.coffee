@@ -1,5 +1,22 @@
-# require('nez').realize 'Notifier', (Notifier, test, context, should, os) -> 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+return
 os       = require 'os'
 Notifier = require '../../lib/notice/notifier'
 should   = require 'should'

@@ -1,3 +1,23 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+return
 pipeline     = require 'when/pipeline'
 Defer        = require('when').defer
 Message      = require './message'
