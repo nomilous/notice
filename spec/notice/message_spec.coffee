@@ -3,90 +3,106 @@
 {_message, message} = require '../../lib/notice/message'
 should  = require 'should'
 
-describe 'message', -> 
-
-    it 'is a class factory (and testable)', (done) -> 
-
-        Message = message() 
-        m = new Message
-        m.should.be.an.instanceof _message().Message
-        done()
-
-
 describe 'Message', -> 
 
-    it 'is created with a set of properties', (done) -> 
+    context 'async create()', ->
 
-        Message = message()
+        it 'is created with a set of properties', (done) -> 
 
-        m = new Message
-            property1: 'value1'
-            property2: 'value2'
+            Message = message()
 
-        m.should.eql 
-            property1: 'value1'
-            property2: 'value2'
+            Message.create
+                property1: 'value1'
+                property2: 'value2'
 
-        done()
-
-
-    it 'can have predefined properties', (done) -> 
-
-        Message = message 
-            properties:
-                property3: 
-                    default: 'defaultValue'
-
-        m = new Message property1: 'value1'
-        m.should.eql 
-            property3: 'defaultValue'
-            property1: 'value1'
-
-        done()
+            .then (m) -> m.should.eql
+                property1: 'value1'
+                property2: 'value2'
+                done()
 
 
-    it 'predefined default values are overridden', (done) ->
+        it 'can have predefined properties', (done) -> 
 
-        Message = message 
-            properties:
-                prop: 
-                    default: 1
+            Message = message 
+                properties:
+                    property3: 
+                        default: 'defaultValue'
 
-        m = new Message prop: 2
-        m.prop.should.eql 2
-        done()
+            Message.create 
+                property1: 'value1'
 
-
-    it 'can set properties to not be enumerated by serializers', (done) -> 
-
-        Message = message 
-            properties:
-                internalCode: 
-                    default: 'R'
-                    hidden:  true
-
-        m = new Message
-        m.internalCode.should.equal 'R'
-        m.internalCode = 'X'
-        m.internalCode.should.equal 'X'
-        m.should.eql {}
-        done()
+            .then (m) -> m.should.eql
+                property3: 'defaultValue'
+                property1: 'value1'
+                done()
 
 
-    it 'calls beforeCreate ahead of property assignment', (done) -> 
+        it 'predefined default values are overridden', (done) ->
 
-        Message = message 
-            beforeCreate: (msg) -> 
-                msg.preAssigned = 'value'
-            properties:
-                internalCode: 
-                    default: 'R'
-                    hidden:  true
+            Message = message 
+                properties:
+                    prop: 
+                        default: 1
 
-        m = new Message
-        m.should.eql preAssigned: 'value'
-        m.internalCode.should.equal 'R'
-        done()
+            Message.create 
+                prop: 2
+            .then (m) -> 
+                m.prop.should.eql 2
+                done()
+
+
+        it 'can set properties to not be enumerated by serializers', (done) -> 
+
+            Message = message 
+                properties:
+                    internalCode: 
+                        default: 'R'
+                        hidden:  true
+
+            Message.create().then (m) ->
+                m.internalCode.should.equal 'R'
+                m.internalCode = 'X'
+                m.internalCode.should.equal 'X'
+                m.should.eql {}
+                done()
+
+
+        it 'calls beforeCreate ahead of property assignment', (done) -> 
+
+            Message = message 
+                beforeCreate: (msg, done) -> 
+                    msg.preAssigned = 'value'
+                    done()
+
+                properties:
+                    internalCode: 
+                        default: 'R'
+                        hidden:  true
+
+            Message.create().then (m) ->
+
+                m.should.eql preAssigned: 'value'
+                m.internalCode.should.equal 'R'
+                done()
+
+
+        it 'calls afterCreate after property assignment', (done) -> 
+
+            Message = message 
+                properties:
+                    internalCode: 
+                        default: 'R'
+                        hidden:  true
+                afterCreate: (msg, done) ->  
+                    msg.one++
+                    done()
+
+            Message.create
+                one: 1
+                two: 2
+            .then (m) -> 
+                m.one.should.equal 2
+                done()
 
 
 xdescribe 'Message', -> 

@@ -1,4 +1,4 @@
-
+{deferred, pipeline} = require 'also'
 
 testable                = undefined
 module.exports._message = -> testable
@@ -6,24 +6,40 @@ module.exports.message  = (config = {}) ->
 
     local = 
 
-        Message: class Message 
+        Message: 
 
-            constructor: (properties) -> 
+            create: deferred ({resolve, reject, notify}, properties) -> 
 
-                if typeof config.beforeCreate == 'function'
-                    config.beforeCreate @
+                before = deferred ({resolve, reject}, msg = {}) -> 
+                    return resolve msg unless typeof config.beforeCreate == 'function' 
+                    config.beforeCreate msg, (error) -> 
+                        if error? then return reject error
+                        resolve msg
 
-                for key of config.properties
-                    if config.properties[key].default?
-                        @[key] = config.properties[key].default
-                        if config.properties[key].hidden
-                            Object.defineProperty @, key, 
-                                enumerable: false
+                assign = (msg) -> 
+                    for key of config.properties
+                        if config.properties[key].default?
+                            msg[key] = config.properties[key].default
+                            if config.properties[key].hidden
+                                Object.defineProperty msg, key, 
+                                    enumerable: false
+                    msg[key] = properties[key] for key of properties
+                    return msg
 
-                @[key] = properties[key] for key of properties
+                after = deferred ({resolve, reject}, msg) -> 
+                    return resolve msg unless typeof config.afterCreate == 'function' 
+                    config.afterCreate msg, (error) -> 
+                        if error? then return reject error
+                        resolve msg
+                    
+                pipeline([
 
+                    (   ) -> before()
+                    (msg) -> assign msg
+                    (msg) -> after  msg
 
-    
+                ]).then resolve, reject, notify
+        
 
     testable = local
 
