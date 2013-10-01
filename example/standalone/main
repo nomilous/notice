@@ -1,0 +1,15 @@
+#! /usr/bin/env coffee
+
+require './lib/app_component_one'
+require './lib/app_component_two'
+
+{bus1, bus2} = require './lib/message_bus'
+
+bus1.event run: {}
+bus2.use (msg, next) -> 
+    
+    console.log JSON.stringify msg, null, 2
+    next()
+
+setTimeout (-> bus1.event stop: {}), 2020
+
