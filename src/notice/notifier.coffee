@@ -134,10 +134,10 @@ module.exports.notifier  = (config = {}) ->
                         ]).then(
                             (msg) -> 
                                 action.resolve msg
-                                callback null, msg
+                                callback null, msg if callback?
                             (err) -> 
                                 action.reject err
-                                callback err
+                                callback err if callback?
                             action.notify
                         )
                         

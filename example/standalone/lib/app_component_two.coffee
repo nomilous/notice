@@ -8,17 +8,28 @@ sendUpdate = ->
     # bus2 defines `update` as a message type
     #
 
-    message = 
-        progress: "#{count++} of 2"
+    message = progress: "#{count++} of 2"
+
+    #
+    # emit the message as update onto bus2 with a 
+    # node style callback to receive a possible 
+    # error or the message after it being processed
+    # by all registered middleware on bus2
+    #
+    
     bus2.update message, (err, res) -> 
 
-        #
-        # `res` is the same sent message AFTER 
-        # being processed by all the middleware 
-        # registered on bus2
-        #
-
         console.log ok: res.ok
+
+    #
+    # the emit function also returns a promise
+    # for those of us that like then
+    #
+    # bus2.update( message ).then(
+    #     (res) -> console.log ok: res.ok
+    #     (err) -> 
+    # )
+    #
 
 
 bus1.use (msg, next) -> 
