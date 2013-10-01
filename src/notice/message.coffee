@@ -8,7 +8,7 @@ module.exports.message  = (config = {}) ->
 
         Message: 
 
-            create: deferred ({resolve, reject, notify}, properties) -> 
+            create: deferred ({resolve, reject, notify}, properties = {}) -> 
 
                 before = deferred ({resolve, reject}, msg) -> 
 
@@ -16,10 +16,11 @@ module.exports.message  = (config = {}) ->
                     # builtin properties
                     #
 
-                    msg._type = 'event' unless msg._type?
+                    properties._type = 'event' unless properties._type?
                     Object.defineProperty msg, '_type', 
                         enumerable: false
                         writable: false
+                        value: properties._type
 
                     return resolve msg unless typeof config.beforeCreate == 'function' 
                     config.beforeCreate msg, (error) -> 
@@ -28,6 +29,7 @@ module.exports.message  = (config = {}) ->
 
                 assign = (msg) -> 
                     for key of config.properties
+                        continue if key == '_type'
                         if config.properties[key].default?
                             msg[key] = config.properties[key].default
                             if config.properties[key].hidden

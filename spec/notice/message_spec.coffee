@@ -42,9 +42,18 @@ describe 'Message', ->
             Message.create 
                 property1: 'value1'
             .then (m) -> 
+                m._type = 'lkmsldfdf'
                 m._type.should.equal 'event'
                 done()
 
+        it 'can set _type on create', (done) ->
+
+            Message = message()
+            Message.create 
+                _type: 'TYPE'
+            .then (m) -> 
+                m._type.should.equal 'TYPE'
+                done()
 
 
         it 'predefined default values are overridden', (done) ->
