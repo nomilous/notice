@@ -137,7 +137,9 @@ module.exports.notifier  = (config = {}) ->
                                 else payload[type] = arg
                                 continue
                             continue if arg instanceof Array # ignore arrays
-                            payload[key] = arg[key] for key of arg
+                            for key of arg
+                                continue if key == type and payload[key]?
+                                payload[key] = arg[key] 
                         callback = arg if typeof arg == 'function'
 
                         return pipeline([

@@ -169,6 +169,17 @@ describe 'notifier', ->
                     b: 2
                 done()
 
+
+        it 'will not overwrite typeValue is also present in payload', (done) -> 
+
+            instance = notifier().create 'originCode'
+            instance.event 'event name', 
+                event: 'accidental second definition of event name'
+                (err, msg) -> 
+                    msg.event.should.not.equal 'accidental second definition of event name'
+                    done()
+
+
         it 'creates description with second string', (done) -> 
 
             instance = notifier().create 'originCode'
