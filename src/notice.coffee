@@ -8,6 +8,12 @@
 
 module.exports = notifier
 
+#
+# default standalone
+#
+
+module.exports.create = notifier().create
+
 
 #
 # connected

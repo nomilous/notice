@@ -13,7 +13,75 @@ A middleware based communications scaffold.
 The Standalone Notifier
 -----------------------
 
-todo
+Implementes a MessageBus for communications confined to a single process.
+
+#### the default notifier
+
+```coffee
+
+notice   = require 'notice'
+notifier = notice.create 'origin name'
+
+#
+# Send an event 
+#
+
+notifier.event 'event name', { optional: 'payload' }
+
+#
+# Send an event and assign a callback to receive the result.
+#
+
+notifier.event 'event name', {}, (err, msg) -> 
+    
+    # 
+    # * Middleware traversal is terminated upon the first
+    #   throw or uncaught exception inside the pipeline 
+    #   and the `err` is passed here.
+    # 
+    # * Otherwise `msg` is populated with the message as 
+    #   modified by middlewares registered on the notifier.
+    # 
+
+```
+```coffee
+
+#
+# Register middleware.
+#
+
+notifier.use (msg, next) -> 
+    
+    msg.myContribution = '∑'
+    next()
+
+    #
+    # why Middleware ?
+    # ----------------
+    # 
+    # * The combination of subscribe-ability and assembly-line
+    #   creates a powerful tool.
+    # 
+
+#
+# Or middleware with a Title
+#
+
+notifier.use title: 'Pie Thrower', (msg, next) -> 
+    
+    throw 'π'
+
+    #
+    # why a Title ? 
+    # -------------
+    # 
+    # * The (not yet implemented) bottleneck identifiability.
+    # 
+
+```
+
+
+
 
 
 The Distributable Notifier
