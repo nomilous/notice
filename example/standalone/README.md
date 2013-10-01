@@ -8,14 +8,13 @@ Requires coffee-script `npm install -g coffee-script`
 
 component_ONE received: { run: {} }
 component_TWO received: { run: {} }
-{
-  "count": 0,
-  "createdAt": "2013-10-01T18:37:19.583Z"
+on bus2: [Error: oh dear...]
+on bus2: {
+  "progress": "2 of 2",
+  "createdAt": "2013-10-01T20:12:27.066Z",
+  "ok": 2
 }
-{
-  "count": 1,
-  "createdAt": "2013-10-01T18:37:20.584Z"
-}
+after bus2: { ok: 2 }
 component_ONE received: { stop: {} }
 component_TWO received: { stop: {} }
 

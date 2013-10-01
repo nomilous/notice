@@ -18,16 +18,16 @@ sendUpdate = ->
     #
     
     bus2.update message, (err, res) -> 
-
-        console.log ok: res.ok
+        if err? then return console.log 'on bus2:', err
+        console.log 'after bus2:', ok: res.ok
 
     #
     # the emit function also returns a promise
     # for those of us that like then
     #
     # bus2.update( message ).then(
-    #     (res) -> console.log ok: res.ok
-    #     (err) -> 
+    #     (res) -> console.log 'after bus2:', ok: res.ok
+    #     (err) -> console.log 'on bus2:', err
     # )
     #
 
