@@ -1,4 +1,4 @@
-#!/usr/bin/env coffee
+#! /usr/bin/env coffee
 
 require './lib/app_component_one'
 require './lib/app_component_two'
