@@ -15,7 +15,7 @@ The Standalone Notifier
 
 Implementes a MessageBus for communications confined to a single process.
 
-#### create a default notifier
+### create a default notifier
 
 ```coffee
 
@@ -79,6 +79,25 @@ notifier.use title: 'Pie Thrower', (msg, next) ->
 
 ```
 
+#### use the promise instead
+
+```coffee
+
+notifier.event 'event name',
+
+    sending:   'this message'
+    with:      'a promise waiting'
+    insteadOf: 'a node style callback waiting'
+    forThe:    'finalMessage'
+
+.then(
+
+    (finalMessage) -> 
+    (error) -> console.log error == 'π'
+
+)
+
+```
 
 
 
