@@ -34,6 +34,14 @@ describe 'notifier', ->
             done()
 
 
+        it 'creates event() as default message emitter if none defined', (done) ->  
+
+            Notifier = notifier()
+            instance = Notifier.create 'originCode'
+            instance.event.should.be.an.instanceof Function
+            done()
+
+
 
     context 'create()', -> 
 

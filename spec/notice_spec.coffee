@@ -3,7 +3,7 @@
 should = require 'should'
 Notice = require '../lib/notice'
 
-describe 'Notice', ->
+xdescribe 'Notice', ->
 
 
     it 'is a (messaging|????ing) middleware pipeline', (done) -> 

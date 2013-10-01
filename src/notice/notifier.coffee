@@ -5,6 +5,12 @@ testable                 = undefined
 module.exports._notifier = -> testable
 module.exports.notifier  = (config = {}) ->
 
+    #
+    # create default message emitter if none defined
+    #
+
+    config.messages = event: {} unless config.messages?
+
     testable = local = 
 
         messageTypes: {}
