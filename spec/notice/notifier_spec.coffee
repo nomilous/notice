@@ -105,7 +105,7 @@ describe 'notifier', ->
                 done()
 
 
-        it.only 'assigns the message type title from string or number', (done) -> 
+        it 'assigns the message typeValue from string or number', (done) -> 
 
             Notifier = notifier 
                 messages: 
@@ -123,6 +123,18 @@ describe 'notifier', ->
                     { alert: 3 }
                 ]
                 done()
+
+
+        it.only 'can assign additional payload after the typeValue', (done) -> 
+
+            instance = notifier().create 'originCode'
+            instance.event( 'event name', more: 'info' ).then (m) -> 
+
+                m.should.eql 
+                    event: 'event name'
+                    more:  'info'
+                done()
+
 
 
 

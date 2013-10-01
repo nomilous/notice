@@ -126,11 +126,19 @@ module.exports.notifier  = (config = {}) ->
                 continue if type == 'use'
                 do (type) -> 
                     notifier[type] = deferred (args...) -> 
-                        {resolve, reject, notify} = args[0]
+
+                        {resolve, reject, notify} = args.shift()
                         payload = {}
                         payload._type = type
-                        payload[type] = args[1] if (typeof args[1]).match /string|number/ 
-                                
+
+                        for arg in args
+                            if (typeof arg).match /string|number/
+                                payload[type] = arg unless payload[type]?
+                                continue
+                            continue if arg instanceof Array # ignore arrays
+                            payload[key] = arg[key] for key of arg
+                        callback = arg if typeof arg == 'function'
+
                         return pipeline([
                             (   ) -> local.messageTypes[type].create payload
                             (msg) -> traverse msg
