@@ -98,12 +98,19 @@ describe 'Message', ->
                         default: 'R'
                         hidden:  true
 
-            Message.create().then (m) ->
-
+            Message.create( ).then (m) ->
                 m.should.eql preAssigned: 'value'
                 m.internalCode.should.equal 'R'
                 done()
 
+        it 'sets _type before beforeCreate', (done) -> 
+
+            Message = message 
+                beforeCreate: (msg, next) -> 
+                    msg._type.should.equal 'event'
+                    done()
+
+            Message.create()
 
         it 'calls afterCreate after property assignment', (done) -> 
 
