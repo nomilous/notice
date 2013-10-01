@@ -2,7 +2,7 @@
 
 Requires coffee-script `npm install -g coffee-script`
 
-bash```
+```bash
 
 ./main
 
