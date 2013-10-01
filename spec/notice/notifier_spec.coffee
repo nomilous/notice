@@ -125,7 +125,7 @@ describe 'notifier', ->
                 done()
 
 
-        it.only 'can assign additional payload after the typeValue', (done) -> 
+        it 'can assign additional payload after the typeValue', (done) -> 
 
             instance = notifier().create 'originCode'
             instance.event( 'event name', more: 'info' ).then (m) -> 
@@ -136,6 +136,25 @@ describe 'notifier', ->
                 done()
 
 
+        it.only 'can assign additional payload before the typeValue', (done) -> 
+
+            instance = notifier().create 'originCode'
+
+            instance.event
+            
+                description:  '...'
+                category:     '...'
+                subcategory:  '...'
+                'event name'
+
+            .then (m) -> 
+                m.should.eql 
+                    event:       'event name'
+                    description: '...'
+                    category:    '...'
+                    subcategory: '...'
+                    
+                done()
 
 
         it 'creates middleware storage and throws on duplicate originCode', (done) -> 
