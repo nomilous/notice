@@ -105,6 +105,27 @@ describe 'notifier', ->
                 done()
 
 
+        it.only 'assigns the message type title from string or number', (done) -> 
+
+            Notifier = notifier 
+                messages: 
+                    alert: {}
+
+            instance = Notifier.create 'originCode'
+
+            messages = []
+
+            instance.alert( 'something bad' ).then (m) -> messages.push m
+            instance.alert( 3 ).then (m) -> 
+                messages.push m
+                messages.should.eql [
+                    { alert: 'something bad' }
+                    { alert: 3 }
+                ]
+                done()
+
+
+
         it 'creates middleware storage and throws on duplicate originCode', (done) -> 
 
             Notifier = notifier()
