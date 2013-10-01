@@ -22,9 +22,10 @@ Implementes a MessageBus for communications confined to a single process.
 notice   = require 'notice'
 notifier = notice.create 'origin name'
 
-#
-# Send an event 
-#
+```
+#### send an event
+
+```coffee
 
 notifier.event 'event name', { optional: 'payload' }
 
