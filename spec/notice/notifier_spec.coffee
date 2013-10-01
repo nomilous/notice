@@ -259,6 +259,25 @@ describe 'notifier', ->
                 done()
 
 
+        it 'also accepts traditional node style callback to receive the error or final message', (done) -> 
+
+            Notifier = notifier()
+            instance = Notifier.create 'originCode'
+
+            instance.use (msg, next) -> 
+                msg.ok = 'good'
+                next()
+
+
+            instance.event payload: 'ABCDEFG', (err, msg) -> 
+
+                msg.should.eql
+                     payload: 'ABCDEFG'
+                     ok:      'good'
+                done()
+
+
+
         it 'has mech for first and last middlewares for hub and client'
 
 

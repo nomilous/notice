@@ -125,12 +125,21 @@ module.exports.notifier  = (config = {}) ->
             for type of config.messages
                 continue if type == 'use'
                 do (type) -> 
-                    notifier[type] = (payload = {}) -> 
+                    notifier[type] = deferred (action, payload, callback) -> 
+                        payload  ||= {}
                         payload._type = type
                         return pipeline([
                             (   ) -> local.messageTypes[type].create payload
                             (msg) -> traverse msg
-                        ])
+                        ]).then(
+                            (msg) -> 
+                                action.resolve msg
+                                callback null, msg
+                            (err) -> 
+                                action.reject err
+                                callback err
+                            action.notify
+                        )
                         
 
 

@@ -13,6 +13,7 @@ bus2.use (msg, next) ->
     #
     
     console.log JSON.stringify msg, null, 2
+    msg.ok = true
     next()
 
 setTimeout (-> bus1.event stop: {}), 2020
