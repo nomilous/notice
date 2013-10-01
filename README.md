@@ -15,7 +15,7 @@ The Standalone Notifier
 
 Implementes a MessageBus for communications confined to a single process.
 
-#### the default notifier
+#### create a default notifier
 
 ```coffee
 
@@ -44,11 +44,10 @@ notifier.event 'event name', {}, (err, msg) ->
     # 
 
 ```
-```coffee
 
-#
-# Register middleware.
-#
+#### register some middleware
+
+```coffee
 
 notifier.use (msg, next) -> 
     
