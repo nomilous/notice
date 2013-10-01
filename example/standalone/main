@@ -7,6 +7,10 @@ require './lib/app_component_two'
 
 bus1.event run: {}
 bus2.use (msg, next) -> 
+
+    #
+    # register middleware on message bus 2
+    #
     
     console.log JSON.stringify msg, null, 2
     next()

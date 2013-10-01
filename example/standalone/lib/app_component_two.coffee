@@ -2,7 +2,13 @@
 
 interval   = undefined
 count      = 0
-sendUpdate = -> bus2.update count: count++
+sendUpdate = -> 
+    
+    #
+    # bus2 defines `update` as a message type
+    #
+
+    bus2.update count: count++
 
 bus1.use (msg, next) -> 
 

@@ -1,7 +1,7 @@
 notice = require '../../../lib/notice'
 
-Bus1 = notice() # default messages config
-Bus2 = notice  
+MessageBus1 = notice() # default messages config
+MessageBus2 = notice  
 
     messages: 
 
@@ -16,5 +16,5 @@ Bus2 = notice
                 msg.createdAt = new Date
                 next()
 
-module.exports.bus1 = Bus1.create 'app_name::bus1'
-module.exports.bus2 = Bus2.create 'app_name::bus2'
+module.exports.bus1 = MessageBus1.create 'app_name::bus1'
+module.exports.bus2 = MessageBus2.create 'app_name::bus2'
