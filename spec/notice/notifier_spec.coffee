@@ -169,6 +169,15 @@ describe 'notifier', ->
                     b: 2
                 done()
 
+        it 'creates description with second string', (done) -> 
+
+            instance = notifier().create 'originCode'
+            instance.event 'string1', 'string2', (err, msg) -> 
+                msg.should.eql
+                    event: 'string1'
+                    description: 'string2'
+                done()
+
 
         it 'creates middleware storage and throws on duplicate originCode', (done) -> 
 

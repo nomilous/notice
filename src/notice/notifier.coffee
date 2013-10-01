@@ -133,7 +133,8 @@ module.exports.notifier  = (config = {}) ->
 
                         for arg in args
                             if (typeof arg).match /string|number/
-                                payload[type] = arg unless payload[type]?
+                                if payload[type]? then payload.description = arg
+                                else payload[type] = arg
                                 continue
                             continue if arg instanceof Array # ignore arrays
                             payload[key] = arg[key] for key of arg
