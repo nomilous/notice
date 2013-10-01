@@ -136,12 +136,12 @@ describe 'notifier', ->
                 done()
 
 
-        it.only 'can assign additional payload before the typeValue', (done) -> 
+        it 'can assign additional payload before the typeValue', (done) -> 
 
             instance = notifier().create 'originCode'
 
             instance.event
-            
+
                 description:  '...'
                 category:     '...'
                 subcategory:  '...'
@@ -154,6 +154,19 @@ describe 'notifier', ->
                     category:    '...'
                     subcategory: '...'
                     
+                done()
+
+        it 'merges multiple payloads', (done) -> 
+
+            instance = notifier().create 'originCode'
+            payload1 = {a: 1}
+            payload2 = {b: 2}
+            instance.event 'name', payload1, payload2, (err, msg) -> 
+
+                msg.should.eql 
+                    event: 'name'
+                    a: 1
+                    b: 2
                 done()
 
 
