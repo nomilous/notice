@@ -88,7 +88,6 @@ describe 'notifier', ->
                 # console.log newMessage
                 newMessage.should.eql 
 
-                    _type:     'pheeew'
                     id:        'new database record id'
                     createdAt: 'wrist watch'
                     defcon:     1
@@ -232,7 +231,6 @@ describe 'notifier', ->
 
                     serialNo: '0000000000001'
                     colour: 'red'
-                    _type: 'makeThing'
                     step1: 'done'
                     step2: 'done'
 

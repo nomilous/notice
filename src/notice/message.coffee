@@ -11,6 +11,16 @@ module.exports.message  = (config = {}) ->
             create: deferred ({resolve, reject, notify}, properties) -> 
 
                 before = deferred ({resolve, reject}, msg) -> 
+
+                    #
+                    # builtin properties
+                    #
+
+                    msg._type = 'event' unless msg._type?
+                    Object.defineProperty msg, '_type', 
+                        enumerable: false
+                        writable: false
+
                     return resolve msg unless typeof config.beforeCreate == 'function' 
                     config.beforeCreate msg, (error) -> 
                         if error? then return reject error

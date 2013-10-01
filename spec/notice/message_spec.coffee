@@ -36,6 +36,16 @@ describe 'Message', ->
                 property1: 'value1'
                 done()
 
+        it 'has immutable _type that defaults to event', (done) -> 
+
+            Message = message()
+            Message.create 
+                property1: 'value1'
+            .then (m) -> 
+                m._type.should.equal 'event'
+                done()
+
+
 
         it 'predefined default values are overridden', (done) ->
 
