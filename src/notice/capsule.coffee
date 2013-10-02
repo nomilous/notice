@@ -4,6 +4,11 @@ module.exports.capsule  = (config = {}) ->
 
     testable = class Capsule
 
+        #
+        # ./message  - creates on of these
+        # ./notifier - pushes it down the middleware pipeline
+        #
+
         set: (opts) -> 
 
             local = {}
