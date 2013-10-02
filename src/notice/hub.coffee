@@ -1,3 +1,37 @@
+testable            = undefined
+module.exports._hub = -> testable
+module.exports.hub  = (config = {}) ->
+
+    testable = hub = 
+
+        create: (hubName) ->
+
+            throw new Error( 
+                'Notifier.listen( hubName, opts ) requires hubName as string'
+            ) unless typeof hubName is 'string'
+    
+
+
+
+    return api = 
+        create: hub.create
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+return
 listen     = require './listen'
 Notifier   = require './notifier'
 

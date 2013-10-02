@@ -5,7 +5,7 @@ describe 'notifier', ->
 
     context 'factory', -> 
 
-        it 'creates the Notifier object', (done) -> 
+        it 'creates a Notifier definition', (done) -> 
 
             Notifier = notifier()
             done()

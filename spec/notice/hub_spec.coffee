@@ -1,3 +1,39 @@
+should     = require 'should'
+{hub,_hub} = require '../../lib/notice/hub'
+
+describe 'hub', -> 
+
+    context 'factory', ->
+
+        it 'creates a Hub definition', (done) -> 
+
+            Hub = hub()
+            Hub.create.should.be.an.instanceof Function
+            done()
+
+
+    context 'create()', -> 
+
+        it 'requires a name', (done) -> 
+
+            Hub = hub()
+            try Hub.create()
+            catch error
+                error.should.match /requires hubName as string/
+                done()
+
+
+
+
+
+
+
+
+
+
+
+
+return
 io = require 'socket.io'
 
 # require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) -> 
