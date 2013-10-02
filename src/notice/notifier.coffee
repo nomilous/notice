@@ -129,8 +129,7 @@ module.exports.notifier  = (config = {}) ->
 
                         {resolve, reject, notify} = args.shift()
                         payload = {}
-                        payload._type = type
-
+                        
                         for arg in args
                             if (typeof arg).match /string|number/
                                 if payload[type]? then payload.description = arg
@@ -166,7 +165,7 @@ module.exports.notifier  = (config = {}) ->
     #
 
     for type of config.messages
-        local.messageTypes[type] = message config.messages[type]
+        local.messageTypes[type] = message type, config
 
 
     return api = 

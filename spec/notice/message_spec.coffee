@@ -5,11 +5,30 @@ should  = require 'should'
 
 describe 'Message', -> 
 
-    context 'async create()', ->
+    context 'factory', -> 
+
+        it 'creates a MessageType definition', (done) -> 
+
+            Alert = message 'alert'
+            Alert.create.should.be.an.instanceof Function
+            done()
+
+
+    context 'create()', ->
+
+        it 'is asynchronous, returning a promise', (done) -> 
+
+            Message = message 'type'
+            Message.create( property: 'value' ).then (m) -> 
+            
+                m._type.should.equal 'type'
+                m.should.eql property: 'value'
+                done()
+
 
         it 'is created with a set of properties', (done) -> 
 
-            Message = message()
+            Message = message 'type'
 
             Message.create
                 property1: 'value1'
@@ -23,28 +42,19 @@ describe 'Message', ->
 
         it 'has immutable _type that defaults to event', (done) -> 
 
-            Message = message()
+            Message = message 'type'
             Message.create 
                 property1: 'value1'
             .then (m) -> 
                 m._type = 'lkmsldfdf'
-                m._type.should.equal 'event'
-                done()
-
-        it 'can set _type on create', (done) ->
-
-            Message = message()
-            Message.create 
-                _type: 'TYPE'
-            .then (m) -> 
-                m._type.should.equal 'TYPE'
+                m._type.should.equal 'type'
                 done()
 
 
         it 'calls beforeCreate ahead of property assignment', (done) -> 
 
-            Message = message 
-                beforeCreate: (msg, done) -> 
+            Message = message 'type',
+                messages: type: beforeCreate: (msg, done) -> 
                     msg.preAssigned = 'value'
                     done()
 
@@ -54,17 +64,17 @@ describe 'Message', ->
 
         it 'sets _type before beforeCreate', (done) -> 
 
-            Message = message 
-                beforeCreate: (msg, next) -> 
-                    msg._type.should.equal 'event'
+            Message = message 'type',
+                messages: type: beforeCreate: (msg, next) -> 
+                    msg._type.should.equal 'type'
                     done()
 
             Message.create()
 
         it 'calls afterCreate after property assignment', (done) -> 
 
-            Message = message 
-                afterCreate: (msg, done) ->  
+            Message = message 'type',
+                messages: type: afterCreate: (msg, done) ->  
                     msg.one++
                     done()
 
@@ -78,8 +88,8 @@ describe 'Message', ->
 
         it 'beforeCreate and afterCreate can fail the message creation', (done) -> 
 
-            Message = message 
-                beforeCreate: (msg, done) ->  
+            Message = message 'type',
+                messages: type: beforeCreate: (msg, done) ->  
                     done new Error 'darn, no DB to save initial message state'
 
             Message.create( 'helloo-oo-oo': 'bat flies out' ).then (->), (error) ->

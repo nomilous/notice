@@ -2,7 +2,10 @@
 
 testable                = undefined
 module.exports._message = -> testable
-module.exports.message  = (config = {}) ->
+module.exports.message  = (type, config = {}) ->
+
+    thisConfig = {}
+    try thisConfig = config.messages[type]
 
     local = 
 
@@ -13,17 +16,16 @@ module.exports.message  = (config = {}) ->
                 before = deferred ({resolve, reject}, msg) -> 
 
                     #
-                    # builtin properties
+                    # builtin type properties
                     #
 
-                    properties._type = 'event' unless properties._type?
                     Object.defineProperty msg, '_type', 
                         enumerable: false
                         writable: false
-                        value: properties._type
+                        value: type
 
-                    return resolve msg unless typeof config.beforeCreate == 'function' 
-                    config.beforeCreate msg, (error) -> 
+                    return resolve msg unless typeof thisConfig.beforeCreate == 'function' 
+                    thisConfig.beforeCreate msg, (error) -> 
                         if error? then return reject error
                         resolve msg
 
@@ -32,8 +34,8 @@ module.exports.message  = (config = {}) ->
                     return msg
 
                 after = deferred ({resolve, reject}, msg) -> 
-                    return resolve msg unless typeof config.afterCreate == 'function' 
-                    config.afterCreate msg, (error) -> 
+                    return resolve msg unless typeof thisConfig.afterCreate == 'function' 
+                    thisConfig.afterCreate msg, (error) -> 
                         if error? then return reject error
                         resolve msg
                     

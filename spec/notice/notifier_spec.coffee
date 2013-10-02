@@ -89,7 +89,7 @@ describe 'notifier', ->
 
             .then (newMessage) -> 
 
-                # console.log newMessage
+                #console.log newMessage
                 newMessage.should.eql 
 
                     id:        'new database record id'
