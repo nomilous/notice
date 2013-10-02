@@ -131,6 +131,7 @@ module.exports.MessageBus = notice
         resolve:  {}
         escalate: {}
         debrief:  {}
+        reclassify: {}
 
 ```
 #### use it
