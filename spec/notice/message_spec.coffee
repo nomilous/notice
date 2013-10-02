@@ -1,6 +1,7 @@
 #require('nez').realize 'Message', (Message, test, context, should) -> 
     
 {_message, message} = require '../../lib/notice/message'
+{_capsule} = require '../../lib/notice/capsule'
 should  = require 'should'
 
 describe 'Message', -> 
@@ -26,6 +27,15 @@ describe 'Message', ->
 
                 m._type.should.equal 'type'
                 m.should.eql property: 'value'
+                done()
+
+
+        it 'creates a message as Capsule instance', (done) -> 
+
+            Message = message 'type'
+            Message.create().then (m) -> 
+
+                m.should.be.an.instanceof _capsule()
                 done()
 
 

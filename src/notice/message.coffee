@@ -1,4 +1,5 @@
 {deferred, pipeline} = require 'also'
+{capsule} = require './capsule'
 
 testable                = undefined
 module.exports._message = -> testable
@@ -9,6 +10,8 @@ module.exports.message  = (type, config = {}) ->
 
     local = 
 
+        Capsule: capsule config
+
         Message: 
 
             create: deferred ({resolve, reject, notify}, properties = {}) -> 
@@ -16,7 +19,7 @@ module.exports.message  = (type, config = {}) ->
                 before = deferred ({resolve, reject}, msg) -> 
 
                     #
-                    # builtin type properties
+                    # builtin type property
                     #
 
                     Object.defineProperty msg, '_type', 
@@ -41,7 +44,8 @@ module.exports.message  = (type, config = {}) ->
                     
                 pipeline([
 
-                    (   ) -> before { }
+                    (   ) -> new local.Capsule
+                    (msg) -> before msg
                     (msg) -> assign msg
                     (msg) -> after  msg
 
