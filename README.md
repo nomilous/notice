@@ -102,13 +102,14 @@ notifier.event 'event name',
 os         = require 'os'
 notice     = require 'notice'
 
+{hostname, uptime, loadavg, totalmem, freemem} = os
+
 module.exports.MessageBus = notice
     
     messages:
 
         alert: 
             beforeCreate: (msg, done) -> 
-                {hostname, uptime, loadavg, totalmem, freemem} = os
                 msg.sourceInfo = 
                     hostname: hostname()
                     uptime: uptime()

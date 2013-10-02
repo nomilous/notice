@@ -21,21 +21,6 @@ describe 'Message', ->
                 done()
 
 
-        it 'can have predefined properties', (done) -> 
-
-            Message = message 
-                properties:
-                    property3: 
-                        default: 'defaultValue'
-
-            Message.create 
-                property1: 'value1'
-
-            .then (m) -> m.should.eql
-                property3: 'defaultValue'
-                property1: 'value1'
-                done()
-
         it 'has immutable _type that defaults to event', (done) -> 
 
             Message = message()
@@ -56,36 +41,6 @@ describe 'Message', ->
                 done()
 
 
-        it 'predefined default values are overridden', (done) ->
-
-            Message = message 
-                properties:
-                    prop: 
-                        default: 1
-
-            Message.create 
-                prop: 2
-            .then (m) -> 
-                m.prop.should.eql 2
-                done()
-
-
-        it 'can set properties to not be enumerated by serializers', (done) -> 
-
-            Message = message 
-                properties:
-                    internalCode: 
-                        default: 'R'
-                        hidden:  true
-
-            Message.create().then (m) ->
-                m.internalCode.should.equal 'R'
-                m.internalCode = 'X'
-                m.internalCode.should.equal 'X'
-                m.should.eql {}
-                done()
-
-
         it 'calls beforeCreate ahead of property assignment', (done) -> 
 
             Message = message 
@@ -93,14 +48,8 @@ describe 'Message', ->
                     msg.preAssigned = 'value'
                     done()
 
-                properties:
-                    internalCode: 
-                        default: 'R'
-                        hidden:  true
-
             Message.create( ).then (m) ->
                 m.should.eql preAssigned: 'value'
-                m.internalCode.should.equal 'R'
                 done()
 
         it 'sets _type before beforeCreate', (done) -> 
@@ -115,10 +64,6 @@ describe 'Message', ->
         it 'calls afterCreate after property assignment', (done) -> 
 
             Message = message 
-                properties:
-                    internalCode: 
-                        default: 'R'
-                        hidden:  true
                 afterCreate: (msg, done) ->  
                     msg.one++
                     done()

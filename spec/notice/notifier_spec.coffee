@@ -68,11 +68,7 @@ describe 'notifier', ->
 
             Notifier = notifier 
                 messages:
-                    pheeew: 
-                        properties:
-                            sourceHost: 
-                                hidden:  true
-                                default: require('os').hostname()
+                    pheeew:  
                         afterCreate: (msg, done) ->
 
                             #

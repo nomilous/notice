@@ -10,8 +10,6 @@ MessageBus2 = notice
         #
 
         update: 
-            properties:
-                routingCode: default: '∆', hidden:  true
             afterCreate: (msg, next) -> 
                 msg.createdAt = new Date
                 next()

@@ -28,13 +28,6 @@ module.exports.message  = (config = {}) ->
                         resolve msg
 
                 assign = (msg) -> 
-                    for key of config.properties
-                        continue if key == '_type'
-                        if config.properties[key].default?
-                            msg[key] = config.properties[key].default
-                            if config.properties[key].hidden
-                                Object.defineProperty msg, key, 
-                                    enumerable: false
                     msg[key] = properties[key] for key of properties
                     return msg
 

@@ -37,7 +37,7 @@ describe 'standalone default notifier', ->
 
             send.event 'event name', thisFails: true, (err, result) -> 
                 err.should.equal 'π'
-                
+
                 send.event 'event name', 
                     payload: 1
                     more:    2
@@ -55,9 +55,6 @@ describe 'standalone configured notifier', ->
           defined type
         * Each message type is emitted through a created function by the 
           same name.
-        * Message definitions can be assigned default properties
-        * Message definitions can choose to hide certain properties from 
-          serializers.
         * Message definitions can be assigned beforeCreate and afterCreate
           hooks to predefine message properties ahead of the middleware 
           traveral.
@@ -68,10 +65,6 @@ describe 'standalone configured notifier', ->
         Messenger = notice 
             messages: 
                 messageTypeName:
-                    properties:
-                        pid:
-                            default: process.pid
-                            hidden: true
                     beforeCreate: (msg, done) -> 
                         msg.sequence = seq++
                         done()
@@ -79,7 +72,6 @@ describe 'standalone configured notifier', ->
         instance = Messenger.create 'origin name'
         instance.use.should.be.an.instanceof Function
         instance.messageTypeName( 'messageTypeValue' ).then (m) -> 
-            m.pid.should.equal process.pid
             m.should.eql 
                 messageTypeName: 'messageTypeValue'
                 sequence: 0
