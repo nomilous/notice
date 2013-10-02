@@ -98,3 +98,31 @@ describe 'Capsule', ->
             instance.property.should.equal 'original'
             done()
 
+
+        context 'watched()', -> 
+
+            it 'sets a property to watched', (done) -> 
+
+                CHANGES = {}
+                Capsule = capsule()
+                instance = new Capsule
+                instance.set
+                    watched: (property, change, obj) -> 
+                        CHANGES[property] ||= []
+                        CHANGES[property].push change
+                    thing: 'one'
+
+                instance.thing = 'two'
+                instance.thing = 'three'
+                instance.thing = 'four'
+
+                CHANGES.should.eql 
+                    thing: [
+                        { from: undefined, to: 'one'   }
+                        { from: 'one'    , to: 'two'   }
+                        { from: 'two'    , to: 'three' }
+                        { from: 'three'  , to: 'four'  }
+                    ]
+                done()
+
+
