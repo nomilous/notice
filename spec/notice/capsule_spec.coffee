@@ -26,3 +26,14 @@ describe 'Capsule', ->
             instance.property.should.equal 'original'
             done()
 
+        it 'can set a hidden property', (done) -> 
+
+            Capsule = capsule()
+            instance = new Capsule
+            instance.set 
+                hidden: true
+                property: 'value'
+
+            instance.should.eql {}
+            instance.property.should.equal 'value'
+            done()
