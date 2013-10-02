@@ -105,6 +105,7 @@ notice     = require 'notice'
 module.exports.MessageBus = notice
     
     messages:
+
         alert: 
             beforeCreate: (msg, done) -> 
                 {hostname, uptime, loadavg, totalmem, freemem} = os
@@ -115,7 +116,6 @@ module.exports.MessageBus = notice
                     totalmem: totalmem()
                     freemem: freemem()
                 done()
-
             afterCreate:  (msg, done) -> 
 
                 #
@@ -133,7 +133,7 @@ module.exports.MessageBus = notice
         debrief:  {}
 
 ```
-use it
+#### use it
 ```coffee
 
 {MessageBus} = require 'the_previous_block'
