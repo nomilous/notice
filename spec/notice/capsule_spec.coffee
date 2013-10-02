@@ -47,7 +47,7 @@ describe 'Capsule', ->
             instance.set 
                 hidden: true
                 property: 'value'
-                
+
             instance.should.eql {}
 
             instance.set 
@@ -56,3 +56,27 @@ describe 'Capsule', ->
 
             instance.should.eql property: 'value'
             done()
+
+
+        it 'does not allow reset of protected', (done) -> 
+
+            Capsule = capsule()
+            instance = new Capsule
+
+            instance.set 
+                protected: true
+                property: 'original'
+
+            instance.set 
+                protected: false
+                property: 'changed'
+
+            #
+            # nice! writable can only be set to 'no' once
+            #
+
+            instance.should.eql property: 'original'
+            done()
+
+
+            
