@@ -14,69 +14,87 @@ describe 'Capsule', ->
             instance.property.should.equal 'value'
             done()
 
-        it 'can set a protected property', (done) -> 
+        context 'protected', -> 
+
+            it 'sets a property to readonly', (done) -> 
+
+                Capsule = capsule()
+                instance = new Capsule
+                instance.set 
+                    protected: true
+                    property: 'original'
+
+                instance.property = 'changed'
+                instance.property.should.equal 'original'
+                done()
+
+
+            it 'does not allow reset of protected', (done) -> 
+
+                Capsule = capsule()
+                instance = new Capsule
+
+                instance.set 
+                    protected: true
+                    property: 'original'
+
+                instance.set 
+                    protected: false
+                    property: 'changed'
+
+                #
+                # nice! writable can only be set to 'no' once
+                #
+
+                instance.should.eql property: 'original'
+                done()
+
+
+        context 'hidden', ->  
+
+            it 'sets a property to invisible', (done) -> 
+
+                Capsule = capsule()
+                instance = new Capsule
+                instance.set 
+                    hidden: true
+                    property: 'value'
+
+                instance.should.eql {}
+                instance.property.should.equal 'value'
+                done()
+
+
+            it 'allows reset of hidden', (done) -> 
+
+                Capsule = capsule()
+                instance = new Capsule
+                
+                instance.set 
+                    hidden: true
+                    property: 'value'
+
+                instance.should.eql {}
+
+                instance.set 
+                    hidden: false
+                    property: 'value'
+
+                instance.should.eql property: 'value'
+                done()
+
+        it 'can do hidden and protected', (done) -> 
 
             Capsule = capsule()
             instance = new Capsule
             instance.set 
+                hidden: true
                 protected: true
                 property: 'original'
 
+            instance.should.eql {}
+            instance.property.should.equal 'original'
             instance.property = 'changed'
             instance.property.should.equal 'original'
             done()
 
-        it 'can set a hidden property', (done) -> 
-
-            Capsule = capsule()
-            instance = new Capsule
-            instance.set 
-                hidden: true
-                property: 'value'
-
-            instance.should.eql {}
-            instance.property.should.equal 'value'
-            done()
-
-
-        it 'allows reset of hidden', (done) -> 
-
-            Capsule = capsule()
-            instance = new Capsule
-            
-            instance.set 
-                hidden: true
-                property: 'value'
-
-            instance.should.eql {}
-
-            instance.set 
-                hidden: false
-                property: 'value'
-
-            instance.should.eql property: 'value'
-            done()
-
-
-        it 'does not allow reset of protected', (done) -> 
-
-            Capsule = capsule()
-            instance = new Capsule
-
-            instance.set 
-                protected: true
-                property: 'original'
-
-            instance.set 
-                protected: false
-                property: 'changed'
-
-            #
-            # nice! writable can only be set to 'no' once
-            #
-
-            instance.should.eql property: 'original'
-            done()
-
-
-            

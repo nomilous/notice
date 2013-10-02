@@ -8,6 +8,11 @@ module.exports.capsule  = (config = {}) ->
  
             null for key of opts
             @[key] = opts[key]
-            Object.defineProperty @, key, 
-                writable:   not opts.protected
-                enumerable: not opts.hidden
+
+            if opts.hidden? 
+                Object.defineProperty @, key, 
+                    enumerable: not opts.hidden
+
+            if opts.protected?
+                Object.defineProperty @, key, 
+                    writable: not opts.protected
