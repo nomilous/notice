@@ -8,3 +8,5 @@ module.exports.capsule  = (config = {}) ->
  
             null for key of opts
             @[key] = opts[key]
+            if opts.protected 
+                Object.defineProperty @, key, writable: false
