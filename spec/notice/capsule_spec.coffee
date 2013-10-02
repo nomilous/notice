@@ -138,8 +138,6 @@ describe 'Capsule', ->
                 instance.set
                     protected: true
                     watched: (property, change, obj) -> 
-                        CHANGES[property] ||= []
-                        CHANGES[property].push change
                     thing: 'one'
 
 
