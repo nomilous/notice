@@ -21,8 +21,9 @@ describe 'Capsule', ->
                 Capsule = capsule()
                 instance = new Capsule
                 instance.set 
-                    protected: true
                     property: 'original'
+                    protected: true
+                    
 
                 instance.property = 'changed'
                 instance.property.should.equal 'original'
@@ -35,12 +36,14 @@ describe 'Capsule', ->
                 instance = new Capsule
 
                 instance.set 
-                    protected: true
                     property: 'original'
+                    protected: true
+                    
 
                 instance.set 
-                    protected: false
                     property: 'changed'
+                    protected: false
+                    
 
                 #
                 # nice! writable can only be set to 'no' once
@@ -57,9 +60,9 @@ describe 'Capsule', ->
                 Capsule = capsule()
                 instance = new Capsule
                 instance.set 
-                    hidden: true
                     property: 'value'
-
+                    hidden: true
+                    
                 instance.should.eql {}
                 instance.property.should.equal 'value'
                 done()
@@ -71,14 +74,16 @@ describe 'Capsule', ->
                 instance = new Capsule
                 
                 instance.set 
-                    hidden: true
                     property: 'value'
+                    hidden: true
+                    
 
                 instance.should.eql {}
 
                 instance.set 
-                    hidden: false
                     property: 'value'
+                    hidden: false
+                    
 
                 instance.should.eql property: 'value'
                 done()
@@ -88,9 +93,10 @@ describe 'Capsule', ->
             Capsule = capsule()
             instance = new Capsule
             instance.set 
+                property: 'original'
                 hidden: true
                 protected: true
-                property: 'original'
+                
 
             instance.should.eql {}
             instance.property.should.equal 'original'
@@ -107,10 +113,11 @@ describe 'Capsule', ->
                 Capsule = capsule()
                 instance = new Capsule
                 instance.set
+                    thing: 'one'
                     watched: (property, change, obj) -> 
                         CHANGES[property] ||= []
                         CHANGES[property].push change
-                    thing: 'one'
+                    
 
                 instance.thing = 'two'
                 instance.thing = 'three'
@@ -136,9 +143,10 @@ describe 'Capsule', ->
                 Capsule = capsule()
                 instance = new Capsule
                 instance.set
+                    thing: 'one'
                     protected: true
                     watched: (property, change, obj) -> 
-                    thing: 'one'
+                    
 
 
 

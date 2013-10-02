@@ -7,8 +7,9 @@ module.exports.capsule  = (config = {}) ->
         set: (opts) -> 
 
             local = {}
-            null for key of opts
-
+            for key of opts
+                break
+                
             if opts.watched? 
                 if opts.protected
 

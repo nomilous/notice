@@ -6,7 +6,7 @@ MessageBus2 = notice
     messages: 
 
         #
-        # bus2 defines messages
+        # bus2 defines 'update' message
         #
 
         update: 
@@ -14,13 +14,14 @@ MessageBus2 = notice
                 msg.createdAt = new Date
 
                 #
-                # create a watched property on the msg
+                # create a watched property on the 'update' msg
                 #
 
                 msg.set
+                    state: 'pending'
                     watched: (property, change, object) -> 
                         console.log 'changed property:', property, change
-                    state: 'pending'
+                    
                 next()
 
 module.exports.bus1 = MessageBus1.create 'app_name::bus1'
