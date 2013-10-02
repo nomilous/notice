@@ -37,3 +37,22 @@ describe 'Capsule', ->
             instance.should.eql {}
             instance.property.should.equal 'value'
             done()
+
+
+        it 'allows reset of hidden', (done) -> 
+
+            Capsule = capsule()
+            instance = new Capsule
+            
+            instance.set 
+                hidden: true
+                property: 'value'
+                
+            instance.should.eql {}
+
+            instance.set 
+                hidden: false
+                property: 'value'
+
+            instance.should.eql property: 'value'
+            done()
