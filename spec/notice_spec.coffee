@@ -72,6 +72,7 @@ describe 'standalone configured notifier', ->
         instance = Messenger.create 'origin name'
         instance.use.should.be.an.instanceof Function
         instance.messageTypeName( 'messageTypeValue' ).then (m) -> 
+            m._type.should.equal 'messageTypeName'
             m.should.eql 
                 messageTypeName: 'messageTypeValue'
                 sequence: 0
