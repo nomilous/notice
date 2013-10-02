@@ -15,7 +15,7 @@ The Standalone Notifier
 
 Implementes a MessageBus for communications confined to a single process.
 
-### create a default notifier
+### create an event notifier (the default)
 
 ```coffee
 
@@ -24,7 +24,6 @@ notifier = notice.create 'origin name'
 
 ```
 #### send an event
-
 ```coffee
 
 notifier.event 'event name', { optional: 'payload' }
@@ -45,9 +44,7 @@ notifier.event 'event name', {}, (err, msg) ->
     # 
 
 ```
-
 #### register some middleware
-
 ```coffee
 
 notifier.use (msg, next) -> 
@@ -79,9 +76,7 @@ notifier.use title: 'Pie Thrower', (msg, next) ->
     # 
 
 ```
-
 #### use the promise instead
-
 ```coffee
 
 notifier.event 'event name',
@@ -101,6 +96,59 @@ notifier.event 'event name',
 ```
 
 
+### create a notifier that does more than just 'event()'
+
+```coffee
+os         = require 'os'
+notice     = require 'notice'
+
+module.exports.MessageBus = notice
+    
+    messages:
+        alert: 
+            beforeCreate: (msg, done) -> 
+                {hostname, uptime, loadavg, totalmem, freemem} = os
+                msg.sourceInfo = 
+                    hostname: hostname()
+                    uptime: uptime()
+                    loadavg: loadavg()
+                    totalmem: totalmem()
+                    freemem: freemem()
+                done()
+
+            afterCreate:  (msg, done) -> 
+
+                #
+                # * This fires before the message is pushed onto the
+                #   middleware pipeline.
+                # 
+                # * It creates an opportunity to pre-store the message
+                #   and therefore have the persistence id/ref/uuid
+                #   already assigned before emitting into runtime.
+                # 
+
+        classify: {}
+        resolve:  {}
+        escalate: {}
+        debrief:  {}
+
+```
+use it
+```coffee
+
+{MessageBus} = require 'the_previous_block'
+
+notifier = MessageBus.create 'origin_app_name'
+notifier.alert "darn, i thought this wouldn't happen", 
+    
+    says: 'the developer'
+    heresWhatIKnow: """ 
+
+        Recorded at the time of writing the code. 
+
+    """
+
+```
 
 
 The Distributable Notifier
