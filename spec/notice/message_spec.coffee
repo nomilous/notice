@@ -16,11 +16,14 @@ describe 'Message', ->
 
     context 'create()', ->
 
+        it 'is used to create a message for sending onto the middleware pipeline', -> 
+        it 'is asynchronous to enable www/DB involvement at creation', ->
+
         it 'is asynchronous, returning a promise', (done) -> 
 
             Message = message 'type'
             Message.create( property: 'value' ).then (m) -> 
-            
+
                 m._type.should.equal 'type'
                 m.should.eql property: 'value'
                 done()
