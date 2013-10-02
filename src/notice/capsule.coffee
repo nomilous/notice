@@ -9,8 +9,12 @@ module.exports.capsule  = (config = {}) ->
             local = {}
             null for key of opts
 
-            if opts.watched?
-                Object.defineProperty @, key, 
+            if opts.watched? 
+                if opts.protected
+
+                    process.stderr.write "cannot watch protected property:#{key}"
+
+                else Object.defineProperty @, key, 
                     get: -> local[key]
                     set: (value) => 
                         previous = local[key]
@@ -26,4 +30,8 @@ module.exports.capsule  = (config = {}) ->
             if opts.protected?
                 Object.defineProperty @, key, 
                     writable: not opts.protected
+
+
+        # save:    ->
+        # refresh: ->
 

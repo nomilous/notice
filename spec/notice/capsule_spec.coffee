@@ -125,4 +125,31 @@ describe 'Capsule', ->
                     ]
                 done()
 
+            it 'warns on attempt to watch protected property', (done) -> 
+
+                swap = process.stderr.write
+                process.stderr.write = (err) -> 
+                    process.stderr.write = swap
+                    err.should.equal 'cannot watch protected property:thing'
+                    done()
+
+                Capsule = capsule()
+                instance = new Capsule
+                instance.set
+                    protected: true
+                    watched: (property, change, obj) -> 
+                        CHANGES[property] ||= []
+                        CHANGES[property].push change
+                    thing: 'one'
+
+
+
+
+
+
+
+
+
+
+
 
