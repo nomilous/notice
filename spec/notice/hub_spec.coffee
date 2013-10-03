@@ -1,4 +1,5 @@
 should     = require 'should'
+{parallel} = require 'also'
 {hub,_hub} = require '../../lib/notice/hub'
 
 describe 'hub', -> 
@@ -14,20 +15,45 @@ describe 'hub', ->
 
     context 'create()', -> 
 
-        it 'requires a name', (done) -> 
+        it 'requires hubName', (done) -> 
 
             Hub = hub()
-            try Hub.create()
-            catch error
+            Hub.create undefined, {}, (error) -> 
+
                 error.should.match /requires hubName as string/
                 done()
 
 
+        it 'calls back with a hub instance', (done) -> 
 
+            Hub = hub()
+            Hub.create 'hub name', {}, (error, hub) -> 
 
+                _hub().hubs['hub name'].should.equal hub
+                done()
 
+        it 'resolves with the new hub', (done) -> 
 
+            Hub = hub()
+            Hub.create( 'hub name' ).then (hub) -> 
 
+                _hub().hubs['hub name'].should.equal hub
+                done()
+
+        it 'can create multiple hubs in parallel', (done) -> 
+
+            Hub = hub()
+            parallel([
+                -> Hub.create 'hub1'
+                -> Hub.create 'hub2'
+                -> Hub.create 'hub3'
+            ])
+            .then ([hub1, hub2, hub3]) ->
+                
+                _hub().hubs['hub1'].should.equal hub1
+                _hub().hubs['hub2'].should.equal hub2
+                _hub().hubs['hub3'].should.equal hub3
+                done()
 
 
 

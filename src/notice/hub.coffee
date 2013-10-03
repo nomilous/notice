@@ -4,20 +4,32 @@ testable            = undefined
 module.exports._hub = -> testable
 module.exports.hub  = (config = {}) ->
 
-    testable = hub = 
+    testable = local = 
 
-        create: deferred ({reject, resolve, notify}, hubName, opts, callback) ->
+        hubs: {}
 
+        create: deferred ({reject, resolve, notify}, hubName, opts = {}, callback) ->
+
+            unless typeof hubName is 'string'
+                error = new Error 'Hub.create( hubName, opts ) requires hubName as string'
+                reject error
+                if typeof callback == 'function' then callback error
+                return
+
+            if local.hubs[hubName]?
+                error = new Error "Hub.create( '#{hubName}', opts ) is already defined"
+                reject error
+                if typeof callback == 'function' then callback error
+                return
+
+            local.hubs[hubName] = hub = {}
             
-            throw new Error( 
-                'Notifier.listen( hubName, opts ) requires hubName as string'
-            ) unless typeof hubName is 'string'
-    
-            console.log hub: config
+            resolve hub
+            if typeof callback == 'function' then callback null, hub
 
 
     return api = 
-        create: hub.create
+        create: local.create
 
 
 
