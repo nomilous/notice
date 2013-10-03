@@ -10,7 +10,8 @@ module.exports.hub  = (config = {}) ->
 
         Notifier: notifier.notifier config
 
-        hubs: {}
+        hubs:    {}
+        clients: {}
 
         create: deferred ({reject, resolve, notify}, hubName, opts = {}, callback) ->
 
@@ -63,17 +64,21 @@ module.exports.hub  = (config = {}) ->
 
             io.on 'connection', (socket) -> 
 
-                socket.on 'handshake', (secret, context) -> 
+                socket.on 'handshake', (originName, secret, context) -> 
 
                     if secret == opts.listen.secret
-
-                        console.log CONNECTED:
-                            secret: secret
+                        local.clients[socket.id] = 
+                            title:   originName
                             context: context
+                            hub:     hubName 
+                            
+
 
                     else 
 
                         socket.disconnect()
+
+                    console.log JSON.stringify local, null, 2
 
 
 

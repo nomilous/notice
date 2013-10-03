@@ -47,7 +47,7 @@ module.exports.client  = (config = {}) ->
 
             socket.on 'connect', -> 
 
-                socket.emit 'handshake', opts.connect.secret || '', opts.context || {}
+                socket.emit 'handshake', clientName, opts.connect.secret || '', opts.context || {}
 
             socket.on 'error', (error) -> 
 

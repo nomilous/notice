@@ -124,7 +124,7 @@ describe 'hub', ->
                 @whenEvent = {}
 
 
-            it.only 'verifies the handshake secret and disconnects on bad match', (done) -> 
+            it 'verifies the handshake secret and disconnects on bad match', (done) -> 
 
                 @whenEvent['connection'] = 
                     
@@ -139,14 +139,29 @@ describe 'hub', ->
                         # emit mock handshake event as if a remote client sent it
                         #
 
-                        if event == 'handshake' then listener 'wrong', 'CONTEXT'
+                        if event == 'handshake' then listener 'originName', 'wrongsecret', 'CONTEXT'
 
                     disconnect: -> done()
 
                 Hub = hub()
-                Hub.create 'hub1', listen: secret: 'right'
+                Hub.create 'hub1', listen: secret: 'rightsecret'
 
 
+            it.only 'adds the client to the collection on handshake success', (done) -> 
+
+                @whenEvent['connection'] = 
+                    id: 'SOCKET_ID'
+                    on: (event, listener) -> 
+                        if event == 'handshake' then listener 'originName', 'rightsecret', 'CONTEXT'
+
+                Hub = hub()
+                Hub.create 'hub1', listen: secret: 'rightsecret'
+                _hub().clients.SOCKET_ID.should.eql 
+                    title:   'originName'
+                    context: 'CONTEXT'
+                    hub: 'hub1'
+
+                done()
 
 
 

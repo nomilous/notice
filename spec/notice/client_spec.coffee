@@ -85,8 +85,7 @@ describe 'client', ->
                         @emitted[event] = args
                         
 
-
-            it.only 'connect - responds with handshake including secret and context', (done) -> 
+            it.only 'connect - responds with handshake including clientname, secret, and context', (done) -> 
 
                 @whenEvent['connect'] = true
 
@@ -99,6 +98,7 @@ describe 'client', ->
                         some: 'details'
 
                 @emitted.should.eql handshake: [
+                    'client name'
                     'secret'
                     { some: 'details' }
                 ]
