@@ -1,4 +1,5 @@
 {deferred} = require 'also'
+Listener   = require './listener'
 
 testable            = undefined
 module.exports._hub = -> testable
@@ -22,10 +23,17 @@ module.exports.hub  = (config = {}) ->
                 if typeof callback == 'function' then callback error
                 return
 
+
             local.hubs[hubName] = hub = {}
+            hub.listen = opts.listen || {}
+
+            io = Listener.listen hub.listen, (error, address) -> 
             
-            resolve hub
-            if typeof callback == 'function' then callback null, hub
+                resolve hub
+                if typeof callback == 'function' then callback null, hub
+
+
+
 
 
     return api = 

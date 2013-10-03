@@ -2,11 +2,11 @@ io = require 'socket.io'  # <---------------- weird name, cannot inject
 
 # require('nez').realize 'Listen', (Listen, test, context, should, http, https, fs) -> 
 
-Listen  = require '../../lib/notice/listen'
-should  = require 'should'
-http    = require 'http'
-https   = require 'https'
-fs      = require 'fs'
+Listener = require '../../lib/notice/listener'
+should   = require 'should'
+http     = require 'http'
+https    = require 'https'
+fs       = require 'fs'
 
 describe 'Listen', ->
 
@@ -22,7 +22,7 @@ describe 'Listen', ->
                     throw 'OKGOOD'
 
 
-            try Listen()
+            try Listener.listen()
             catch error
                 error.should.match /OKGOOD/
                 done()
@@ -34,7 +34,7 @@ describe 'Listen', ->
                 http.createServer = spy
                 throw new Error 'SHOULD NOT START'
 
-            try Listen server: on: -> throw 'OKGOOD'
+            try Listener.listen server: on: -> throw 'OKGOOD'
             catch error
                 error.should.match /OKGOOD/
                 done()
@@ -55,7 +55,7 @@ describe 'Listen', ->
                     on: -> throw 'OKGOOD'
                 }
 
-            try Listen 
+            try Listener.listen 
                 cert: '/cert/file'
                 key:  '/key/file'
             catch error
@@ -72,7 +72,7 @@ describe 'Listen', ->
                 io.listen = spy
                 throw 'OKGOOD'
 
-            try Listen server: {}
+            try Listener.listen server: {}
             catch error
                 error.should.match /OKGOOD/
                 done()
@@ -86,6 +86,6 @@ describe 'Listen', ->
                 io.listen = spy
                 return listeningio
                 
-            Listen( server: {} ).should.equal listeningio
+            Listener.listen( server: {} ).should.equal listeningio
             done()
 

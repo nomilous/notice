@@ -21,7 +21,7 @@ start = (opts) ->
     transport = 'http'
     http.createServer()
 
-module.exports = (opts, callback) -> 
+module.exports.listen = (opts, callback) -> 
 
     opts         ||=  {}
     opts.port    ||=  null

@@ -1,8 +1,13 @@
 should     = require 'should'
 {parallel} = require 'also'
 {hub,_hub} = require '../../lib/notice/hub'
+Listener   = require '../../lib/notice/listener'
 
 describe 'hub', -> 
+
+    beforeEach -> 
+        Listener.listen = (opts, callback) -> callback()
+
 
     context 'factory', ->
 
@@ -55,7 +60,7 @@ describe 'hub', ->
                 _hub().hubs['hub3'].should.equal hub3
                 done()
 
-        it 'error on create with duplicate name', (done) -> 
+        it 'errors on create with duplicate name', (done) -> 
 
             Hub = hub()
             parallel([
@@ -66,6 +71,30 @@ describe 'hub', ->
 
                 error.should.match /is already defined/
                 done()
+
+        it 'calls listen with opts.listen', (done) -> 
+
+            Listener.listen = (opts, callback) -> 
+                opts.should.eql 
+                    loglevel: 'LOGLEVEL'
+                    address: 'ADDRESS'
+                    port: 'PORT'
+                    cert: 'CERT'
+                    key: 'KEY'
+                done()
+
+            Hub = hub()
+            Hub.create 'hub1', 
+                listen: 
+                    loglevel: 'LOGLEVEL'
+                    address:  'ADDRESS'
+                    port:     'PORT'
+                    cert:     'CERT'
+                    key:      'KEY'
+
+
+
+        context 'listening', -> 
 
 
 
