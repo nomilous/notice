@@ -1,11 +1,16 @@
 
-
+ioclient = require 'socket.io-client'
 
 
 module.exports.connect = (opts) -> 
     
-    console.log CONNECT: opts
+    opts.transport ||= 'http'
+    opts.address   ||= 'localhost'
 
+    if opts.allowUncertified
+        require('https').globalAgent.options.rejectUnauthorized = false
+
+    return ioclient.connect "#{ opts.transport }://#{ opts.address }:#{ opts.port }"
 
 
 

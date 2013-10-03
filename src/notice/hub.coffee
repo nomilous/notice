@@ -67,7 +67,9 @@ module.exports.hub  = (config = {}) ->
 
                     if secret == opts.listen.secret
 
-                        'noop'
+                        console.log CONNECTED:
+                            secret: secret
+                            context: context
 
                     else 
 

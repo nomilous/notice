@@ -4,10 +4,15 @@ notice = require '../../lib/notice'
 
 notice.connect "client @ #{process.pid}", {
 
+    context: 
+        some: 'details'
+
     connect: 
         # address: 'localhost'
-        port:     3000
-        secret:   process.env.SECRET
+        allowUncertified: true # tolerate self sighned cert on serverside
+        transport:       'https'
+        port:             10101
+        secret:           process.env.SECRET
 
 }, (error, client) -> 
     

@@ -6,7 +6,7 @@ Connector         = require '../../lib/notice/connector'
 describe 'client', -> 
 
     beforeEach -> 
-        Connector.connect = (opts) -> {}
+        Connector.connect = (opts) -> on: ->
 
 
     context 'factory', -> 
@@ -58,10 +58,11 @@ describe 'client', ->
 
         it 'calls connect with opts.connect', (done) -> 
 
-            Connector.connect = (opts, callback) ->
+            Connector.connect = (opts) ->
                 opts.should.eql 
                     address: 'ADDRESS'
                     port:    'PORT'
+                on: ->
 
             Client = client()
             Client.create 'client name', 
@@ -72,6 +73,36 @@ describe 'client', ->
             done()
 
 
+        context 'on socket event', -> 
+
+            beforeEach -> 
+                @whenEvent = {}
+                @emitted   = {}
+                Connector.connect = (opts) => 
+                    on: (event, handler) => 
+                        handler @whenEvent[event] if @whenEvent[event]?
+                    emit: (event, args...) => 
+                        @emitted[event] = args
+                        
+
+
+            it.only 'connect - responds with handshake including secret and context', (done) -> 
+
+                @whenEvent['connect'] = true
+
+                Client = client()
+                Client.create 'client name', 
+                    connect:
+                        secret: 'secret'
+                        port:   10101
+                    context: 
+                        some: 'details'
+
+                @emitted.should.eql handshake: [
+                    'secret'
+                    { some: 'details' }
+                ]
+                done()
 
 
 

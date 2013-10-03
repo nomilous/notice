@@ -26,6 +26,13 @@ module.exports.client  = (config = {}) ->
                 if typeof callback == 'function' then callback error
                 return
 
+            unless opts.connect? and typeof opts.connect.port == 'number'
+                error = new Error "Client.create( '#{clientName}', opts ) requires opts.connect.port"
+                reject error
+                if typeof callback == 'function' then callback error
+                return
+
+
             try client = local.clients[clientName] = local.Notifier.create clientName
             catch error
                 reject error
@@ -33,7 +40,18 @@ module.exports.client  = (config = {}) ->
                 return
 
 
-            io = Connector.connect opts.connect
+
+            opts.context ||= {}
+
+            socket = Connector.connect opts.connect
+
+            socket.on 'connect', -> 
+
+                socket.emit 'handshake', opts.connect.secret || '', opts.context || {}
+
+            socket.on 'error', (error) -> 
+
+                console.log error
 
 
             resolve client
