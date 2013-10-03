@@ -55,6 +55,17 @@ describe 'hub', ->
                 _hub().hubs['hub3'].should.equal hub3
                 done()
 
+        it 'error on create with duplicate name', (done) -> 
+
+            Hub = hub()
+            parallel([
+                -> Hub.create 'hub1'
+                -> Hub.create 'hub1'
+            ])
+            .then (->), (error) -> 
+
+                error.should.match /is already defined/
+                done()
 
 
 
