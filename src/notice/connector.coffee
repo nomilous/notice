@@ -1,3 +1,24 @@
+
+
+
+
+module.exports.connect = (opts) -> 
+    
+    console.log CONNECT: opts
+
+
+
+
+
+
+
+
+
+
+
+return
+
+
 #
 # enable https connections to servers with selfsigned certs...  
 #

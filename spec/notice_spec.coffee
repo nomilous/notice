@@ -19,14 +19,14 @@ describe 'standalone default notifier', ->
 
         send = notice.create 'origin name'
         
-        send.use (msg, next) -> 
+        send.use (done, msg) -> 
             msg._type.should.equal 'event'
             msg.modified = true
-            next()
+            done()
         
-        send.use (msg, next) ->
+        send.use (done, msg) ->
             throw 'π' if msg.thisFails
-            next()
+            done()
 
         send.event 'event name', payload: 1, more: 2, (err, result) -> 
             result.should.eql 
@@ -65,7 +65,7 @@ describe 'standalone configured notifier', ->
         Messenger = notice 
             messages: 
                 messageTypeName:
-                    beforeCreate: (msg, done) -> 
+                    beforeCreate: (done, msg) -> 
                         msg.sequence = seq++
                         done()
 

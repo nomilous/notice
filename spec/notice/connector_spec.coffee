@@ -1,3 +1,23 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+return
 io = require 'socket.io-client'
 
 # require('nez').realize 'Connector', (Connector, test, context, should) -> 

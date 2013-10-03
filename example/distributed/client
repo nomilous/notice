@@ -1,0 +1,17 @@
+#! /usr/bin/env coffee
+
+notice = require '../../lib/notice'
+
+notice.connect "client @ #{process.pid}", {
+
+    connect: 
+        # address: 'localhost'
+        port:     3000
+        secret:   process.env.SECRET
+
+}, (error, client) -> 
+    
+    console.log ERROR:  error
+    console.log CLIENT: client
+
+

@@ -1,3 +1,65 @@
+{deferred} = require 'also'
+notifier   = require './notifier'
+Connector  = require './connector'
+
+testable               = undefined
+module.exports._client = -> testable
+module.exports.client  = (config = {}) ->
+
+    testable = local = 
+
+        Notifier: notifier.notifier config
+
+        clients: {}
+
+        create: deferred ({reject, resolve, notify}, clientName, opts = {}, callback) -> 
+
+            unless typeof clientName is 'string'
+                error = new Error 'Client.create( clientName, opts ) requires clientName as string'
+                reject error
+                if typeof callback == 'function' then callback error
+                return
+
+            if local.clients[clientName]?
+                error = new Error "Client.create( '#{clientName}', opts ) is already defined"
+                reject error
+                if typeof callback == 'function' then callback error
+                return
+
+            try client = local.clients[clientName] = local.Notifier.create clientName
+            catch error
+                reject error
+                if typeof callback == 'function' then callback error
+                return
+
+
+            io = Connector.connect opts.connect
+
+
+            resolve client
+            if typeof callback == 'function' then callback null, client
+
+
+    return api = 
+        create: local.create
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+return 
 connector   = require './connector'
 notifier    = require './notifier'
 {defer}     = require 'when'

@@ -7,8 +7,9 @@ notice.listen 'hub name', {
     listen: 
         
         # server:  existingHttpServer
-        address: '0.0.0.0'
+        # address: '0.0.0.0'
         port:    3000
+        secret:  'right'
         cert:    __dirname + '/../../cert/develop-cert.pem'
         key:     __dirname + '/../../cert/develop-key.pem'
 

@@ -30,7 +30,12 @@ module.exports.hub  = (config = {}) ->
             # create the hubside middleware pipeline (hub) and start listener
             #
 
-            local.hubs[hubName] = hub = local.Notifier.create hubName
+            try local.hubs[hubName] = hub = local.Notifier.create hubName
+            catch error
+                reject error
+                if typeof callback == 'function' then callback error
+                return
+
             io = Listener.listen opts.listen, (error, address) -> 
 
                 if error? 
@@ -39,9 +44,8 @@ module.exports.hub  = (config = {}) ->
                     if typeof callback == 'function' then callback error
                     return
 
-
                 #
-                # transport is up and listening for remote notifiers,
+                # transport is up and listening for remote notifiers
                 # 
                 # * create externally accessable reference to the 
                 #   listening address (may have defaulted, port

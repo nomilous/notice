@@ -1,5 +1,5 @@
 {notifier} = require './notice/notifier'
-#client   = require './notice/client'
+{client}   = require './notice/client'
 {hub}      = require './notice/hub'
 
 #
@@ -22,5 +22,6 @@ module.exports.create = notifier().create
 # Notice.listen()  creates notice hub
 # 
 
-#exports.connect = client.connect
-module.exports.listen = hub().create 
+module.exports.connect = client().create
+module.exports.listen  = hub().create 
+

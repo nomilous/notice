@@ -1,5 +1,93 @@
-#require('nez').realize 'Client', (Client, test, context, Connector, Notifier, Message) -> 
+should            = require 'should'
+{_client, client} = require '../../lib/notice/client'
+{_notifier}       = require '../../lib/notice/notifier'
+Connector         = require '../../lib/notice/connector'
 
+describe 'client', -> 
+
+    beforeEach -> 
+        Connector.connect = (opts) -> {}
+
+
+    context 'factory', -> 
+
+        it 'creates a Client definition', (done) -> 
+
+            Client = client()
+            Client.create.should.be.an.instanceof Function
+            done()
+
+
+    context 'create()', -> 
+
+        it 'requires clientName', (done) -> 
+
+            Client = client()
+            Client.create undefined, {}, (error) -> 
+
+                error.should.match /requires clientName as string/
+                done()
+
+        it 'requires unique client name', (done) -> 
+
+            Client = client()
+            Client.create 'client name'
+            Client.create 'client name', {}, (error) ->
+
+                error.should.match /is already defined/
+                done()
+
+
+        it 'calls back with client as notifier instance', (done) -> 
+
+            Client = client()
+            Client.create 'client name', {}, (error, client) -> 
+
+                client.should.equal _notifier().notifiers['client name']
+                _client().clients['client name'].should.equal client
+                done()
+
+        it 'resolves with the new client instance', (done) -> 
+
+            Client = client()
+            Client.create( 'client name' ).then (client) -> 
+
+                _client().clients['client name'].should.equal client
+                done()
+
+
+        it 'calls connect with opts.connect', (done) -> 
+
+            Connector.connect = (opts, callback) ->
+                opts.should.eql 
+                    address: 'ADDRESS'
+                    port:    'PORT'
+
+            Client = client()
+            Client.create 'client name', 
+                connect: 
+                    address: 'ADDRESS'
+                    port:    'PORT'
+
+            done()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+return 
 should    = require 'should'
 
 Connector = require '../../lib/notice/connector'
