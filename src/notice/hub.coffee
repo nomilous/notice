@@ -32,6 +32,25 @@ module.exports.hub  = (config = {}) ->
 
             local.hubs[hubName] = hub = local.Notifier.create hubName
             io = Listener.listen opts.listen, (error, address) -> 
+
+                if error? 
+
+                    reject error
+                    if typeof callback == 'function' then callback error
+                    return
+
+
+                #
+                # transport is up and listening for remote notifiers,
+                # 
+                # * create externally accessable reference to the 
+                #   listening address (may have defaulted, port
+                #   would then be unknown to the caller)
+                # 
+                # * callback with the hubside pipeline / notifier
+                #   to provide caller with access to the middleware
+                #   registrar
+                # 
                 
                 hub.listening = address
                 resolve hub
