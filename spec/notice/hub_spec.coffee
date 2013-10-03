@@ -7,7 +7,9 @@ Listener    = require '../../lib/notice/listener'
 describe 'hub', -> 
 
     beforeEach -> 
-        Listener.listen = (opts, callback) -> callback()
+        Listener.listen = (opts, callback) -> 
+            callback()
+            on: ->
 
 
     context 'factory', ->
@@ -84,6 +86,7 @@ describe 'hub', ->
                     cert: 'CERT'
                     key: 'KEY'
                 done()
+                on: ->
 
             Hub = hub()
             Hub.create 'hub1', 
@@ -98,6 +101,7 @@ describe 'hub', ->
 
             Listener.listen = (opts, callback) -> 
                 callback null, 'ADDRESS'
+                on: ->
 
             Hub = hub()
             Hub.create 'hub1', {}, (err, hub) -> 
@@ -107,7 +111,41 @@ describe 'hub', ->
 
 
 
-        context 'listening', -> 
+        context 'on connection', -> 
+
+            beforeEach -> 
+
+                Listener.listen = (opts, callback) => 
+                    callback null, 'ADDRESS'
+                    on: (event, handler) => 
+                        if @whenEvent[event]? then handler @whenEvent[event]
+
+
+                @whenEvent = {}
+
+
+            it.only 'verifies the handshake secret and disconnects on bad match', (done) -> 
+
+                @whenEvent['connection'] = 
+                    
+                    #
+                    # configure a mock socket with which to fire the 
+                    # connection event
+                    # 
+                    
+                    on: (event, listener) -> 
+
+                        #
+                        # emit mock handshake event as if a remote client sent it
+                        #
+
+                        if event == 'handshake' then listener 'wrong', 'CONTEXT'
+
+                    disconnect: -> done()
+
+                Hub = hub()
+                Hub.create 'hub1', listen: secret: 'right'
+
 
 
 

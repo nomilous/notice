@@ -61,6 +61,19 @@ module.exports.hub  = (config = {}) ->
                 if typeof callback == 'function' then callback null, hub
 
 
+            io.on 'connection', (socket) -> 
+
+                socket.on 'handshake', (secret, context) -> 
+
+                    if secret == opts.listen.secret
+
+                        'noop'
+
+                    else 
+
+                        socket.disconnect()
+
+
 
 
 
