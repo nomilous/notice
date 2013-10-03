@@ -1,7 +1,8 @@
-should     = require 'should'
-{parallel} = require 'also'
-{hub,_hub} = require '../../lib/notice/hub'
-Listener   = require '../../lib/notice/listener'
+should      = require 'should'
+{parallel}  = require 'also'
+{hub,_hub}  = require '../../lib/notice/hub'
+{_notifier} = require '../../lib/notice/notifier'
+Listener    = require '../../lib/notice/listener'
 
 describe 'hub', -> 
 
@@ -37,11 +38,12 @@ describe 'hub', ->
                 _hub().hubs['hub name'].should.equal hub
                 done()
 
-        it 'resolves with the new hub', (done) -> 
+        it 'resolves with the new hub as notifier instance', (done) -> 
 
             Hub = hub()
             Hub.create( 'hub name' ).then (hub) -> 
 
+                hub.should.equal _notifier().notifiers['hub name']
                 _hub().hubs['hub name'].should.equal hub
                 done()
 
@@ -91,6 +93,17 @@ describe 'hub', ->
                     port:     'PORT'
                     cert:     'CERT'
                     key:      'KEY'
+
+        it 'attaches reference to the listening address onto the hub', (done) -> 
+
+            Listener.listen = (opts, callback) -> 
+                callback null, 'ADDRESS'
+
+            Hub = hub()
+            Hub.create 'hub1', {}, (err, hub) -> 
+
+                hub.listening.should.equal 'ADDRESS'
+                done()
 
 
 

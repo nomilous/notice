@@ -1,11 +1,14 @@
 {deferred} = require 'also'
 Listener   = require './listener'
+notifier   = require './notifier'
 
 testable            = undefined
 module.exports._hub = -> testable
 module.exports.hub  = (config = {}) ->
 
     testable = local = 
+
+        Notifier: notifier.notifier config
 
         hubs: {}
 
@@ -23,12 +26,14 @@ module.exports.hub  = (config = {}) ->
                 if typeof callback == 'function' then callback error
                 return
 
+            #
+            # create the hubside middleware pipeline (hub) and start listener
+            #
 
-            local.hubs[hubName] = hub = {}
-            hub.listen = opts.listen || {}
-
-            io = Listener.listen hub.listen, (error, address) -> 
-            
+            local.hubs[hubName] = hub = local.Notifier.create hubName
+            io = Listener.listen opts.listen, (error, address) -> 
+                
+                hub.listening = address
                 resolve hub
                 if typeof callback == 'function' then callback null, hub
 

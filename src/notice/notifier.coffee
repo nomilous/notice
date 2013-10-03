@@ -15,6 +15,7 @@ module.exports.notifier  = (config = {}) ->
 
         messageTypes: {}
         middleware:   {}
+        notifiers:    {}
 
         create: (originCode) ->
         
@@ -71,7 +72,7 @@ module.exports.notifier  = (config = {}) ->
                 )
 
 
-            notifier = use: (opts, fn) -> 
+            local.notifiers[originCode] = notifier = use: (opts, fn) -> 
 
                 if typeof opts == 'function'
 
