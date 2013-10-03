@@ -6,7 +6,7 @@ require './lib/app_component_two'
 {bus1, bus2} = require './lib/message_bus'
 
 bus1.event 'start', interval: 1000
-bus2.use (msg, next) -> 
+bus2.use (done, msg) -> 
 
     #
     # register middleware on message bus 2
@@ -33,16 +33,16 @@ bus2.use (msg, next) ->
     msg.state = 'done'
 
     # 
-    # * Messages do not proceed to the next middleware until next()
+    # * Messages do not proceed to the next middleware until done()
     #   is called. This allows the middleware to perform an asynchronous 
     #   activity of some kind (eg. www/DB/wait ) and keep the message 
     #   on hold while doing so.
     # 
 
-    next()
+    done()
 
     #
-    # * Never calling next() is a PROBLEM if the message creator is 
+    # * Never calling done() is a PROBLEM if the message creator is 
     #   expecting a final result.
     # 
     

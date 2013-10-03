@@ -10,7 +10,7 @@ MessageBus2 = notice
         #
 
         update: 
-            afterCreate: (msg, next) -> 
+            afterCreate: (done, msg) -> 
                 msg.createdAt = new Date
 
                 #
@@ -22,7 +22,7 @@ MessageBus2 = notice
                     watched: (property, change, object) -> 
                         console.log 'changed property:', property, change
                     
-                next()
+                done()
 
 module.exports.bus1 = MessageBus1.create 'app_name::bus1'
 module.exports.bus2 = MessageBus2.create 'app_name::bus2'

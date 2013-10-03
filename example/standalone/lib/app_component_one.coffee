@@ -1,6 +1,6 @@
 {bus1} = require './message_bus'
 
-bus1.use (msg, next) -> 
+bus1.use (done, msg) -> 
 
     console.log 'component_ONE received:', msg
-    next()
+    done()

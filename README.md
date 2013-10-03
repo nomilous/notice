@@ -47,10 +47,10 @@ notifier.event 'event name', {}, (err, msg) ->
 #### register some middleware
 ```coffee
 
-notifier.use (msg, next) -> 
+notifier.use (done, msg) -> 
     
     msg.myContribution = '∑'
-    next()
+    done()
 
     #
     # why Middleware ?
@@ -61,10 +61,10 @@ notifier.use (msg, next) ->
     # 
 
 #
-# Or middleware with a Title
+# Register middleware with Title
 #
 
-notifier.use title: 'Pie Thrower', (msg, next) -> 
+notifier.use title: 'Pie Thrower', (done, msg) -> 
     
     throw 'π'
 
@@ -109,7 +109,7 @@ module.exports.MessageBus = notice
     messages:
 
         alert: 
-            beforeCreate: (msg, done) -> 
+            beforeCreate: (done, msg) -> 
                 msg.sourceInfo = 
                     hostname: hostname()
                     uptime: uptime()
@@ -117,7 +117,7 @@ module.exports.MessageBus = notice
                     totalmem: totalmem()
                     freemem: freemem()
                 done()
-            afterCreate:  (msg, done) -> 
+            afterCreate:  (done, msg) -> 
 
                 #
                 # * This fires before the message is pushed onto the

@@ -1,16 +1,19 @@
+{deferred} = require 'also'
+
 testable            = undefined
 module.exports._hub = -> testable
 module.exports.hub  = (config = {}) ->
 
     testable = hub = 
 
-        create: (hubName) ->
+        create: deferred ({reject, resolve, notify}, hubName, opts, callback) ->
 
+            
             throw new Error( 
                 'Notifier.listen( hubName, opts ) requires hubName as string'
             ) unless typeof hubName is 'string'
     
-
+            console.log hub: config
 
 
     return api = 

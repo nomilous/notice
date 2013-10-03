@@ -28,9 +28,12 @@ module.exports.message  = (type, config = {}) ->
                         value: type
 
                     return resolve msg unless typeof thisConfig.beforeCreate == 'function' 
-                    thisConfig.beforeCreate msg, (error) -> 
-                        if error? then return reject error
-                        resolve msg
+                    thisConfig.beforeCreate( 
+                        (error) -> 
+                            if error? then return reject error
+                            resolve msg
+                        msg
+                    )
 
                 assign = (msg) -> 
                     msg[key] = properties[key] for key of properties
@@ -38,9 +41,12 @@ module.exports.message  = (type, config = {}) ->
 
                 after = deferred ({resolve, reject}, msg) -> 
                     return resolve msg unless typeof thisConfig.afterCreate == 'function' 
-                    thisConfig.afterCreate msg, (error) -> 
-                        if error? then return reject error
-                        resolve msg
+                    thisConfig.afterCreate( 
+                        (error) -> 
+                            if error? then return reject error
+                            resolve msg
+                        msg
+                    )
                     
                 pipeline([
 

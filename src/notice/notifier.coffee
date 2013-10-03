@@ -65,7 +65,7 @@ module.exports.notifier  = (config = {}) ->
                             #   )
                             #
 
-                            try list[title] msg, -> resolve msg
+                            try list[title] ( -> resolve msg ), msg
                             catch error
                                 reject error
                 )

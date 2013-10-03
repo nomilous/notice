@@ -69,7 +69,7 @@ describe 'notifier', ->
             Notifier = notifier 
                 messages:
                     pheeew:  
-                        afterCreate: (msg, done) ->
+                        afterCreate: (done, msg) ->
 
                             #
                             # eg. push the new message to a database
@@ -213,12 +213,12 @@ describe 'notifier', ->
         it 'registers anonymous middleware with a sequence number', (done) -> 
 
             eight = notifier().create 'Assembly Line 8'
-            eight.use (msg, next) -> 
+            eight.use (done, msg) -> 
 
                 ### a middleware function ###
-                next()
+                done()
 
-            eight.use (msg, next) -> 'SECOND MIDDLEWARE'
+            eight.use (done, msg) -> 'SECOND MIDDLEWARE'
 
             m1 = _notifier().middleware['Assembly Line 8'][1]
             m1.should.be.an.instanceof Function
@@ -234,7 +234,7 @@ describe 'notifier', ->
             seven = notifier().create 'Assembly Line 7'
             try seven.use 
                 titel: 'troubled speller'
-                (msg, next) ->
+                (done, msg) ->
             catch error
                 error.should.match /requires opts.title and fn/
                 done()
@@ -245,52 +245,47 @@ describe 'notifier', ->
             six = notifier().create 'Assembly Line 6'
             six.use 
                 title: 'arrange into single file'
-                (msg, next) -> next()
+                (done, msg) -> done()
             six.use
                 title: 'squirt the product in'
-                (msg, next) -> next()
+                (done, msg) -> done()
             six.use
                 title: 'put a lid on it'
-                (msg, next) -> next()
+                (done, msg) -> done()
 
             mmm = _notifier().middleware['Assembly Line 6']
 
-            mmm['arrange into single file'] {}, ->
-            mmm['squirt the product in']    {}, ->
-            mmm['put a lid on it']          {}, done
+            mmm['arrange into single file'] (->), {}
+            mmm['squirt the product in']    (->), {}
+            mmm['put a lid on it']          done, {}
         
 
         it 'sequence is preserved when replacing middleware', (done) -> 
 
             {sequence, deferred} = require 'also'
             five = notifier().create 'Assembly Line 5'
-            five.use (msg, next) -> 
-                msg.array.push 1
-                next()
+            five.use (done, msg) -> 
+                msg.array = [1]
+                done()
             five.use 
                 title: 'REPLACE ME'
-                (msg, next) -> 
+                (done, msg) -> 
                     msg.array.push 2
-                    next()
+                    done()
             five.use 
                 title: 'x'
-                (msg, next) -> 
+                (done, msg) -> 
                     msg.array.push 3
-                    next()
+                    done()
             five.use 
                 title: 'REPLACE ME'
-                (msg, next) -> 
+                (done, msg) -> 
                     msg.array.push 'new 2'
-                    next()
+                    done()
 
-            mmm = _notifier().middleware['Assembly Line 5']
-            msg = array: []
-            sequence( for key of mmm
-                do (key) -> deferred ({resolve}) ->    
-                    mmm[key] msg, resolve
-            ).then ->
+            five.event().then (msg) -> 
 
-                msg.array.should.eql [1, 'new 2', 3]
+                msg.array.should.eql  [ 1, 'new 2', 3 ]
                 done()
 
         it 'returns the promise of a message traversing the middleware pipeline', (done) -> 
@@ -298,17 +293,17 @@ describe 'notifier', ->
             Notifier = notifier 
                 messages:
                     makeThing: 
-                        beforeCreate: (msg, done) ->
+                        beforeCreate: (done, msg) ->
                             msg.serialNo = '0000000000001'
                             done()
 
             four = Notifier.create 'Assembly Line 4'
-            four.use (msg, next) -> 
+            four.use (done, msg) -> 
                 msg.step1 = 'done'
-                next()
-            four.use title: 'step2', (msg, next) ->
+                done()
+            four.use title: 'step2', (done, msg) ->
                 msg.step2 = 'done'
-                next()
+                done()
 
             four.makeThing
 
@@ -330,9 +325,9 @@ describe 'notifier', ->
 
             Notifier = notifier messages: info: {}
             broken = Notifier.create 'broken pipeline'
-            broken.use (msg, next) -> 
+            broken.use (done, msg) -> 
                 throw new Error 'ka-pow!'
-                next()
+                done()
 
             broken.info().then (->), (error) ->
 
@@ -345,9 +340,9 @@ describe 'notifier', ->
             Notifier = notifier()
             instance = Notifier.create 'originCode'
 
-            instance.use (msg, next) -> 
+            instance.use (done, msg) -> 
                 msg.ok = 'good'
-                next()
+                done()
 
 
             instance.event payload: 'ABCDEFG', (err, msg) -> 
