@@ -51,10 +51,42 @@ module.exports.client  = (config = {}) ->
                 client.connection.state   = 'pending'
                 client.connection.stateAt = Date.now()
 
+
                 socket.on 'connect', -> 
-                    client.connection.state   = 'connected'
+                    if client.connection.state == 'interrupted'
+
+                        #
+                        # previously fully established connection has resumed
+                        # ---------------------------------------------------
+                        # 
+                        # * It is possible the server still has reference to
+                        #   this client context so this sends a resume event
+                        #   but includes all handshake data incase the server
+                        #   has lost all notion. 
+                        #
+
+                        client.connection.state   = 'resuming'
+                        client.connection.stateAt = Date.now()
+                        socket.emit 'resume', clientName, opts.connect.secret || '', opts.context || {}
+
+                        #
+                        # * server will respond with 'accept' on success, or disconnect()
+                        #
+
+                        #
+                        # TODO: inform resumed onto the local middleware 
+                        #
+
+                        return
+
+                    client.connection.state   = 'connecting'
                     client.connection.stateAt = Date.now()
                     socket.emit 'handshake', clientName, opts.connect.secret || '', opts.context || {}
+
+                    #
+                    # * server will respond with 'accept' on success, or disconnect()
+                    #
+
 
                 socket.on 'accept', -> 
                     client.connection.state   = 'accepted'
@@ -63,9 +95,13 @@ module.exports.client  = (config = {}) ->
                     if typeof callback == 'function' then callback null, client
 
 
-                socket.on 'disconnect', -> 
-                    unless client.connection? and client.connection.state == 'accepted'
 
+                socket.on 'disconnect', -> 
+                    unless client.connection.state == 'accepted'
+
+                        #
+                        # the connection was never fully established
+                        # ------------------------------------------
                         #
                         # TODO: notifier.destroy clientName (another one in on 'error' below)
                         #       (it will still be present in the collection there)
@@ -81,10 +117,17 @@ module.exports.client  = (config = {}) ->
                         return
                     
                     #
-                    # TODO: handle 'connection might resume', server may have restarted
+                    # fully established connection has been lost
+                    # ------------------------------------------
                     #
 
-                    console.log lost: 1
+                    client.connection.state   = 'interrupted'
+                    client.connection.stateAt = Date.now()
+
+                    #
+                    # TODO: inform interrupted onto the local middleware 
+                    #
+
 
 
                 socket.on 'error', (error) -> 

@@ -184,7 +184,7 @@ describe 'client', ->
                     done()
 
 
-                it 'sets connection.state to connected', (done) -> 
+                it 'sets connection.state to connecting', (done) -> 
 
                     Date.now = -> 1
                     @whenEvent['connect'] = true
@@ -195,7 +195,7 @@ describe 'client', ->
 
                     connection = _client().clients['client name'].connection
                     connection.should.eql 
-                        state:  'connected'
+                        state:  'connecting'
                         stateAt: 1
                     done()
 
@@ -240,7 +240,7 @@ describe 'client', ->
 
             context 'disconnect', -> 
 
-                it 'when connect.state is connected it rejects and destroys the client', (done) ->
+                it 'when connect.state is connecting it rejects and destroys the client', (done) ->
                                             #                            ########   
                                             # pending handshake - client never fully connected
                                             #
@@ -255,12 +255,26 @@ describe 'client', ->
                         _client().clients.should.eql {}  # destroyed - no clients
                         done()
 
-                it 'when connect.state is accepted it informs locally of lost connection'
+                it 'when connect.state is accepted it sets state to interrupted', (done) ->
                                             #
                                             # handshake already succeeded
                                             #
 
+                    Date.now = -> 1                      
+                    @whenEvent['connect'] = true
+                    @whenEvent['accept'] = true
+                    @whenEvent['disconnect'] = true
+                    Client = client()
+                    Client.create 'client name', @opts, (error) ->
 
+                    connection = _client().clients['client name'].connection
+                    connection.should.eql
+                        state:  'interrupted'
+                        stateAt: 1
+                    done()
+
+
+                it 'when connect.state is accepted it informs local (middleware) of interruption'
 
 
 
