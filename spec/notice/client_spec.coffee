@@ -142,15 +142,44 @@ describe 'client', ->
 
             context 'accept', -> 
 
+                it 'sets connect.state to accepted', (done) -> 
+
+                    Date.now = -> 1
+                    @whenEvent['connect'] = true
+                    @whenEvent['accept'] = true
+
+                    Client = client()
+                    Client.create 'client name', @opts
+                    connection = _client().clients['client name'].connection
+                    connection.should.eql 
+                        state:  'accepted'
+                        stateAt: 1
+                    done()
+
+
+                it 'calls back with the accepted client', (done) -> 
+
+                    Date.now = -> 1
+                    @whenEvent['connect'] = true
+                    @whenEvent['accept'] = true
+
+                    Client = client()
+                    Client.create 'client name', @opts, (error, client) -> 
+
+                        #
+                        # client is a notifier
+                        #
+
+                        client.use.should.be.an.instanceof Function
+                        client.event.should.be.an.instanceof Function
+                        client.connection.should.eql
+                            state: 'accepted'
+                            stateAt: 1
+                        done()
 
 
 
             context 'disconnect', -> 
-
-                it 'when connect.state is accepted it informs locally of lost connection'
-                                            #
-                                            # handshake already succeeded
-                                            #
 
                 it 'when connect.state is connected it returns error and destroys the client', (done) ->
                                             #                            ########   
@@ -159,13 +188,18 @@ describe 'client', ->
 
                     @whenEvent['connect'] = true
                     @whenEvent['disconnect'] = true
-                    
+
                     Client = client()
                     Client.create 'client name', @opts, (error) ->
 
                         error.should.match /failed to connect or bad secret/
                         _client().clients.should.eql {}
                         done()
+
+                it 'when connect.state is accepted it informs locally of lost connection'
+                                            #
+                                            # handshake already succeeded
+                                            #
 
 
 

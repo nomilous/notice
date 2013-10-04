@@ -55,6 +55,8 @@ module.exports.client  = (config = {}) ->
                 socket.emit 'handshake', clientName, opts.connect.secret || '', opts.context || {}
 
             socket.on 'accept', -> 
+                client.connection.state   = 'accepted'
+                client.connection.stateAt = Date.now()
                 resolve client
                 if typeof callback == 'function' then callback null, client
 
@@ -74,10 +76,13 @@ module.exports.client  = (config = {}) ->
                     error = new Error "Client.create( '#{clientName}', opts ) failed to connect or bad secret"
                     reject error
                     if typeof callback == 'function' then callback error
+                    return
                 
                 #
                 # TODO: handle 'connection might resume', server may have restarted
                 #
+
+                console.log lost: 1
 
 
             socket.on 'error', (error) -> 
