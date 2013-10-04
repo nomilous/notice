@@ -97,21 +97,44 @@ module.exports.client  = (config = {}) ->
                     return
 
 
-                delete local.clients[clientName]
-                setTimeout (-> 
+                unless opts.connect.retryWait?
 
-                    # 
-                    # `opts.connect.errorWait`
-                    # 
-                    # * Incase something is managing the process that exited because no 
-                    #   connection was made in such a way that it enters a tight respawn 
-                    #   loop effectively creating a potentially dangerous SYN flood
-                    # 
+                    delete local.clients[clientName]
+                    setTimeout (-> 
 
-                    reject error
-                    if typeof callback == 'function' then callback error
-                    
-                ), opts.connect.errorWait or 2000
+                        # 
+                        # `opts.connect.errorWait`
+                        # 
+                        # * Incase something is managing the process that exited because no 
+                        #   connection was made in such a way that it enters a tight respawn 
+                        #   loop effectively creating a potentially dangerous SYN flood
+                        # 
+
+                        reject error
+                        if typeof callback == 'function' then callback error
+
+                    ), opts.connect.errorWait or 2000
+                    return
+
+
+
+                #
+                # `opts.connect.retryWait`
+                # 
+                # * OVERRIDES `opts.connect.errorWait`
+                # 
+                # * Incase it is preferrable for the connection to be retried indefinately
+                # * IMPORTANT: The callback only occurs after connection, so this will leave
+                #              the caller of Notice.client waiting... (possibly a long time)
+                # 
+
+                client.connection.state            = 'retrying'
+                client.connection.retryStartedAt ||= Date.now()
+                client.connection.retryCount      ?= -1
+                client.connection.retryCount++
+                client.connection.stateAt          = Date.now()
+
+
 
 
 

@@ -129,7 +129,25 @@ describe 'client', ->
                         done()
 
 
-                it 'LATER - retries connect ofter retryWait milliseconds' 
+                it 'when connect.state is pending it updates retry tracking if retryWait is set', (done) -> 
+
+                    count = 0
+                    Date.now = -> ++count
+                    @opts.connect.retryWait = 100
+                    @whenEvent['error'] = new Error 'something'
+                    Client = client()
+                    Client.create 'client name', @opts, (error, client) -> 
+
+                    connection = _client().clients['client name'].connection
+                    connection.should.eql
+                        state:         'retrying'
+                        stateAt:        3
+                        retryStartedAt: 2
+                        retryCount:     0
+                    done()
+
+
+                it 'when connect.state is pending it retries connect after retryWait milliseconds' 
 
                         
             context 'connect', -> 
