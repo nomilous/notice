@@ -13,6 +13,7 @@ notice.connect "client @ #{process.pid}", {
         transport:       'https'
         port:             10101
         secret:           process.env.SECRET
+        errorWait:        1000
 
 }, (error, client) -> 
     

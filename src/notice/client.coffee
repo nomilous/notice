@@ -65,7 +65,7 @@ module.exports.client  = (config = {}) ->
                 unless client.connection? and client.connection.state == 'accepted'
 
                     #
-                    # TODO: notifier.destroy clientName
+                    # TODO: notifier.destroy clientName (another one in on 'error' below)
                     #       (it will still be present in the collection there)
                     #
                     # TODO: formalize errors 
@@ -73,7 +73,7 @@ module.exports.client  = (config = {}) ->
                     # 
 
                     delete local.clients[clientName]
-                    error = new Error "Client.create( '#{clientName}', opts ) failed to connect or bad secret"
+                    error = new Error "Client.create( '#{clientName}', opts ) failed connect or bad secret"
                     reject error
                     if typeof callback == 'function' then callback error
                     return
@@ -86,8 +86,33 @@ module.exports.client  = (config = {}) ->
 
 
             socket.on 'error', (error) -> 
+                unless client.connection? and client.connection.state == 'pending'
+                    
+                    #
+                    # TODO: handle error after connect|accept
+                    #
 
-                console.log error
+                    console.log 'TODO: handle socket error after connect|accept'
+                    console.log error
+                    return
+
+
+                delete local.clients[clientName]
+                setTimeout (-> 
+
+                    # 
+                    # `opts.connect.errorWait`
+                    # 
+                    # * Incase something is managing the process that exited because no 
+                    #   connection was made in such a way that it enters a tight respawn 
+                    #   loop effectively creating a potentially dangerous SYN flood
+                    # 
+
+                    reject error
+                    if typeof callback == 'function' then callback error
+                    
+                ), opts.connect.errorWait or 2000
+
 
 
     return api = 

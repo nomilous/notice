@@ -13,6 +13,7 @@ describe 'client', ->
             connect: 
                 secret: 'secret'
                 port: 3000
+                errorWait: 500
         Connector.connect = (opts) -> on: (event, handler)-> 
             if event == 'accept' then handler()
 
@@ -106,6 +107,30 @@ describe 'client', ->
                         handler @whenEvent[event] if @whenEvent[event]?
                     emit: (event, args...) => 
                         @emitted[event] = args
+
+            context 'error', -> 
+
+                it 'when connect.state is pending it rejects and destroys the client after errorWait milliseconds', (done) -> 
+                    
+                    # 
+                    # errorWait?
+                    # 
+                    # incase something is managing the process that exited because no 
+                    # connection was made in such a way that it enters a tight respawn 
+                    # loop effectively creating a potentially dangerous SYN flood
+                    # 
+
+                    @whenEvent['error'] = new Error 'something'
+                    Client = client()
+                    Client.create 'client name', @opts, (error, client) -> 
+
+                        error.should.match /something/
+                        _client().clients.should.eql {} # destroyed - no clients
+                        done()
+
+
+                it 'LATER - retries connect ofter retryWait milliseconds' 
+
                         
             context 'connect', -> 
 
@@ -181,7 +206,7 @@ describe 'client', ->
 
             context 'disconnect', -> 
 
-                it 'when connect.state is connected it returns error and destroys the client', (done) ->
+                it 'when connect.state is connected it rejects and destroys the client', (done) ->
                                             #                            ########   
                                             # pending handshake - client never fully connected
                                             #
@@ -192,8 +217,8 @@ describe 'client', ->
                     Client = client()
                     Client.create 'client name', @opts, (error) ->
 
-                        error.should.match /failed to connect or bad secret/
-                        _client().clients.should.eql {}
+                        error.should.match /failed connect or bad secret/
+                        _client().clients.should.eql {}  # destroyed - no clients
                         done()
 
                 it 'when connect.state is accepted it informs locally of lost connection'
