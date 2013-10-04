@@ -2,7 +2,7 @@
 
 notice = require '../../lib/notice'
 
-notice.connect "client @ #{process.pid}", {
+notice.connect "client #{process.env.NAME}", {
 
     context: 
         some: 'details'

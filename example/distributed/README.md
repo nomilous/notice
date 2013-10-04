@@ -18,7 +18,6 @@ listening @ https://0.0.0.0:3000
 
 ```bash
 
-SECRET=right ./client
-SECRET=wrong ./client
+NAME=name SECRET=right ./client
 
 ```

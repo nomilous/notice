@@ -14,6 +14,13 @@ module.exports.hub  = (config = {}) ->
         clients: {}
         name2id: {} # same client on multiple hubs? later...
 
+        connections: -> 
+
+            console.log ''
+            for id of local.clients
+                client = local.clients[id]
+                console.log title: client.title, state: client.connected.state
+
         create: deferred ({reject, resolve, notify}, hubName, opts = {}, callback) ->
 
             unless typeof hubName is 'string'
@@ -78,20 +85,35 @@ module.exports.hub  = (config = {}) ->
 
                     return socket.disconnect() unless secret == opts.listen.secret
 
-                    local.clients[socket.id] = client = 
-                        title:   originName
-                        context: context
-                        hub:     hubName
+                    if previousID = local.name2id[originName]
+
+                        #
+                        # * got previous reference of this client...
+                        # * TODO: make performing a compariton of old and new 
+                        #         context a posibility, probably down the pipeline
+                        # 
+                        # * FOR NOW the old context is kept and new is ignored
+                        #   =======
+                        # 
+
+                        client = local.clients[previousID]
+                        delete local.clients[previousID]
+                        delete local.name2id[originName]
+                        local.clients[socket.id] = client
+
+                    else 
+                        local.clients[socket.id] = client = 
+                            title:   originName
+                            context: context
+                            hub:     hubName
+
 
                     client.connected ||= {}
-                    client.connected.state   = 'connected'
-                    client.connected.stateAt = Date.now()
-
+                    client.connected.state    = 'connected'
+                    client.connected.stateAt  = Date.now()
                     local.name2id[originName] = socket.id
-
                     socket.emit 'accept'
-
-                    #console.log 'CONNECT', JSON.stringify local, null, 2
+                    local.connections()
 
 
                 socket.on 'resume', (originName, secret, context) -> 
@@ -104,26 +126,42 @@ module.exports.hub  = (config = {}) ->
                     # * this server may have been restarted / upgraded
                     # 
 
+                    #
+                    # identical to on connect (for now)
+                    #
+
                     return socket.disconnect() unless secret == opts.listen.secret
+                    if previousID = local.name2id[originName]
+                        client = local.clients[previousID]
+                        delete local.clients[previousID]
+                        delete local.name2id[originName]
+                        local.clients[socket.id] = client
 
-                    #
-                    # TODO: remove / move previous client reference if still present
-                    #       (same client, new socket.id)
-                    #
+                    else 
+                        local.clients[socket.id] = client = 
+                            title:   originName
+                            context: context
+                            hub:     hubName
 
-                    local.clients[socket.id] = 
-                        title:   originName
-                        context: context
-                        hub:     hubName
 
+                    client.connected ||= {}
+                    client.connected.state    = 'connected'
+                    client.connected.stateAt  = Date.now()
+                    local.name2id[originName] = socket.id
                     socket.emit 'accept'
-
-                    #console.log 'RECONNECT', JSON.stringify local, null, 2
+                    local.connections()
 
 
                 socket.on 'disconnect', -> 
 
-                    console.log disconnect: local.clients[socket.id]
+                    try client = local.clients[socket.id]
+                    return unless client?
+
+                    client.connected.state    = 'disconnected'
+                    client.connected.stateAt  = Date.now()
+                    local.connections()
+
+                    
 
 
     return api = 

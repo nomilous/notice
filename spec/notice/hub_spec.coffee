@@ -118,14 +118,11 @@ describe 'hub', ->
         context 'on connection', -> 
 
             beforeEach -> 
-
+                @whenEvent = {}
                 Listener.listen = (opts, callback) => 
                     callback null, 'ADDRESS'
                     on: (event, handler) => 
                         if @whenEvent[event]? then handler @whenEvent[event]
-
-
-                @whenEvent = {}
 
 
             context 'when handshake', -> 
@@ -169,6 +166,7 @@ describe 'hub', ->
                     _hub().clients.SOCKET_ID.context.should.equal 'CONTEXT'
                     _hub().clients.SOCKET_ID.hub.should.equal 'hub1'
                     done()
+
 
                 it 'sets the connection.state to connected', (done) -> 
 
@@ -236,7 +234,43 @@ describe 'hub', ->
 
         context 'on disconnect', -> 
 
-            it 'marks the client reference as disconnected'
+            beforeEach -> 
+                @whenEvent = {}
+                Listener.listen = (opts, callback) => 
+                    callback null, 'ADDRESS'
+                    on: (event, handler) => 
+                        console.log event
+                        if @whenEvent[event]? then handler @whenEvent[event]
+                    emit: ->
+
+
+                
+
+            it 'marks the client reference as disconnected', (done) -> 
+
+                Date.now = -> 1
+                @whenEvent['connection'] = 
+                    id: 'SOCKET_ID'
+                    on: (event, listener) -> 
+                        if event == 'handshake' 
+                            listener 'originName', 'rightsecret', 'CONTEXT'
+                        if event == 'disconnect' 
+                            listener()
+                    emit: ->
+
+                
+                
+                Hub = hub()
+                Hub.create 'hub1', listen: secret: 'rightsecret'
+
+                connected = _hub().clients.SOCKET_ID.connected
+                connected.should.eql
+                    state: 'disconnected'
+                    stateAt: 1
+                done()
+
+
+
             it 'reaps the client reference after configurable period'
         
 
