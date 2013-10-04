@@ -42,62 +42,62 @@ module.exports.client  = (config = {}) ->
 
 
             opts.context ||= {}
+            socket = undefined
+            connect = -> 
 
-            socket = Connector.connect opts.connect
+                socket = Connector.connect opts.connect
 
-            client.connection = 
-                state:  'pending'
-                stateAt: Date.now()
-
-            socket.on 'connect', -> 
-                client.connection.state   = 'connected'
+                client.connection       ||= {}
+                client.connection.state   = 'pending'
                 client.connection.stateAt = Date.now()
-                socket.emit 'handshake', clientName, opts.connect.secret || '', opts.context || {}
 
-            socket.on 'accept', -> 
-                client.connection.state   = 'accepted'
-                client.connection.stateAt = Date.now()
-                resolve client
-                if typeof callback == 'function' then callback null, client
+                socket.on 'connect', -> 
+                    client.connection.state   = 'connected'
+                    client.connection.stateAt = Date.now()
+                    socket.emit 'handshake', clientName, opts.connect.secret || '', opts.context || {}
 
-
-            socket.on 'disconnect', -> 
-                unless client.connection? and client.connection.state == 'accepted'
-
-                    #
-                    # TODO: notifier.destroy clientName (another one in on 'error' below)
-                    #       (it will still be present in the collection there)
-                    #
-                    # TODO: formalize errors 
-                    #       (this following is horrible)
-                    # 
-
-                    delete local.clients[clientName]
-                    error = new Error "Client.create( '#{clientName}', opts ) failed connect or bad secret"
-                    reject error
-                    if typeof callback == 'function' then callback error
-                    return
-                
-                #
-                # TODO: handle 'connection might resume', server may have restarted
-                #
-
-                console.log lost: 1
+                socket.on 'accept', -> 
+                    client.connection.state   = 'accepted'
+                    client.connection.stateAt = Date.now()
+                    resolve client
+                    if typeof callback == 'function' then callback null, client
 
 
-            socket.on 'error', (error) -> 
-                unless client.connection? and client.connection.state == 'pending'
+                socket.on 'disconnect', -> 
+                    unless client.connection? and client.connection.state == 'accepted'
+
+                        #
+                        # TODO: notifier.destroy clientName (another one in on 'error' below)
+                        #       (it will still be present in the collection there)
+                        #
+                        # TODO: formalize errors 
+                        #       (this following is horrible)
+                        # 
+
+                        delete local.clients[clientName]
+                        error = new Error "Client.create( '#{clientName}', opts ) failed connect or bad secret"
+                        reject error
+                        if typeof callback == 'function' then callback error
+                        return
                     
                     #
-                    # TODO: handle error after connect|accept
+                    # TODO: handle 'connection might resume', server may have restarted
                     #
 
-                    console.log 'TODO: handle socket error after connect|accept'
-                    console.log error
-                    return
+                    console.log lost: 1
 
 
-                unless opts.connect.retryWait?
+                socket.on 'error', (error) -> 
+                    unless client.connection? and client.connection.state == 'pending'
+                        
+                        #
+                        # TODO: handle error after connect|accept
+                        #
+
+                        console.log 'TODO: handle socket error after connect|accept'
+                        console.log error
+                        return
+
 
                     delete local.clients[clientName]
                     setTimeout (-> 
@@ -116,26 +116,36 @@ module.exports.client  = (config = {}) ->
                     ), opts.connect.errorWait or 2000
                     return
 
+                    # #
+                    # # `opts.connect.retryWait`
+                    # # 
+                    # # * OVERRIDES `opts.connect.errorWait`
+                    # # 
+                    # # * Incase it is preferrable for the connection to be retried indefinately
+                    # # * IMPORTANT: The callback only occurs after connection, so this will leave
+                    # #              the caller of Notice.client waiting... (possibly a long time)
+                    # # * RECOMMEND: Do not using this in high frequency scheduled jobs.
+                    # # 
+
+                    # if opts.connect.retryWait? # and opts.connect.retryWait > 9999
+
+                    #     client.connection.state            = 'retrying'
+                    #     client.connection.retryStartedAt ||= Date.now()
+                    #     client.connection.retryCount      ?= -1
+                    #     client.connection.retryCount++
+                    #     client.connection.stateAt          = Date.now()
+                    #     console.log RETRY: client.connection
+                    #     return
 
 
-                #
-                # `opts.connect.retryWait`
-                # 
-                # * OVERRIDES `opts.connect.errorWait`
-                # 
-                # * Incase it is preferrable for the connection to be retried indefinately
-                # * IMPORTANT: The callback only occurs after connection, so this will leave
-                #              the caller of Notice.client waiting... (possibly a long time)
-                # 
-
-                client.connection.state            = 'retrying'
-                client.connection.retryStartedAt ||= Date.now()
-                client.connection.retryCount      ?= -1
-                client.connection.retryCount++
-                client.connection.stateAt          = Date.now()
+                    # opts.connect.retryWait = 0 # ignore crazy retryWait milliseconds
+                    # error = new Error "Client.create( '#{clientName}', opts ) failed connect"
+                    # reject error
+                    # if typeof callback == 'function' then callback error
 
 
-
+            connect()
+            
 
 
     return api = 
