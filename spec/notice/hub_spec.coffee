@@ -7,9 +7,13 @@ Listener    = require '../../lib/notice/listener'
 describe 'hub', -> 
 
     beforeEach -> 
+        @now = Date.now
         Listener.listen = (opts, callback) -> 
             callback()
             on: ->
+
+    afterEach -> 
+        Date.now = @now
 
 
     context 'factory', ->
@@ -161,16 +165,48 @@ describe 'hub', ->
 
                     Hub = hub()
                     Hub.create 'hub1', listen: secret: 'rightsecret'
-                    _hub().clients.SOCKET_ID.should.eql 
-                        title:   'originName'
-                        context: 'CONTEXT'
-                        hub: 'hub1'
+                    _hub().clients.SOCKET_ID.title.should.equal 'originName'
+                    _hub().clients.SOCKET_ID.context.should.equal 'CONTEXT'
+                    _hub().clients.SOCKET_ID.hub.should.equal 'hub1'
+                    done()
 
+                it 'sets the connection.state to connected', (done) -> 
+
+                    Date.now = -> 1
+                    @whenEvent['connection'] = 
+                        id: 'SOCKET_ID'
+                        on: (event, listener) -> 
+                            if event == 'handshake' 
+                                listener 'originName', 'rightsecret', 'CONTEXT'
+                        emit: ->
+
+                    Hub = hub()
+                    Hub.create 'hub1', listen: secret: 'rightsecret'
+
+                    connected = _hub().clients.SOCKET_ID.connected
+                    connected.should.eql
+                        state: 'connected'
+                        stateAt: 1
                     done()
 
 
+                it 'creates an entry in the name2id index', (done) -> 
 
-                it 'creates an entry in the name2id index'
+                    @whenEvent['connection'] = 
+                        id: 'SOCKET_ID'
+                        on: (event, listener) -> 
+                            if event == 'handshake' 
+                                listener 'originName', 'rightsecret', 'CONTEXT'
+                        emit: ->
+
+                    Hub = hub()
+                    Hub.create 'hub1', listen: secret: 'rightsecret'
+                    name2id = _hub().name2id
+                    name2id.should.eql
+                        originName: 'SOCKET_ID'
+                    done()
+
+
                 it 'remove or transfer previous reference to this client if present'
                     # 
                     # for when client does not disconnect cleanly and 

@@ -12,6 +12,7 @@ module.exports.hub  = (config = {}) ->
 
         hubs:    {}
         clients: {}
+        name2id: {} # same client on multiple hubs? later...
 
         create: deferred ({reject, resolve, notify}, hubName, opts = {}, callback) ->
 
@@ -77,14 +78,20 @@ module.exports.hub  = (config = {}) ->
 
                     return socket.disconnect() unless secret == opts.listen.secret
 
-                    local.clients[socket.id] = 
+                    local.clients[socket.id] = client = 
                         title:   originName
                         context: context
                         hub:     hubName
 
+                    client.connected ||= {}
+                    client.connected.state   = 'connected'
+                    client.connected.stateAt = Date.now()
+
+                    local.name2id[originName] = socket.id
+
                     socket.emit 'accept'
 
-                    console.log 'CONNECT', JSON.stringify local, null, 2
+                    #console.log 'CONNECT', JSON.stringify local, null, 2
 
 
                 socket.on 'resume', (originName, secret, context) -> 
@@ -111,7 +118,7 @@ module.exports.hub  = (config = {}) ->
 
                     socket.emit 'accept'
 
-                    console.log 'RECONNECT', JSON.stringify local, null, 2
+                    #console.log 'RECONNECT', JSON.stringify local, null, 2
 
 
                 socket.on 'disconnect', -> 
