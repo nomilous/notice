@@ -66,17 +66,12 @@ module.exports.hub  = (config = {}) ->
 
                 socket.on 'handshake', (originName, secret, context) -> 
 
-                    if secret == opts.listen.secret
-                        local.clients[socket.id] = 
-                            title:   originName
-                            context: context
-                            hub:     hubName 
-                            
+                    return socket.disconnect() unless secret == opts.listen.secret
 
-
-                    else 
-
-                        socket.disconnect()
+                    local.clients[socket.id] = 
+                        title:   originName
+                        context: context
+                        hub:     hubName 
 
                     console.log JSON.stringify local, null, 2
 

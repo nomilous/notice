@@ -6,8 +6,12 @@ Connector         = require '../../lib/notice/connector'
 describe 'client', -> 
 
     beforeEach -> 
+        @now = Date.now
+        @opts = connect: port: 3000
         Connector.connect = (opts) -> on: ->
 
+    afterEach -> 
+        Date.now = @now
 
     context 'factory', -> 
 
@@ -23,7 +27,7 @@ describe 'client', ->
         it 'requires clientName', (done) -> 
 
             Client = client()
-            Client.create undefined, {}, (error) -> 
+            Client.create undefined, @opts, (error) -> 
 
                 error.should.match /requires clientName as string/
                 done()
@@ -31,9 +35,8 @@ describe 'client', ->
         it 'requires unique client name', (done) -> 
 
             Client = client()
-            Client.create 'client name'
-            Client.create 'client name', {}, (error) ->
-
+            Client.create 'client name', @opts, ->
+            Client.create 'client name', @opts, (error) ->
                 error.should.match /is already defined/
                 done()
 
@@ -41,7 +44,7 @@ describe 'client', ->
         it 'calls back with client as notifier instance', (done) -> 
 
             Client = client()
-            Client.create 'client name', {}, (error, client) -> 
+            Client.create 'client name', @opts, (error, client) -> 
 
                 client.should.equal _notifier().notifiers['client name']
                 _client().clients['client name'].should.equal client
@@ -50,7 +53,7 @@ describe 'client', ->
         it 'resolves with the new client instance', (done) -> 
 
             Client = client()
-            Client.create( 'client name' ).then (client) -> 
+            Client.create( 'client name', @opts ).then (client) -> 
 
                 _client().clients['client name'].should.equal client
                 done()
@@ -73,7 +76,20 @@ describe 'client', ->
             done()
 
 
-        context 'on socket event', -> 
+        it 'sets client connection state to pending', (done) -> 
+
+            Date.now = -> 1
+            Connector.connect = (opts) -> on: -> 
+            Client = client()
+            Client.create 'client name', @opts, ->
+
+            _client().clients['client name'].connection.should.eql
+                state:  'pending'
+                stateAt: 1
+            done()
+
+
+        xcontext 'on socket event', -> 
 
             beforeEach -> 
                 @whenEvent = {}
@@ -85,7 +101,7 @@ describe 'client', ->
                         @emitted[event] = args
                         
 
-            it.only 'connect - responds with handshake including clientname, secret, and context', (done) -> 
+            it 'connect - responds with handshake including clientname, secret, and context', (done) -> 
 
                 @whenEvent['connect'] = true
 

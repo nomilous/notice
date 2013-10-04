@@ -45,9 +45,19 @@ module.exports.client  = (config = {}) ->
 
             socket = Connector.connect opts.connect
 
+            client.connection = 
+                state:  'pending'
+                stateAt: Date.now()
+
             socket.on 'connect', -> 
 
+
                 socket.emit 'handshake', clientName, opts.connect.secret || '', opts.context || {}
+
+            socket.on 'disconnect', -> 
+
+                console.log disconnect: 1
+
 
             socket.on 'error', (error) -> 
 
