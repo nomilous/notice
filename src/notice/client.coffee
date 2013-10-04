@@ -50,24 +50,39 @@ module.exports.client  = (config = {}) ->
                 stateAt: Date.now()
 
             socket.on 'connect', -> 
-
                 client.connection.state   = 'connected'
                 client.connection.stateAt = Date.now()
-                
                 socket.emit 'handshake', clientName, opts.connect.secret || '', opts.context || {}
 
-            socket.on 'disconnect', -> 
+            socket.on 'accept', -> 
+                resolve client
+                if typeof callback == 'function' then callback null, client
 
-                console.log disconnect: 1
+
+            socket.on 'disconnect', -> 
+                unless client.connection? and client.connection.state == 'accepted'
+
+                    #
+                    # TODO: notifier.destroy clientName
+                    #       (it will still be present in the collection there)
+                    #
+                    # TODO: formalize errors 
+                    #       (this following is horrible)
+                    # 
+
+                    delete local.clients[clientName]
+                    error = new Error "Client.create( '#{clientName}', opts ) failed to connect or bad secret"
+                    reject error
+                    if typeof callback == 'function' then callback error
+                
+                #
+                # TODO: handle 'connection might resume', server may have restarted
+                #
 
 
             socket.on 'error', (error) -> 
 
                 console.log error
-
-
-            resolve client
-            if typeof callback == 'function' then callback null, client
 
 
     return api = 

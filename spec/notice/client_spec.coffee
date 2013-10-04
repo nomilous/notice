@@ -13,7 +13,8 @@ describe 'client', ->
             connect: 
                 secret: 'secret'
                 port: 3000
-        Connector.connect = (opts) -> on: ->
+        Connector.connect = (opts) -> on: (event, handler)-> 
+            if event == 'accept' then handler()
 
     afterEach -> 
         Date.now = @now
@@ -115,6 +116,7 @@ describe 'client', ->
                     Client = client()
                     Client.create 'client name', @opts
 
+
                     @emitted.should.eql handshake: [
                         'client name'
                         'secret'
@@ -131,17 +133,39 @@ describe 'client', ->
                     Client = client()
                     Client.create 'client name', @opts
 
+
                     connection = _client().clients['client name'].connection
                     connection.should.eql 
                         state:  'connected'
                         stateAt: 1
                     done()
 
+            context 'accept', -> 
 
 
 
 
+            context 'disconnect', -> 
 
+                it 'when connect.state is accepted it informs locally of lost connection'
+                                            #
+                                            # handshake already succeeded
+                                            #
+
+                it 'when connect.state is connected it returns error and destroys the client', (done) ->
+                                            #                            ########   
+                                            # pending handshake - client never fully connected
+                                            #
+
+                    @whenEvent['connect'] = true
+                    @whenEvent['disconnect'] = true
+                    
+                    Client = client()
+                    Client.create 'client name', @opts, (error) ->
+
+                        error.should.match /failed to connect or bad secret/
+                        _client().clients.should.eql {}
+                        done()
 
 
 
