@@ -51,7 +51,9 @@ module.exports.client  = (config = {}) ->
 
             socket.on 'connect', -> 
 
-
+                client.connection.state   = 'connected'
+                client.connection.stateAt = Date.now()
+                
                 socket.emit 'handshake', clientName, opts.connect.secret || '', opts.context || {}
 
             socket.on 'disconnect', -> 

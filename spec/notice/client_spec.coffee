@@ -7,7 +7,12 @@ describe 'client', ->
 
     beforeEach -> 
         @now = Date.now
-        @opts = connect: port: 3000
+        @opts = 
+            context:
+                some: 'details'
+            connect: 
+                secret: 'secret'
+                port: 3000
         Connector.connect = (opts) -> on: ->
 
     afterEach -> 
@@ -76,20 +81,21 @@ describe 'client', ->
             done()
 
 
-        it 'sets client connection state to pending', (done) -> 
+        it 'sets client connection.state to pending', (done) -> 
 
             Date.now = -> 1
             Connector.connect = (opts) -> on: -> 
             Client = client()
             Client.create 'client name', @opts, ->
 
-            _client().clients['client name'].connection.should.eql
+            connection = _client().clients['client name'].connection
+            connection.should.eql
                 state:  'pending'
                 stateAt: 1
             done()
 
 
-        xcontext 'on socket event', -> 
+        context 'on socket event', -> 
 
             beforeEach -> 
                 @whenEvent = {}
@@ -100,27 +106,36 @@ describe 'client', ->
                     emit: (event, args...) => 
                         @emitted[event] = args
                         
+            context 'connect', -> 
 
-            it 'connect - responds with handshake including clientname, secret, and context', (done) -> 
+                it 'responds with handshake including clientname, secret, and context', (done) -> 
 
-                @whenEvent['connect'] = true
+                    @whenEvent['connect'] = true
 
-                Client = client()
-                Client.create 'client name', 
-                    connect:
-                        secret: 'secret'
-                        port:   10101
-                    context: 
-                        some: 'details'
+                    Client = client()
+                    Client.create 'client name', @opts
 
-                @emitted.should.eql handshake: [
-                    'client name'
-                    'secret'
-                    { some: 'details' }
-                ]
-                done()
+                    @emitted.should.eql handshake: [
+                        'client name'
+                        'secret'
+                        { some: 'details' }
+                    ]
+                    done()
 
 
+                it 'sets connection.state to connected', (done) -> 
+
+                    Date.now = -> 1
+                    @whenEvent['connect'] = true
+
+                    Client = client()
+                    Client.create 'client name', @opts
+
+                    connection = _client().clients['client name'].connection
+                    connection.should.eql 
+                        state:  'connected'
+                        stateAt: 1
+                    done()
 
 
 
