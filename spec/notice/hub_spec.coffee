@@ -139,7 +139,8 @@ describe 'hub', ->
                         # emit mock handshake event as if a remote client sent it
                         #
 
-                        if event == 'handshake' then listener 'originName', 'wrongsecret', 'CONTEXT'
+                        if event == 'handshake' 
+                            listener 'originName', 'wrongsecret', 'CONTEXT'
 
                     disconnect: -> done()
 
@@ -147,12 +148,14 @@ describe 'hub', ->
                 Hub.create 'hub1', listen: secret: 'rightsecret'
 
 
-            it.only 'adds the client to the collection on handshake success', (done) -> 
+            it 'adds the client to the collection on handshake success', (done) -> 
 
                 @whenEvent['connection'] = 
                     id: 'SOCKET_ID'
                     on: (event, listener) -> 
-                        if event == 'handshake' then listener 'originName', 'rightsecret', 'CONTEXT'
+                        if event == 'handshake' 
+                            listener 'originName', 'rightsecret', 'CONTEXT'
+                    emit: ->
 
                 Hub = hub()
                 Hub.create 'hub1', listen: secret: 'rightsecret'
@@ -163,6 +166,25 @@ describe 'hub', ->
 
                 done()
 
+
+            it 'accept includes hub context'
+            it 'sends accept to client on handshake success', (done) -> 
+
+                @whenEvent['connection'] = 
+                    id: 'SOCKET_ID'
+                    on: (event, listener) -> 
+                        if event == 'handshake' 
+                            listener 'originName', 'rightsecret', 'CONTEXT'
+                    emit: (event, args...) -> 
+                        if event == 'accept' then done()
+
+                Hub = hub()
+                Hub.create 'hub1', listen: secret: 'rightsecret'
+
+
+
+
+            
 
 
 return

@@ -71,7 +71,9 @@ module.exports.hub  = (config = {}) ->
                     local.clients[socket.id] = 
                         title:   originName
                         context: context
-                        hub:     hubName 
+                        hub:     hubName
+
+                    socket.emit 'accept'
 
                     console.log JSON.stringify local, null, 2
 
