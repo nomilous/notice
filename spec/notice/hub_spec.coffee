@@ -124,65 +124,85 @@ describe 'hub', ->
                 @whenEvent = {}
 
 
-            it 'verifies the handshake secret and disconnects on bad match', (done) -> 
+            context 'when handshake', -> 
 
-                @whenEvent['connection'] = 
-                    
-                    #
-                    # configure a mock socket with which to fire the 
-                    # connection event
+                it 'verifies the secret and disconnects on bad match', (done) -> 
+
+                    @whenEvent['connection'] = 
+                        
+                        #
+                        # configure a mock socket with which to fire the 
+                        # connection event
+                        # 
+                        
+                        on: (event, listener) -> 
+
+                            #
+                            # emit mock handshake event as if a remote client sent it
+                            #
+
+                            if event == 'handshake' 
+                                listener 'originName', 'wrongsecret', 'CONTEXT'
+
+                        disconnect: -> done()
+
+                    Hub = hub()
+                    Hub.create 'hub1', listen: secret: 'rightsecret'
+
+
+                it 'adds the client to the collection on handshake success', (done) -> 
+
+                    @whenEvent['connection'] = 
+                        id: 'SOCKET_ID'
+                        on: (event, listener) -> 
+                            if event == 'handshake' 
+                                listener 'originName', 'rightsecret', 'CONTEXT'
+                        emit: ->
+
+                    Hub = hub()
+                    Hub.create 'hub1', listen: secret: 'rightsecret'
+                    _hub().clients.SOCKET_ID.should.eql 
+                        title:   'originName'
+                        context: 'CONTEXT'
+                        hub: 'hub1'
+
+                    done()
+
+
+
+                it 'creates an entry in the name2id index'
+                it 'remove or transfer previous reference to this client if present'
                     # 
-                    
-                    on: (event, listener) -> 
-
-                        #
-                        # emit mock handshake event as if a remote client sent it
-                        #
-
-                        if event == 'handshake' 
-                            listener 'originName', 'wrongsecret', 'CONTEXT'
-
-                    disconnect: -> done()
-
-                Hub = hub()
-                Hub.create 'hub1', listen: secret: 'rightsecret'
+                    # for when client does not disconnect cleanly and 
+                    # and housekeeper has not yet reaped the reference
+                    # 
 
 
-            it 'adds the client to the collection on handshake success', (done) -> 
+                it 'accept includes hub context'
+                it 'sends accept to client on handshake success', (done) -> 
 
-                @whenEvent['connection'] = 
-                    id: 'SOCKET_ID'
-                    on: (event, listener) -> 
-                        if event == 'handshake' 
-                            listener 'originName', 'rightsecret', 'CONTEXT'
-                    emit: ->
+                    @whenEvent['connection'] = 
+                        id: 'SOCKET_ID'
+                        on: (event, listener) -> 
+                            if event == 'handshake' 
+                                listener 'originName', 'rightsecret', 'CONTEXT'
+                        emit: (event, args...) -> 
+                            if event == 'accept' then done()
 
-                Hub = hub()
-                Hub.create 'hub1', listen: secret: 'rightsecret'
-                _hub().clients.SOCKET_ID.should.eql 
-                    title:   'originName'
-                    context: 'CONTEXT'
-                    hub: 'hub1'
-
-                done()
+                    Hub = hub()
+                    Hub.create 'hub1', listen: secret: 'rightsecret'
 
 
-            it 'accept includes hub context'
-            it 'sends accept to client on handshake success', (done) -> 
+            context 'when resume', -> 
 
-                @whenEvent['connection'] = 
-                    id: 'SOCKET_ID'
-                    on: (event, listener) -> 
-                        if event == 'handshake' 
-                            listener 'originName', 'rightsecret', 'CONTEXT'
-                    emit: (event, args...) -> 
-                        if event == 'accept' then done()
-
-                Hub = hub()
-                Hub.create 'hub1', listen: secret: 'rightsecret'
+                it 'is the same as connect for now'
 
 
+        context 'on disconnect', -> 
 
+            it 'marks the client reference as disconnected'
+            it 'reaps the client reference after configurable period'
+        
 
             
 

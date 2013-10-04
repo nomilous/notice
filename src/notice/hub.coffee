@@ -66,6 +66,15 @@ module.exports.hub  = (config = {}) ->
 
                 socket.on 'handshake', (originName, secret, context) -> 
 
+                    #
+                    # remote client is making it's first connection
+                    # ---------------------------------------------
+                    #
+                    # * the client is a new process
+                    # * it may have been previously connected (and was restarted)
+                    #   in which case there may already be local reference to it.
+                    # 
+
                     return socket.disconnect() unless secret == opts.listen.secret
 
                     local.clients[socket.id] = 
@@ -75,10 +84,39 @@ module.exports.hub  = (config = {}) ->
 
                     socket.emit 'accept'
 
-                    console.log JSON.stringify local, null, 2
+                    console.log 'CONNECT', JSON.stringify local, null, 2
 
 
+                socket.on 'resume', (originName, secret, context) -> 
 
+                    #
+                    # remote client is resuming an interrupted connection
+                    # ---------------------------------------------------
+                    #
+                    # * the client process was previously connected
+                    # * this server may have been restarted / upgraded
+                    # 
+
+                    return socket.disconnect() unless secret == opts.listen.secret
+
+                    #
+                    # TODO: remove / move previous client reference if still present
+                    #       (same client, new socket.id)
+                    #
+
+                    local.clients[socket.id] = 
+                        title:   originName
+                        context: context
+                        hub:     hubName
+
+                    socket.emit 'accept'
+
+                    console.log 'RECONNECT', JSON.stringify local, null, 2
+
+
+                socket.on 'disconnect', -> 
+
+                    console.log disconnect: local.clients[socket.id]
 
 
     return api = 
