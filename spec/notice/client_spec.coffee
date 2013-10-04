@@ -282,7 +282,24 @@ describe 'client', ->
                     done()
 
                
-                it 'when connect.state is resuming it does not callback with the accepted client'
+                it 'when connect.state is resuming it does not callback with the accepted client', (done) -> 
+
+                    Date.now = -> 1
+                    @whenEvent['connect'] = true
+                    @whenEvent['accept'] = true
+                    @whenEvent['disconnect'] = true
+
+                    Client = client()
+                    Client.create 'client name', @opts, (error) ->
+
+                        done() # would be called multiple times if this test is failing
+
+                    @whenEvent['connect']()  # refire
+                    @whenEvent['accept']()  # refire
+
+
+
+
                 it 'when connect.state is resuming it informs local (middleware) of resumption'
 
 

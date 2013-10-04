@@ -107,7 +107,7 @@ module.exports.client  = (config = {}) ->
                         client.connection.stateAt = Date.now()
                         client.connection.interruptions ||= count: 0
                         client.connection.interruptions.count++
-                        return
+                        return 
 
                     client.connection.state   = 'accepted'
                     client.connection.stateAt = Date.now()
