@@ -104,7 +104,9 @@ describe 'client', ->
                 @emitted   = {}
                 Connector.connect = (opts) => 
                     on: (event, handler) => 
-                        handler @whenEvent[event] if @whenEvent[event]?
+                        if @whenEvent[event]?
+                            handler @whenEvent[event]
+                            @whenEvent[event] = handler # so it can be called again
                     emit: (event, args...) => 
                         @emitted[event] = args
 
@@ -184,7 +186,7 @@ describe 'client', ->
                     done()
 
 
-                it 'sets connection.state to connecting', (done) -> 
+                it 'when connect.state is pending it sets connection.state to connecting', (done) -> 
 
                     Date.now = -> 1
                     @whenEvent['connect'] = true
@@ -199,9 +201,28 @@ describe 'client', ->
                         stateAt: 1
                     done()
 
+                it 'when connect.state is interrupted it sets the connection.state to resuming', (done) -> 
+
+                    Date.now = -> 1
+                    @whenEvent['connect'] = true
+                    @whenEvent['accept'] = true
+                    @whenEvent['disconnect'] = true
+
+                    Client = client()
+                    Client.create 'client name', @opts
+
+                    @whenEvent['connect']()  # refire connect
+                    connection = _client().clients['client name'].connection
+                    connection.should.eql 
+                        state: 'resuming'
+                        stateAt: 1
+                    done()
+
+
+
             context 'accept', -> 
 
-                it 'sets connect.state to accepted', (done) -> 
+                it 'when connect.state is connecting it sets connect.state to accepted', (done) -> 
 
                     Date.now = -> 1
                     @whenEvent['connect'] = true
@@ -216,7 +237,7 @@ describe 'client', ->
                     done()
 
 
-                it 'calls back with the accepted client', (done) -> 
+                it 'when connect.state is connecting calls back with the accepted client', (done) -> 
 
                     Date.now = -> 1
                     @whenEvent['connect'] = true
@@ -235,6 +256,11 @@ describe 'client', ->
                             state: 'accepted'
                             stateAt: 1
                         done()
+
+                it 'when connect.state is resuming it sets the state to accepted'
+                it 'when connect.state is resuming it increments the interrupted count'
+                it 'when connect.state is resuming it does not callback with the accepted client'
+                it 'when connect.state is resuming it informs local (middleware) of resumption'
 
 
 
