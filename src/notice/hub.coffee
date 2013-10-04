@@ -16,10 +16,11 @@ module.exports.hub  = (config = {}) ->
 
         connections: -> 
 
-            console.log ''
+            console.log '---------'
             for id of local.clients
                 client = local.clients[id]
-                console.log title: client.title, state: client.connected.state
+                console.log client.title, client.context, client.connected
+            console.log '---------'
 
         create: deferred ({reject, resolve, notify}, hubName, opts = {}, callback) ->
 
@@ -72,6 +73,8 @@ module.exports.hub  = (config = {}) ->
 
             io.on 'connection', (socket) -> 
 
+                id = socket.id
+
                 socket.on 'handshake', (originName, secret, context) -> 
 
                     #
@@ -87,6 +90,33 @@ module.exports.hub  = (config = {}) ->
 
                     if previousID = local.name2id[originName]
 
+                        client = local.clients[previousID]
+
+                        if client.connected.state == 'connected'
+
+                            #
+                            # first client with this originName is still 
+                            # connected... do not allow new connection.
+                            #
+                            # TODO: make this configurable
+                            #       - keep new and kill old
+                            #       - confirm old before rejecting new
+                            #             -- by probe
+                            #             -- by last activity age
+                            #             BAD if rejecting new when old is broken
+                            #       - ??? keep both
+                            # 
+
+                            socket.emit 'reject', 
+                                reason: 'already connected'
+                                hostname: client.context.hostname
+                                pid: client.context.pid
+
+                            socket.disconnect()
+                            local.connections()
+                            return
+
+
                         #
                         # * got previous reference of this client...
                         # * TODO: make performing a compariton of old and new 
@@ -96,22 +126,24 @@ module.exports.hub  = (config = {}) ->
                         #   =======
                         # 
 
-                        client = local.clients[previousID]
                         delete local.clients[previousID]
                         delete local.name2id[originName]
-                        local.clients[socket.id] = client
+                        local.clients[id] = client
 
                     else 
                         local.clients[socket.id] = client = 
                             title:   originName
                             context: context
                             hub:     hubName
+                            socket:  socket
 
 
                     client.connected ||= {}
                     client.connected.state    = 'connected'
                     client.connected.stateAt  = Date.now()
-                    local.name2id[originName] = socket.id
+                    client.context.hostname   = context.hostname
+                    client.context.pid        = context.pid
+                    local.name2id[originName] = id
                     socket.emit 'accept'
                     local.connections()
 
@@ -135,7 +167,7 @@ module.exports.hub  = (config = {}) ->
                         client = local.clients[previousID]
                         delete local.clients[previousID]
                         delete local.name2id[originName]
-                        local.clients[socket.id] = client
+                        local.clients[id] = client
 
                     else 
                         local.clients[socket.id] = client = 
@@ -147,14 +179,16 @@ module.exports.hub  = (config = {}) ->
                     client.connected ||= {}
                     client.connected.state    = 'connected'
                     client.connected.stateAt  = Date.now()
-                    local.name2id[originName] = socket.id
+                    client.context.hostname   = context.hostname
+                    client.context.pid        = context.pid
+                    local.name2id[originName] = id
                     socket.emit 'accept'
                     local.connections()
 
 
                 socket.on 'disconnect', -> 
 
-                    try client = local.clients[socket.id]
+                    try client = local.clients[id]
                     return unless client?
 
                     client.connected.state    = 'disconnected'

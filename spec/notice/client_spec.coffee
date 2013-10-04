@@ -2,6 +2,7 @@ should            = require 'should'
 {_client, client} = require '../../lib/notice/client'
 {_notifier}       = require '../../lib/notice/notifier'
 Connector         = require '../../lib/notice/connector'
+{hostname}        = require 'os'
 
 describe 'client', -> 
 
@@ -177,11 +178,10 @@ describe 'client', ->
                     Client = client()
                     Client.create 'client name', @opts
 
-
                     @emitted.should.eql handshake: [
                         'client name'
                         'secret'
-                        { some: 'details' }
+                        { some: 'details', hostname: hostname(), pid: process.pid }
                     ]
                     done()
 

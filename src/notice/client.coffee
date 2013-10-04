@@ -1,6 +1,7 @@
 {deferred} = require 'also'
 notifier   = require './notifier'
 Connector  = require './connector'
+{hostname} = require 'os'
 
 testable               = undefined
 module.exports._client = -> testable
@@ -42,6 +43,9 @@ module.exports.client  = (config = {}) ->
 
 
             opts.context ||= {}
+            opts.context.hostname = hostname()
+            opts.context.pid      = process.pid
+
             socket = undefined
             connect = -> 
 
@@ -51,6 +55,7 @@ module.exports.client  = (config = {}) ->
                 client.connection.state   = 'pending'
                 client.connection.stateAt = Date.now()
 
+                already = false 
 
                 socket.on 'connect', -> 
                     if client.connection.state == 'interrupted'
@@ -114,6 +119,13 @@ module.exports.client  = (config = {}) ->
                     resolve client
                     if typeof callback == 'function' then callback null, client
 
+                socket.on 'reject', (rejection) -> 
+
+                    error = new Error "notice '#{clientName}' rejected - #{rejection.reason} from #{rejection.pid}.#{rejection.hostname}"
+                    reject error
+                    if typeof callback == 'function' 
+                        callback error unless already
+                        already = true
 
 
                 socket.on 'disconnect', -> 
@@ -133,7 +145,9 @@ module.exports.client  = (config = {}) ->
                         delete local.clients[clientName]
                         error = new Error "Client.create( '#{clientName}', opts ) failed connect or bad secret"
                         reject error
-                        if typeof callback == 'function' then callback error
+                        if typeof callback == 'function' 
+                            callback error unless already
+                            already = true
                         return
                     
                     #
@@ -174,7 +188,9 @@ module.exports.client  = (config = {}) ->
                         # 
 
                         reject error
-                        if typeof callback == 'function' then callback error
+                        if typeof callback == 'function' 
+                            callback error unless already
+                            already = true
 
                     ), opts.connect.errorWait or 2000
                     return

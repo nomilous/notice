@@ -168,6 +168,29 @@ describe 'hub', ->
                     done()
 
 
+                #
+                # difficult to test...
+                #
+                # it.only 'does not allow more than on connection with same originName', (done) ->
+
+                #     count = 0
+                #     @whenEvent['connection'] = 
+                        
+                #         on: (event, listener) -> 
+                #             if event == 'handshake' 
+                #                 listener 'originName', 'rightsecret', 'CONTEXT'
+                #                 process.nextTick -> listener 'originName', 'rightsecret', 'CONTEXT'
+                #         emit: (event, args...) ->
+                #             console.log arguments
+
+                #     Object.defineProperty @whenEvent['connection'], 'id',
+                #         get: -> count++
+
+                #     Hub = hub()
+                #     Hub.create 'hub1', listen: secret: 'rightsecret'
+
+
+
                 it 'sets the connection.state to connected', (done) -> 
 
                     Date.now = -> 1
