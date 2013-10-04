@@ -89,6 +89,26 @@ module.exports.client  = (config = {}) ->
 
 
                 socket.on 'accept', -> 
+                    if client.connection.state == 'resuming'
+
+                        #
+                        # the resuming client has been accepted
+                        # -------------------------------------
+                        # 
+                        # * This does not callback with the newly connected client,
+                        #   that callback only occurs on the first connect
+                        #
+
+                        #
+                        # TODO: inform resumed onto the local middleware 
+                        #
+
+                        client.connection.state   = 'accepted'
+                        client.connection.stateAt = Date.now()
+                        client.connection.interruptions ||= count: 0
+                        client.connection.interruptions.count++
+                        return
+
                     client.connection.state   = 'accepted'
                     client.connection.stateAt = Date.now()
                     resolve client

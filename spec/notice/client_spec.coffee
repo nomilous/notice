@@ -201,6 +201,7 @@ describe 'client', ->
                         stateAt: 1
                     done()
 
+
                 it 'when connect.state is interrupted it sets the connection.state to resuming', (done) -> 
 
                     Date.now = -> 1
@@ -257,8 +258,30 @@ describe 'client', ->
                             stateAt: 1
                         done()
 
-                it 'when connect.state is resuming it sets the state to accepted'
-                it 'when connect.state is resuming it increments the interrupted count'
+                it 'when connect.state is resuming it sets the state to accepted and increments the interrupted count', (done) -> 
+
+                    Date.now = -> 1
+                    @whenEvent['connect'] = true
+                    @whenEvent['accept'] = true
+                    @whenEvent['disconnect'] = true
+
+                    Client = client()
+                    Client.create 'client name', @opts, (error) ->
+
+                    connection = _client().clients['client name'].connection
+                    #console.log connection
+                    @whenEvent['connect']()  # refire
+                    #console.log connection
+                    @whenEvent['accept']()  # refire
+                    #console.log connection
+                    connection.should.eql 
+                        state: 'accepted'
+                        stateAt: 1
+                        interruptions: 
+                            count: 1
+                    done()
+
+               
                 it 'when connect.state is resuming it does not callback with the accepted client'
                 it 'when connect.state is resuming it informs local (middleware) of resumption'
 
