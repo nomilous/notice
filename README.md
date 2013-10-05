@@ -26,31 +26,36 @@ notifier = notice.create 'origin name'
 #### send an event
 ```coffee
 
-notifier.event 'event name', { optional: 'payload' }
+notifier.event 'event name', { payload: 'data' }
 
 #
 # Send an event and assign a callback to receive the result.
 #
 
-notifier.event 'event name', {}, (err, msg) -> 
+notifier.event 'event name', { payload: 'data' }, (err, capsule) -> 
     
+    #
+    # * The `capsule` object is created from the emitted message
+    #   and sent into the middleware pipeline.
     # 
-    # * Middleware traversal is terminated upon the first
-    #   throw or uncaught exception inside the pipeline 
-    #   and the `err` is passed here.
-    # 
-    # * Otherwise `msg` is populated with the message as 
-    #   modified by middlewares registered on the notifier.
+    # * This callback receives the `capsule` if it successfully 
+    #   traversed the middleware pipeline to it's end. 
+    #  
+    #   ie. All middleware called `next()`
+    #
+    # * Middleware traversal is terminated upon the first throw 
+    #   or uncaught exception inside the pipeline and the `err` 
+    #   is passed here.
     # 
 
 ```
 #### register some middleware
 ```coffee
 
-notifier.use title: 'assembly step 1', (done, msg) -> 
+notifier.use title: 'assembly step 1', (next, msg) -> 
     
     msg.myContribution = '∑'
-    done()
+    next()
 
     #
     # why Middleware ?
@@ -60,7 +65,7 @@ notifier.use title: 'assembly step 1', (done, msg) ->
     #   creates a powerful tool.
     # 
 
-notifier.use title: 'Pie Thrower', (done, msg) -> 
+notifier.use title: 'Pie Thrower', (next, msg) -> 
     
     throw 'π'
 
@@ -265,6 +270,7 @@ The Future
 
 ### possible features / general intensions
 
+* persistability - capsule.save() and .refresh() 
 * hub can uplink (as client) onto parent hub
 * each hub's middleware has access to all hubs (including uplink) for message swtching
 * msg.expectReply (resolves, callsback only after remote response, complexities in the case of broadcasts)
