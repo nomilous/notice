@@ -53,15 +53,16 @@ describe 'handler', ->
 
         """, (done) ->
 
-            handler = @instance.disconnect id: 'SOCKET_ID_1'
-            # handler.should.be.an.instanceof Function
+            handle = @instance.disconnect id: 'SOCKET_ID_2'
+            handle.should.be.an.instanceof Function
             done()
+
 
         it 'sets the client to disconnected', (done) -> 
 
             Date.now = -> 2
-            handler = @instance.disconnect id: 'SOCKET_ID'
-            handler()
+            handle = @instance.disconnect id: 'SOCKET_ID'
+            handle()
 
             connected = @hubContext.clients.SOCKET_ID.connected
             connected.should.eql 
@@ -72,6 +73,60 @@ describe 'handler', ->
 
 
     context 'handshake', -> 
+
+        before -> @HandlerClass = handler()
+
+        beforeEach ->
+
+            @instance = @HandlerClass.create(
+
+                hubName     = 'hubname'
+                @hubContext = 
+                    clients: {}
+                    name2id: {}
+                    connections: -> # TODO: remove this
+                opts = 
+                    listen: 
+                        secret: 'secret'
+
+            )
+        
+        it 'inserts a client into the collection if the secret matches', (done) -> 
+
+            handle = @instance.handshake 
+                id: 'SOCKET_ID'
+                disconnect: ->
+                emit: ->
+
+            handle 'origin name', 'secret', 'origin context'
+            should.exist @hubContext.clients.SOCKET_ID
+            done()
+
+
+        context 'when the secret is wrong', ->
+
+            it 'emits rejects with bad secret', (done) -> 
+
+                handle = @instance.handshake 
+                    id: 'SOCKET_ID'
+                    disconnect: ->
+                    emit: (event, payload) ->
+                        event.should.equal 'reject'
+                        payload.should.eql reason: 'bad secret'
+                        done()
+
+                handle 'origin name', 'wrong secret', 'origin context'
+
+            it 'disconnects', (done) -> 
+
+                handle = @instance.handshake 
+                    id: 'SOCKET_ID'
+                    emit: -> 
+                    disconnect: done
+
+                handle 'origin name', 'wrong secret', 'origin context'
+
+
 
     context 'resume', -> 
 

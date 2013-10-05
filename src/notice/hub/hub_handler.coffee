@@ -39,7 +39,11 @@ module.exports.handler  = (config = {}) ->
 
                         id = socket.id
 
-                        return socket.disconnect() unless secret == opts.listen.secret
+                        unless secret == opts.listen.secret
+
+                            socket.emit 'reject', reason: 'bad secret'
+                            socket.disconnect()
+                            return
 
                         if previousID = hubContext.name2id[originName]
 
