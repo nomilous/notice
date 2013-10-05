@@ -205,7 +205,7 @@ The Future
 ### possible features / general intensions
 
 * persistability - capsule.save() and .refresh() 
-* hub can uplink (as client) onto a parent hub [trees...](https://github.com/nomilous/nez/tree/master/.metadata/.metadata/.metadata)
+* hub can uplink (as client) onto a parent hub [((trees...))](https://github.com/nomilous/nez/tree/master/.metadata/.metadata/.metadata)
 * each hub's middleware has access to all hubs (including uplink) for message swtching
 * msg.expectReply (resolves, callsback only after remote response, complexities in the case of broadcasts)
 * named middleware (can be removed from the pipeline)
