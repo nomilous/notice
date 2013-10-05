@@ -172,7 +172,9 @@ module.exports.AlertBus = notice
 {AlertBus} = require 'the_previous_block'
 notifier   = AlertBus.create 'origin_app_name'
 
-
+#
+# Although,, ..this is a tad pointless (being a standalone notifier)
+#
 
 notifier.alert "darn, i thought this wouldn't happen", 
     
@@ -184,6 +186,39 @@ notifier.alert "darn, i thought this wouldn't happen",
     """
 
 ```
+
+
+The Distributed Notifier
+========================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 The Distributable Notifier
