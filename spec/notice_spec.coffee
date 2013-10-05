@@ -19,12 +19,12 @@ describe 'standalone default notifier', ->
 
         send = notice.create 'origin name'
         
-        send.use (done, msg) -> 
+        send.use title: 'testing 1', (done, msg) -> 
             msg._type.should.equal 'event'
             msg.modified = true
             done()
         
-        send.use (done, msg) ->
+        send.use title: 'testing 2', (done, msg) ->
             throw 'π' if msg.thisFails
             done()
 
