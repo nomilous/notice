@@ -1,7 +1,6 @@
 should            = require 'should'
-{_client, client} = require '../../lib/notice/client'
-{_notifier}       = require '../../lib/notice/notifier'
-Connector         = require '../../lib/notice/connector'
+{_client, client, connector} = require '../../../lib/notice/client'
+{_notifier}       = require '../../../lib/notice/notifier'
 {hostname}        = require 'os'
 
 describe 'client', -> 
@@ -15,7 +14,7 @@ describe 'client', ->
                 secret: 'secret'
                 port: 3000
                 errorWait: 500
-        Connector.connect = (opts) -> on: (event, handler)-> 
+        connector.connect = (opts) -> on: (event, handler)-> 
             if event == 'accept' then handler()
 
     afterEach -> 
@@ -69,7 +68,7 @@ describe 'client', ->
 
         it 'calls connect with opts.connect', (done) -> 
 
-            Connector.connect = (opts) ->
+            connector.connect = (opts) ->
                 opts.should.eql 
                     address: 'ADDRESS'
                     port:    'PORT'
@@ -87,7 +86,7 @@ describe 'client', ->
         it 'sets client connection.state to pending', (done) -> 
 
             Date.now = -> 1
-            Connector.connect = (opts) -> on: -> 
+            connector.connect = (opts) -> on: -> 
             Client = client()
             Client.create 'client name', @opts, ->
 
@@ -103,7 +102,7 @@ describe 'client', ->
             beforeEach -> 
                 @whenEvent = {}
                 @emitted   = {}
-                Connector.connect = (opts) => 
+                connector.connect = (opts) => 
                     on: (event, handler) => 
                         if @whenEvent[event]?
                             handler @whenEvent[event]

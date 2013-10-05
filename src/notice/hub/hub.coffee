@@ -1,6 +1,6 @@
 {deferred} = require 'also'
 Listener   = require './listener'
-notifier   = require './notifier'
+notifier   = require '../notifier'
 
 testable            = undefined
 module.exports._hub = -> testable

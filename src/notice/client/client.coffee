@@ -1,5 +1,5 @@
 {deferred} = require 'also'
-notifier   = require './notifier'
+notifier   = require '../notifier'
 Connector  = require './connector'
 {hostname} = require 'os'
 

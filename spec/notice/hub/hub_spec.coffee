@@ -1,14 +1,14 @@
 should      = require 'should'
 {parallel}  = require 'also'
-{hub,_hub}  = require '../../lib/notice/hub'
-{_notifier} = require '../../lib/notice/notifier'
-Listener    = require '../../lib/notice/listener'
+{hub, _hub, listener} = require '../../../lib/notice/hub'
+{_notifier} = require '../../../lib/notice/notifier'
+
 
 describe 'hub', -> 
 
     beforeEach -> 
         @now = Date.now
-        Listener.listen = (opts, callback) -> 
+        listener.listen = (opts, callback) -> 
             callback()
             on: ->
 
@@ -82,7 +82,7 @@ describe 'hub', ->
 
         it 'calls listen with opts.listen', (done) -> 
 
-            Listener.listen = (opts, callback) -> 
+            listener.listen = (opts, callback) -> 
                 opts.should.eql 
                     loglevel: 'LOGLEVEL'
                     address: 'ADDRESS'
@@ -103,7 +103,7 @@ describe 'hub', ->
 
         it 'attaches reference to the listening address onto the hub', (done) -> 
 
-            Listener.listen = (opts, callback) -> 
+            listener.listen = (opts, callback) -> 
                 callback null, 'ADDRESS'
                 on: ->
 
@@ -119,7 +119,7 @@ describe 'hub', ->
 
             beforeEach -> 
                 @whenEvent = {}
-                Listener.listen = (opts, callback) => 
+                listener.listen = (opts, callback) => 
                     callback null, 'ADDRESS'
                     on: (event, handler) => 
                         if @whenEvent[event]? then handler @whenEvent[event]
@@ -259,7 +259,7 @@ describe 'hub', ->
 
             beforeEach -> 
                 @whenEvent = {}
-                Listener.listen = (opts, callback) => 
+                listener.listen = (opts, callback) => 
                     callback null, 'ADDRESS'
                     on: (event, handler) => 
                         console.log event

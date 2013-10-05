@@ -2,7 +2,7 @@ io = require 'socket.io'  # <---------------- weird name, cannot inject
 
 # require('nez').realize 'Listen', (Listen, test, context, should, http, https, fs) -> 
 
-Listener = require '../../lib/notice/listener'
+Listener = require '../../../lib/notice/hub/listener'
 should   = require 'should'
 http     = require 'http'
 https    = require 'https'
