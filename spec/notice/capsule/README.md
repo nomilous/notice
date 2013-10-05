@@ -24,6 +24,13 @@ notifier.use
             hidden:    true
             watched: (change) -> 
 
+                #
+                # this will now be called whenever a middleware further down the 
+                # pipeline updates capsule.needsSave
+                #
+
+                return unless change.to # == true
+
                 if change.capsule._type.match /ticket|escalation|resolution/
 
                     #
