@@ -42,6 +42,8 @@ module.exports.handler  = (config = {}) ->
                                     process.stderr.write "notice undefined message type '#{type}'"
                                     return
 
+                                hubNotifier[type] payload
+
 
 
                 disconnect: (socket) -> 

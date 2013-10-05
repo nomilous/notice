@@ -89,9 +89,9 @@ describe 'handler', ->
 
                 hubName     = 'hubname'
                 hubNotifier = {}
-                hubContext  = 
-                    clients: {}
-                    connections: -> # TODO: remove this 
+                # hubContext  = 
+                #     clients: {}
+                #     connections: -> # TODO: remove this 
 
             )
 
@@ -105,6 +105,32 @@ describe 'handler', ->
             ASSIGNED.rollBack   .should.be.an.instanceof Function
             done()
 
+
+        it 'assigns handers that proxy inbound messages into the middleware pipeline', (done) ->
+
+            ConfigurationChannel = handler
+
+                messages: 
+
+                    createUser:     {}
+                    installService: {}
+
+            instance = ConfigurationChannel.create(
+
+                hubName     = 'hubname'
+                hubNotifier = 
+                    createUser: -> done()
+
+                # hubContext  = 
+                #     clients: {}
+                #     connections: -> # TODO: remove this 
+
+            ) 
+
+            ASSIGNED = {}
+            socket   = on: (event, handler) -> ASSIGNED[event] = handler
+            instance.assign socket
+            ASSIGNED.createUser()
 
 
     context 'handshake', -> 
