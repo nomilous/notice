@@ -75,7 +75,7 @@ module.exports.hub  = (config = {}) ->
                 if typeof callback == 'function' then callback null, hub
 
 
-            handle = local.Handler.create hubName, local, opts
+            handle = local.Handler.create hubName, hub, local, opts
             io.on 'connection', (socket) -> 
 
                 socket.on 'handshake',  handle.handshake   socket

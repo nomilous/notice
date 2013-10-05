@@ -6,7 +6,7 @@ module.exports.handler  = (config = {}) ->
 
     Testable = Handler =
 
-        create: (hubName, hubContext, opts) -> 
+        create: (hubName, hubNotifier, hubContext, opts) -> 
 
             testable = handler = 
 

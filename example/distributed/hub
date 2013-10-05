@@ -15,6 +15,8 @@ notice.listen 'hub name', {
 
 } , (err, hub) -> 
 
+    console.log HUB: hub
+
     return process.stdout.write err.toString() if err?
 
     hub.use 

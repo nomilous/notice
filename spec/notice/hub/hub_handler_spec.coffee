@@ -35,8 +35,9 @@ describe 'handler', ->
 
             @instance = @HandlerClass.create(
                 
-                hubName     = 'hubname'
-                @hubContext = 
+                hubName      = 'hubname'
+                @hubNotifier = {}
+                @hubContext  = 
                     clients: 
                         SOCKET_ID: 
                             connected:
@@ -80,8 +81,9 @@ describe 'handler', ->
 
             @instance = @HandlerClass.create(
 
-                hubName     = 'hubname'
-                @hubContext = 
+                hubName      = 'hubname'
+                @hubNotifier = {}
+                @hubContext  = 
                     clients: {}
                     name2id: {}
                     connections: -> # TODO: remove this
@@ -171,7 +173,7 @@ describe 'handler', ->
 
         context 'when the originName was connected before', (done) ->
 
-            it 'keeps the old context refreshes from new', (done) -> 
+            it 'keeps the old context but refreshes from new', (done) -> 
 
                 @hubContext.clients.OLD_SOCKET_ID = 
                     connected: {}
@@ -215,8 +217,9 @@ describe 'handler', ->
 
             @instance = @HandlerClass.create(
 
-                hubName     = 'hubname'
-                @hubContext = 
+                hubName      = 'hubname'
+                @hubNotifier = {}
+                @hubContext  = 
                     clients: {}
                     name2id: {}
                     connections: -> # TODO: remove this
