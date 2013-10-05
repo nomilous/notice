@@ -32,7 +32,7 @@ sendUpdate = ->
     #
 
 
-bus1.use (done, msg) -> 
+bus1.use title: 'component two', (done, msg) -> 
 
     #
     # register middleware on bus1

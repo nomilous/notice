@@ -47,7 +47,7 @@ notifier.event 'event name', {}, (err, msg) ->
 #### register some middleware
 ```coffee
 
-notifier.use (done, msg) -> 
+notifier.use title: 'assembly step 1', (done, msg) -> 
     
     msg.myContribution = '∑'
     done()
@@ -59,10 +59,6 @@ notifier.use (done, msg) ->
     # * The combination of subscribe-ability and assembly-line
     #   creates a powerful tool.
     # 
-
-#
-# Register middleware with Title
-#
 
 notifier.use title: 'Pie Thrower', (done, msg) -> 
     
@@ -215,16 +211,7 @@ Notice.listen 'Hub Name',
         # assign middleware to handle arriving messages
         #
 
-        hub.use (msg, next) -> 
-
-            console.log 'RECEIVE:', msg.context.origin, msg
-
-            #
-            # reply across the response pipeline
-            #
-
-            msg.context.responder.info 'reply title', {pay: 'load'}
-            next()
+        ...
 
 
 ```
@@ -246,7 +233,7 @@ Notice.connect 'Client Name',
         port:       10101
         transport: 'https'
     
-    (error, notice) -> 
+    (error, client) -> 
 
         throw error if error?
 
@@ -260,23 +247,14 @@ Notice.connect 'Client Name',
         #   messages
         #
 
-        notice.use (msg, next) ->
-
-            switch msg.context.direction
-
-                when 'out' then console.log 'SEND:   ', msg.context.title, msg
-
-                when 'in'  then console.log 'RECEIVE:', msg.context.origin, msg
-
-
-            next()
+        ...
 
 
         #
         # send an event message
         #
 
-        notice.event 'connect', hello: "i'm online"
+        ...
 
 
 ```

@@ -1,5 +1,6 @@
 {pipeline, deferred} = require 'also'
-{message}  = require './capsule/message' 
+{message}  = require './capsule/message'
+{undefinedArg} = require './errors'
 
 testable                 = undefined
 module.exports._notifier = -> testable
@@ -86,40 +87,30 @@ module.exports.notifier  = (config = {}) ->
 
             local.notifiers[originCode] = notifier = use: (opts, fn) -> 
 
-                if typeof opts == 'function'
+                #
+                # TODO: remove middleware
+                #
 
-                    #
-                    # anonymous middleware is registered with sequence number
-                    #
+                throw undefinedArg( 
+                    'opts.title and fn', 'use(opts, middlewareFn)'
+                ) unless ( 
+                    opts? and opts.title? and 
+                    fn? and typeof fn == 'function'
+                )
 
-                    list[++regSequence] = opts
+                #
+                # this will overwrite existing middleware by the same title
+                #
 
-                else
+                list[opts.title] = fn
 
-                    #
-                    # titled middleware
-                    #
+                #
+                # although the sequence was not used as key in the list
+                # it should still be incremented to inform the presence
+                # of middleware
+                #
 
-                    throw new Error(
-                        "Notifier.use(opts, fn) requires opts.title and fn"
-                    ) unless ( 
-                        opts? and opts.title? and 
-                        fn? and typeof fn == 'function'
-                    )
-
-                    #
-                    # this will overwrite existing middleware by the same title
-                    #
-
-                    list[opts.title] = fn
-
-                    #
-                    # although the sequence was not used as key in the list
-                    # it should still be incremented to inform the presence
-                    # of middleware
-                    #
-
-                    regSequence++
+                regSequence++
 
 
             #

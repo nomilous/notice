@@ -36,7 +36,7 @@ describe 'hub', ->
             Hub = hub()
             Hub.create undefined, {}, (error) -> 
 
-                error.should.match /required arg hubName/
+                error.should.match /requires arg hubName/
                 done()
 
 

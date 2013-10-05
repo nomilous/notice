@@ -217,25 +217,6 @@ describe 'notifier', ->
             done()
 
 
-        it 'registers anonymous middleware with a sequence number', (done) -> 
-
-            eight = notifier().create 'Assembly Line 8'
-            eight.use (done, msg) -> 
-
-                ### a middleware function ###
-                done()
-
-            eight.use (done, msg) -> 'SECOND MIDDLEWARE'
-
-            m1 = _notifier().middleware['Assembly Line 8'][1]
-            m1.should.be.an.instanceof Function
-            m1.should.match /a middleware function/
-
-            m2 = _notifier().middleware['Assembly Line 8'][2]
-            m2().should.equal 'SECOND MIDDLEWARE'
-            done()
-
-
         it 'throws on titled middleware registration without title and fn', (done) -> 
 
             seven = notifier().create 'Assembly Line 7'
@@ -243,7 +224,7 @@ describe 'notifier', ->
                 titel: 'troubled speller'
                 (done, msg) ->
             catch error
-                error.should.match /requires opts.title and fn/
+                error.should.match /requires arg opts.title and fn/
                 done()
 
 
@@ -271,16 +252,18 @@ describe 'notifier', ->
 
             {sequence, deferred} = require 'also'
             five = notifier().create 'Assembly Line 5'
-            five.use (done, msg) -> 
-                msg.array = [1]
-                done()
+            five.use 
+                title: 'one'
+                (done, msg) -> 
+                    msg.array = [1]
+                    done()
             five.use 
                 title: 'REPLACE ME'
                 (done, msg) -> 
                     msg.array.push 2
                     done()
             five.use 
-                title: 'x'
+                title: 'three'
                 (done, msg) -> 
                     msg.array.push 3
                     done()
@@ -305,7 +288,7 @@ describe 'notifier', ->
                             done()
 
             four = Notifier.create 'Assembly Line 4'
-            four.use (done, msg) -> 
+            four.use title: 'step1', (done, msg) -> 
                 msg.step1 = 'done'
                 done()
             four.use title: 'step2', (done, msg) ->
@@ -332,7 +315,7 @@ describe 'notifier', ->
 
             Notifier = notifier messages: info: {}
             broken = Notifier.create 'broken pipeline'
-            broken.use (done, msg) -> 
+            broken.use title: 'fails', (done, msg) -> 
                 throw new Error 'ka-pow!'
                 done()
 
@@ -347,7 +330,7 @@ describe 'notifier', ->
             Notifier = notifier()
             instance = Notifier.create 'originCode'
 
-            instance.use (done, msg) -> 
+            instance.use title: 'title', (done, msg) -> 
                 msg.ok = 'good'
                 done()
 

@@ -6,7 +6,7 @@ require './lib/app_component_two'
 {bus1, bus2} = require './lib/message_bus'
 
 bus1.event 'start', interval: 1000
-bus2.use (done, msg) -> 
+bus2.use title: 'middleware title', (done, msg) -> 
 
     #
     # register middleware on message bus 2

@@ -13,9 +13,13 @@ module.exports.reservedMessage = (type) ->
     return error = new Error "notice: '#{type}' is a reserved message type" 
 
 
-module.exports.undefinedArg = (arg) -> 
+module.exports.undefinedArg = (arg, functionSignature) -> 
+
+    if functionSignature?
+
+        return error = new Error "notice: #{functionSignature} requires arg #{arg}"
     
-    return error = new Error "notice: required arg #{arg}"
+    return error = new Error "notice: requires arg #{arg}"
 
 
 module.exports.alreadyDefined = (thingType, thingName) -> 

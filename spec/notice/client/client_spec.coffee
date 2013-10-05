@@ -43,7 +43,7 @@ describe 'client', ->
             Client = client()
             Client.create undefined, @opts, (error) -> 
 
-                error.should.match /required arg originName/
+                error.should.match /requires arg originName/
                 done()
 
         it 'requires unique client name', (done) -> 
