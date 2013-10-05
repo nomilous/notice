@@ -3,6 +3,7 @@ listener   = require './listener'
 {handler}   = require './hub_handler'
 {notifier}  = require '../notifier'
 
+
 testable            = undefined
 module.exports._hub = -> testable
 module.exports.hub  = (config = {}) ->
@@ -16,7 +17,9 @@ module.exports.hub  = (config = {}) ->
         clients: {}
         name2id: {} # same client on multiple hubs? later...
         
-        
+        #
+        # TODO: hub has uplink configured from superscope (factory config)
+        #
 
         connections: -> 
 
@@ -44,7 +47,8 @@ module.exports.hub  = (config = {}) ->
             # create the hubside middleware pipeline (hub) and start listener
             #
 
-            try local.hubs[hubName] = hub = local.Notifier.create hubName
+            try 
+                local.hubs[hubName] = hub = local.Notifier.create hubName
             catch error
                 reject error
                 if typeof callback == 'function' then callback error
