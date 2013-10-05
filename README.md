@@ -265,18 +265,12 @@ The Future
 
 ### possible features / general intensions
 
-* named middleware (can be added and removed from the pipeline)
+* hub can uplink (as client) onto parent hub
+* each hub's middleware has access to all hubs (including uplink) for message swtching
+* msg.expectReply (resolves, callsback only after remote response, complexities in the case of broadcasts)
+* named middleware (can be removed from the pipeline)
 * flood protection
 * time in pipeline / backlog (introspection)
-* error / exception detecion in pipeline (carried out on the promise)
-* as message receiver
-* tasks and escalations (with persistor plugin / state machine)
-* hubside pipeline promise
-* acknowledgability / take (state)
-* updatability
-* resolvability            (state)
-* expire / escalate        (state)
 * mobile APIs (systems are more commonly composed **of people** than software)
-* requirejs / amdefine to enable browserside notifier client
 
 
