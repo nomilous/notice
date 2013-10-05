@@ -143,6 +143,17 @@ describe 'handler', ->
                 handle 'origin name', 'wrong secret', 'origin context'
 
 
+            it 'does not add the client to the collection', (done) -> 
+
+                handle = @instance.handshake 
+                    id: 'SOCKET_ID'
+                    emit: -> 
+                    disconnect: ->
+
+                handle 'origin name', 'wrong secret', 'origin context'
+                @hubContext.clients.should.eql {}
+                done()
+
 
     context 'resume', -> 
 
