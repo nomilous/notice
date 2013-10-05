@@ -66,7 +66,13 @@ module.exports.notifier  = (config = {}) ->
                             #   )
                             #
 
-                            try list[title] ( -> resolve msg ), msg
+                            try list[title] (-> resolve msg), msg   #, hubs
+                                                                    #
+                                                                    # TODO: consider enabling access to 
+                                                                    #       all hubs in this process for 
+                                                                    #       the middleware handlers to
+                                                                    #       switch / route capsules.
+                                                                    # 
                             catch error
                                 reject error
                 )

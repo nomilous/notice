@@ -25,6 +25,12 @@ module.exports.capsule  = (config = {}) ->
                     set: (value) => 
                         previous = local[key]
                         local[key] = value
+
+                        #
+                        # TODO: Consider enabling access to all hubs in the process
+                        #       to the change watcher callback. (switching / routing)
+                        #
+
                         opts.watched 
                             property: key
                             from:     previous
