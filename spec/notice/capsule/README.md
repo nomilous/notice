@@ -27,7 +27,7 @@ notifier.use
                 if change.capsule._type.match /ticket|escalation|resolution/
 
                     #
-                    # post to elasticsearch
+                    # post the capsule to elasticsearch
                     #
 
                     #
@@ -45,7 +45,11 @@ notifier.use
 
 #
 # elsewhere in the application
-#
+# ----------------------------
+# 
+# * suggests something is looping through unresolved tickets
+#   and emitting them down this middleware pipeline.
+# 
 
 notifier.use
 
@@ -55,6 +59,10 @@ notifier.use
         if capsule._type == 'ticket'
 
             return pollVariousSourcesForTicketUpdateInfo (err, res) -> 
+
+                #
+                # apply possible changes to capsule
+                #
 
                 capsule.needsSave = true
                 next()
