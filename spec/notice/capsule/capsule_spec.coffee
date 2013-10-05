@@ -1,4 +1,4 @@
-{capsule, _capsule} = require '../../lib/notice/capsule'
+{capsule, _capsule} = require '../../../lib/notice/capsule/capsule'
 should    = require 'should'
 
 describe 'Capsule', -> 

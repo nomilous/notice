@@ -1,7 +1,7 @@
 #require('nez').realize 'Message', (Message, test, context, should) -> 
     
-{_message, message} = require '../../lib/notice/message'
-{_capsule} = require '../../lib/notice/capsule'
+{_message, message} = require '../../../lib/notice/capsule/message'
+{_capsule} = require '../../../lib/notice/capsule/capsule'
 should  = require 'should'
 
 describe 'Message', -> 

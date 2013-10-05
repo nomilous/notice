@@ -1,5 +1,5 @@
 {pipeline, deferred} = require 'also'
-{message}  = require './message' 
+{message}  = require './capsule/message' 
 
 testable                 = undefined
 module.exports._notifier = -> testable
