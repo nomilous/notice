@@ -28,6 +28,11 @@ module.exports.handler  = (config = {}) ->
 
                     (originName, secret, context) -> 
 
+                        unless secret == opts.listen.secret
+
+                            return handler.reject socket, reason: 'bad secret' 
+
+
                         #
                         # remote client is making it's first connection
                         # ---------------------------------------------
@@ -37,13 +42,11 @@ module.exports.handler  = (config = {}) ->
                         #   in which case there may already be local reference to it.
                         # 
 
+                        
+
+
+
                         id = socket.id
-
-                        unless secret == opts.listen.secret
-
-                            socket.emit 'reject', reason: 'bad secret'
-                            socket.disconnect()
-                            return
 
                         if previousID = hubContext.name2id[originName]
 
@@ -96,12 +99,17 @@ module.exports.handler  = (config = {}) ->
                             socket:  socket
 
                         handler.accept socket, client, originName, context
-                        
+
 
                 resume: (socket) -> 
 
                     (originName, secret, context) -> 
 
+                        unless secret == opts.listen.secret
+
+                            return handler.reject socket, reason: 'bad secret' 
+
+                            
                         #
                         # remote client is resuming an interrupted connection
                         # ---------------------------------------------------
@@ -110,13 +118,16 @@ module.exports.handler  = (config = {}) ->
                         # * this server may have been restarted / upgraded
                         # 
 
-                        id = socket.id
+                        
 
                         #
                         # identical to on connect (for now)
                         #
 
-                        return socket.disconnect() unless secret == opts.listen.secret
+
+
+                        id = socket.id
+
                         if previousID = hubContext.name2id[originName]
                             client = hubContext.clients[previousID]
                             delete hubContext.clients[previousID]
@@ -146,6 +157,13 @@ module.exports.handler  = (config = {}) ->
                     hubContext.name2id[originName] = id
                     socket.emit 'accept'
                     hubContext.connections()
+
+
+                reject: (socket, details) -> 
+
+                    socket.emit 'reject', details
+                    socket.disconnect()
+                    return
 
 
     return api = 

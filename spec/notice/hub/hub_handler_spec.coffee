@@ -192,7 +192,6 @@ describe 'handler', ->
         it 'calls accept on right secret', (done) -> 
 
             @instance.accept = -> done()
-
             handle = @instance.resume 
                 id: 'SOCKET_ID'
                 emit: -> 
@@ -201,5 +200,14 @@ describe 'handler', ->
             handle 'origin name', 'secret', 'origin context'
 
 
+        it 'calls reject on wrong secret', (done) -> 
+
+            @instance.reject = -> done()
+            handle = @instance.resume 
+                id: 'SOCKET_ID'
+                emit: -> 
+                disconnect: ->
+
+            handle 'origin name', 'wrong secret', 'origin context'
 
 
