@@ -9,6 +9,13 @@ module.exports.capsule  = (config = {}) ->
         # ./notifier - pushes it down the middleware pipeline
         #
 
+        constructor: -> 
+
+            @_hidden = {}
+            Object.defineProperty @, '_hidden', 
+                enumerable: false
+
+
         set: (opts) -> 
 
             local = {}
@@ -40,6 +47,8 @@ module.exports.capsule  = (config = {}) ->
             @[key] = opts[key]
 
             if opts.hidden? 
+                if opts.hidden then @_hidden[key] = 1
+                else delete @_hidden[key]
                 Object.defineProperty @, key, 
                     enumerable: not opts.hidden
 

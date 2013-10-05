@@ -186,8 +186,10 @@ notifier.alert "darn, i thought this wouldn't happen",
     """
 
 ```
+#### see also
 
 __LINK_TO_STANDALONE_EXAMPLE__
+__LINK_TO_MORE_ABOUT_CAPSULE__
 
 
 The Distributed Notifier

@@ -88,6 +88,42 @@ describe 'Capsule', ->
                 instance.should.eql property: 'value'
                 done()
 
+            it 'has array to store list hidden properties in _hidden', (done) -> 
+
+                Capsule = capsule()
+                instance = new Capsule
+                instance._hidden.should.eql {}
+                done()
+
+            it 'adds to the list when a property is set hidden', (done) -> 
+
+                Capsule = capsule()
+                instance = new Capsule
+                instance.set
+                    property: 'value'
+                    hidden: true
+
+                instance._hidden.should.eql property: 1
+                done()
+
+            it 'removes from the list if a property is unhidden', (done) -> 
+
+                Capsule = capsule()
+                instance = new Capsule
+                instance.set
+                    property: 'value'
+                    hidden: true
+
+                instance._hidden.should.eql property: 1
+                instance.should.eql {}
+                instance.set
+                    property: 'new value'
+                    hidden: false
+
+                instance._hidden.should.eql {}
+                instance.should.eql property: 'new value'
+                done()
+
         it 'can do hidden and protected', (done) -> 
 
             Capsule = capsule()

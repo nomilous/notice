@@ -30,11 +30,11 @@ runSpec = (fileOrFolder, after) ->
     test_runner.on 'exit', -> after()
 
 changed = (file) ->
-    match = file.match /(src|spec)\/(.+)(_spec)?.coffee/
-    spec_file = 'spec/' + match[2] + '_spec.coffee'
-    spec_file = file if match[1] == 'spec'
-    console.log 'Running: ', spec_file
-    runSpec spec_file, ->
+    if match = file.match /(src|spec)\/(.+)(_spec)?.coffee/
+        spec_file = 'spec/' + match[2] + '_spec.coffee'
+        spec_file = file if match[1] == 'spec'
+        console.log 'Running: ', spec_file
+        runSpec spec_file, ->
 
 watchSrcDir = ->
     console.log 'Watching ./src'
