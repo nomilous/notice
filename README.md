@@ -89,8 +89,8 @@ notifier.event 'event name',
 
 .then(
 
-    (finalMessage) -> # after the middleware
-    (error) -> console.log error == 'π'
+    (capsule) -> # after the middleware
+    (error)   -> console.log error == 'π'
 
 )
 
