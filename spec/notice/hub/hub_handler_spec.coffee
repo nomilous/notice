@@ -72,6 +72,40 @@ describe 'handler', ->
             done()
 
 
+    context 'assign', -> 
+
+        it 'assigns handlers for each message type onto the connecting socket', (done) -> 
+
+            DeploymentChannel = handler
+
+                messages: 
+
+                    getVersion:  {}
+                    gotVersion:  {}
+                    rollForward: {}
+                    rollBack:    {}
+
+            instance = DeploymentChannel.create(
+
+                hubName     = 'hubname'
+                hubNotifier = {}
+                hubContext  = 
+                    clients: {}
+                    connections: -> # TODO: remove this 
+
+            )
+
+            ASSIGNED = {}
+            socket   = on: (event, handler) -> ASSIGNED[event] = handler
+            instance.assign socket
+
+            ASSIGNED.getVersion .should.be.an.instanceof Function
+            ASSIGNED.gotVersion .should.be.an.instanceof Function
+            ASSIGNED.rollForward.should.be.an.instanceof Function
+            ASSIGNED.rollBack   .should.be.an.instanceof Function
+            done()
+
+
 
     context 'handshake', -> 
 

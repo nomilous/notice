@@ -57,6 +57,15 @@ module.exports.client  = (config = {}) ->
 
                 already = false 
 
+                # 
+                # TEMPORARY
+                #
+
+                setTimeout (->
+                    socket.emit 'event', event: 'eventname', pay: 'load'
+                    socket.emit 'undefined', pay: 'load'
+                ), 1000
+
                 socket.on 'connect', -> 
                     if client.connection.state == 'interrupted'
 

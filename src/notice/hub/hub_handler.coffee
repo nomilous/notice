@@ -10,6 +10,40 @@ module.exports.handler  = (config = {}) ->
 
             testable = handler = 
 
+                assign: (socket) -> 
+
+                    #
+                    # subscribe handlers for all configured messages
+                    # ----------------------------------------------
+                    # 
+
+                    for type of config.messages
+
+                            #
+                            # * control messages are local only
+                            #  
+
+                        continue if type == 'control'
+                        do (type) -> 
+
+                            #
+                            # * all other messages are proxied into the local 
+                            #   middleware pipeline (hub) 
+                            #
+
+                            socket.on type, (payload) -> 
+
+                                unless typeof hubNotifier[type] == 'function'
+
+                                    # 
+                                    # * client and hub should use a common messages config
+                                    # 
+
+                                    process.stderr.write "notice undefined message type '#{type}'"
+                                    return
+
+
+
                 disconnect: (socket) -> 
 
 
@@ -154,6 +188,7 @@ module.exports.handler  = (config = {}) ->
                         hub:     hubName
                         socket:  socket
 
+                    handler.assign socket
                     handler.accept startOrResume, socket, client, originName, context
 
 
@@ -198,6 +233,7 @@ module.exports.handler  = (config = {}) ->
 
                     delete hubContext.clients[previousID]
                     delete hubContext.name2id[originName]
+                    handler.assign newSocket
                     handler.accept startOrResume, newSocket, client, originName, newContext
 
 
