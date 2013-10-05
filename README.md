@@ -108,16 +108,21 @@ module.exports.MessageBus = notice
     
     messages:
 
+        #
+        # creates a messageType called alert
+        # notifier.alert( .. ).then( ... )
+        #
+
         alert: 
-            beforeCreate: (done, msg) -> 
-                msg.sourceInfo = 
+            beforeCreate: (done, alert) -> 
+                alert.sourceInfo = 
                     hostname: hostname()
                     uptime: uptime()
                     loadavg: loadavg()
                     totalmem: totalmem()
                     freemem: freemem()
                 done()
-            afterCreate:  (done, msg) -> 
+            afterCreate:  (done, alert) -> 
 
                 #
                 # * This fires before the message is pushed onto the
@@ -128,11 +133,18 @@ module.exports.MessageBus = notice
                 #   already assigned before emitting into runtime.
                 # 
 
-        classify: {}
-        resolve:  {}
-        escalate: {}
-        debrief:  {}
-        reclassify: {}
+                alert.set
+                    state: 'new'
+                    watched: (propertyName, change, alert) -> 
+
+                        # 
+                        # * this callback fires if any middleware
+                        #   update the state property
+                        #
+                        #   eg. alert.state = 'prioritized'
+                        #     
+                        #   change == from: 'new', to: 'prioritized'
+                        # 
 
 ```
 #### use it
