@@ -53,8 +53,50 @@ module.exports.client  = (config = {}) ->
             client.connection       ||= {}
             client.connection.state   = 'pending'
             client.connection.stateAt = Date.now()
-
             already = false 
+
+
+            #
+            # #DUPLICATE1
+            # 
+            # subscribe handlers for all configured messages
+            # ----------------------------------------------
+            # 
+            # * these are for inbound messages
+            # 
+
+            for type of config.messages
+
+                    #
+                    # * control messages are local only
+                    #  
+
+                continue if type == 'control'
+                do (type) -> 
+
+                    #
+                    # * all other messages are proxied into the local 
+                    #   middleware pipeline (hub) 
+                    #
+
+                    socket.on type, (payload) -> 
+
+                        unless typeof client[type] == 'function'
+
+                            # 
+                            # * client and hub should use a common messages config
+                            # 
+
+                            process.stderr.write "notice undefined message type '#{type}'"
+                            return
+
+                        #
+                        # * proxy the inbound message onto the middleware pipeline
+                        # TODO: typeValue, protected, hidden, watched
+                        # 
+
+                        client[type] payload
+
 
             socket.on 'connect', -> 
                 if client.connection.state == 'interrupted'
@@ -105,13 +147,18 @@ module.exports.client  = (config = {}) ->
 
                     #
                     # TODO: inform resumed onto the local middleware 
-                    #
+                    # TODO: hub context
+                    # 
 
                     client.connection.state   = 'accepted'
                     client.connection.stateAt = Date.now()
                     client.connection.interruptions ||= count: 0
                     client.connection.interruptions.count++
                     return 
+
+                #
+                # TODO: hub context
+                # 
 
                 client.connection.state   = 'accepted'
                 client.connection.stateAt = Date.now()

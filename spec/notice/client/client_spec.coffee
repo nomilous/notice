@@ -108,8 +108,43 @@ describe 'client', ->
 
         context 'assign', -> 
 
+            it 'assigns handlers for each message type onto the connecting socket', (done) -> 
+
+                Client = client 
+                    messages: 
+                        messageType: {}
+
+                ASSIGNED = {}
+                socket = on: (event, handler) -> ASSIGNED[event] = handler
+                connector.connect = -> socket
+                Client.create 'client name', @opts, ->
+
+                ASSIGNED.messageType.should.be.an.instanceof Function
+                done()
+
+            it 'assigns handers that proxy inbound messages into the middleware pipeline', (done) ->
+
+                Client = client 
+                    messages: 
+                        messageType: {}
+
+                ASSIGNED = {}
+                socket = 
+                    on: (event, handler) -> ASSIGNED[event] = handler
+                    emit: ->
+                connector.connect = -> socket
+                Client.create 'client name', @opts, (error, client) -> 
+
+                    client.use
+                        title: 'test middleware'
+                        (next, msg) -> 
+                            msg.property.should.equal 'value'
+                            done()
 
 
+                ASSIGNED['connect']()
+                ASSIGNED['accept']()
+                ASSIGNED['messageType'] property: 'value'
 
 
         context 'on socket event', -> 

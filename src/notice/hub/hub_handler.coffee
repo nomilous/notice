@@ -13,8 +13,12 @@ module.exports.handler  = (config = {}) ->
                 assign: (socket) -> 
 
                     #
+                    # #DUPLICATE1
+                    # 
                     # subscribe handlers for all configured messages
                     # ----------------------------------------------
+                    # 
+                    # * these are for inbound messages
                     # 
 
                     for type of config.messages
@@ -41,6 +45,11 @@ module.exports.handler  = (config = {}) ->
 
                                     process.stderr.write "notice undefined message type '#{type}'"
                                     return
+
+                                #
+                                # * proxy the inbound message onto the middleware pipeline
+                                # TODO: typeValue, protected, hidden, watched
+                                # 
 
                                 hubNotifier[type] payload
 
