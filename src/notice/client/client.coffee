@@ -6,7 +6,7 @@ Connector  = require './connector'
     terminal
     reservedMessage
     undefinedArg
-    existing
+    alreadyDefined
     connectRejected
     disconnected
 } = require '../errors'
@@ -29,24 +29,18 @@ module.exports.client  = (config = {}) ->
 
         create: deferred ({reject, resolve, notify}, originName, opts = {}, callback) -> 
             
-            unless typeof originName is 'string'
-                return terminal undefinedArg('originName'), reject, callback
-            
-            if local.clients[originName]?
-                return terminal existing('originName', originName), reject, callback
-
-            unless opts.connect? and typeof opts.connect.port is 'number'
-                return terminal undefinedArg('opts.connect.port'), reject, callback
-
-
             try 
+
+                throw undefinedArg 'originName' unless typeof originName is 'string'
+                throw alreadyDefined 'originName', originName if local.clients[originName]?
+                throw undefinedArg 'opts.connect.port' unless opts.connect? and typeof opts.connect.port is 'number'
+                
                 client = local.Notifier.create originName
                 local.clients[originName] = client
 
             catch error
-                reject error
-                if typeof callback == 'function' then callback error
-                return
+
+                return terminal error, reject, callback
 
 
             opts.context ||= {}

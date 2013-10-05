@@ -18,7 +18,7 @@ module.exports.undefinedArg = (arg) ->
     return error = new Error "notice: required arg #{arg}"
 
 
-module.exports.existing = (thingType, thingName) -> 
+module.exports.alreadyDefined = (thingType, thingName) -> 
     
     return error = new Error "notice: #{thingType} '#{thingName}' is already defined"
 

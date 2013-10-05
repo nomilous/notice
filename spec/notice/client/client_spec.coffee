@@ -325,7 +325,8 @@ describe 'client', ->
                     Client = client()
                     Client.create 'client name', @opts, (error) ->
 
-                        console.log error
+                        error.should.match /notice: origin 'client name' rejected/
+                        done()
 
 
             context 'disconnect', -> 

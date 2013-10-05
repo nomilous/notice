@@ -2,7 +2,12 @@
 listener   = require './listener'
 {handler}   = require './hub_handler'
 {notifier}  = require '../notifier'
-{terminal, reservedMessage, undefinedArg, existing} = require '../errors'
+{
+    terminal
+    reservedMessage
+    undefinedArg
+    alreadyDefined
+} = require '../errors'
 
 
 testable            = undefined
@@ -39,24 +44,19 @@ module.exports.hub  = (config = {}) ->
 
         create: deferred ({reject, resolve, notify}, hubName, opts = {}, callback) ->
 
-            unless typeof hubName is 'string'
-                return terminal undefinedArg('hubName'), reject, callback
-
-            if local.hubs[hubName]?
-                return terminal existing('hubName', hubName), reject, callback
-
-            #
-            # create the hubside middleware pipeline (hub) and start listener
-            #
-
             try 
+
+                throw undefinedArg 'hubName' unless typeof hubName is 'string'
+                throw alreadyDefined 'hubName', hubName if local.hubs[hubName]?
+
                 hub = local.Notifier.create hubName
                 local.hubs[hubName] = hub
-                
+
             catch error
-                reject error
-                if typeof callback == 'function' then callback error
-                return
+
+                return terminal error, reject, callback
+
+
 
             io = listener.listen opts.listen, (error, address) -> 
 
