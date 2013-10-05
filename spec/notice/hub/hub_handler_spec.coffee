@@ -169,6 +169,45 @@ describe 'handler', ->
                 done()
 
 
+        context 'when the originName was connected before', (done) ->
+
+            it 'keeps the old context but updates hostname and pid', (done) -> 
+
+                #
+                # TODO: change to keep onld but refresh from new
+                #
+
+                @hubContext.clients.OLD_SOCKET_ID = 
+                    connected: {}
+                    context:   
+                        accumulated: 'STUFF from BEFORE'
+
+                @hubContext.name2id['origin name'] = 'OLD_SOCKET_ID'
+
+                handle = @instance.handshake 
+                    id: 'SOCKET_ID'
+                    emit: -> 
+                    disconnect: ->
+
+                handle 'origin name', 'secret', context = 
+                    hostname: 'new.host.name'
+                    pid:      'new pid'
+
+                
+                should.not.exist @hubContext.clients.OLD_SOCKET_ID
+                updatedContext = @hubContext.clients.SOCKET_ID.context
+                
+                updatedContext.should.eql
+                    accumulated: 'STUFF from BEFORE'
+                    hostname: 'new.host.name'
+                    pid: 'new pid'
+
+                @hubContext.name2id['origin name'].should.not.equal 'OLD_SOCKET_ID'
+                @hubContext.name2id['origin name'].should.equal 'SOCKET_ID'
+
+                done()
+
+
     context 'resume', -> 
 
         before -> @HandlerClass = handler()

@@ -42,63 +42,11 @@ module.exports.handler  = (config = {}) ->
                         #   in which case there may already be local reference to it.
                         # 
 
-                        
-
-
-
-                        id = socket.id
-
                         if previousID = hubContext.name2id[originName]
 
-                            client = hubContext.clients[previousID]
-
-                            if client.connected.state == 'connected'
-
-                                #
-                                # first client with this originName is still 
-                                # connected... do not allow new connection.
-                                #
-                                # TODO: make this configurable
-                                #       - keep new and kill old
-                                #       - confirm old before rejecting new
-                                #             -- by probe
-                                #             -- by last activity age
-                                #             BAD if rejecting new when old is broken
-                                #       - ??? keep both
-                                # 
-
-                                socket.emit 'reject', 
-                                    reason: 'already connected'
-                                    hostname: client.context.hostname
-                                    pid: client.context.pid
-
-                                socket.disconnect()
-                                hubContext.connections()
-                                return
-
-
-                            #
-                            # * got previous reference of this client...
-                            # * TODO: make performing a compariton of old and new 
-                            #         context a posibility, probably down the pipeline
-                            # 
-                            # * FOR NOW the old context is kept and new is ignored
-                            #   =======
-                            # 
-
-                            delete hubContext.clients[previousID]
-                            delete hubContext.name2id[originName]
-                            handler.accept socket, client, originName, context
-                            return
-
-
-                        client = 
-                            title:   originName
-                            context: context
-                            hub:     hubName
-                            socket:  socket
-
-                        handler.accept socket, client, originName, context
+                            return handler.handleExisting socket, previousID, originName, context
+                            
+                        return handler.handleNew socket, originName, context
 
 
                 resume: (socket) -> 
@@ -109,7 +57,7 @@ module.exports.handler  = (config = {}) ->
 
                             return handler.reject socket, reason: 'bad secret' 
 
-                            
+
                         #
                         # remote client is resuming an interrupted connection
                         # ---------------------------------------------------
@@ -118,32 +66,17 @@ module.exports.handler  = (config = {}) ->
                         # * this server may have been restarted / upgraded
                         # 
 
-                        
-
                         #
                         # identical to on connect (for now)
                         #
 
-
-
-                        id = socket.id
-
                         if previousID = hubContext.name2id[originName]
-                            client = hubContext.clients[previousID]
-                            delete hubContext.clients[previousID]
-                            delete hubContext.name2id[originName]
-                            hubContext.clients[id] = client
 
-                        else 
-                            hubContext.clients[socket.id] = client = 
-                                title:   originName
-                                context: context
-                                hub:     hubName
+                            return handler.handleExisting socket, previousID, originName, context 
 
+                        return handler.handleNew socket, originName, context
 
-                        handler.accept socket, client, originName, context
-
-
+                
 
                 accept: (socket, client, originName, context) ->
 
@@ -164,6 +97,61 @@ module.exports.handler  = (config = {}) ->
                     socket.emit 'reject', details
                     socket.disconnect()
                     return
+
+
+                handleNew: (socket, originName, context) ->
+
+                    client = 
+                        title:   originName
+                        context: context
+                        hub:     hubName
+                        socket:  socket
+
+                    handler.accept socket, client, originName, context
+
+
+                handleExisting: (newSocket, previousID, originName, newContext) -> 
+
+                    client = hubContext.clients[previousID]
+
+                    if client.connected.state == 'connected'
+
+                        #
+                        # first client with this originName is still 
+                        # connected... do not allow new connection.
+                        #
+                        # TODO: make this configurable
+                        #       - keep new and kill old
+                        #       - confirm old before rejecting new
+                        #             -- by probe
+                        #             -- by last activity age
+                        #             BAD if rejecting new when old is broken
+                        #       - ??? keep both
+                        # 
+
+                        newSocket.emit 'reject',
+
+                            reason: 'already connected'
+                            hostname: client.context.hostname
+                            pid: client.context.pid
+
+                        newSocket.disconnect()
+                        hubContext.connections()
+                        return
+
+
+                    #
+                    # * got previous reference of this client...
+                    # * TODO: make performing a compariton of old and new 
+                    #         context a posibility, probably down the pipeline
+                    # 
+                    # * FOR NOW the old context is kept and new is ignored
+                    #   =======
+                    # 
+
+                    delete hubContext.clients[previousID]
+                    delete hubContext.name2id[originName]
+                    handler.accept newSocket, client, originName, newContext
 
 
     return api = 
