@@ -76,19 +76,25 @@ module.exports.handler  = (config = {}) ->
 
                         return handler.handleNew socket, originName, context
 
-                
 
-                accept: (socket, client, originName, context) ->
 
-                    id = socket.id
-                    hubContext.clients[id] = client
-                    client.connected ||= {}
-                    client.connected.state    = 'connected'
-                    client.connected.stateAt  = Date.now()
-                    client.context.hostname   = context.hostname
-                    client.context.pid        = context.pid
+                accept: (newSocket, existingClient, originName, newContext) ->
+
+                    id = newSocket.id
+                    hubContext.clients[id] = existingClient
+                    existingClient.connected ||= {}
+                    existingClient.connected.state    = 'connected'
+                    existingClient.connected.stateAt  = Date.now()
+
+                    #
+                    # TODO: context as capsule with watched properties
+                    #
+
+                    for key of newContext
+                        existingClient.context[key] = newContext[key]
+                    
                     hubContext.name2id[originName] = id
-                    socket.emit 'accept'
+                    newSocket.emit 'accept'
                     hubContext.connections()
 
 
