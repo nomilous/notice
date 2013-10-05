@@ -118,6 +118,19 @@ describe 'handler', ->
                 stateAt: 2
             done()
 
+        it 'creates entry in name2id index', (done) -> 
+
+            handle = @instance.handshake 
+                id: 'SOCKET_ID'
+                emit: -> 
+                disconnect: ->
+
+            handle 'origin name', 'secret', 'origin context'
+
+            @hubContext.name2id.should.eql 
+                'origin name': 'SOCKET_ID'
+            done()
+
 
         context 'when the secret is wrong', ->
 
