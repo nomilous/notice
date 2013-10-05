@@ -85,24 +85,18 @@ module.exports.handler  = (config = {}) ->
 
                             delete hubContext.clients[previousID]
                             delete hubContext.name2id[originName]
-                            hubContext.clients[id] = client
-
-                        else 
-                            hubContext.clients[socket.id] = client = 
-                                title:   originName
-                                context: context
-                                hub:     hubName
-                                socket:  socket
+                            handler.accept socket, client, originName, context
+                            return
 
 
-                        client.connected ||= {}
-                        client.connected.state    = 'connected'
-                        client.connected.stateAt  = Date.now()
-                        client.context.hostname   = context.hostname
-                        client.context.pid        = context.pid
-                        hubContext.name2id[originName] = id
-                        socket.emit 'accept'
-                        hubContext.connections()
+                        client = 
+                            title:   originName
+                            context: context
+                            hub:     hubName
+                            socket:  socket
+
+                        handler.accept socket, client, originName, context
+                        
 
                 resume: (socket) -> 
 
@@ -136,14 +130,22 @@ module.exports.handler  = (config = {}) ->
                                 hub:     hubName
 
 
-                        client.connected ||= {}
-                        client.connected.state    = 'connected'
-                        client.connected.stateAt  = Date.now()
-                        client.context.hostname   = context.hostname
-                        client.context.pid        = context.pid
-                        hubContext.name2id[originName] = id
-                        socket.emit 'accept'
-                        hubContext.connections()
+                        handler.accept socket, client, originName, context
+
+
+
+                accept: (socket, client, originName, context) ->
+
+                    id = socket.id
+                    hubContext.clients[id] = client
+                    client.connected ||= {}
+                    client.connected.state    = 'connected'
+                    client.connected.stateAt  = Date.now()
+                    client.context.hostname   = context.hostname
+                    client.context.pid        = context.pid
+                    hubContext.name2id[originName] = id
+                    socket.emit 'accept'
+                    hubContext.connections()
 
 
     return api = 

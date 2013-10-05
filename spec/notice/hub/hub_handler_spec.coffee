@@ -118,6 +118,7 @@ describe 'handler', ->
                 stateAt: 2
             done()
 
+
         it 'creates entry in name2id index', (done) -> 
 
             handle = @instance.handshake 
@@ -169,5 +170,36 @@ describe 'handler', ->
 
 
     context 'resume', -> 
+
+        before -> @HandlerClass = handler()
+
+        beforeEach ->
+
+            @instance = @HandlerClass.create(
+
+                hubName     = 'hubname'
+                @hubContext = 
+                    clients: {}
+                    name2id: {}
+                    connections: -> # TODO: remove this
+                opts = 
+                    listen: 
+                        secret: 'secret'
+
+            )
+
+
+        it 'calls accept on right secret', (done) -> 
+
+            @instance.accept = -> done()
+
+            handle = @instance.resume 
+                id: 'SOCKET_ID'
+                emit: -> 
+                disconnect: ->
+
+            handle 'origin name', 'secret', 'origin context'
+
+
 
 
