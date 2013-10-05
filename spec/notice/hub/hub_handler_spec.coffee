@@ -36,7 +36,7 @@ describe 'handler', ->
             @instance = @HandlerClass.create(
                 
                 hubName      = 'hubname'
-                @hubNotifier = {}
+                @hubNotifier = control: -> 
                 @hubContext  = 
                     clients: 
                         SOCKET_ID: 
@@ -82,7 +82,7 @@ describe 'handler', ->
             @instance = @HandlerClass.create(
 
                 hubName      = 'hubname'
-                @hubNotifier = {}
+                @hubNotifier = control: -> 
                 @hubContext  = 
                     clients: {}
                     name2id: {}
@@ -198,6 +198,7 @@ describe 'handler', ->
                 updatedContext = @hubContext.clients.SOCKET_ID.context
                 
                 updatedContext.should.eql
+                    origin: 'origin name'
                     accumulated: 'STUFF from BEFORE'
                     hostname: 'new.host.name'
                     pid: 'new pid'
@@ -218,7 +219,7 @@ describe 'handler', ->
             @instance = @HandlerClass.create(
 
                 hubName      = 'hubname'
-                @hubNotifier = {}
+                @hubNotifier = control: -> 
                 @hubContext  = 
                     clients: {}
                     name2id: {}

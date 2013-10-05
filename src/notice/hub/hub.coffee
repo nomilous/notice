@@ -20,11 +20,11 @@ module.exports.hub  = (config = {}) ->
 
         connections: -> 
 
-            console.log '---------'
-            for id of local.clients
-                client = local.clients[id]
-                console.log client.title, client.context, client.connected
-            console.log '---------'
+            # console.log '---------'
+            # for id of local.clients
+            #     client = local.clients[id]
+            #     console.log client.title, client.context, client.connected
+            # console.log '---------'
 
         create: deferred ({reject, resolve, notify}, hubName, opts = {}, callback) ->
 

@@ -12,6 +12,13 @@ module.exports.handler  = (config = {}) ->
 
                 disconnect: (socket) -> 
 
+
+                    #
+                    # TODO: client requests disconnect, emit 'stop'
+                    # * client disconnects without intending, emit 'suspend'
+                    # TODO: suspended / stopped client is reaped, emit: 'terminate'
+                    #
+
                     ->
 
                         id = socket.id
@@ -20,7 +27,20 @@ module.exports.handler  = (config = {}) ->
 
                         client.connected.state    = 'disconnected'
                         client.connected.stateAt  = Date.now()
-                        hubContext.connections()  
+
+                        #
+                        # emit control 'suspend'
+                        # ----------------------
+                        #
+                        # * does not wait for result
+                        # * TODO: ensure this does not go to the client
+                        # 
+
+                        hubNotifier.control 'suspend', client: client.context
+
+                        hubContext.connections()
+
+
 
 
 
@@ -42,11 +62,16 @@ module.exports.handler  = (config = {}) ->
                         #   in which case there may already be local reference to it.
                         # 
 
+                        #
+                        # TODO: consider letting the middleware if the client should
+                        #       be accepted
+                        #
+
                         if previousID = hubContext.name2id[originName]
 
-                            return handler.handleExisting socket, previousID, originName, context
+                            return handler.handleExisting 'start', socket, previousID, originName, context
                             
-                        return handler.handleNew socket, originName, context
+                        return handler.handleNew 'start', socket, originName, context
 
 
                 resume: (socket) -> 
@@ -72,19 +97,19 @@ module.exports.handler  = (config = {}) ->
 
                         if previousID = hubContext.name2id[originName]
 
-                            return handler.handleExisting socket, previousID, originName, context 
+                            return handler.handleExisting 'resume', socket, previousID, originName, context 
 
-                        return handler.handleNew socket, originName, context
+                        return handler.handleNew 'resume', socket, originName, context
 
 
 
-                accept: (newSocket, existingClient, originName, newContext) ->
+                accept: (startOrResume, newSocket, client, originName, newContext) ->
 
                     id = newSocket.id
-                    hubContext.clients[id] = existingClient
-                    existingClient.connected ||= {}
-                    existingClient.connected.state    = 'connected'
-                    existingClient.connected.stateAt  = Date.now()
+                    hubContext.clients[id] = client
+                    client.connected ||= {}
+                    client.connected.state    = 'connected'
+                    client.connected.stateAt  = Date.now()
 
                     #
                     # TODO: context as capsule with watched properties
@@ -94,7 +119,20 @@ module.exports.handler  = (config = {}) ->
                     # 
 
                     for key of newContext
-                        existingClient.context[key] = newContext[key]
+                        client.context[key] = newContext[key]
+
+                    client.context.origin = originName
+
+                    #
+                    # emit control 'start' or 'resume'
+                    # --------------------------------
+                    #
+                    # * does not wait for result
+                    # * TODO: ensure this does not go to the client
+                    # 
+
+                    hubNotifier.control startOrResume, 
+                        client: client.context
                     
                     hubContext.name2id[originName] = id
                     newSocket.emit 'accept'
@@ -108,7 +146,7 @@ module.exports.handler  = (config = {}) ->
                     return
 
 
-                handleNew: (socket, originName, context) ->
+                handleNew: (startOrResume, socket, originName, context) ->
 
                     client = 
                         title:   originName
@@ -116,10 +154,10 @@ module.exports.handler  = (config = {}) ->
                         hub:     hubName
                         socket:  socket
 
-                    handler.accept socket, client, originName, context
+                    handler.accept startOrResume, socket, client, originName, context
 
 
-                handleExisting: (newSocket, previousID, originName, newContext) -> 
+                handleExisting: (startOrResume, newSocket, previousID, originName, newContext) -> 
 
                     client = hubContext.clients[previousID]
 
@@ -160,7 +198,7 @@ module.exports.handler  = (config = {}) ->
 
                     delete hubContext.clients[previousID]
                     delete hubContext.name2id[originName]
-                    handler.accept newSocket, client, originName, newContext
+                    handler.accept startOrResume, newSocket, client, originName, newContext
 
 
     return api = 

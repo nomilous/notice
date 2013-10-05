@@ -15,13 +15,23 @@ notice.listen 'hub name', {
 
 } , (err, hub) -> 
 
-    console.log HUB: hub
-
     return process.stdout.write err.toString() if err?
 
     hub.use 
         title: 'first middleware'
         (done, msg) -> 
 
-            console.log msg
+            if msg._type == 'control'
+
+                #
+                # WARNING, interface design remains in progress!
+                #          precise content of these control messages 
+                #          may change without warning
+                #
+                
+                console.log "[#{msg.control}]", 
+                    msg.client.origin
+                    hostname: msg.client.hostname
+                    pid: msg.client.pid
+            
             done()
