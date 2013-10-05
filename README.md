@@ -143,7 +143,11 @@ module.exports.MessageBus = notice
                         #
                         #   eg. alert.state = 'prioritized'
                         #     
-                        #   change == from: 'new', to: 'prioritized'
+                        #   change ==
+                        #      property: 'state' 
+                        #      from:     'new'
+                        #      to:       'prioritized'
+                        #      msg:      # as it is NOW! (including subsequent changes)
                         # 
 
 ```

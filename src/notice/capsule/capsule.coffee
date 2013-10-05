@@ -20,6 +20,7 @@ module.exports.capsule  = (config = {}) ->
                     process.stderr.write "cannot watch protected property:#{key}"
 
                 else Object.defineProperty @, key, 
+                    enumerable: true
                     get: -> local[key]
                     set: (value) => 
                         previous = local[key]
