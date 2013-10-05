@@ -122,8 +122,8 @@ describe 'Capsule', ->
                 instance.anotherProperty = 2
 
                 CHANGES.should.eql [
-                    { property: 'thing', from: undefined, to: 'one', msg: { thing: 'two', anotherProperty: 2 } }
-                    { property: 'thing', from: 'one',     to: 'two', msg: { thing: 'two', anotherProperty: 2 } }
+                    { property: 'thing', from: undefined, to: 'one', capsule: { thing: 'two', anotherProperty: 2 } }
+                    { property: 'thing', from: 'one',     to: 'two', capsule: { thing: 'two', anotherProperty: 2 } }
                 ]
                 done()
 

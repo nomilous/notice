@@ -35,7 +35,7 @@ module.exports.capsule  = (config = {}) ->
                             property: key
                             from:     previous
                             to:       value
-                            msg:      @
+                            capsule:  @
 
             @[key] = opts[key]
 

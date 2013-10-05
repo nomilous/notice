@@ -100,10 +100,8 @@ notifier.event 'event name',
 ### create a notifier that does more than just 'event()'
 
 ```coffee
-os         = require 'os'
-notice     = require 'notice'
-
-{hostname, uptime, loadavg, totalmem, freemem} = os
+notice = require 'notice'
+{hostname, loadavg} = require 'os'
 
 module.exports.MessageBus = notice
     
@@ -115,26 +113,31 @@ module.exports.MessageBus = notice
         #
 
         alert: 
-            beforeCreate: (done, alert) -> 
-                alert.sourceInfo = 
+            beforeCreate: (done, capsule) -> 
+
+                # 
+                # * protected / hidden _type property
+                # 
+                #   capsule._type is 'alert'
+                # 
+
+                capsule.sourceInfo = 
                     hostname: hostname()
-                    uptime: uptime()
-                    loadavg: loadavg()
-                    totalmem: totalmem()
-                    freemem: freemem()
+                    loadavg:  loadavg()
                 done()
-            afterCreate:  (done, alert) -> 
+
+            afterCreate:  (done, capsule) -> 
 
                 #
-                # * This fires before the message is pushed onto the
+                # * This fires before the capsule is pushed onto the
                 #   middleware pipeline.
                 # 
-                # * It creates an opportunity to pre-store the message
+                # * It creates an opportunity to pre-store the capsule
                 #   and therefore have the persistence id/ref/uuid
                 #   already assigned before emitting into runtime.
                 # 
 
-                alert.set
+                capsule.set
                     state: 'new'
                     watched: (change) -> 
 
@@ -142,13 +145,13 @@ module.exports.MessageBus = notice
                         # * this callback fires if any middleware
                         #   update the state property
                         #
-                        #   eg. alert.state = 'prioritized'
+                        #   eg. capsule.state = 'prioritized'
                         #     
                         #   change ==
                         #      property: 'state' 
                         #      from:     'new'
                         #      to:       'prioritized'
-                        #      msg:      # as it is NOW! (including subsequent changes)
+                        #      capsule:   # as it is NOW! (including subsequent changes)
                         # 
 
 ```
