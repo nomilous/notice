@@ -135,7 +135,7 @@ module.exports.MessageBus = notice
 
                 alert.set
                     state: 'new'
-                    watched: (propertyName, change, alert) -> 
+                    watched: (change) -> 
 
                         # 
                         # * this callback fires if any middleware

@@ -24,7 +24,11 @@ module.exports.capsule  = (config = {}) ->
                     set: (value) => 
                         previous = local[key]
                         local[key] = value
-                        opts.watched key, from: previous, to: value, @
+                        opts.watched 
+                            property: key
+                            from:     previous
+                            to:       value
+                            msg:      @
 
             @[key] = opts[key]
 

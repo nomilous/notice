@@ -109,27 +109,22 @@ describe 'Capsule', ->
 
             it 'sets a property to watched', (done) -> 
 
-                CHANGES = {}
+                CHANGES = []
                 Capsule = capsule()
                 instance = new Capsule
                 instance.set
                     thing: 'one'
-                    watched: (property, change, obj) -> 
-                        CHANGES[property] ||= []
-                        CHANGES[property].push change
+                    watched: (change) -> 
+                        CHANGES.push change
                     
-
+                instance.anotherProperty = 1
                 instance.thing = 'two'
-                instance.thing = 'three'
-                instance.thing = 'four'
+                instance.anotherProperty = 2
 
-                CHANGES.should.eql 
-                    thing: [
-                        { from: undefined, to: 'one'   }
-                        { from: 'one'    , to: 'two'   }
-                        { from: 'two'    , to: 'three' }
-                        { from: 'three'  , to: 'four'  }
-                    ]
+                CHANGES.should.eql [
+                    { property: 'thing', from: undefined, to: 'one', msg: { anotherProperty: 2 } }
+                    { property: 'thing', from: 'one',     to: 'two', msg: { anotherProperty: 2 } }
+                ]
                 done()
 
             it 'warns on attempt to watch protected property', (done) -> 
