@@ -8,13 +8,9 @@ should      = require 'should'
 describe 'hub', -> 
 
     beforeEach -> 
-        @now = Date.now
         listener.listen = (opts, callback) -> 
             callback()
             on: ->
-
-    afterEach -> 
-        Date.now = @now
 
 
     context 'factory', ->
