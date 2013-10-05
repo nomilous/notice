@@ -97,13 +97,18 @@ notifier.event 'event name',
 ```
 
 
-### create a notifier that does more than just 'event()'
+### create a `Notifier` that does more than just 'event()'
 
 ```coffee
 notice = require 'notice'
 {hostname, loadavg} = require 'os'
 
-module.exports.MessageBus = notice
+#
+# IMPORTANT: This creates a Notifier Definition (""class"")
+#            not an instance
+#
+
+module.exports.AlertBus = notice
     
     messages:
 
@@ -161,12 +166,14 @@ module.exports.MessageBus = notice
                         # 
 
 ```
-#### use it
+#### create and use an instance of the `Notifier`
 ```coffee
 
-{MessageBus} = require 'the_previous_block'
+{AlertBus} = require 'the_previous_block'
+notifier   = AlertBus.create 'origin_app_name'
 
-notifier = MessageBus.create 'origin_app_name'
+
+
 notifier.alert "darn, i thought this wouldn't happen", 
     
     says: 'the developer'
