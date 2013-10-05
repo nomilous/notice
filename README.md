@@ -187,11 +187,16 @@ notifier.alert "darn, i thought this wouldn't happen",
 
 ```
 
+__LINK_TO_STANDALONE_EXAMPLE__
+
 
 The Distributed Notifier
 ========================
 
 ...
+
+
+__LINK_TO_DISTRIBUTED_EXAMPLE__
 
 
 The Future
