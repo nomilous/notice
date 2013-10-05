@@ -41,6 +41,13 @@ describe 'notifier', ->
             instance.event.should.be.an.instanceof Function
             done()
 
+        it 'creates builtin control message emitter', (done) -> 
+
+            Notifier = notifier messages: userDefinedMessage: {}
+            instance = Notifier.create 'originCode'
+            instance.userDefinedMessage.should.be.an.instanceof Function
+            instance.control.should.be.an.instanceof Function
+            done()
 
 
     context 'create()', -> 

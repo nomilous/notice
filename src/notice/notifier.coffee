@@ -11,6 +11,12 @@ module.exports.notifier  = (config = {}) ->
 
     config.messages = event: {} unless config.messages?
 
+    #
+    # for builtin control messages
+    #
+
+    config.messages.control = {}
+
     testable = local = 
 
         messageTypes: {}
