@@ -136,22 +136,28 @@ module.exports.MessageBus = notice
                 #   and therefore have the persistence id/ref/uuid
                 #   already assigned before emitting into runtime.
                 # 
+                # * Watched properties can be created on the capsule
+                #   using capsule.set(). 
+                #
+                #   This can be done by middleware and 
+                #   
 
                 capsule.set
                     state: 'new'
                     watched: (change) -> 
 
                         # 
-                        # * this callback fires if any middleware
-                        #   update the state property
+                        # * this callback fires each time a subsequent
+                        #   middleware updates capsule.state.
                         #
-                        #   eg. capsule.state = 'prioritized'
-                        #     
-                        #   change ==
-                        #      property: 'state' 
-                        #      from:     'new'
-                        #      to:       'prioritized'
-                        #      capsule:   # as it is NOW! (including subsequent changes)
+                        #   ie.  capsule.state = 'prioritized'
+                        # 
+                        #        change is then {
+                        #           property: 'state' 
+                        #           from:     'new'
+                        #           to:       'prioritized'
+                        #           capsule:  _The_Latest_Capsule_
+                        #        }
                         # 
 
 ```
