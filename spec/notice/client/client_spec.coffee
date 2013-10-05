@@ -38,12 +38,12 @@ describe 'client', ->
 
     context 'create()', -> 
 
-        it 'requires clientName', (done) -> 
+        it 'requires originName', (done) -> 
 
             Client = client()
             Client.create undefined, @opts, (error) -> 
 
-                error.should.match /requires clientName as string/
+                error.should.match /required arg originName/
                 done()
 
         it 'requires unique client name', (done) -> 
@@ -51,6 +51,7 @@ describe 'client', ->
             Client = client()
             Client.create 'client name', @opts, ->
             Client.create 'client name', @opts, (error) ->
+                #console.log error
                 error.should.match /is already defined/
                 done()
 
@@ -316,6 +317,16 @@ describe 'client', ->
                 it 'when connect.state is resuming it informs local (middleware) of resumption'
 
 
+            context 'reject', -> 
+
+                it 'callsback and rejectes with error', (done) -> 
+
+                    @whenEvent['reject'] = true
+                    Client = client()
+                    Client.create 'client name', @opts, (error) ->
+
+                        console.log error
+
 
             context 'disconnect', -> 
 
@@ -330,7 +341,7 @@ describe 'client', ->
                     Client = client()
                     Client.create 'client name', @opts, (error) ->
 
-                        error.should.match /failed connect or bad secret/
+                        error.should.match /origin 'client name' disconnected/
                         _client().clients.should.eql {}  # destroyed - no clients
                         done()
 

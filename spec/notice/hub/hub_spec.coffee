@@ -36,7 +36,7 @@ describe 'hub', ->
             Hub = hub()
             Hub.create undefined, {}, (error) -> 
 
-                error.should.match /requires hubName as string/
+                error.should.match /required arg hubName/
                 done()
 
 
@@ -81,6 +81,7 @@ describe 'hub', ->
             ])
             .then (->), (error) -> 
 
+                #console.log error
                 error.should.match /is already defined/
                 done()
 

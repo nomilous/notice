@@ -2,6 +2,7 @@
 listener   = require './listener'
 {handler}   = require './hub_handler'
 {notifier}  = require '../notifier'
+{terminal, reservedMessage, undefinedArg, existing} = require '../errors'
 
 
 testable            = undefined
@@ -10,9 +11,9 @@ module.exports.hub  = (config = {}) ->
 
     for type of config.messages
 
-        throw new Error(
-            "notice: '#{type}' is a reserved message type." 
-        ) if type.match /connect|handshake|accept|reject|disconnect|resume|error/
+        throw reservedMessage type if type.match(
+            /connect|handshake|accept|reject|disconnect|resume|error/
+        )
 
 
     testable = local = 
@@ -39,23 +40,19 @@ module.exports.hub  = (config = {}) ->
         create: deferred ({reject, resolve, notify}, hubName, opts = {}, callback) ->
 
             unless typeof hubName is 'string'
-                error = new Error 'Hub.create( hubName, opts ) requires hubName as string'
-                reject error
-                if typeof callback == 'function' then callback error
-                return
+                return terminal undefinedArg('hubName'), reject, callback
 
             if local.hubs[hubName]?
-                error = new Error "Hub.create( '#{hubName}', opts ) is already defined"
-                reject error
-                if typeof callback == 'function' then callback error
-                return
+                return terminal existing('hubName', hubName), reject, callback
 
             #
             # create the hubside middleware pipeline (hub) and start listener
             #
 
             try 
-                local.hubs[hubName] = hub = local.Notifier.create hubName
+                hub = local.Notifier.create hubName
+                local.hubs[hubName] = hub
+                
             catch error
                 reject error
                 if typeof callback == 'function' then callback error
