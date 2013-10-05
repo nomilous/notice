@@ -88,7 +88,10 @@ module.exports.handler  = (config = {}) ->
 
                     #
                     # TODO: context as capsule with watched properties
-                    #
+                    # TODO: store context (persistance plugin) to enable
+                    #       client attach to different server and resume
+                    #       on previous accumulated state
+                    # 
 
                     for key of newContext
                         existingClient.context[key] = newContext[key]
