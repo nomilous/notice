@@ -2,11 +2,11 @@ testable            = undefined
 module.exports._handler = -> testable
 module.exports.handler  = (config = {}) ->
 
-    testable = local = 
+    testable = local =
 
         create: (hubName, opts) -> 
 
-            handshake: (local, socket) -> 
+            handshake: (hub, socket) -> 
 
                 (originName, secret, context) -> 
 
@@ -23,9 +23,9 @@ module.exports.handler  = (config = {}) ->
 
                     return socket.disconnect() unless secret == opts.listen.secret
 
-                    if previousID = local.name2id[originName]
+                    if previousID = hub.name2id[originName]
 
-                        client = local.clients[previousID]
+                        client = hub.clients[previousID]
 
                         if client.connected.state == 'connected'
 
@@ -48,7 +48,7 @@ module.exports.handler  = (config = {}) ->
                                 pid: client.context.pid
 
                             socket.disconnect()
-                            local.connections()
+                            hub.connections()
                             return
 
 
@@ -61,12 +61,12 @@ module.exports.handler  = (config = {}) ->
                         #   =======
                         # 
 
-                        delete local.clients[previousID]
-                        delete local.name2id[originName]
-                        local.clients[id] = client
+                        delete hub.clients[previousID]
+                        delete hub.name2id[originName]
+                        hub.clients[id] = client
 
                     else 
-                        local.clients[socket.id] = client = 
+                        hub.clients[socket.id] = client = 
                             title:   originName
                             context: context
                             hub:     hubName
@@ -78,11 +78,11 @@ module.exports.handler  = (config = {}) ->
                     client.connected.stateAt  = Date.now()
                     client.context.hostname   = context.hostname
                     client.context.pid        = context.pid
-                    local.name2id[originName] = id
+                    hub.name2id[originName] = id
                     socket.emit 'accept'
-                    local.connections()
+                    hub.connections()
 
-            resume: (local, socket) -> 
+            resume: (hub, socket) -> 
 
                 (originName, secret, context) -> 
 
@@ -101,14 +101,14 @@ module.exports.handler  = (config = {}) ->
                     #
 
                     return socket.disconnect() unless secret == opts.listen.secret
-                    if previousID = local.name2id[originName]
-                        client = local.clients[previousID]
-                        delete local.clients[previousID]
-                        delete local.name2id[originName]
-                        local.clients[id] = client
+                    if previousID = hub.name2id[originName]
+                        client = hub.clients[previousID]
+                        delete hub.clients[previousID]
+                        delete hub.name2id[originName]
+                        hub.clients[id] = client
 
                     else 
-                        local.clients[socket.id] = client = 
+                        hub.clients[socket.id] = client = 
                             title:   originName
                             context: context
                             hub:     hubName
@@ -119,12 +119,12 @@ module.exports.handler  = (config = {}) ->
                     client.connected.stateAt  = Date.now()
                     client.context.hostname   = context.hostname
                     client.context.pid        = context.pid
-                    local.name2id[originName] = id
+                    hub.name2id[originName] = id
                     socket.emit 'accept'
-                    local.connections()
+                    hub.connections()
 
 
-            disconnect: (local, socket) -> 
+            disconnect: (hub, socket) -> 
 
                 ->
 
@@ -134,7 +134,7 @@ module.exports.handler  = (config = {}) ->
 
                     client.connected.state    = 'disconnected'
                     client.connected.stateAt  = Date.now()
-                    local.connections()  
+                    hub.connections()  
 
 
 
