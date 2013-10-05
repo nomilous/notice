@@ -103,6 +103,22 @@ describe 'handler', ->
             done()
 
 
+        it 'updates client connection state', (done) -> 
+
+            Date.now = -> 2
+            handle = @instance.handshake 
+                id: 'SOCKET_ID'
+                disconnect: ->
+                emit: ->
+
+            handle 'origin name', 'secret', 'origin context'
+            connected = @hubContext.clients.SOCKET_ID.connected
+            connected.should.eql 
+                state: 'connected'
+                stateAt: 2
+            done()
+
+
         context 'when the secret is wrong', ->
 
             it 'emits rejects with bad secret', (done) -> 
