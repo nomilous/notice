@@ -50,16 +50,16 @@ notifier.use
 notifier.use
 
     title: 'update ticket'
-    (done, capsule) -> 
+    (next, capsule) -> 
 
         if capsule._type == 'ticket'
 
             return pollVariousSourcesForTicketUpdateInfo (err, res) -> 
 
                 capsule.needsSave = true
-                done()
+                next()
 
-        done()
+        next()
 ```
 
 ...
