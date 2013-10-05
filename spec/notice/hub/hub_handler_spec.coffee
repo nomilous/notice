@@ -29,12 +29,13 @@ describe 'handler', ->
 
     context 'disconnect', -> 
 
+        before -> @HandlerClass = handler()
+
         beforeEach ->
 
-            HandlerClass = handler()
-            @instance    = HandlerClass.create(
+            @instance = @HandlerClass.create(
                 
-                hubName    = 'hubname'
+                hubName     = 'hubname'
                 @hubContext = 
                     clients: 
                         SOCKET_ID: 
@@ -44,6 +45,17 @@ describe 'handler', ->
                     connections: -> # TODO: remove this
 
             )
+
+        it """ 
+                returns a function (the handler) 
+                that is enclosed in a scope containing 
+                the socket to be handled 
+
+        """, (done) ->
+
+            handler = @instance.disconnect id: 'SOCKET_ID_1'
+            # handler.should.be.an.instanceof Function
+            done()
 
         it 'sets the client to disconnected', (done) -> 
 

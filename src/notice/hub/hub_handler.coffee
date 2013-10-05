@@ -10,6 +10,20 @@ module.exports.handler  = (config = {}) ->
 
             testable = handler = 
 
+                disconnect: (socket) -> 
+
+                    ->
+
+                        id = socket.id
+                        try client = hubContext.clients[id]
+                        return unless client?
+
+                        client.connected.state    = 'disconnected'
+                        client.connected.stateAt  = Date.now()
+                        hubContext.connections()  
+
+
+
                 handshake: (socket) -> 
 
                     (originName, secret, context) -> 
@@ -126,20 +140,6 @@ module.exports.handler  = (config = {}) ->
                         hubContext.name2id[originName] = id
                         socket.emit 'accept'
                         hubContext.connections()
-
-
-                disconnect: (socket) -> 
-
-                    ->
-
-                        id = socket.id
-                        try client = hubContext.clients[id]
-                        return unless client?
-
-                        client.connected.state    = 'disconnected'
-                        client.connected.stateAt  = Date.now()
-                        hubContext.connections()  
-
 
 
     return api = 
