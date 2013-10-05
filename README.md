@@ -76,7 +76,7 @@ notifier.use title: 'Pie Thrower', (done, msg) ->
     # 
 
 ```
-#### use the promise instead
+#### send with a promise waiting instead of a callback
 ```coffee
 
 notifier.event 'event name',
@@ -84,11 +84,11 @@ notifier.event 'event name',
     sending:   'this message'
     with:      'a promise waiting'
     insteadOf: 'a node style callback waiting'
-    forThe:    'finalMessage'
+    for:       'the finalMessage'
 
 .then(
 
-    (finalMessage) -> 
+    (finalMessage) -> # after the middleware
     (error) -> console.log error == 'π'
 
 )

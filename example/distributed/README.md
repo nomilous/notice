@@ -5,11 +5,7 @@ Requires coffee-script `npm install -g coffee-script`
 #### terminal 1
 
 ```bash
-
 ./hub
-
-   info  - socket.io started
-listening @ https://0.0.0.0:3000
 
 
 ```
@@ -17,7 +13,7 @@ listening @ https://0.0.0.0:3000
 #### terminal 2
 
 ```bash
-
-NAME=name SECRET=right ./client
-
+NAME=name1 SECRET=right ./client
+NAME=name1 SECRET=right ./client # rejected, already connected
+NAME=name2 SECRET=wrong ./client # rejected, wrong secret
 ```
