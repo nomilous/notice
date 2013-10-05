@@ -1,140 +1,144 @@
+Testable            = undefined
 testable            = undefined
+module.exports._Handler = -> Testable
 module.exports._handler = -> testable
 module.exports.handler  = (config = {}) ->
 
-    testable = local =
+    Testable = Handler =
 
-        create: (hubName, opts) -> 
+        create: (hubName, hubContext, opts) -> 
 
-            handshake: (hub, socket) -> 
+            testable = handler = 
 
-                (originName, secret, context) -> 
+                handshake: (socket) -> 
 
-                    #
-                    # remote client is making it's first connection
-                    # ---------------------------------------------
-                    #
-                    # * the client is a new process
-                    # * it may have been previously connected (and was restarted)
-                    #   in which case there may already be local reference to it.
-                    # 
-
-                    id = socket.id
-
-                    return socket.disconnect() unless secret == opts.listen.secret
-
-                    if previousID = hub.name2id[originName]
-
-                        client = hub.clients[previousID]
-
-                        if client.connected.state == 'connected'
-
-                            #
-                            # first client with this originName is still 
-                            # connected... do not allow new connection.
-                            #
-                            # TODO: make this configurable
-                            #       - keep new and kill old
-                            #       - confirm old before rejecting new
-                            #             -- by probe
-                            #             -- by last activity age
-                            #             BAD if rejecting new when old is broken
-                            #       - ??? keep both
-                            # 
-
-                            socket.emit 'reject', 
-                                reason: 'already connected'
-                                hostname: client.context.hostname
-                                pid: client.context.pid
-
-                            socket.disconnect()
-                            hub.connections()
-                            return
-
+                    (originName, secret, context) -> 
 
                         #
-                        # * got previous reference of this client...
-                        # * TODO: make performing a compariton of old and new 
-                        #         context a posibility, probably down the pipeline
+                        # remote client is making it's first connection
+                        # ---------------------------------------------
+                        #
+                        # * the client is a new process
+                        # * it may have been previously connected (and was restarted)
+                        #   in which case there may already be local reference to it.
                         # 
-                        # * FOR NOW the old context is kept and new is ignored
-                        #   =======
+
+                        id = socket.id
+
+                        return socket.disconnect() unless secret == opts.listen.secret
+
+                        if previousID = hubContext.name2id[originName]
+
+                            client = hubContext.clients[previousID]
+
+                            if client.connected.state == 'connected'
+
+                                #
+                                # first client with this originName is still 
+                                # connected... do not allow new connection.
+                                #
+                                # TODO: make this configurable
+                                #       - keep new and kill old
+                                #       - confirm old before rejecting new
+                                #             -- by probe
+                                #             -- by last activity age
+                                #             BAD if rejecting new when old is broken
+                                #       - ??? keep both
+                                # 
+
+                                socket.emit 'reject', 
+                                    reason: 'already connected'
+                                    hostname: client.context.hostname
+                                    pid: client.context.pid
+
+                                socket.disconnect()
+                                hubContext.connections()
+                                return
+
+
+                            #
+                            # * got previous reference of this client...
+                            # * TODO: make performing a compariton of old and new 
+                            #         context a posibility, probably down the pipeline
+                            # 
+                            # * FOR NOW the old context is kept and new is ignored
+                            #   =======
+                            # 
+
+                            delete hubContext.clients[previousID]
+                            delete hubContext.name2id[originName]
+                            hubContext.clients[id] = client
+
+                        else 
+                            hubContext.clients[socket.id] = client = 
+                                title:   originName
+                                context: context
+                                hub:     hubName
+                                socket:  socket
+
+
+                        client.connected ||= {}
+                        client.connected.state    = 'connected'
+                        client.connected.stateAt  = Date.now()
+                        client.context.hostname   = context.hostname
+                        client.context.pid        = context.pid
+                        hubContext.name2id[originName] = id
+                        socket.emit 'accept'
+                        hubContext.connections()
+
+                resume: (socket) -> 
+
+                    (originName, secret, context) -> 
+
+                        #
+                        # remote client is resuming an interrupted connection
+                        # ---------------------------------------------------
+                        #
+                        # * the client process was previously connected
+                        # * this server may have been restarted / upgraded
                         # 
 
-                        delete hub.clients[previousID]
-                        delete hub.name2id[originName]
-                        hub.clients[id] = client
+                        id = socket.id
 
-                    else 
-                        hub.clients[socket.id] = client = 
-                            title:   originName
-                            context: context
-                            hub:     hubName
-                            socket:  socket
+                        #
+                        # identical to on connect (for now)
+                        #
 
+                        return socket.disconnect() unless secret == opts.listen.secret
+                        if previousID = hubContext.name2id[originName]
+                            client = hubContext.clients[previousID]
+                            delete hubContext.clients[previousID]
+                            delete hubContext.name2id[originName]
+                            hubContext.clients[id] = client
 
-                    client.connected ||= {}
-                    client.connected.state    = 'connected'
-                    client.connected.stateAt  = Date.now()
-                    client.context.hostname   = context.hostname
-                    client.context.pid        = context.pid
-                    hub.name2id[originName] = id
-                    socket.emit 'accept'
-                    hub.connections()
-
-            resume: (hub, socket) -> 
-
-                (originName, secret, context) -> 
-
-                    #
-                    # remote client is resuming an interrupted connection
-                    # ---------------------------------------------------
-                    #
-                    # * the client process was previously connected
-                    # * this server may have been restarted / upgraded
-                    # 
-
-                    id = socket.id
-
-                    #
-                    # identical to on connect (for now)
-                    #
-
-                    return socket.disconnect() unless secret == opts.listen.secret
-                    if previousID = hub.name2id[originName]
-                        client = hub.clients[previousID]
-                        delete hub.clients[previousID]
-                        delete hub.name2id[originName]
-                        hub.clients[id] = client
-
-                    else 
-                        hub.clients[socket.id] = client = 
-                            title:   originName
-                            context: context
-                            hub:     hubName
+                        else 
+                            hubContext.clients[socket.id] = client = 
+                                title:   originName
+                                context: context
+                                hub:     hubName
 
 
-                    client.connected ||= {}
-                    client.connected.state    = 'connected'
-                    client.connected.stateAt  = Date.now()
-                    client.context.hostname   = context.hostname
-                    client.context.pid        = context.pid
-                    hub.name2id[originName] = id
-                    socket.emit 'accept'
-                    hub.connections()
+                        client.connected ||= {}
+                        client.connected.state    = 'connected'
+                        client.connected.stateAt  = Date.now()
+                        client.context.hostname   = context.hostname
+                        client.context.pid        = context.pid
+                        hubContext.name2id[originName] = id
+                        socket.emit 'accept'
+                        hubContext.connections()
 
 
-            disconnect: (hub, socket) -> 
+                disconnect: (socket) -> 
 
-                ->
+                    ->
 
-                    id = socket.id
-                    try client = local.clients[id]
-                    return unless client?
+                        id = socket.id
+                        try client = hubContext.clients[id]
+                        return unless client?
 
-                    client.connected.state    = 'disconnected'
-                    client.connected.stateAt  = Date.now()
-                    hub.connections()  
+                        client.connected.state    = 'disconnected'
+                        client.connected.stateAt  = Date.now()
+                        hubContext.connections()  
 
 
 

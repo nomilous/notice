@@ -75,12 +75,12 @@ module.exports.hub  = (config = {}) ->
                 if typeof callback == 'function' then callback null, hub
 
 
-            handle = local.Handler.create hubName, opts
+            handle = local.Handler.create hubName, local, opts
             io.on 'connection', (socket) -> 
 
-                socket.on 'handshake',  handle.handshake   local, socket
-                socket.on 'disconnect', handle.disconnect  local, socket
-                socket.on 'resume',     handle.resume      local, socket
+                socket.on 'handshake',  handle.handshake   socket
+                socket.on 'disconnect', handle.disconnect  socket
+                socket.on 'resume',     handle.resume      socket
                 
 
 
