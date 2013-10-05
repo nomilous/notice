@@ -29,6 +29,13 @@ describe 'client', ->
             done()
 
 
+        it 'throws when attempting to assign reserved message types', (done) -> 
+
+            try Client = client messages: connect: {}
+            catch error
+                error.should.match /is a reserved message type/
+                done()
+
     context 'create()', -> 
 
         it 'requires clientName', (done) -> 
@@ -95,6 +102,13 @@ describe 'client', ->
                 state:  'pending'
                 stateAt: 1
             done()
+
+
+
+        context 'assign', -> 
+
+
+
 
 
         context 'on socket event', -> 

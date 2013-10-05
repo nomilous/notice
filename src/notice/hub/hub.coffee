@@ -8,6 +8,13 @@ testable            = undefined
 module.exports._hub = -> testable
 module.exports.hub  = (config = {}) ->
 
+    for type of config.messages
+
+        throw new Error(
+            "notice: '#{type}' is a reserved message type." 
+        ) if type.match /connect|handshake|accept|reject|disconnect|resume|error/
+
+
     testable = local = 
 
         Notifier: notifier config

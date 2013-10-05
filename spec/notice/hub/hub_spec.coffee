@@ -21,6 +21,13 @@ describe 'hub', ->
             Hub.create.should.be.an.instanceof Function
             done()
 
+        it 'throws when attempting to assign reserved message types', (done) -> 
+
+            try Hub = hub messages: handshake: {}
+            catch error
+                error.should.match /is a reserved message type/
+                done()
+
 
     context 'create()', -> 
 

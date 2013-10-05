@@ -7,6 +7,13 @@ testable               = undefined
 module.exports._client = -> testable
 module.exports.client  = (config = {}) ->
 
+
+    for type of config.messages
+
+        throw new Error(
+            "notice: '#{type}' is a reserved message type." 
+        ) if type.match /connect|handshake|accept|reject|disconnect|resume|error/
+
     testable = local = 
 
         Notifier: notifier.notifier config
@@ -65,6 +72,7 @@ module.exports.client  = (config = {}) ->
                     socket.emit 'event', event: 'eventname', pay: 'load'
                     socket.emit 'undefined', pay: 'load'
                 ), 1000
+
 
                 socket.on 'connect', -> 
                     if client.connection.state == 'interrupted'
@@ -127,6 +135,7 @@ module.exports.client  = (config = {}) ->
                     client.connection.stateAt = Date.now()
                     resolve client
                     if typeof callback == 'function' then callback null, client
+
 
                 socket.on 'reject', (rejection) -> 
 
