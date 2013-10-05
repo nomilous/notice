@@ -1,6 +1,7 @@
 should      = require 'should'
 {parallel}  = require 'also'
 {hub, _hub, listener} = require '../../../lib/notice/hub'
+{_Handler, _handler}  = require '../../../lib/notice/hub/hub_handler'
 {_notifier} = require '../../../lib/notice/notifier'
 
 
@@ -115,355 +116,79 @@ describe 'hub', ->
 
 
 
-        context 'on connection', -> 
+        context 'listening.on', -> 
 
             beforeEach -> 
+                @handler = {}
                 @whenEvent = {}
                 listener.listen = (opts, callback) => 
                     callback null, 'ADDRESS'
                     on: (event, handler) => 
-                        if @whenEvent[event]? then handler @whenEvent[event]
 
-
-            context 'when handshake', -> 
-
-                it 'verifies the secret and disconnects on bad match', (done) -> 
-
-                    @whenEvent['connection'] = 
-                        
                         #
-                        # configure a mock socket with which to fire the 
-                        # connection event
-                        # 
-                        
-                        on: (event, listener) -> 
+                        # store each registering hander as the 
+                        # hub comes ""online""
+                        #
 
-                            #
-                            # emit mock handshake event as if a remote client sent it
-                            #
-
-                            if event == 'handshake' 
-                                listener 'originName', 'wrongsecret', 'CONTEXT'
-
-                        disconnect: -> done()
-
-                    Hub = hub()
-                    Hub.create 'hub1', listen: secret: 'rightsecret'
+                        @handler[event] = handler
 
 
-                it 'adds the client to the collection on handshake success', (done) -> 
+            it 'on connection assigns handler.handshake to handle handshake', (done) -> 
 
-                    @whenEvent['connection'] = 
-                        id: 'SOCKET_ID'
-                        on: (event, listener) -> 
-                            if event == 'handshake' 
-                                listener 'originName', 'rightsecret', 'CONTEXT'
-                        emit: ->
-
-                    Hub = hub()
-                    Hub.create 'hub1', listen: secret: 'rightsecret'
-                    _hub().clients.SOCKET_ID.title.should.equal 'originName'
-                    _hub().clients.SOCKET_ID.context.should.equal 'CONTEXT'
-                    _hub().clients.SOCKET_ID.hub.should.equal 'hub1'
-                    done()
-
-
-                #
-                # difficult to test...
-                #
-                # it.only 'does not allow more than on connection with same originName', (done) ->
-
-                #     count = 0
-                #     @whenEvent['connection'] = 
-                        
-                #         on: (event, listener) -> 
-                #             if event == 'handshake' 
-                #                 listener 'originName', 'rightsecret', 'CONTEXT'
-                #                 process.nextTick -> listener 'originName', 'rightsecret', 'CONTEXT'
-                #         emit: (event, args...) ->
-                #             console.log arguments
-
-                #     Object.defineProperty @whenEvent['connection'], 'id',
-                #         get: -> count++
-
-                #     Hub = hub()
-                #     Hub.create 'hub1', listen: secret: 'rightsecret'
-
-
-
-                it 'sets the connection.state to connected', (done) -> 
-
-                    Date.now = -> 1
-                    @whenEvent['connection'] = 
-                        id: 'SOCKET_ID'
-                        on: (event, listener) -> 
-                            if event == 'handshake' 
-                                listener 'originName', 'rightsecret', 'CONTEXT'
-                        emit: ->
-
-                    Hub = hub()
-                    Hub.create 'hub1', listen: secret: 'rightsecret'
-
-                    connected = _hub().clients.SOCKET_ID.connected
-                    connected.should.eql
-                        state: 'connected'
-                        stateAt: 1
-                    done()
-
-
-                it 'creates an entry in the name2id index', (done) -> 
-
-                    @whenEvent['connection'] = 
-                        id: 'SOCKET_ID'
-                        on: (event, listener) -> 
-                            if event == 'handshake' 
-                                listener 'originName', 'rightsecret', 'CONTEXT'
-                        emit: ->
-
-                    Hub = hub()
-                    Hub.create 'hub1', listen: secret: 'rightsecret'
-                    name2id = _hub().name2id
-                    name2id.should.eql
-                        originName: 'SOCKET_ID'
-                    done()
-
-
-                it 'remove or transfer previous reference to this client if present'
-                    # 
-                    # for when client does not disconnect cleanly and 
-                    # and housekeeper has not yet reaped the reference
-                    # 
-
-
-                it 'accept includes hub context'
-                it 'sends accept to client on handshake success', (done) -> 
-
-                    @whenEvent['connection'] = 
-                        id: 'SOCKET_ID'
-                        on: (event, listener) -> 
-                            if event == 'handshake' 
-                                listener 'originName', 'rightsecret', 'CONTEXT'
-                        emit: (event, args...) -> 
-                            if event == 'accept' then done()
-
-                    Hub = hub()
-                    Hub.create 'hub1', listen: secret: 'rightsecret'
-
-
-            context 'when resume', -> 
-
-                it 'is the same as connect for now'
-
-
-        context 'on disconnect', -> 
-
-            beforeEach -> 
-                @whenEvent = {}
-                listener.listen = (opts, callback) => 
-                    callback null, 'ADDRESS'
-                    on: (event, handler) => 
-                        console.log event
-                        if @whenEvent[event]? then handler @whenEvent[event]
-                    emit: ->
-
-
-                
-
-            it 'marks the client reference as disconnected', (done) -> 
-
-                Date.now = -> 1
-                @whenEvent['connection'] = 
-                    id: 'SOCKET_ID'
-                    on: (event, listener) -> 
-                        if event == 'handshake' 
-                            listener 'originName', 'rightsecret', 'CONTEXT'
-                        if event == 'disconnect' 
-                            listener()
-                    emit: ->
-
-                
-                
                 Hub = hub()
                 Hub.create 'hub1', listen: secret: 'rightsecret'
+                _handler().handshake = (socket) -> 
 
-                connected = _hub().clients.SOCKET_ID.connected
-                connected.should.eql
-                    state: 'disconnected'
-                    stateAt: 1
-                done()
+                    #
+                    # was the handler called to return a handshake hander
+                    # function for this connecting socket
+                    #
 
+                    socket.id.should.equal 'SOCKET_ID'  
+                    return handshakeHandler = -> 'HANDSHAKE HANDLER'
+
+                #
+                # fire the connection handler with a mock socket
+                #
+
+                @handler['connection']
+                    id: 'SOCKET_ID'
+                    on: (event, handler) -> 
+                        if event == 'handshake' 
+                            handler().should.equal 'HANDSHAKE HANDLER'
+                            done()
+
+
+            it 'on connection assigns handler.resume to handle resume', (done) -> 
+
+                Hub = hub()
+                Hub.create 'hub1', listen: secret: 'rightsecret'
+                _handler().resume = (socket) -> 
+                    socket.id.should.equal 'SOCKET_ID'  
+                    -> 'RESUME HANDLER'
+
+                @handler['connection']
+                    id: 'SOCKET_ID'
+                    on: (event, handler) -> 
+                        if event == 'resume' 
+                            handler().should.equal 'RESUME HANDLER'
+                            done()
+
+            it 'on connection assigns handler.resume to handle resume', (done) -> 
+
+                Hub = hub()
+                Hub.create 'hub1', listen: secret: 'rightsecret'
+                _handler().disconnect = (socket) -> 
+                    socket.id.should.equal 'SOCKET_ID'  
+                    -> 'DISCONNECT HANDLER'
+
+                @handler['connection']
+                    id: 'SOCKET_ID'
+                    on: (event, handler) -> 
+                        if event == 'disconnect' 
+                            handler().should.equal 'DISCONNECT HANDLER'
+                            done()
 
 
             it 'reaps the client reference after configurable period'
-        
-
-            
-
-
-return
-io = require 'socket.io'
-
-# require('nez').realize 'Hub', (Hub, test, context, should, http, Notifier) -> 
-
-should   = require 'should'
-Hub      = require '../../lib/notice/hub'
-http     = require 'http'
-Notifier = require '../../lib/notice/notifier'
-
-describe 'Hub', ->
-
-    context 'create()', -> 
-
-        it 'is an exported function', (done) -> 
-
-            Hub.create.should.be.an.instanceof Function
-            done()
-
-        it 'requires a name', (done) -> 
-
-            try Hub.create()
-            catch error
-                error.should.match /requires hubName as string/
-                done()
-
-    
-    context 'hubside pipeline', -> 
-
-        it 'is created', (done) -> 
-
-            spy = Notifier.create
-            Notifier.create = (title) -> 
-                Notifier.create = spy
-                title.should.equal 'title'
-                throw 'go no futher'
-
-            try Hub.create 'title'
-            catch error
-
-                error.should.match /go no futher/
-                done()
-
-
-    context 'listening', -> 
-
-        MOCK = 
-
-            #
-            # mock connected socketio
-            #
-
-            configure: -> 
-
-        http.createServer = -> 
-            listen: (port, host, cb) -> setTimeout cb, 10
-            address: -> address: 'ADDRESS', port: 'PORT'
-            on: ->
-        io.listen = -> MOCK
-
-        SENT = events: []
-
-        SOCKET = 
-            disconnected: false
-            id: 'ID'
-            disconnect: -> SOCKET.disconnected = true
-            emit: -> SENT.events.push arguments
-            on: (event, callback) -> 
-                if event == 'handshake' 
-                    callback 'SECRET', REMOTE: 'CONTEXT'
-
-
-        MOCK.on = (event, callback) -> if event == 'connection'
-
-            #
-            # mock connect immediately
-            #
-
-            callback SOCKET
-
-
-        it 'calls back with the hubside inbound notifier', (done) -> 
-
-            NOTIFIER = 
-                use: -> 'moo'
-
-            spy = Notifier.create
-            Notifier.create = (title) -> 
-                Notifier.create = spy
-                NOTIFIER
-
-            Hub.create 'name', listen: secret: 'SECRET', (error, notice) -> 
-
-                notice.use().should.equal 'moo'
-                done()
-
-
-        context 'on connected socket', -> 
-
-
-            it 'attaches ref to the listening address', (done) ->
-
-                opts = listen: secret: 'SECRET'
-
-                Hub.create 'name', opts, (error, notice) -> 
-
-                    opts.listening.should.eql 
-                        transport: 'http'
-                        address: 'ADDRESS'
-                        port: 'PORT'
-
-                    done()
-
-
-            it 'sends accept if the secret matches', (done) -> 
-
-                SENT.events = []
-                Hub.create 'name', listen: secret: 'SECRET', -> 
-
-                    SENT.events[0].should.eql '0': 'accept'
-                    done()
-
-
-            it 'creates a response pipeline on the first connect', (done) -> 
-
-                NOTIFIERS = {}
-                spy = Notifier.create
-                Notifier.create = (title) -> 
-                    NOTIFIERS[title] = 1
-                    use: ->
-
-                Hub.create 'hub name', listen: secret: 'SECRET', -> 
-
-                    Notifier.create = spy
-                    NOTIFIERS['hub name'].should.equal 1
-                    done()
-
-
-            it 'feeds received messages into the pipeline', (done) -> 
-
-                spy = Notifier.create
-                Notifier.create = (title) -> 
-                    Notifier.create = spy
-                    use: ->
-
-                    #
-                    # spy on notice.info.normal()
-                    #
-                    info: normal: -> 
-                        done()
-
-
-                SOCKET.on = (event, callback) -> 
-                    if event == 'handshake' 
-                        callback 'SECRET', REMOTE: 'CONTEXT'
-
-                    #
-                    # respond to info subscription with 
-                    # mock inbound info message
-                    #
-                    if event == 'info' then callback
-                        title: 'TITLE'
-                        tenor: 'normal'
-                        {}
-
-                Hub.create 'name', listen: secret: 'SECRET', -> 
 

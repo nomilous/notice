@@ -143,4 +143,4 @@ module.exports.handler  = (config = {}) ->
 
 
     return api = 
-        create: local.create
+        create: Handler.create
