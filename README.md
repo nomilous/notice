@@ -13,7 +13,7 @@ Quick Faqts
 -----------
 
 * `'coffee-script' is 'zen-garden'`
-* `cake dev` compiles & tests
+* `cake dev` watches & compiles & tests
 * `browse('./spec') = clarity++`
 
 
