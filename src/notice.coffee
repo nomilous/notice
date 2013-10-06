@@ -16,12 +16,18 @@ module.exports.create = notifier().create
 
 
 #
-# connected
+# default connected
 #
 # Notice.connect() connects to notice hub
 # Notice.listen()  creates notice hub
 # 
 
 module.exports.connect = client().create
-module.exports.listen  = hub().create 
+module.exports.listen  = hub().create
 
+#
+# factories
+#
+
+module.exports.client  = client
+module.exports.hub     = hub

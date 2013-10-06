@@ -2,10 +2,25 @@
 
 notice = require '../../lib/notice'
 
-notice.connect "client #{process.env.NAME}", {
+TelevisionRemote = notice.client(
+
+    messages: 
+
+        channel: {}
+        volume:  {}
+        pause:   {}
+        play:    {}
+        ffwd:    {}
+
+        vote:    {}
+        impeach: 
+            beforeCreate: -> 
+                throw new Error 'democracy not configurable'
+
+).create "Television Remote #{process.env.NAME}",
 
     context: 
-        some: 'details'
+        supremeAuthority: 'Mother' unless grandfather? || saturday?
 
     connect: 
         # address: 'localhost'
@@ -15,18 +30,15 @@ notice.connect "client #{process.env.NAME}", {
         secret:           process.env.SECRET
         errorWait:        1000
 
-}, (error, client) -> 
+    (error, client) -> 
     
-    return console.log error if error?
-    console.log CLIENT: client
-
-    client.use title: 'test', (next, capsule) -> 
-
-        console.log capsule.debug
-        next()
-
-    client.event 'name'
+        return console.log error if error?
+        console.log CLIENT: client
 
 
+        client.impeach().then(
 
+            (m) -> console.log CAPSULE: m
+            (e) -> console.log ERROR:   e
 
+        )
