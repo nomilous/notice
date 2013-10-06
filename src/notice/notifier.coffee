@@ -76,7 +76,7 @@ module.exports.notifier  = (config = {}) ->
 
                             next = -> resolve capsule
                             # TODO_LINK
-                            next.info = 'https://github.com/nomilous/notice/tree/develop/spec/notice#next'
+                            next.info = 'https://github.com/nomilous/notice/tree/develop/spec/notice#the-next-function'
 
                             try list[title] next, capsule   #, hubs
                                                                             #

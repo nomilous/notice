@@ -25,12 +25,6 @@ Using the middleware pipeline
 
 ### The middleware function
 
-* Do some stuff and call `next()` when done.
-* Possibly make ammendments to the capsule.
-* The capsule does not continue to the next middleware until `next()` is called.
-* Intentionally not calling next is OK - it means you don't want the message to continue further.
-* **Unintentionally not calling next is BAD**
-
 ```coffee
 
 (next, capsule) -> 
@@ -42,6 +36,12 @@ Using the middleware pipeline
         next()
 
 ```
+
+* Do some stuff and call `next()` when done.
+* Possibly make ammendments to the capsule.
+* The capsule does not continue to the next middleware until `next()` is called.
+* Intentionally not calling next is OK - it means you don't want the message to continue further.
+* **Unintentionally not calling next is BAD**
 
 #### throwing errors
 
