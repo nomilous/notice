@@ -87,7 +87,19 @@ notifier.use
 
 * In the example above, `needsSave` was set to hidden so that serialization of the capsule would not include the `needsSave` propery.
 * It would not be very practically appropriate if the `needsSave` property also got saved... ;)
+* Aaah yes, one more thing. The hidden properties can be found.
 
+```coffee
+
+notifier.use
+
+    title: 'nosy middleware'
+    (next, capsule) -> 
+
+        console.log key, capsule[key] for key of capsule._hidden
+        next()
+
+```
 
 ### Protected properties
 
