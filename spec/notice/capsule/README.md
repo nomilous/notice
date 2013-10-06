@@ -112,9 +112,10 @@ notifier.use
         capsule.set 
             secret: capsule.secret
             hidden: false
-            
+
         next()
 
+```
 
 ### Protected properties
 
