@@ -5,6 +5,8 @@ The Capsule
 
 * The **first** `key:'value'` passed to `capsule.set()` is the one that sets the property.
 * A property cannot be watched AND protected. (Does it even make sense to want that?)
+* `caspule.all` enumerates all properties, **including hidden ones**.
+* `capsule.all` does not enumerate in created order.
 
 
 ### Watched properties
