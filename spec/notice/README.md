@@ -16,8 +16,8 @@ Hub and Client Configurables
 
 
 
-Hub and Client Context
-----------------------
+Hub and Client Context / Continuity
+-----------------------------------
 
 
 
