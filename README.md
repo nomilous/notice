@@ -59,9 +59,9 @@ notifier.event 'event name', { payload: 'data' }, (err, capsule) ->
 #### register some middleware
 ```coffee
 
-notifier.use title: 'assembly step 1', (next, msg) -> 
+notifier.use title: 'assembly step 1', (next, capsule) -> 
     
-    msg.myContribution = '∑'
+    capsule.myContribution = '∑'
     next()
 
     #
@@ -72,9 +72,10 @@ notifier.use title: 'assembly step 1', (next, msg) ->
     #   creates a powerful tool.
     # 
 
-notifier.use title: 'Pie Thrower', (next, msg) -> 
+π = new Error 'Cream'
+notifier.use title: 'Pie Thrower', (next, capsule) -> 
     
-    throw 'π'
+    throw π
 
     #
     # why a Title ? 
@@ -97,7 +98,7 @@ notifier.event 'event name',
 .then(
 
     (capsule) -> # after the middleware
-    (error)   -> console.log error == 'π'
+    (error)   -> console.log error == π
 
 )
 
