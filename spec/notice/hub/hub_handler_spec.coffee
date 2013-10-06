@@ -131,6 +131,35 @@ describe 'handler', ->
                 stateAt: 2
             done()
 
+    context 'capsule', -> 
+
+        before -> @HandlerClass = handler()
+        beforeEach ->
+
+            @instance = @HandlerClass.create(
+
+                hubName      = 'hubname'
+                @hubNotifier = control: -> 
+                @hubContext  = 
+                    clients: {}
+                    name2id: {}
+                opts = {}
+                    
+            )
+
+        it.only 'reassembles the inbound payload into a capusle for the hubside middleware traversal', (done) -> 
+
+            handle = @instance.capsule 
+                id: 'SOCKET_ID'
+            
+            handle( 
+                header  = {}
+                config  = {}
+                payload = {}
+            )
+
+            done() 
+
 
     context 'handshake', -> 
 
