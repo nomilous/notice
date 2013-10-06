@@ -89,10 +89,6 @@ module.exports.notifier  = (config = {}) ->
 
                 use: (opts, fn) -> 
 
-                    #
-                    # TODO: can remove middleware
-                    #
-
                     throw undefinedArg( 
                         'opts.title and fn', 'use(opts, middlewareFn)'
                     ) unless ( 
@@ -114,9 +110,14 @@ module.exports.notifier  = (config = {}) ->
                         'opts.title and fn', 'use(opts, middlewareFn)'
                     ) unless ( 
                         opts? and opts.title? and 
-                        fn? and typeof fn == 'function'
+                        ( fn? and typeof fn == 'function' ) or
+                        ( opts.delete? and opts.delete is true )
                     )
 
+                    if opts.delete and list[opts.title]?
+                        delete list[opts.title]
+                        middlewareCount++
+                        return
                     
                     middlewareCount++ unless list[opts.title]?
                     list[opts.title] = fn

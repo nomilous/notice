@@ -274,6 +274,25 @@ describe 'notifier', ->
 
             deck['1. intro'].toString().should.match /replaced/
             done()
+
+        it 'has a dark side of the force()', (done) -> 
+
+            mix  = notifier().create 'Assembly Line Mix'
+            deck = _notifier().middleware['Assembly Line Mix']
+
+            mix.use 
+                title: '1. intro'
+                (done, msg) -> done()
+            mix.use 
+                title: '2. one the sun'
+                (done, msg) -> done()
+
+            mix.force
+                title: '1. intro'
+                delete: true
+
+            should.not.exist deck['1. intro']
+            done()
         
 
         it 'sequence is preserved when replacing middleware', (done) -> 
