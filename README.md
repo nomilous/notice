@@ -151,8 +151,10 @@ module.exports.AlertBus = notice
                 # 
                 # * Watched properties can be created on the capsule
                 #   using capsule.set(). 
+                # 
+                # * Also, hidden and protected properties.
                 #
-                #   This can be done by middleware and 
+                # * capsule.set() can be used by middlewares.
                 #   
 
                 capsule.set
