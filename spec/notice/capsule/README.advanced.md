@@ -4,7 +4,14 @@
 ```coffee
 
 {EventEmitter} = require 'events'
-{bus} = require './an/already/configured/and/instanciated/notifier'
+{bus} = require './an/already/configured/and/instanciated/standalone/notifier'
+
+#
+# NOTE! This is only possible with the standalone notifier because
+#       it has a synchronous initializer. Distributed notifier hub
+#       or client instances cannot be ""easily"" module.exported 
+#       because they are initialized into a callback / promise. 
+#       
 
 module.exports.stateChangeEmitter = emitter = new EventEmitter
 
