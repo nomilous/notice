@@ -232,8 +232,8 @@ describe 'client', ->
                 Date.now = -> 1
                 @EMITTED = {}
                 @client.event 'test event 1', => 
-                    #console.log @EMITTED.capsule.config
-                    
+                    #console.log @EMITTED.capsule.payload
+
                     @EMITTED.capsule.payload.should.eql
 
                         _type: 'event'
@@ -242,6 +242,32 @@ describe 'client', ->
                         createdAt: 1
                         
                     done()
+
+            it 'includes extended payload content', (done) -> 
+
+                Date.now = -> 1
+                @EMITTED = {}
+                @client.event 'test event 2', 
+                    more: 'stuff'
+                    also:
+                        much: 
+                            much:
+                                much: 'more stuff'
+                    => 
+                        # console.log @EMITTED.capsule.payload
+                        @EMITTED.capsule.payload.should.eql
+
+                            _type: 'event'
+                            event: 'test event 2'
+                            routingCode: 'x'
+                            createdAt: 1
+                            more: 'stuff'
+                            also:
+                                much: 
+                                    much:
+                                        much: 'more stuff'
+                            
+                        done()
 
 
         context 'on socket event', -> 
