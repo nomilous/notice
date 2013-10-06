@@ -32,6 +32,10 @@ Transport Abstraction
 ---------------------
 
 
+Boomerang Capsule and Response Expectations
+-------------------------------------------
+
+
 Published Notifier Definitions (npm)
 ------------------------------------
 
@@ -40,6 +44,7 @@ System Dashboard
 ----------------
 
 
-Managing Middleware (remotely)
-------------------------------
+Managing Middleware (remote, hotswap)
+-------------------------------------
+
 
