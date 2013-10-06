@@ -81,7 +81,7 @@ describe 'Capsule', ->
                 instance.should.eql {}
 
                 instance.set 
-                    property: 'value'
+                    property: instance.property
                     hidden: false
                     
 

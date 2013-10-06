@@ -87,7 +87,7 @@ notifier.use
 
 * In the example above, `needsSave` was set to hidden so that serialization of the capsule would not include the `needsSave` propery.
 * It would not be very practically appropriate if the `needsSave` property also got saved... ;)
-* Aaah yes, one more thing. The hidden properties can be found.
+* Aaah yes, one more thing. The hidden properties can be found...
 
 ```coffee
 
@@ -100,13 +100,28 @@ notifier.use
         next()
 
 ```
+* ...and unhidden.
+
+```coffee
+
+notifier.use
+
+    title: 'snowsey middleware'
+    (next, capsule) -> 
+
+        capsule.set 
+            secret: capsule.secret
+            hidden: false
+            
+        next()
+
 
 ### Protected properties
 
 * Creates properties that cannot be modified further.
 * Sounds possibly paranoid, but applications grow, and their intricacy grows even faster...
 * Protection - may help prevent interesting mistakes.
-* Protection - kinda like "putting a condom over the new developer".
+* Protection - "puts a condom over the new developer".
 
 ```coffee
 
