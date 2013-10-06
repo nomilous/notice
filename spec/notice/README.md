@@ -28,8 +28,8 @@ Multiple Hubs and Capsule Switching / Routing
 ---------------------------------------------
 
 
-Transport Abstration
---------------------
+Transport Abstraction
+---------------------
 
 
 Published Notifier Definitions (npm)
