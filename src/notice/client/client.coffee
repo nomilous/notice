@@ -97,6 +97,7 @@ module.exports.client  = (config = {}) ->
 
                         client[type] payload
 
+
             #
             # final middleware on the local bus transfers message onto socket 
             # ---------------------------------------------------------------
@@ -115,10 +116,28 @@ module.exports.client  = (config = {}) ->
             #    boomerang may become the default configuration later 
             # 
 
+            #
+            # * for now, the capsule is popped off the tail of the local
+            #   middleware pipeline after the hub acks the capsule
+            # 
+            # * use the promise notify() call to inform the message origin
+            #   of the capsule being sent.
+            # 
+            # * unfortunately a message origin with a node style callback
+            #   waiting has no concrete facility to receive this information
+            #   and will remain in the dark until the hub ack
+            # 
+            #         
+
+
+            sequence = 1
+
             client.final
 
                 title: 'outbound socket interface'
                 (next, capsule) -> 
+
+                    ### grep PROTOCOL1 encode ###
 
                     #
                     # TODO: is socket connected?
@@ -126,7 +145,8 @@ module.exports.client  = (config = {}) ->
                     #
 
                     header = 
-                        version: 1
+                        version:  1
+                        sequence: sequence++ 
 
                     #
                     # TODO: much room for optimization here

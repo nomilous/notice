@@ -149,7 +149,7 @@ describe 'client', ->
 
         context 'transmission onto socket', -> 
 
-            before (done) -> 
+            beforeEach (done) -> 
                 @EMITTED = {}
                 Client = client()
                 socket = 
@@ -200,12 +200,14 @@ describe 'client', ->
                     should.exist @EMITTED.capsule
                     done()
 
-            it 'includes a header with protocol version', (done) -> 
+            it 'includes a header with protocol version and sequence number', (done) -> 
 
                 @EMITTED = {}
                 @client.event 'test', => 
+
                     @EMITTED.capsule.header.should.eql 
-                        version: 1
+                        version:  1
+                        sequence: 1
 
                     done()
 
