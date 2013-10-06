@@ -13,6 +13,8 @@ Quick Faqts
 -----------
 
 * `browse('./spec') = clarity++`
+* All examples in [coffee-script](http://coffeescript.org/), `cake dev` compiles&tests.
+* `'coffee-script' is 'zen-garden'`
 
 
 The Standalone Notifier
