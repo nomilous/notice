@@ -169,9 +169,11 @@ describe 'client', ->
                         # all emits available in tests
                         #
 
-                        @EMITTED[event] = 
-                            header: args[0]
-                            config: args[1]
+                        if event == 'capsule'
+                            @EMITTED[event] = 
+                                header:  args[0]
+                                config:  args[1]
+                                payload: args[2]
 
                 connector.connect = -> socket
                 Client.create 'client name', @opts, (error, @client) => 
@@ -211,7 +213,8 @@ describe 'client', ->
 
                 @EMITTED = {}
                 @client.event 'test', => 
-                    console.log @EMITTED.capsule.config
+                    #console.log @EMITTED.capsule.config
+
                     @EMITTED.capsule.config.should.eql 
                         type: 'event'
                         protected: 
@@ -222,6 +225,22 @@ describe 'client', ->
                         hidden: 
                             _type: 1
                             routingCode: 1
+                    done()
+
+            it 'includes capsule content payload', (done) -> 
+
+                Date.now = -> 1
+                @EMITTED = {}
+                @client.event 'test event 1', => 
+                    #console.log @EMITTED.capsule.config
+                    
+                    @EMITTED.capsule.payload.should.eql
+
+                        _type: 'event'
+                        event: 'test event 1'
+                        routingCode: 'x'
+                        createdAt: 1
+                        
                     done()
 
 

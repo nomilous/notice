@@ -137,7 +137,7 @@ module.exports.client  = (config = {}) ->
                         protected: capsule._protected
                         hidden:    capsule._hidden
 
-                    socket.emit 'capsule', header, config
+                    socket.emit 'capsule', header, config, capsule.all
                     next()
 
 
