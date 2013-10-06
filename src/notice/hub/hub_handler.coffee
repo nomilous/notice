@@ -54,7 +54,6 @@ module.exports.handler  = (config = {}) ->
                                 hubNotifier[type] payload
 
 
-
                 disconnect: (socket) -> 
 
 
@@ -86,6 +85,10 @@ module.exports.handler  = (config = {}) ->
                         hubContext.connections()
 
 
+                capsule: (socket) -> 
+
+                    
+                   
 
 
 

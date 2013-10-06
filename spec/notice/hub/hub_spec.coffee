@@ -178,7 +178,7 @@ describe 'hub', ->
                             handler().should.equal 'RESUME HANDLER'
                             done()
 
-            it 'on connection assigns handler.resume to handle resume', (done) -> 
+            it 'on connection assigns handler.disconnect to handle disconnect', (done) -> 
 
                 Hub = hub()
                 Hub.create 'hub1', listen: secret: 'rightsecret'
@@ -191,6 +191,21 @@ describe 'hub', ->
                     on: (event, handler) -> 
                         if event == 'disconnect' 
                             handler().should.equal 'DISCONNECT HANDLER'
+                            done()
+
+            it 'on connection assigns handler.capsule to handle capsule', (done) -> 
+
+                Hub = hub()
+                Hub.create 'hub1', listen: secret: 'rightsecret'
+                _handler().capsule = (socket) -> 
+                    socket.id.should.equal 'SOCKET_ID'  
+                    -> 'CAPSULE HANDLER'
+
+                @handler['connection']
+                    id: 'SOCKET_ID'
+                    on: (event, handler) -> 
+                        if event == 'capsule' 
+                            handler().should.equal 'CAPSULE HANDLER'
                             done()
 
 

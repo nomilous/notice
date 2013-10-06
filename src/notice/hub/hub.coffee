@@ -17,7 +17,7 @@ module.exports.hub  = (config = {}) ->
     for type of config.messages
 
         throw reservedMessage type if type.match(
-            /connect|handshake|accept|reject|disconnect|resume|error/
+            /connect|handshake|accept|reject|disconnect|resume|capsule|error/
         )
 
 
@@ -89,6 +89,7 @@ module.exports.hub  = (config = {}) ->
                 socket.on 'handshake',  handle.handshake   socket
                 socket.on 'disconnect', handle.disconnect  socket
                 socket.on 'resume',     handle.resume      socket
+                socket.on 'capsule',    handle.capsule     socket
                 
 
 

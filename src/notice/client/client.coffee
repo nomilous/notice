@@ -18,7 +18,7 @@ module.exports.client  = (config = {}) ->
 
     for type of config.messages
         throw reservedMessage type if type.match(
-            /connect|handshake|accept|reject|disconnect|resume|error/
+            /connect|handshake|accept|reject|disconnect|resume|capsule|error/
         )
 
 
@@ -130,12 +130,34 @@ module.exports.client  = (config = {}) ->
 
                     #
                     # TODO: much room for optimization here
+                    # TODO: move this into {protocol}.encode
                     # 
 
                     config = 
                         type:      capsule._type
                         protected: capsule._protected
                         hidden:    capsule._hidden
+
+                        #?
+                        #? TODO: is maintaining the watched property callback
+                        #?       link even after emitting the capsule a poss-
+                        #?       ibility?
+                        #?
+                        #?       would doing so provide __ACTUAL_VALUE__
+                        #?
+                        #?       what if the destination emits it again, even
+                        #?       further
+                        #?
+                        #?       what if some portion of the capsules lifetime
+                        #?       is spent on the other side of a tightened fi-
+                        #?       rewall
+                        #?
+                        #?       (preventing certain easy solutions)
+                        #?
+                        #?       breadcrumbs didn't work for hansel and getel
+                        #?
+                        #?       are there birds in the fiber
+                        #?
 
                     socket.emit 'capsule', header, config, capsule.all
                     next()
