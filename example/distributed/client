@@ -50,15 +50,24 @@ TelevisionRemote = notice.client(
                 #   on the code speed/etc to a minimum
                 # 
 
-                console.log INFO: next.info
+                # console.log next.info
+                next()
+
+
+        client.use
+
+            title: 'illustrate notifiying the message origin promise'
+            (next, capsule) -> 
+
+                if capsule._type == 'volume' then next.notify 'increasing now'
                 next()
 
     
         return console.log error if error?
         # console.log CLIENT: client
-
-        # #
-        # # capsules can be emitted with a promise
+        # 
+        # # 
+        # # message assembly errors reject onto the promise
         # #
         # 
         # client.impeach().then(
@@ -66,10 +75,18 @@ TelevisionRemote = notice.client(
         #     (e) -> console.log ERROR:   e
         # )
 
-        #
-        # capsule can be emitted with a callback
-        #
+        # #
+        # # capsule can be emitted with a callback
+        # #
+        # 
+        # client.channel 1, (err, res) -> 
+        #     console.log res
+    
+        client.volume( 'up', amount: 3 ).then(
 
-        client.channel 1, (e, m) -> 
+            (capsule) -> 
+            (error)   -> 
+            (notify)  -> console.log NOTIFY: notify 
 
-            console.log m
+        )
+

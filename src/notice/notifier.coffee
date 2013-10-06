@@ -64,19 +64,12 @@ module.exports.notifier  = (config = {}) ->
                             #   state and 'time in middleware' to identify 
                             #   such.
                             # 
-                            # * expose notify into the each middleware to enable
-                            #   tier2-hiJinx (HOWEVER:
-                            #      
-                            #      notify may be more appropriate as a vector
-                            #      for creating acknowledgeabiliyy and/or more
-                            #      advanced protocol state (rabbit-hole-hazzard)
-                            #   
-                            #   )
-                            #
 
-                            next = -> resolve capsule
+                            next = -> process.nextTick -> resolve capsule
+
                             # TODO_LINK
-                            next.info = 'https://github.com/nomilous/notice/tree/develop/spec/notice#the-next-function'
+                            next.info   = 'https://github.com/nomilous/notice/tree/develop/spec/notice#the-next-function'
+                            next.notify = (update) -> process.nextTick -> notify update
 
                             try list[title] next, capsule   #, hubs
                                                                             #
@@ -90,9 +83,14 @@ module.exports.notifier  = (config = {}) ->
 
                 middleware.push(
                     deferred ({resolve, reject, notify}, capsule = message) -> 
-                        try final (-> resolve capsule), capsule
+                        
+                        next = -> process.nextTick -> resolve capsule
+                        next.notify = (update) -> process.nextTick -> notify update
+
+                        try final next, capsule
                         catch error
                             reject error
+                
                 ) if final?
 
                 return pipeline middleware
@@ -195,6 +193,7 @@ module.exports.notifier  = (config = {}) ->
                         return pipeline([
                             (       ) -> local.messageTypes[type].create payload
                             (capsule) -> traverse capsule
+
                         ]).then(
                             (capsule) -> 
                                 resolve capsule

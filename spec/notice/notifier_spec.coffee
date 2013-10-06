@@ -247,6 +247,54 @@ describe 'notifier', ->
             mmm['squirt the product in']    (->), {}
             mmm['put a lid on it']          done, {}
 
+
+        it 'passes message capsule through all middleware if they call next', (done) -> 
+
+            mix  = notifier().create 'Assembly Line Mix'
+
+            mix.use 
+                title: '1. intro'
+                (done, msg) ->
+                    msg.one = true
+                    done()
+            mix.use 
+                title: '2. one the sun'
+                (done, msg) -> 
+                    msg.two = true
+                    done()
+            mix.use 
+                title: '3. noon moon'
+                (done, msg) -> 
+                    msg.three = true
+                    done()
+
+            mix.event().then (m) -> 
+
+                m.should.eql one: true, two: true, three: true
+                done()
+
+
+         it 'middleware can notify the promise via next.notify()', (done) -> 
+
+            mix  = notifier().create 'Assembly Line Mix'
+
+            mix.use 
+                title: '1. intro'
+                (next, msg) ->
+                    next.notify 'update'
+                    msg.one = true
+                    next()
+
+            mix.event().then( 
+                (m) -> 
+                (e) -> 
+                (notify) -> 
+                    notify.should.equal 'update'
+                    done()
+
+            )
+
+
         it 'can use the force() to replace middleware', (done) -> 
 
             mix  = notifier().create 'Assembly Line Mix'
