@@ -6,7 +6,7 @@ Hub and Client Configurables
 Creating a Notifier
 -------------------
 
-### Client 
+### The Client
 
 ```coffee
 
@@ -24,7 +24,7 @@ TelevisionRemote = notice.client
 ```
 The `TelevisionRemote` definition can now be used to create a notifier instance.
 
-```
+```coffee
 {TelevisionRemote} = require './the/previous/block'
 
 TelevisionRemote.create 'Family Room',
@@ -48,23 +48,31 @@ TelevisionRemote.create 'Family Room',
 
 ```
 
-### Hub
+### The Hub
 
 ```coffee
 
 notice = require 'notice'
 Television = notice.hub
-    messages: 
+
         #
         # requires the same message definitions as the client
         #
 
 Television.create
-    listen: # similar to the client
+
+    listen:  
+        # server:  existingHttpServer
+        # address: '0.0.0.0'
+        port:    10101
+        secret:  'right'
+        cert:    __dirname + '/../../cert/develop-cert.pem'
+        key:     __dirname + '/../../cert/develop-key.pem'
+
     (error, hub) ->
 
         #
-        # callback receives listening hub
+        # callback receives listening hub or error
         # 
 
 
