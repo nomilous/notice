@@ -16,44 +16,54 @@ module.exports.message  = (type, config = {}) ->
 
             create: deferred ({resolve, reject, notify}, properties = {}) -> 
 
-                before = deferred ({resolve, reject}, msg) -> 
+                before = deferred ({resolve, reject}, capsule) -> 
+
+                    capsule.set
+                        _type: type
+                        protected: true
+                        hidden: true
 
                     #
-                    # builtin type property
-                    #
+                    # capsule[type] is immutable
+                    # --------------------------
+                    # 
+                    # * `capsule.event = 'renamed'` does nothing if capsule._type is 'event' 
+                    # * middlewares can optionally set it to hidden if necessary for serialization
+                    # 
 
-                    Object.defineProperty msg, '_type', 
-                        enumerable: false
-                        writable: false
-                        value: type
+                    if properties[type]? 
+                        typeValue = {}
+                        typeValue[type] = properties[type]
+                        typeValue.protected = true
+                        capsule.set typeValue
 
-                    return resolve msg unless typeof thisConfig.beforeCreate == 'function' 
+                    return resolve capsule unless typeof thisConfig.beforeCreate == 'function' 
                     thisConfig.beforeCreate( 
                         (error) -> 
                             if error? then return reject error
-                            resolve msg
-                        msg
+                            resolve capsule
+                        capsule
                     )
 
-                assign = (msg) -> 
-                    msg[key] = properties[key] for key of properties
-                    return msg
+                assign = (capsule) -> 
+                    capsule[key] = properties[key] for key of properties
+                    return capsule
 
-                after = deferred ({resolve, reject}, msg) -> 
-                    return resolve msg unless typeof thisConfig.afterCreate == 'function' 
+                after = deferred ({resolve, reject}, capsule) -> 
+                    return resolve capsule unless typeof thisConfig.afterCreate == 'function' 
                     thisConfig.afterCreate( 
                         (error) -> 
                             if error? then return reject error
-                            resolve msg
-                        msg
+                            resolve capsule
+                        capsule
                     )
                     
                 pipeline([
 
-                    (   ) -> new local.Capsule
-                    (msg) -> before msg
-                    (msg) -> assign msg
-                    (msg) -> after  msg
+                    (       ) -> new local.Capsule
+                    (capsule) -> before capsule
+                    (capsule) -> assign capsule
+                    (capsule) -> after  capsule
 
                 ]).then resolve, reject, notify
         

@@ -63,6 +63,16 @@ describe 'Message', ->
                 m._type.should.equal 'type'
                 done()
 
+        it 'has immutable type value', (done) -> 
+
+            Message = message 'alert'
+            Message.create( alert: 'bang' ).then (m) -> 
+
+                m.should.eql alert: 'bang'
+                m.alert = 'plop'
+                m.alert.should.eql 'bang'
+                done()
+
 
         it 'calls beforeCreate ahead of property assignment', (done) -> 
 
