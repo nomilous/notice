@@ -1,6 +1,12 @@
 The Capsule
 -----------
 
+### Quick Faqts
+
+* The **first** `key:'value'` passed to `capsule.set()` is the one that sets the property.
+* A property cannot be watched AND protected. (Does it even make sense to want that?)
+
+
 ### Watched properties
 
 * Can assign a callback to receive notification of a propery change.
@@ -77,14 +83,35 @@ notifier.use
         next()
 ```
 
-...
-
 ### Hidden properties
 
-...
+* In the example above, `needsSave` was set to hidden so that serialization of the capsule would not include the `needsSave` propery.
+* It would not be very practically appropriate if the `needsSave` property also got saved... ;)
+
 
 ### Protected properties
 
+* Creates properties that cannot be modified further.
+* Sounds possibly paranoid, but applications grow, and their intricacy grows even faster...
+* Protection - may help prevent interesting mistakes.
+* Protection - kinda like "putting a condom over the new developer".
+
+```coffee
+
+notifier.use
+    title: 'assign route'
+    (next, capsule) -> 
+
+        #
+        # complicated algorythm that results in important routingCode
+        # and then...
+        # 
+
+        capsule.set routingCode: '™i', protected: true
+        next()
+
+
+```
 ...
 
 
