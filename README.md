@@ -73,7 +73,7 @@ notifier.use title: 'assembly step 1', (next, capsule) ->
     # 
 
 π = new Error 'Cream'
-notifier.use title: 'Pie Thrower', (next, capsule) -> 
+notifier.use title: 'Pied Pipeliner', (next, capsule) -> 
     
     throw π
 
