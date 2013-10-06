@@ -35,7 +35,7 @@ module.exports.notifier  = (config = {}) ->
             ) if local.middleware[originCode]?
 
             
-            regSequence = 0
+            middlewareCount = 0
             local.middleware[originCode] = list = {}
 
             traverse = (message) -> 
@@ -44,7 +44,7 @@ module.exports.notifier  = (config = {}) ->
                 # sends the msg down the middleware pipeline
                 # 
 
-                return message unless regSequence # no middleware
+                return message unless middlewareCount # no middleware
                 return pipeline( for title of list
                     do (title) -> 
                         deferred ({resolve, reject, notify}, msg = message) -> 
@@ -85,32 +85,42 @@ module.exports.notifier  = (config = {}) ->
                 )
 
 
-            local.notifiers[originCode] = notifier = use: (opts, fn) -> 
+            local.notifiers[originCode] = notifier = 
 
-                #
-                # TODO: remove middleware
-                #
+                use: (opts, fn) -> 
 
-                throw undefinedArg( 
-                    'opts.title and fn', 'use(opts, middlewareFn)'
-                ) unless ( 
-                    opts? and opts.title? and 
-                    fn? and typeof fn == 'function'
-                )
+                    #
+                    # TODO: can remove middleware
+                    #
 
-                #
-                # this will overwrite existing middleware by the same title
-                #
+                    throw undefinedArg( 
+                        'opts.title and fn', 'use(opts, middlewareFn)'
+                    ) unless ( 
+                        opts? and opts.title? and 
+                        fn? and typeof fn == 'function'
+                    )
 
-                list[opts.title] = fn
+                    unless list[opts.title]?
 
-                #
-                # although the sequence was not used as key in the list
-                # it should still be incremented to inform the presence
-                # of middleware
-                #
+                        list[opts.title] = fn
+                        middlewareCount++
+                        return
 
-                regSequence++
+                    process.stderr.write "notice: middleware '#{originCode}' already exists, use the force()"
+
+                force: (opts, fn) ->
+
+                    throw undefinedArg( 
+                        'opts.title and fn', 'use(opts, middlewareFn)'
+                    ) unless ( 
+                        opts? and opts.title? and 
+                        fn? and typeof fn == 'function'
+                    )
+
+                    
+                    middlewareCount++ unless list[opts.title]?
+                    list[opts.title] = fn
+
 
 
             #

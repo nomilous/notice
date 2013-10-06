@@ -267,7 +267,7 @@ describe 'notifier', ->
                 (done, msg) -> 
                     msg.array.push 3
                     done()
-            five.use 
+            five.force 
                 title: 'REPLACE ME'
                 (done, msg) -> 
                     msg.array.push 'new 2'
