@@ -2,8 +2,8 @@ Creating a Notifier
 -------------------
 
 
-Managing Middleware
--------------------
+Managing Middleware (locally)
+-----------------------------
 
 
 Emitting Capsules
@@ -35,4 +35,11 @@ Transport Abstraction
 Published Notifier Definitions (npm)
 ------------------------------------
 
+
+System Dashboard
+----------------
+
+
+Managing Middleware (remotely)
+------------------------------
 
