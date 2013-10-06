@@ -346,6 +346,9 @@ describe 'notifier', ->
                     msg.array.push 'two'
                     done()
 
+            swap = process.stderr.write # sssht, once
+            process.stderr.write = -> process.stderr.write = swap
+
             stix.final 
                 title: 'three'
                 (done, msg) -> 

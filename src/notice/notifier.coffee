@@ -172,7 +172,6 @@ module.exports.notifier  = (config = {}) ->
             # * if an error occurs on the pipeline the promise 
             #   is rejected and the remaining middlewares will
             #   not receive the message
-            #   
             #
 
             for type of config.messages
@@ -207,7 +206,7 @@ module.exports.notifier  = (config = {}) ->
                             notify
                         )
                         
-                        
+
             return notifier
 
 
