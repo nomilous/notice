@@ -59,10 +59,10 @@ module.exports.client  = (config = {}) ->
             #
             # #DUPLICATE1
             # 
-            # subscribe handlers for all configured messages
-            # ----------------------------------------------
+            # subscribe inbound handlers for all configured messages
+            # ------------------------------------------------------
             # 
-            # * these are for inbound messages
+            # TODO: set capsule.inbound
             # 
 
             for type of config.messages
@@ -96,6 +96,39 @@ module.exports.client  = (config = {}) ->
                         # 
 
                         client[type] payload
+
+            #
+            # final middleware on the local bus transfers message onto socket 
+            # ---------------------------------------------------------------
+            # 
+            # * Notifications generated localy traverse the local middleware
+            #   first.
+            # 
+            # * If they reach the end of the pipeline they are transferred
+            #   onto the hub-bound socket AND called back to the original 
+            #   message creator.
+            # 
+            # * later, capsule.boomerang makes this final middleware not
+            #          callback to the creator until the capsule returns 
+            #          from the netork     
+            #
+            #    boomerang may become the default configuration later 
+            # 
+
+            client.final
+
+                title: 'outbound socket interface'
+                (next, capsule) -> 
+
+                    #
+                    # TODO: is socket connected?
+                    #       what happens when sending on not 
+                    #
+
+                    socket.emit 'capsule'
+                    next()
+
+
 
 
             socket.on 'connect', -> 

@@ -33,7 +33,7 @@ TelevisionRemote = notice.client(
     (error, client) -> 
     
         return console.log error if error?
-        console.log CLIENT: client
+        # console.log CLIENT: client
 
         #
         # capsules can be emitted with a promise

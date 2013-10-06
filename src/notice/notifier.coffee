@@ -45,7 +45,7 @@ module.exports.notifier  = (config = {}) ->
                 # sends the capsule down the middleware pipeline
                 # 
 
-                return message unless middlewareCount # no middleware
+                return message unless middlewareCount || final? # no middleware
                 middleware = for title of list
                     do (title) -> 
                         deferred ({resolve, reject, notify}, capsule = message) -> 
@@ -84,8 +84,13 @@ module.exports.notifier  = (config = {}) ->
                             catch error
                                 reject error
 
+                middleware.push(
+                    deferred ({resolve, reject, notify}, capsule = message) -> 
+                        try final (-> resolve capsule), capsule
+                        catch error
+                            reject error
+                ) if final?
 
-                middleware.push final if final?
                 return pipeline middleware
 
             local.notifiers[originCode] = notifier = 
@@ -139,23 +144,13 @@ module.exports.notifier  = (config = {}) ->
                         process.stderr.write "notice: final middleware cannot be reset! Not even using the force()"
                         return 
 
-                    final = deferred ({resolve, reject, notify}, capsule) -> 
+                    final = fn 
 
-                        try fn (-> resolve capsule), capsule    #, hubs
-                                                                #
-                                                                # TODO: consider enabling access to 
-                                                                #       all hubs in this process for 
-                                                                #       the middleware handlers to
-                                                                #       switch / route capsules.
-                                                                # 
-                        catch error
-                            reject error
-
-                        # 
-                        # * used by the hub and client to 
-                        #   transfer capsules from the bus
-                        #   onto the network. 
-                        # 
+                    # 
+                    # * used by the hub and client to 
+                    #   transfer capsules from the bus
+                    #   onto the network. 
+                    # 
 
 
 

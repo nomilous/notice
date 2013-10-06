@@ -147,6 +147,42 @@ describe 'client', ->
                 ASSIGNED['messageType'] property: 'value'
 
 
+        context 'transmission onto socket', -> 
+
+            before (done) -> 
+                @EMITTED = {}
+                Client = client()
+                socket = 
+                    on: (event, handler) => 
+
+                        #
+                        # fake the handshake
+                        #
+
+                        switch event 
+                            when 'connect' then handler()
+                            when 'accept'  then handler()
+
+                    emit: (event, args...) => 
+
+                        #
+                        # all emits available in tests
+                        #
+
+                        @EMITTED[event] = args
+
+                connector.connect = -> socket
+                Client.create 'client name', @opts, (error, @client) => done()
+
+
+            it 'emits capsule as capsule event', (done) -> 
+
+                @client.event 'test', => 
+                    
+                    should.exist @EMITTED.capsule
+                    done()
+
+
         context 'on socket event', -> 
 
             beforeEach -> 
