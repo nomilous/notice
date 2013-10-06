@@ -15,6 +15,10 @@ module.exports.capsule  = (config = {}) ->
             Object.defineProperty @, '_hidden', 
                 enumerable: false
 
+            @_protected = {}
+            Object.defineProperty @, '_protected', 
+                enumerable: false
+
 
         set: (opts) -> 
 
@@ -53,6 +57,7 @@ module.exports.capsule  = (config = {}) ->
                     enumerable: not opts.hidden
 
             if opts.protected?
+                if opts.protected then @_protected[key] = 1
                 Object.defineProperty @, key, 
                     writable: not opts.protected
 

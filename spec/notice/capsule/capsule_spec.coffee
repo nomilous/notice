@@ -46,10 +46,22 @@ describe 'Capsule', ->
                     
 
                 #
-                # nice! writable can only be set to 'no' once
+                # nice!js writable can only be set to 'no' once
                 #
 
                 instance.should.eql property: 'original'
+                done()
+
+            it 'maintains a list of protected properties', (done) -> 
+
+                Capsule = capsule()
+                instance = new Capsule
+
+                instance.set 
+                    property: 'original'
+                    protected: true
+
+                instance._protected.should.eql property: 1
                 done()
 
 

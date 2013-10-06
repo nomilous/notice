@@ -68,7 +68,7 @@ notifier.use
 
         if capsule._type == 'ticket'
 
-            return pollVariousSourcesForTicketUpdateInfo (err, res) -> 
+            return pollVariousSourcesForMaybeTheProblemCanEvenFixItself (err, res) -> 
 
                 #
                 # apply possible changes to capsule
@@ -78,19 +78,25 @@ notifier.use
                 next()
 
         next()
+
+# 
+# * still receiving the change notification even after sending the 
+#   capsule to a remote process is a posibility not yet realized.
+# 
+
 ```
 
 ### Hidden properties
 
 * In the example above, `needsSave` was set to hidden so that serialization of the capsule would not include it.
-* It would not be very practically appropriate if the `needsSave` property also got saved... ;)
-* Aaah yes, one more thing. The hidden properties can be found...
+* It would not be very practically appropriate if the `needsSave` property also got saved... `(;`
+* Aaah yes, one more thing. The hidden properties can be found out...
 
 ```coffee
 
 notifier.use
 
-    title: 'nosy middleware'
+    title: 'nosey middleware'
     (next, capsule) -> 
 
         console.log key, capsule[key] for key of capsule._hidden
