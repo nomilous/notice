@@ -2,17 +2,26 @@ Creating a Notifier
 -------------------
 
 
-Managing Middleware (locally)
------------------------------
+Hub and Client Configurables
+----------------------------
 
 
 Emitting Capsules
 -----------------
 
 
+Middleware Functions
+--------------------
 
-Hub and Client Configurables
-----------------------------
+### `next()`
+
+
+
+
+Managing Middleware (locally)
+-----------------------------
+
+
 
 
 

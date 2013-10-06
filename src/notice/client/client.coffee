@@ -125,8 +125,7 @@ module.exports.client  = (config = {}) ->
             # 
             # * unfortunately a message origin with a node style callback
             #   waiting has no concrete facility to receive this information
-            #   and will remain in the dark until the hub ack
-            # 
+            #   and will remain in the dark until the hub ack.
             #         
 
 
