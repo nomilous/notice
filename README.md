@@ -9,6 +9,11 @@ notice
 
 A middleware based communications scaffold.
 
+Quick Faqts
+-----------
+
+* `browse('./spec') = clarity++`
+
 
 The Standalone Notifier
 -----------------------
