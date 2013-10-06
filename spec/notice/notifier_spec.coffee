@@ -217,7 +217,7 @@ describe 'notifier', ->
             done()
 
 
-        it 'throws on titled middleware registration without title and fn', (done) -> 
+        it 'throws middleware registration without title and fn', (done) -> 
 
             seven = notifier().create 'Assembly Line 7'
             try seven.use 
@@ -228,7 +228,7 @@ describe 'notifier', ->
                 done()
 
 
-        it 'registers titled middleware', (done) -> 
+        it 'registers middleware', (done) -> 
 
             six = notifier().create 'Assembly Line 6'
             six.use 
@@ -246,6 +246,34 @@ describe 'notifier', ->
             mmm['arrange into single file'] (->), {}
             mmm['squirt the product in']    (->), {}
             mmm['put a lid on it']          done, {}
+
+
+        it 'can use the force() to replace middleware', (done) -> 
+
+            mix  = notifier().create 'Assembly Line Mix'
+            deck = _notifier().middleware['Assembly Line Mix']
+
+            mix.use 
+                title: '1. intro'
+                (done, msg) -> done()
+            mix.use 
+                title: '2. one the sun'
+                (done, msg) -> done()
+            mix.use 
+                title: '3. noon moon'
+                (done, msg) -> done()
+            mix.use
+                title: '4. byte orbit'
+                (done, msg) -> done()
+            
+            mix.force 
+                title: '1. intro', 
+                (done, msg) -> 
+                    ### replaced ### 
+                    done()
+
+            deck['1. intro'].toString().should.match /replaced/
+            done()
         
 
         it 'sequence is preserved when replacing middleware', (done) -> 
