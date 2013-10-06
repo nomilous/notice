@@ -42,13 +42,13 @@ module.exports.notifier  = (config = {}) ->
             traverse = (message) -> 
 
                 #
-                # sends the msg down the middleware pipeline
+                # sends the capsule down the middleware pipeline
                 # 
 
                 return message unless middlewareCount # no middleware
                 middleware = for title of list
                     do (title) -> 
-                        deferred ({resolve, reject, notify}, msg = message) -> 
+                        deferred ({resolve, reject, notify}, capsule = message) -> 
 
                             #
                             # TODO: (possibly)
@@ -74,13 +74,13 @@ module.exports.notifier  = (config = {}) ->
                             #   )
                             #
 
-                            try list[title] (-> resolve msg), msg   #, hubs
-                                                                    #
-                                                                    # TODO: consider enabling access to 
-                                                                    #       all hubs in this process for 
-                                                                    #       the middleware handlers to
-                                                                    #       switch / route capsules.
-                                                                    # 
+                            try list[title] (-> resolve capsule), capsule   #, hubs
+                                                                            #
+                                                                            # TODO: consider enabling access to 
+                                                                            #       all hubs in this process for 
+                                                                            #       the middleware handlers to
+                                                                            #       switch / route capsules.
+                                                                            # 
                             catch error
                                 reject error
 
@@ -139,15 +139,15 @@ module.exports.notifier  = (config = {}) ->
                         process.stderr.write "notice: final middleware cannot be reset! Not even using the force()"
                         return 
 
-                    final = deferred ({resolve, reject, notify}, msg) -> 
+                    final = deferred ({resolve, reject, notify}, capsule) -> 
 
-                        try fn (-> resolve msg), msg    #, hubs
-                                                        #
-                                                        # TODO: consider enabling access to 
-                                                        #       all hubs in this process for 
-                                                        #       the middleware handlers to
-                                                        #       switch / route capsules.
-                                                        # 
+                        try fn (-> resolve capsule), capsule    #, hubs
+                                                                #
+                                                                # TODO: consider enabling access to 
+                                                                #       all hubs in this process for 
+                                                                #       the middleware handlers to
+                                                                #       switch / route capsules.
+                                                                # 
                         catch error
                             reject error
 
@@ -195,21 +195,19 @@ module.exports.notifier  = (config = {}) ->
                         callback = arg if typeof arg == 'function'
 
                         return pipeline([
-                            (   ) -> local.messageTypes[type].create payload
-                            (msg) -> traverse msg
+                            (       ) -> local.messageTypes[type].create payload
+                            (capsule) -> traverse capsule
                         ]).then(
-                            (msg) -> 
-                                resolve msg
-                                callback null, msg if callback?
+                            (capsule) -> 
+                                resolve capsule
+                                callback null, capsule if callback?
                             (err) -> 
                                 reject err
                                 callback err if callback?
                             notify
                         )
                         
-
-
-
+                        
             return notifier
 
 
