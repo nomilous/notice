@@ -30,7 +30,7 @@ The `TelevisionRemote` definition can now be used to create a notifier instance.
 TelevisionRemote.create 'Family Room',
 
     context: 
-        supremeAuthority: 'Mother' unless grandfather? || saturday?
+        supremeAuthority: 'Mother' unless Grandfather? || Saturday?
 
     connect: 
         address:           'localhost'

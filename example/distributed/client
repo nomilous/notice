@@ -12,15 +12,10 @@ TelevisionRemote = notice.client(
         play:    {}
         ffwd:    {}
 
-        vote:    {}
-        impeach: 
-            beforeCreate: -> 
-                throw new Error 'democracy not configurable'
-
 ).create "Television Remote #{process.env.NAME}",
 
     context: 
-        supremeAuthority: 'Mother' unless grandfather? || saturday?
+        supremeAuthority: 'Mother' unless Grandfather? || Saturday?
 
     connect: 
         address: 'localhost'
@@ -30,13 +25,13 @@ TelevisionRemote = notice.client(
         errorWait:          1000
         rejectUnauthorized: false # tolerate self sighned cert on serverside
 
-        
+
         
         
 
     (error, client) -> 
 
-
+        return console.log error if error?
 
         client.use 
 
@@ -54,7 +49,7 @@ TelevisionRemote = notice.client(
                 #   on the code speed/etc to a minimum
                 # 
 
-                # console.log next.info
+                console.log next.info
                 next()
 
 
@@ -67,26 +62,6 @@ TelevisionRemote = notice.client(
                 # throw new Error 'error'
                 next()
 
-    
-        return console.log error if error?
-        # console.log CLIENT: client
-        # 
-        # # 
-        # # message assembly errors reject onto the promise
-        # #
-        # 
-        # client.impeach().then(
-        #     (m) -> console.log CAPSULE: m
-        #     (e) -> console.log ERROR:   e
-        # )
-
-        # #
-        # # capsule can be emitted with a callback
-        # #
-        # 
-        # client.channel 1, (err, res) -> 
-        #     console.log res
-    
         client.volume( 'up', amount: 3 ).then(
 
             (capsule) -> 
