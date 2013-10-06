@@ -74,7 +74,11 @@ module.exports.notifier  = (config = {}) ->
                             #   )
                             #
 
-                            try list[title] (-> resolve capsule), capsule   #, hubs
+                            next = -> resolve capsule
+                            # TODO_LINK
+                            next.info = 'https://github.com/nomilous/notice/tree/develop/spec/notice#next'
+
+                            try list[title] next, capsule   #, hubs
                                                                             #
                                                                             # TODO: consider enabling access to 
                                                                             #       all hubs in this process for 

@@ -31,6 +31,28 @@ TelevisionRemote = notice.client(
         errorWait:        1000
 
     (error, client) -> 
+
+
+
+        client.use 
+
+            title: 'illustate .info'
+            (next, capsule) -> 
+
+                #
+                # a usefull idea: the next function has an info property
+                # ------------------------------------------------------
+                # 
+                # * while writing code / tests to have a .info look upper
+                # * this simply returns a link to the relevant doc, but
+                #   much more could be done
+                # * it will be necessary to explore ways to keep it's impact
+                #   on the code speed/etc to a minimum
+                # 
+
+                console.log INFO: next.info
+                next()
+
     
         return console.log error if error?
         # console.log CLIENT: client

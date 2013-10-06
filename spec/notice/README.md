@@ -9,19 +9,51 @@ Hub and Client Configurables
 Emitting Capsules
 -----------------
 
+### Node style
 
-Middleware Functions
---------------------
 
-### `next()`
-
+### With promise
 
 
 
-Managing Middleware (locally)
+
+Using the middleware pipeline
 -----------------------------
 
+### Registering middleware
 
+
+### The middleware function
+
+* Do some stuff and call `next()` when done.
+* Possibly make ammendments to the capsule.
+* The capsule does not continue to the next middleware until `next()` is called.
+* Intentionally not calling next is OK - it means you don't want the message to continue further.
+* **Unintentionally not calling next is BAD**
+
+```coffee
+
+(next, capsule) -> 
+
+    getSomethingFromADatabaseOrWhatever (err, something) -> 
+
+        throw err if err?
+        capsule.something = something
+        next()
+
+```
+
+#### throwing errors
+
+#### the next function
+
+The next function has some nested tools.
+
+* `next.notify()` sends a payload back to the emitter's promise `(notify) ->`
+
+#### the capsule
+
+TODO_LINK: capsule page
 
 
 
