@@ -169,7 +169,8 @@ describe 'client', ->
                         # all emits available in tests
                         #
 
-                        @EMITTED[event] = args
+                        @EMITTED[event] = 
+                            header: args[0]
 
                 connector.connect = -> socket
                 Client.create 'client name', @opts, (error, @client) => done()
@@ -177,9 +178,19 @@ describe 'client', ->
 
             it 'emits capsule as capsule event', (done) -> 
 
+                @EMITTED = {}
                 @client.event 'test', => 
                     
                     should.exist @EMITTED.capsule
+                    done()
+
+            it 'includes a head with capsule type', (done) -> 
+
+                @EMITTED = {}
+                @client.event 'test', => 
+                    @EMITTED.capsule.header.should.eql 
+                        type: 'event'
+
                     done()
 
 

@@ -125,7 +125,10 @@ module.exports.client  = (config = {}) ->
                     #       what happens when sending on not 
                     #
 
-                    socket.emit 'capsule'
+                    header = 
+                        type: capsule._type
+
+                    socket.emit 'capsule', header
                     next()
 
 
