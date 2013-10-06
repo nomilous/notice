@@ -82,7 +82,7 @@ notifier.use
 
 ### Hidden properties
 
-* In the example above, `needsSave` was set to hidden so that serialization of the capsule would not include the `needsSave` propery.
+* In the example above, `needsSave` was set to hidden so that serialization of the capsule would not include it.
 * It would not be very practically appropriate if the `needsSave` property also got saved... ;)
 * Aaah yes, one more thing. The hidden properties can be found...
 
@@ -119,7 +119,7 @@ notifier.use
 * Creates properties that cannot be modified further.
 * Sounds possibly paranoid, but applications grow, and their intricacy grows even faster...
 * Protection - may help prevent interesting mistakes.
-* Protection - "puts a condom over the new developer".
+* Protection - *puts a condom over the new developer.*
 
 ```coffee
 
