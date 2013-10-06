@@ -139,5 +139,5 @@ notifier.use
 
 ```
 
-[ok] [cancel]
+[ok]() [cancel]()
 
