@@ -171,9 +171,23 @@ describe 'client', ->
 
                         @EMITTED[event] = 
                             header: args[0]
+                            config: args[1]
 
                 connector.connect = -> socket
-                Client.create 'client name', @opts, (error, @client) => done()
+                Client.create 'client name', @opts, (error, @client) => 
+
+                    @client.use
+                        title: 'middleware to setup test'
+                        (next, capsule) -> 
+                            capsule.set
+                                routingCode: 'x'
+                                protected: true
+                                hidden: true
+                            capsule.set
+                                createdAt: Date.now()
+                                protected: true
+                            next()
+                    done()
 
 
             it 'emits capsule as capsule event', (done) -> 
@@ -184,13 +198,30 @@ describe 'client', ->
                     should.exist @EMITTED.capsule
                     done()
 
-            it 'includes a head with capsule type', (done) -> 
+            it 'includes a header with protocol version', (done) -> 
 
                 @EMITTED = {}
                 @client.event 'test', => 
                     @EMITTED.capsule.header.should.eql 
-                        type: 'event'
+                        version: 1
 
+                    done()
+
+            it 'includes config body with event type, and hidden and protected property lists', (done) -> 
+
+                @EMITTED = {}
+                @client.event 'test', => 
+                    console.log @EMITTED.capsule.config
+                    @EMITTED.capsule.config.should.eql 
+                        type: 'event'
+                        protected: 
+                            _type: 1
+                            event: 1
+                            routingCode: 1
+                            createdAt: 1
+                        hidden: 
+                            _type: 1
+                            routingCode: 1
                     done()
 
 

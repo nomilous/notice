@@ -126,9 +126,18 @@ module.exports.client  = (config = {}) ->
                     #
 
                     header = 
-                        type: capsule._type
+                        version: 1
 
-                    socket.emit 'capsule', header
+                    #
+                    # TODO: much room for optimization here
+                    # 
+
+                    config = 
+                        type:      capsule._type
+                        protected: capsule._protected
+                        hidden:    capsule._hidden
+
+                    socket.emit 'capsule', header, config
                     next()
 
 
