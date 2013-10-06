@@ -14,6 +14,28 @@ describe 'Capsule', ->
             instance.property.should.equal 'value'
             done()
 
+        context 'all', -> 
+
+            it 'lists all properties including hidden ones', (done) -> 
+
+                Capsule = capsule()
+                instance = new Capsule
+                instance.set property:  'value'
+                instance.set secret:    'hiden value', hidden: true
+                instance.set readonly:  'protected value', protected: true
+
+                instance.should.eql
+                    property: 'value'
+                    readonly: 'protected value'
+
+                instance.all.should.eql 
+                    property: 'value'
+                    secret:   'hiden value'
+                    readonly: 'protected value'
+
+                done()
+
+
         context 'protected', -> 
 
             it 'sets a property to readonly', (done) -> 

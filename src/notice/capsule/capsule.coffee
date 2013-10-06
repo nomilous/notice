@@ -19,6 +19,21 @@ module.exports.capsule  = (config = {}) ->
             Object.defineProperty @, '_protected', 
                 enumerable: false
 
+            Object.defineProperty @, 'all', 
+                enumerable: false
+                get: => 
+                    allProperties = {}
+                    allProperties[key] = @[key] for key in (
+                        for key of @_hidden
+                            continue if typeof @[key] is 'function'
+                            key 
+                    ).concat( 
+                        for key of @
+                            continue if typeof @[key] is 'function'
+                            key
+                    )
+                    allProperties
+
 
         set: (opts) -> 
 

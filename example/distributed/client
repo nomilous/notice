@@ -20,4 +20,13 @@ notice.connect "client #{process.env.NAME}", {
     return console.log error if error?
     console.log CLIENT: client
 
+    client.use title: 'test', (next, capsule) -> 
+
+        console.log capsule.debug
+        next()
+
+    client.event 'name'
+
+
+
 
