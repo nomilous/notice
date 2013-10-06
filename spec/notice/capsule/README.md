@@ -10,11 +10,8 @@ The Capsule
 ### Watched properties
 
 * Can assign a callback to receive notification of a propery change.
-* Useful as a comms channel back to some previous middleware in the pipeline.
-* Keep in mind that middleware are run in the same sequence that they were registered in.
-
-#### eg. 
-
+* Useful as a **comms** channel back to some previous middleware in the pipeline.
+* Keep in mind that middleware are run in the same sequence that they were registered.
 
 ```coffee
 
