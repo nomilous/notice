@@ -48,3 +48,6 @@ Managing Middleware (remote, hotswap)
 -------------------------------------
 
 
+Horizontal Scaling and High Availability
+----------------------------------------
+
