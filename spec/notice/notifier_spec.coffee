@@ -247,7 +247,6 @@ describe 'notifier', ->
             mmm['squirt the product in']    (->), {}
             mmm['put a lid on it']          done, {}
 
-
         it 'can use the force() to replace middleware', (done) -> 
 
             mix  = notifier().create 'Assembly Line Mix'
@@ -293,6 +292,42 @@ describe 'notifier', ->
 
             should.not.exist deck['1. intro']
             done()
+
+
+        it.only 'can register a final middleware', (done) -> 
+
+            stix = notifier().create 'Happy Ending'
+
+            stix.final 
+                title: 'three'
+                (done, msg) -> 
+                    msg.array.push 'three'
+                    done()
+
+            stix.use 
+                title: 'one'
+                (done, msg) -> 
+                    msg.array = []
+                    msg.array.push 'one'
+                    done()
+            stix.use 
+                title: 'two'
+                (done, msg) -> 
+                    msg.array.push 'two'
+                    done()
+
+            stix.event (err, res) -> 
+
+                #console.log res
+                res.array.should.eql ['one', 'two', 'three']
+                done()
+
+
+
+        it 'can only register a final middleware once', (done) -> 
+
+
+
         
 
         it 'sequence is preserved when replacing middleware', (done) -> 

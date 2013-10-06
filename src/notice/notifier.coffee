@@ -37,6 +37,7 @@ module.exports.notifier  = (config = {}) ->
             
             middlewareCount = 0
             local.middleware[originCode] = list = {}
+            final = undefined
 
             traverse = (message) -> 
 
@@ -45,7 +46,7 @@ module.exports.notifier  = (config = {}) ->
                 # 
 
                 return message unless middlewareCount # no middleware
-                return pipeline( for title of list
+                middleware = for title of list
                     do (title) -> 
                         deferred ({resolve, reject, notify}, msg = message) -> 
 
@@ -82,8 +83,10 @@ module.exports.notifier  = (config = {}) ->
                                                                     # 
                             catch error
                                 reject error
-                )
 
+
+                middleware.push final if final?
+                return pipeline middleware
 
             local.notifiers[originCode] = notifier = 
 
@@ -122,6 +125,38 @@ module.exports.notifier  = (config = {}) ->
                     middlewareCount++ unless list[opts.title]?
                     list[opts.title] = fn
 
+                final: (opts, fn) -> 
+
+                    #
+                    # assign a middleware to run last
+                    # -------------------------------
+                    # 
+                    # * this can only be set once.
+                    # * once set it cannot be changed
+                    # 
+
+                    return if typeof final is 'function'
+                    final = deferred ({resolve, reject, notify}, msg) -> 
+
+                        try fn (-> resolve msg), msg    #, hubs
+                                                        #
+                                                        # TODO: consider enabling access to 
+                                                        #       all hubs in this process for 
+                                                        #       the middleware handlers to
+                                                        #       switch / route capsules.
+                                                        # 
+                        catch error
+                            reject error
+
+                        # 
+                        # * used by the hub and client to 
+                        #   transfer capsules from the bus
+                        #   onto the network. 
+                        # 
+
+
+
+
 
 
             #
@@ -138,7 +173,7 @@ module.exports.notifier  = (config = {}) ->
             #
 
             for type of config.messages
-                continue if type == 'use'
+                continue if notifier[type]?
                 do (type) -> 
                     notifier[type] = deferred (args...) -> 
 
