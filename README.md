@@ -105,7 +105,7 @@ notifier.event 'event name',
 ```
 
 
-### create a `Notifier` that does more than just 'event()'
+### create a `Notifier` that does more than just `event()`
 
 ```coffee
 notice = require 'notice'
