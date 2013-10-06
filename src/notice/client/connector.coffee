@@ -6,8 +6,8 @@ module.exports.connect = (opts) ->
     opts.transport ||= 'http'
     opts.address   ||= 'localhost'
 
-    if opts.allowUncertified
-        require('https').globalAgent.options.rejectUnauthorized = false
+    if opts.rejectUnauthorized?
+        require('https').globalAgent.options.rejectUnauthorized = opts.rejectUnauthorized
 
     return ioclient.connect "#{ opts.transport }://#{ opts.address }:#{ opts.port }"
 

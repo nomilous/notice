@@ -1,9 +1,74 @@
-Creating a Notifier
--------------------
-
 
 Hub and Client Configurables
 ----------------------------
+
+
+Creating a Notifier
+-------------------
+
+### Client 
+
+```coffee
+
+notice = require 'notice'
+TelevisionRemote = notice.client
+
+    messages: 
+
+        channel: {}
+        volume:  {}
+        pause:   {}
+        play:    {}
+        ffwd:    {}
+
+```
+The `TelevisionRemote` definition can now be used to create a notifier instance.
+
+```
+{TelevisionRemote} = require './the/previous/block'
+
+TelevisionRemote.create 'Family Room',
+
+    context: 
+        supremeAuthority: 'Mother' unless grandfather? || saturday?
+
+    connect: 
+        address:           'localhost'
+        transport:         'https'
+        port:               10101
+        secret:             process.env.SECRET
+        errorWait:          1000
+        rejectUnauthorized: false # tolerate self sighned cert on serverside
+
+    (err, remote) -> 
+
+        #
+        # callback receives the connected remote or error
+        #
+
+```
+
+### Hub
+
+```coffee
+
+notice = require 'notice'
+Television = notice.hub
+    messages: 
+        #
+        # requires the same message definitions as the client
+        #
+
+Television.create
+    listen: # similar to the client
+    (error, hub) ->
+
+        #
+        # callback receives listening hub
+        # 
+
+
+```
 
 
 Emitting Capsules

@@ -23,12 +23,16 @@ TelevisionRemote = notice.client(
         supremeAuthority: 'Mother' unless grandfather? || saturday?
 
     connect: 
-        # address: 'localhost'
-        allowUncertified: true # tolerate self sighned cert on serverside
-        transport:       'https'
-        port:             10101
-        secret:           process.env.SECRET
-        errorWait:        1000
+        address: 'localhost'
+        transport:         'https'
+        port:               10101
+        secret:             process.env.SECRET
+        errorWait:          1000
+        rejectUnauthorized: false # tolerate self sighned cert on serverside
+
+        
+        
+        
 
     (error, client) -> 
 
@@ -60,6 +64,7 @@ TelevisionRemote = notice.client(
             (next, capsule) -> 
 
                 if capsule._type == 'volume' then next.notify 'increasing now'
+                # throw new Error 'error'
                 next()
 
     
@@ -85,7 +90,7 @@ TelevisionRemote = notice.client(
         client.volume( 'up', amount: 3 ).then(
 
             (capsule) -> 
-            (error)   -> 
+            (error)   -> console.log ERROR: error
             (notify)  -> console.log NOTIFY: notify 
 
         )
