@@ -41,6 +41,7 @@ Using the middleware pipeline
 * Possibly make ammendments to the capsule.
 * The capsule does not continue to the next middleware until `next()` is called.
 * Intentionally not calling next is OK - it means you don't want the message to continue further.
+* Future version may require calling next.cancel() to facilitate pipeline metrics and bottleneck detection.
 * **Unintentionally not calling next is BAD**
 
 #### throwing errors
