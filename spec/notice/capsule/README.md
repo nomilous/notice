@@ -124,6 +124,7 @@ notifier.use
 ```coffee
 
 notifier.use
+
     title: 'assign route'
     (next, capsule) -> 
 
@@ -137,6 +138,6 @@ notifier.use
 
 
 ```
-...
 
+[ok] [cancel]
 
