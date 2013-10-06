@@ -294,7 +294,7 @@ describe 'notifier', ->
             done()
 
 
-        it.only 'can register a final middleware', (done) -> 
+        it 'can register a final middleware', (done) -> 
 
             stix = notifier().create 'Happy Ending'
 

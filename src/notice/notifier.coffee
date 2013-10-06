@@ -135,7 +135,10 @@ module.exports.notifier  = (config = {}) ->
                     # * once set it cannot be changed
                     # 
 
-                    return if typeof final is 'function'
+                    if typeof final is 'function'
+                        process.stderr.write "notice: final middleware cannot be reset! Not even using the force()"
+                        return 
+
                     final = deferred ({resolve, reject, notify}, msg) -> 
 
                         try fn (-> resolve msg), msg    #, hubs
