@@ -326,9 +326,37 @@ describe 'notifier', ->
 
         it 'can only register a final middleware once', (done) -> 
 
+            stix = notifier().create 'Happy Ending'
 
+            stix.final 
+                title: 'three'
+                (done, msg) -> 
+                    msg.array.push 'three'
+                    done()
 
-        
+            stix.use 
+                title: 'one'
+                (done, msg) -> 
+                    msg.array = []
+                    msg.array.push 'one'
+                    done()
+            stix.use 
+                title: 'two'
+                (done, msg) -> 
+                    msg.array.push 'two'
+                    done()
+
+            stix.final 
+                title: 'three'
+                (done, msg) -> 
+                    msg.array.push 'replace three'
+                    done()
+
+            stix.event (err, res) -> 
+
+                #console.log res
+                res.array.should.eql ['one', 'two', 'three']
+                done()
 
         it 'sequence is preserved when replacing middleware', (done) -> 
 
