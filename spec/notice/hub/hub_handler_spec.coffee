@@ -26,52 +26,6 @@ describe 'handler', ->
         instance.disconnect.should.be.an.instanceof Function
         done()
 
-
-    context 'disconnect', -> 
-
-        before -> @HandlerClass = handler()
-
-        beforeEach ->
-
-            @instance = @HandlerClass.create(
-                
-                hubName      = 'hubname'
-                @hubNotifier = control: -> 
-                @hubContext  = 
-                    clients: 
-                        SOCKET_ID: 
-                            connected:
-                                state:   'connected'
-                                stateAt: '1'
-                    connections: -> # TODO: remove this
-
-            )
-
-        it """ 
-                returns a function (the handler) 
-                that is enclosed in a scope containing 
-                the socket to be handled 
-
-        """, (done) ->
-
-            handle = @instance.disconnect id: 'SOCKET_ID_2'
-            handle.should.be.an.instanceof Function
-            done()
-
-
-        it 'sets the client to disconnected', (done) -> 
-
-            Date.now = -> 2
-            handle = @instance.disconnect id: 'SOCKET_ID'
-            handle()
-
-            connected = @hubContext.clients.SOCKET_ID.connected
-            connected.should.eql 
-                state: 'disconnected'
-                stateAt: 2
-            done()
-
-
     context 'assign', -> 
 
         it 'assigns handlers for each message type onto the connecting socket', (done) -> 
@@ -131,6 +85,51 @@ describe 'handler', ->
             socket   = on: (event, handler) -> ASSIGNED[event] = handler
             instance.assign socket
             ASSIGNED.createUser()
+
+
+    context 'disconnect', -> 
+
+        before -> @HandlerClass = handler()
+
+        beforeEach ->
+
+            @instance = @HandlerClass.create(
+                
+                hubName      = 'hubname'
+                @hubNotifier = control: -> 
+                @hubContext  = 
+                    clients: 
+                        SOCKET_ID: 
+                            connected:
+                                state:   'connected'
+                                stateAt: '1'
+                    connections: -> # TODO: remove this
+
+            )
+
+        it """ 
+                returns a function (the handler) 
+                that is enclosed in a scope containing 
+                the socket to be handled 
+
+        """, (done) ->
+
+            handle = @instance.disconnect id: 'SOCKET_ID_2'
+            handle.should.be.an.instanceof Function
+            done()
+
+
+        it 'sets the client to disconnected', (done) -> 
+
+            Date.now = -> 2
+            handle = @instance.disconnect id: 'SOCKET_ID'
+            handle()
+
+            connected = @hubContext.clients.SOCKET_ID.connected
+            connected.should.eql 
+                state: 'disconnected'
+                stateAt: 2
+            done()
 
 
     context 'handshake', -> 

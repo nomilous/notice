@@ -87,8 +87,11 @@ module.exports.handler  = (config = {}) ->
 
                 capsule: (socket) -> 
 
-                    
-                   
+                    ### grep PROTOCOL1 decode ###
+                
+                    (header, config, payload) -> 
+
+                        console.log arguments
 
 
 

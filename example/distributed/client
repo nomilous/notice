@@ -35,33 +35,19 @@ TelevisionRemote = notice.client(
         return console.log error if error?
         # console.log CLIENT: client
 
-        #
-        # capsules can be emitted with a promise
-        #
-
-        client.impeach().then(
-
-            (m) -> console.log CAPSULE: m
-            (e) -> console.log ERROR:   e
-
-        )
+        # #
+        # # capsules can be emitted with a promise
+        # #
+        # 
+        # client.impeach().then(
+        #     (m) -> console.log CAPSULE: m
+        #     (e) -> console.log ERROR:   e
+        # )
 
         #
         # capsule can be emitted with a callback
         #
 
-        client.play (err, res) -> 
+        client.channel 1, (e, m) -> 
 
-            console.log()
-            console.log 'visible capsule AFTER middleware', res
-            console.log 'entire  capsule AFTER middleware', res.all
-
-
-        client.channel 1, (err, res) -> 
-
-            console.log()
-            console.log 'visible capsule AFTER middleware', res
-            console.log 'entire  capsule AFTER middleware', res.all
-
-            res.channel = 2
-            console.log 'capsule.channel cannot be changed': res
+            console.log m
