@@ -36,7 +36,7 @@ TelevisionRemote = notice.client(
         client.use 
 
             title: 'illustate .info'
-            (next, capsule) -> 
+            (next, capsule, context) -> 
 
                 #
                 # a usefull idea: the next function has an info property
@@ -50,6 +50,7 @@ TelevisionRemote = notice.client(
                 # 
 
                 console.log next.info
+                console.log context.info
                 next()
 
 

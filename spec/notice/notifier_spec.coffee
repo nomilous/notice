@@ -273,8 +273,26 @@ describe 'notifier', ->
                 m.should.eql one: true, two: true, three: true
                 done()
 
+        it 'a traversal context travels the pipeline in tandem with the capsule', (done) -> 
 
-         it 'middleware can notify the promise via next.notify()', (done) -> 
+            mix  = notifier().create 'Assembly Line Mix'
+            mix.use 
+                title: '1. intro'
+                (next, capsule, context) ->
+
+                    context.x = 'αω'
+                    done()
+            mix.use 
+                title: '2. one the sun'
+                (next, capsule, context) -> 
+
+                    context.x.should.equal 'αω'
+                    done()
+
+            mix.event()
+
+
+        it 'middleware can notify the promise via next.notify()', (done) -> 
 
             mix  = notifier().create 'Assembly Line Mix'
 

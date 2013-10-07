@@ -100,7 +100,7 @@ Using the middleware pipeline
 
 ```coffee
 
-(next, capsule) -> 
+(next, capsule, context) -> 
 
     getSomethingFromADatabaseOrWhatever (err, something) -> 
 
@@ -117,7 +117,7 @@ Using the middleware pipeline
 * Future versions may require calling next.cancel() to facilitate pipeline metrics and bottleneck detection.
 * **Unintentionally not calling next is BAD**
 
-#### throwing errors
+
 
 #### the next function
 
@@ -129,7 +129,10 @@ The next function has some nested tools.
 
 TODO_LINK: capsule page
 
+#### the context
 
+
+#### throwing errors
 
 Hub and Client Context / Continuity
 -----------------------------------

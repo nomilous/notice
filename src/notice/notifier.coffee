@@ -49,9 +49,26 @@ module.exports.notifier  = (config = {}) ->
 
                 #
                 # sends the capsule down the middleware pipeline
+                # ----------------------------------------------
+                # 
+                # * This calls all registered middleware in registered order
+                # * There is a first and last middleware for internal use 
+                # * TODO: already messssy implementation, some repeated bits, fix
+                #
+                # 
+                                                         # TODO: if only first is present?
+                return capsule unless middlewareCount || last? # no middleware
+
+                #
+                # * A traversal context travels the pipeline in tandem with the capsule
+                # 
+                #     ie. (next, capsule, context) -> 
                 # 
 
-                return capsule unless middlewareCount || final? # no middleware
+                context = 
+                    # TODO_LINK
+                    info: 'https://github.com/nomilous/notice/tree/develop/spec/notice#the-context'
+
                 middleware = for title of list
                     do (title) -> 
                         deferred ({resolve, reject, notify}) -> 
@@ -77,7 +94,7 @@ module.exports.notifier  = (config = {}) ->
                             next.info   = 'https://github.com/nomilous/notice/tree/develop/spec/notice#the-next-function'
                             next.notify = (update) -> process.nextTick -> notify update
 
-                            try list[title] next, capsule   #, hubs
+                            try list[title] next, capsule, context  #, hubs
                                                                             #
                                                                             # TODO: consider enabling access to 
                                                                             #       all hubs in this process for 
@@ -93,15 +110,11 @@ module.exports.notifier  = (config = {}) ->
                         next = -> process.nextTick -> resolve capsule
                         next.notify = (update) -> process.nextTick -> notify update
 
-                        try last next, capsule
+                        try last next, capsule, context
                         catch error
                             reject error
                 
                 ) if last?
-
-                #
-                # TODO: messssy, repeated, fix
-                #
 
                 middleware.unshift(
                     deferred ({resolve, reject, notify}) -> 
@@ -109,7 +122,7 @@ module.exports.notifier  = (config = {}) ->
                         next = -> process.nextTick -> resolve capsule
                         next.notify = (update) -> process.nextTick -> notify update
 
-                        try first next, capsule
+                        try first next, capsule, context
                         catch error
                             reject error
                 
