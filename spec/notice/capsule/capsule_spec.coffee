@@ -10,6 +10,15 @@ describe 'Capsule', ->
         should.exist instance._uuid
         done()
 
+    it 'can set the uuid at creation (and it sticks)', (done) -> 
+
+        Capsule  = capsule()
+        instance = new Capsule uuid: 'Tx1234'
+        instance._uuid.should.equal 'Tx1234'
+        instance._uuid = 'erg2q3'
+        instance._uuid.should.equal 'Tx1234'
+        done()
+
 
     context 'set()', -> 
 

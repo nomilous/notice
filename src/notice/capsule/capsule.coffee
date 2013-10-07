@@ -15,7 +15,7 @@ module.exports.capsule  = (config = {}) ->
         # ./notifier - pushes it down the middleware pipeline
         #
 
-        constructor: -> 
+        constructor: (params = {}) -> 
 
             @_hidden = {}
             Object.defineProperty @, '_hidden', 
@@ -28,7 +28,7 @@ module.exports.capsule  = (config = {}) ->
             Object.defineProperty @, '_uuid', 
                 enumarable: false
                 writable: false
-                value: v1() 
+                value: params.uuid || v1() 
 
             Object.defineProperty @, 'all', 
                 enumerable: false
