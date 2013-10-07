@@ -342,12 +342,13 @@ describe 'notifier', ->
             done()
 
 
-        it 'can register a final middleware', (done) -> 
+        it 'can register a last middleware', (done) -> 
 
             stix = notifier().create 'Happy Ending'
 
-            stix.final 
+            stix.use 
                 title: 'three'
+                last:   true
                 (done, msg) -> 
                     msg.array.push 'three'
                     done()
@@ -372,12 +373,13 @@ describe 'notifier', ->
 
 
 
-        it 'can only register a final middleware once', (done) -> 
+        it 'can only register a last middleware once', (done) -> 
 
             stix = notifier().create 'Happy Ending'
 
-            stix.final 
+            stix.use 
                 title: 'three'
+                last:   true
                 (done, msg) -> 
                     msg.array.push 'three'
                     done()
@@ -397,8 +399,9 @@ describe 'notifier', ->
             swap = process.stderr.write # sssht, once
             process.stderr.write = -> process.stderr.write = swap
 
-            stix.final 
+            stix.use 
                 title: 'three'
+                last:   true
                 (done, msg) -> 
                     msg.array.push 'replace three'
                     done()
@@ -408,6 +411,28 @@ describe 'notifier', ->
                 #console.log res
                 res.array.should.eql ['one', 'two', 'three']
                 done()
+
+        it 'can register a first middleware', (done) -> 
+
+            stix = notifier().create 'Happy Beginning'
+            stix.use 
+                title: 'one'
+                (done, msg) -> 
+                    msg.array ||= []
+                    msg.array.push 'one'
+                    done()
+            stix.use 
+                title: 'two'
+                first:          true
+                (done, msg) -> 
+                    msg.array ||= []
+                    msg.array.push 'zero'
+                    done()
+
+             stix.event (err, res) -> 
+                res.array.should.eql [ 'zero', 'one' ]
+                done()
+                
 
         it 'sequence is preserved when replacing middleware', (done) -> 
 

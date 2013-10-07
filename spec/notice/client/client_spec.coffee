@@ -205,10 +205,7 @@ describe 'client', ->
                 @EMITTED = {}
                 @client.event 'test', => 
 
-                    @EMITTED.capsule.header.should.eql 
-                        version:  1
-                        sequence: 1
-
+                    @EMITTED.capsule.header.should.eql [1,1]
                     done()
 
             it 'includes config body with event type, and hidden and protected property lists', (done) -> 

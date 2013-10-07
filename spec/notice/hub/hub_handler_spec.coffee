@@ -153,7 +153,7 @@ describe 'handler', ->
                 id: 'SOCKET_ID'
             
             handle( 
-                header  = {}
+                header  = [1]
                 config  = {}
                 payload = {}
             )

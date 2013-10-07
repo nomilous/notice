@@ -37,7 +37,13 @@ module.exports.notifier  = (config = {}) ->
             
             middlewareCount = 0
             local.middleware[originCode] = list = {}
-            final = undefined
+            
+            #
+            # first and last middleware reserved for hub and client
+            #
+
+            first = undefined
+            last  = undefined
 
             traverse = (capsule) -> 
 
@@ -87,11 +93,28 @@ module.exports.notifier  = (config = {}) ->
                         next = -> process.nextTick -> resolve capsule
                         next.notify = (update) -> process.nextTick -> notify update
 
-                        try final next, capsule
+                        try last next, capsule
                         catch error
                             reject error
                 
-                ) if final?
+                ) if last?
+
+                #
+                # TODO: messssy, repeated, fix
+                #
+
+                middleware.unshift(
+                    deferred ({resolve, reject, notify}) -> 
+                        
+                        next = -> process.nextTick -> resolve capsule
+                        next.notify = (update) -> process.nextTick -> notify update
+
+                        try first next, capsule
+                        catch error
+                            reject error
+                
+                ) if first?
+
 
                 return pipeline middleware
 
@@ -105,6 +128,20 @@ module.exports.notifier  = (config = {}) ->
                         opts? and opts.title? and 
                         fn? and typeof fn == 'function'
                     )
+
+                    if opts.last?
+                        if typeof last is 'function'
+                            process.stderr.write "notice: last middleware cannot be reset! Not even using the force()"
+                            return 
+                        last = fn
+                        return
+
+                    if opts.first?
+                        if typeof first is 'function'
+                            process.stderr.write "notice: first middleware cannot be reset! Not even using the force()"
+                            return 
+                        first = fn
+                        return
 
                     unless list[opts.title]?
 
@@ -131,32 +168,6 @@ module.exports.notifier  = (config = {}) ->
                     
                     middlewareCount++ unless list[opts.title]?
                     list[opts.title] = fn
-
-                final: (opts, fn) -> 
-
-                    #
-                    # assign a middleware to run last
-                    # -------------------------------
-                    # 
-                    # * this can only be set once.
-                    # * once set it cannot be changed
-                    # 
-
-                    if typeof final is 'function'
-                        process.stderr.write "notice: final middleware cannot be reset! Not even using the force()"
-                        return 
-
-                    final = fn 
-
-                    # 
-                    # * used by the hub and client to 
-                    #   transfer capsules from the bus
-                    #   onto the network. 
-                    # 
-
-
-
-
 
 
             #

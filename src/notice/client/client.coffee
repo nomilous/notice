@@ -118,21 +118,24 @@ module.exports.client  = (config = {}) ->
             # 
 
             #
-            # * for now, the capsule is popped off the tail of the local
+            # * the capsule is popped off the tail of the local
             #   middleware pipeline after the hub acks the capsule
             # 
             # * use the promise notify() call to inform the capsule origin
             #   of the capsule being sent.
-            # 
-            # * unfortunately a capsule origin with a node style callback
+            #   
+            #   Unfortunately a capsule origin with a node style callback
             #   waiting has no concrete facility to receive this information
             #   and will remain in the dark until the hub ack.
             #         
 
 
-            sequence = 1
+            version  = 1    # protocol version
+                            # TODO: version into handshake
+            sequence = 0
 
-            client.final
+
+            client.last
 
                 title: 'outbound socket interface'
                 (next, capsule) -> 
@@ -143,10 +146,8 @@ module.exports.client  = (config = {}) ->
                     # TODO: is socket connected?
                     #       what happens when sending on not 
                     #
-
-                    header = 
-                        version:  1
-                        sequence: sequence++ 
+                    sequence++
+                    header = [version, sequence]
 
                     #
                     # TODO: much room for optimization here
