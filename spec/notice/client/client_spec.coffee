@@ -2,8 +2,11 @@ should            = require 'should'
 {_client, client, connector} = require '../../../lib/notice/client'
 {_notifier}       = require '../../../lib/notice/notifier'
 {hostname}        = require 'os'
+uuid              = require 'node-uuid' 
 
 describe 'client', -> 
+
+    before -> uuid.v1 = -> 'testable'
 
     beforeEach -> 
         @now = Date.now
@@ -172,7 +175,7 @@ describe 'client', ->
                         if event == 'capsule'
                             @EMITTED[event] = 
                                 header:  args[0]
-                                config:  args[1]
+                                control: args[1]
                                 payload: args[2]
 
                 connector.connect = -> socket
@@ -212,10 +215,11 @@ describe 'client', ->
 
                 @EMITTED = {}
                 @client.event 'test', => 
-                    #console.log @EMITTED.capsule.config
+                    #console.log @EMITTED.capsule.control
 
-                    @EMITTED.capsule.config.should.eql 
+                    @EMITTED.capsule.control.should.eql 
                         type: 'event'
+                        uuid: 'testable'
                         protected: 
                             _type: 1
                             event: 1

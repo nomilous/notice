@@ -135,9 +135,10 @@ module.exports.client  = (config = {}) ->
             sequence = 0
 
 
-            client.last
+            client.use
 
                 title: 'outbound socket interface'
+                last:  true
                 (next, capsule) -> 
 
                     ### grep PROTOCOL1 encode ###
@@ -154,8 +155,9 @@ module.exports.client  = (config = {}) ->
                     # TODO: move this into {protocol}.encode
                     # 
 
-                    config = 
+                    control = 
                         type:      capsule._type
+                        uuid:      capsule._uuid
                         protected: capsule._protected
                         hidden:    capsule._hidden
 
@@ -180,7 +182,7 @@ module.exports.client  = (config = {}) ->
                         #?       are there birds in the fiber
                         #?
 
-                    socket.emit 'capsule', header, config, capsule.all
+                    socket.emit 'capsule', header, control, capsule.all
                     next()
 
 

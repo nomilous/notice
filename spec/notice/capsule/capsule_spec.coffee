@@ -3,6 +3,7 @@ should    = require 'should'
 
 describe 'Capsule', -> 
 
+
     it 'has a uuid assigned at creation', (done) -> 
 
         Capsule  = capsule()

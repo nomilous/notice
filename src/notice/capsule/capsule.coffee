@@ -1,4 +1,4 @@
-{v1} = require 'node-uuid'
+uuid = require 'node-uuid'
 
 testable                = undefined
 module.exports._capsule = -> testable
@@ -28,7 +28,7 @@ module.exports.capsule  = (config = {}) ->
             Object.defineProperty @, '_uuid', 
                 enumarable: false
                 writable: false
-                value: params.uuid || v1() 
+                value: params.uuid || uuid.v1() 
 
             Object.defineProperty @, 'all', 
                 enumerable: false
