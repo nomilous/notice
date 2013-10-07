@@ -3,6 +3,14 @@ should    = require 'should'
 
 describe 'Capsule', -> 
 
+    it 'has a uuid assigned at creation', (done) -> 
+
+        Capsule  = capsule()
+        instance = new Capsule
+        should.exist instance._uuid
+        done()
+
+
     context 'set()', -> 
 
         it 'sets a property', (done) -> 

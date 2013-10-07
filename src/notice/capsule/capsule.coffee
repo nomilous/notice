@@ -1,6 +1,12 @@
+{v1} = require 'node-uuid'
+
 testable                = undefined
 module.exports._capsule = -> testable
 module.exports.capsule  = (config = {}) ->
+
+    #
+    # TODO: config defined uuid construction
+    #
 
     testable = class Capsule
 
@@ -18,6 +24,11 @@ module.exports.capsule  = (config = {}) ->
             @_protected = {}
             Object.defineProperty @, '_protected', 
                 enumerable: false
+
+            Object.defineProperty @, '_uuid', 
+                enumarable: false
+                writable: false
+                value: v1() 
 
             Object.defineProperty @, 'all', 
                 enumerable: false
