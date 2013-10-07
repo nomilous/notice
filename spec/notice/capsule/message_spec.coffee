@@ -77,7 +77,7 @@ describe 'Message', ->
         it 'calls beforeCreate ahead of property assignment', (done) -> 
 
             Message = message 'type',
-                messages: type: beforeCreate: (done, msg) -> 
+                capsules: type: beforeCreate: (done, msg) -> 
                     msg.preAssigned = 'value'
                     done()
 
@@ -88,7 +88,7 @@ describe 'Message', ->
         it 'sets _type before beforeCreate', (done) -> 
 
             Message = message 'type',
-                messages: type: beforeCreate: (next, msg) -> 
+                capsules: type: beforeCreate: (next, msg) -> 
                     msg._type.should.equal 'type'
                     done()
 
@@ -97,7 +97,7 @@ describe 'Message', ->
         it 'calls afterCreate after property assignment', (done) -> 
 
             Message = message 'type',
-                messages: type: afterCreate: (next, msg) ->  
+                capsules: type: afterCreate: (next, msg) ->  
                     msg.one++
                     done()
 
@@ -112,7 +112,7 @@ describe 'Message', ->
         it 'beforeCreate and afterCreate can fail the message creation', (done) -> 
 
             Message = message 'type',
-                messages: type: beforeCreate: (done, msg) ->  
+                capsules: type: beforeCreate: (done, msg) ->  
                     done new Error 'darn, no DB to save initial message state'
 
             Message.create( 'helloo-oo-oo': 'bat flies out' ).then (->), (error) ->

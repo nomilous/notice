@@ -19,22 +19,22 @@ notice.listen 'hub name', {
 
     hub.use 
         title: 'first middleware'
-        (done, msg) -> 
+        (next, capsule) -> 
 
-            if msg._type == 'control'
+            if capsule._type == 'control'
 
                 #
                 # WARNING, interface design remains in progress!
-                #          precise content of these control messages 
+                #          precise content of these control capsules 
                 #          may change without warning
                 #
                 
-                console.log "[#{msg.control}]", 
-                    msg.client.origin
-                    hostname: msg.client.hostname
-                    pid: msg.client.pid
+                console.log "[#{capsule.control}]", 
+                    capsule.client.origin
+                    hostname: capsule.client.hostname
+                    pid: capsule.client.pid
 
-                return done()
+                return next()
             
             console.log RECEIVED: msg
-            done()
+            next()

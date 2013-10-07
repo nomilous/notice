@@ -4,7 +4,7 @@ notifier   = require '../notifier'
 Connector  = require './connector'
 {
     terminal
-    reservedMessage
+    reservedCapsule
     undefinedArg
     alreadyDefined
     connectRejected
@@ -16,9 +16,10 @@ testable               = undefined
 module.exports._client = -> testable
 module.exports.client  = (config = {}) ->
 
-    for type of config.messages
-        throw reservedMessage type if type.match(
-            /connect|handshake|accept|reject|disconnect|resume|capsule|error/
+    for type of config.capsules
+
+        throw reservedCapsule type if type.match(
+            /^connect$|^handshake$|^accept$|^reject$|^disconnect$|^resume$|^capsule$|^error$/
         )
 
 
@@ -59,23 +60,23 @@ module.exports.client  = (config = {}) ->
             #
             # #DUPLICATE1
             # 
-            # subscribe inbound handlers for all configured messages
+            # subscribe inbound handlers for all configured capsules
             # ------------------------------------------------------
             # 
             # TODO: set capsule.inbound
             # 
 
-            for type of config.messages
+            for type of config.capsules
 
                     #
-                    # * control messages are local only
+                    # * control capsules are local only
                     #  
 
                 continue if type == 'control'
                 do (type) -> 
 
                     #
-                    # * all other messages are proxied into the local 
+                    # * all other capsules are proxied into the local 
                     #   middleware pipeline (hub) 
                     #
 
@@ -84,14 +85,14 @@ module.exports.client  = (config = {}) ->
                         unless typeof client[type] == 'function'
 
                             # 
-                            # * client and hub should use a common messages config
+                            # * client and hub should use a common capsules config
                             # 
 
-                            process.stderr.write "notice undefined message type '#{type}'"
+                            process.stderr.write "notice undefined capsule type '#{type}'"
                             return
 
                         #
-                        # * proxy the inbound message onto the middleware pipeline
+                        # * proxy the inbound capsules onto the middleware pipeline
                         # TODO: typeValue, protected, hidden, watched
                         # 
 
@@ -99,7 +100,7 @@ module.exports.client  = (config = {}) ->
 
 
             #
-            # final middleware on the local bus transfers message onto socket 
+            # final middleware on the local bus transfers capsule onto socket 
             # ---------------------------------------------------------------
             # 
             # * Notifications generated localy traverse the local middleware
@@ -107,7 +108,7 @@ module.exports.client  = (config = {}) ->
             # 
             # * If they reach the end of the pipeline they are transferred
             #   onto the hub-bound socket AND called back to the original 
-            #   message creator.
+            #   capsule creator.
             # 
             # * later, capsule.boomerang makes this final middleware not
             #          callback to the creator until the capsule returns 
@@ -120,10 +121,10 @@ module.exports.client  = (config = {}) ->
             # * for now, the capsule is popped off the tail of the local
             #   middleware pipeline after the hub acks the capsule
             # 
-            # * use the promise notify() call to inform the message origin
+            # * use the promise notify() call to inform the capsule origin
             #   of the capsule being sent.
             # 
-            # * unfortunately a message origin with a node style callback
+            # * unfortunately a capsule origin with a node style callback
             #   waiting has no concrete facility to receive this information
             #   and will remain in the dark until the hub ack.
             #         
@@ -408,7 +409,7 @@ createClient = (title, opts) ->
                     # TODO: strip context (it was/shouldBe sent on handshake)
                     # 
                     #       - some context should remain (title, type)
-                    #       - no point in sending the origin on each message
+                    #       - no point in sending the origin on each capsule
                     #       - allows for much more context at no extra cost
                     #       - keep in pending persistance layer in mind here
                     #
@@ -434,7 +435,7 @@ createClient = (title, opts) ->
                         # TODO: reconstitute context (stripped from all but handshake)
                         #       
                         #       - assuming hub also provides its context to client
-                        #         (this is inbound to client message)
+                        #         (this is inbound to client capsule)
                         #
 
                         msg.direction = 'in'
@@ -464,7 +465,7 @@ createClient = (title, opts) ->
 
         #
         # * emit reconnect notification down the pipeline, the implementations
-        #   local middleware can ammend this message before it gets emitted
+        #   local middleware can ammend this capsule before it gets emitted
         #   hubward
         # * returns promise
         #

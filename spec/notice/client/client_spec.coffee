@@ -29,11 +29,11 @@ describe 'client', ->
             done()
 
 
-        it 'throws when attempting to assign reserved message types', (done) -> 
+        it 'throws when attempting to assign reserved capsule types', (done) -> 
 
-            try Client = client messages: connect: {}
+            try Client = client capsules: connect: {}
             catch error
-                error.should.match /is a reserved message type/
+                error.should.match /is a reserved capsule type/
                 done()
 
     context 'create()', -> 
@@ -108,25 +108,25 @@ describe 'client', ->
 
         context 'assign', -> 
 
-            it 'assigns handlers for each message type onto the connecting socket', (done) -> 
+            it 'assigns handlers for each capsule type onto the connecting socket', (done) -> 
 
                 Client = client 
-                    messages: 
-                        messageType: {}
+                    capsules: 
+                        capsuleType: {}
 
                 ASSIGNED = {}
                 socket = on: (event, handler) -> ASSIGNED[event] = handler
                 connector.connect = -> socket
                 Client.create 'client name', @opts, ->
 
-                ASSIGNED.messageType.should.be.an.instanceof Function
+                ASSIGNED.capsuleType.should.be.an.instanceof Function
                 done()
 
-            it 'assigns handers that proxy inbound messages into the middleware pipeline', (done) ->
+            it 'assigns handers that proxy inbound capsules into the middleware pipeline', (done) ->
 
                 Client = client 
-                    messages: 
-                        messageType: {}
+                    capsules: 
+                        capsuleType: {}
 
                 ASSIGNED = {}
                 socket = 
@@ -144,7 +144,7 @@ describe 'client', ->
 
                 ASSIGNED['connect']()
                 ASSIGNED['accept']()
-                ASSIGNED['messageType'] property: 'value'
+                ASSIGNED['capsuleType'] property: 'value'
 
 
         context 'transmission onto socket', -> 
@@ -629,7 +629,7 @@ describe 'Client', ->
 
 
 
-        it 'forwards inbound messages from the socket onto the message bus', (done) -> 
+        it 'forwards inbound capsules from the socket onto the message bus', (done) -> 
 
             Notifier.create = (title) -> 
 
@@ -653,7 +653,7 @@ describe 'Client', ->
                     if event == 'info'
 
                         #
-                        # info message immediately 'arrives'
+                        # info capsule immediately 'arrives'
                         # 
 
                         listener(

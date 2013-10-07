@@ -4,7 +4,7 @@ listener   = require './listener'
 {notifier}  = require '../notifier'
 {
     terminal
-    reservedMessage
+    reservedCapsule
     undefinedArg
     alreadyDefined
 } = require '../errors'
@@ -14,10 +14,10 @@ testable            = undefined
 module.exports._hub = -> testable
 module.exports.hub  = (config = {}) ->
 
-    for type of config.messages
+    for type of config.capsules
 
-        throw reservedMessage type if type.match(
-            /connect|handshake|accept|reject|disconnect|resume|capsule|error/
+        throw reservedCapsule type if type.match(
+             /^connect$|^handshake$|^accept$|^reject$|^disconnect$|^resume$|^capsule$|^error$/
         )
 
 

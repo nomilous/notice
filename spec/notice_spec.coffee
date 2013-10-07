@@ -7,26 +7,26 @@ describe 'standalone default notifier', ->
 
         * It is created with an origin name
         * Has a middleware registrar.
-        * It can send events down the middleware pipeline.
-        * Each message is assigned the _type (hidden property)
-        * The event sender receives the final message or error
+        * It can send capsule down the middleware pipeline.
+        * Each capsule is assigned the _type (hidden property)
+        * The event sender receives the final capsule or error
           from the pipeline.
         * The sender can use a promise instead of callback to 
-          receive the final message.
+          receive the final capsule.
 
     """, (done) -> 
 
 
         send = notice.create 'origin name'
         
-        send.use title: 'testing 1', (done, msg) -> 
-            msg._type.should.equal 'event'
-            msg.modified = true
-            done()
+        send.use title: 'testing 1', (next, capsule) -> 
+            capsule._type.should.equal 'event'
+            capsule.modified = true
+            next()
         
-        send.use title: 'testing 2', (done, msg) ->
-            throw 'π' if msg.thisFails
-            done()
+        send.use title: 'testing 2', (next, capsule) ->
+            throw 'π' if capsule.thisFails
+            next()
 
         send.event 'event name', payload: 1, more: 2, (err, result) -> 
             result.should.eql 
@@ -42,7 +42,7 @@ describe 'standalone default notifier', ->
                     payload: 1
                     more:    2
                 .then( 
-                    (msg) -> done()
+                    (capsule) -> done()
                     (err) -> 
                 )
 
@@ -50,30 +50,30 @@ describe 'standalone configured notifier', ->
     
     it """
 
-        * A notifier Definition is configured with message definitions
+        * A notifier Definition is configured with capsule definitions
         * The reslting Definition can be used to create notifiers of the
           defined type
-        * Each message type is emitted through a created function by the 
+        * Each capsule type is emitted through a created function by the 
           same name.
-        * Message definitions can be assigned beforeCreate and afterCreate
-          hooks to predefine message properties ahead of the middleware 
+        * Casule definitions can be assigned beforeCreate and afterCreate
+          hooks to predefine capsule properties ahead of the middleware 
           traveral.
 
     """, (done) -> 
 
         seq = 0
         Messenger = notice 
-            messages: 
-                messageTypeName:
-                    beforeCreate: (done, msg) -> 
-                        msg.sequence = seq++
+            capsules: 
+                capsuleTypeName:
+                    beforeCreate: (done, capsule) -> 
+                        capsule.sequence = seq++
                         done()
 
         instance = Messenger.create 'origin name'
         instance.use.should.be.an.instanceof Function
-        instance.messageTypeName( 'messageTypeValue' ).then (m) -> 
-            m._type.should.equal 'messageTypeName'
+        instance.capsuleTypeName( 'capsuleTypeValue' ).then (m) -> 
+            m._type.should.equal 'capsuleTypeName'
             m.should.eql 
-                messageTypeName: 'messageTypeValue'
+                capsuleTypeName: 'capsuleTypeValue'
                 sequence: 0
             done()

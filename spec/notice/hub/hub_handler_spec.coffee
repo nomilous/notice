@@ -28,11 +28,11 @@ describe 'handler', ->
 
     context 'assign', -> 
 
-        it 'assigns handlers for each message type onto the connecting socket', (done) -> 
+        it 'assigns handlers for each capsule type onto the connecting socket', (done) -> 
 
             DeploymentChannel = handler
 
-                messages: 
+                capsules: 
 
                     getVersion:  {}
                     gotVersion:  {}
@@ -60,11 +60,11 @@ describe 'handler', ->
             done()
 
 
-        it 'assigns handers that proxy inbound messages into the middleware pipeline', (done) ->
+        it 'assigns handers that proxy inbound capsules into the middleware pipeline', (done) ->
 
             ConfigurationChannel = handler
 
-                messages: 
+                capsules: 
 
                     createUser:     {}
                     installService: {}
@@ -147,7 +147,7 @@ describe 'handler', ->
                     
             )
 
-        it.only 'reassembles the inbound payload into a capusle for the hubside middleware traversal', (done) -> 
+        it 'reassembles the inbound payload into a capusle for the hubside middleware traversal', (done) -> 
 
             handle = @instance.capsule 
                 id: 'SOCKET_ID'

@@ -7,20 +7,20 @@ module.exports._notifier = -> testable
 module.exports.notifier  = (config = {}) ->
 
     #
-    # create default message emitter if none defined
+    # create default capsule emitter if none defined
     #
 
-    config.messages = event: {} unless config.messages?
+    config.capsules = event: {} unless config.capsules?
 
     #
-    # for builtin control messages
+    # for builtin control capsules
     #
 
-    config.messages.control = {}
+    config.capsules.control = {}
 
     testable = local = 
 
-        messageTypes: {}
+        capsuleTypes: {}
         middleware:   {}
         notifiers:    {}
 
@@ -39,16 +39,16 @@ module.exports.notifier  = (config = {}) ->
             local.middleware[originCode] = list = {}
             final = undefined
 
-            traverse = (message) -> 
+            traverse = (capsule) -> 
 
                 #
                 # sends the capsule down the middleware pipeline
                 # 
 
-                return message unless middlewareCount || final? # no middleware
+                return capsule unless middlewareCount || final? # no middleware
                 middleware = for title of list
                     do (title) -> 
-                        deferred ({resolve, reject, notify}, capsule = message) -> 
+                        deferred ({resolve, reject, notify}) -> 
 
                             #
                             # TODO: (possibly)
@@ -82,7 +82,7 @@ module.exports.notifier  = (config = {}) ->
                                 reject error
 
                 middleware.push(
-                    deferred ({resolve, reject, notify}, capsule = message) -> 
+                    deferred ({resolve, reject, notify}) -> 
                         
                         next = -> process.nextTick -> resolve capsule
                         next.notify = (update) -> process.nextTick -> notify update
@@ -160,18 +160,18 @@ module.exports.notifier  = (config = {}) ->
 
 
             #
-            # create a function for each defined message type
+            # create a function for each defined capsule type
             # -----------------------------------------------
             # 
-            # * returns a promise that resolves with the message
+            # * returns a promise that resolves with the capsule
             #   after it traversed all registered middleware
             # 
             # * if an error occurs on the pipeline the promise 
             #   is rejected and the remaining middlewares will
-            #   not receive the message
+            #   not receive the capsule
             #
 
-            for type of config.messages
+            for type of config.capsules
                 continue if notifier[type]?
                 do (type) -> 
                     notifier[type] = deferred (args...) -> 
@@ -191,7 +191,7 @@ module.exports.notifier  = (config = {}) ->
                         callback = arg if typeof arg == 'function'
 
                         return pipeline([
-                            (       ) -> local.messageTypes[type].create payload
+                            (       ) -> local.capsuleTypes[type].create payload
                             (capsule) -> traverse capsule
 
                         ]).then(
@@ -209,11 +209,11 @@ module.exports.notifier  = (config = {}) ->
 
 
     #
-    # * create pre-defined message types
+    # * create pre-defined capsule types
     #
 
-    for type of config.messages
-        local.messageTypes[type] = message type, config
+    for type of config.capsules
+        local.capsuleTypes[type] = message type, config
 
 
     return api = 

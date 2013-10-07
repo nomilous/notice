@@ -44,7 +44,7 @@ notifier.event 'event name', { payload: 'data' }
 notifier.event 'event name', { payload: 'data' }, (err, capsule) -> 
     
     #
-    # * The `capsule` object is created from the emitted message
+    # * The `capsule` object is created from the emitted data
     #   and sent into the middleware pipeline.
     # 
     # * This callback receives the `capsule` if it successfully 
@@ -92,7 +92,7 @@ notifier.use title: 'Pied Pipeliner', (next, capsule) ->
 
 notifier.event 'event name',
 
-    sending:   'this message'
+    sending:   'this capsule'
     with:      'a promise waiting'
     insteadOf: 'a node style callback waiting'
     for:       'the finalMessage'
@@ -120,10 +120,10 @@ notice = require 'notice'
 
 module.exports.AlertBus = notice
     
-    messages:
+    capsules:
 
         #
-        # creates a messageType called alert
+        # creates a capsuleType called alert
         # notifier.alert( .. ).then( ... )
         #
 
@@ -219,10 +219,11 @@ The Future
 ### possible features / general intensions
 
 * parallel mode - all middlewares are run in ""parallel"" 
-* batched parallel mode
+* batched parallelsets mode
+* rest api
 * persistability - capsule.save() and .refresh() 
 * hub can uplink (as client) onto a parent hub [((trees...))](https://github.com/nomilous/nez/tree/master/.metadata/.metadata/.metadata)
-* each hub's middleware has access to all hubs (including uplink) for message swtching
+* each hub's middleware has access to all hubs (including uplink) for capsule swtching
 * msg.expectReply (resolves, callsback only after remote response, complexities in the case of broadcasts)
 * named middleware (can be removed from the pipeline)
 * flood protection

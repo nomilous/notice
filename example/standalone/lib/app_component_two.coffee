@@ -32,13 +32,13 @@ sendUpdate = ->
     #
 
 
-bus1.use title: 'component two', (done, msg) -> 
+bus1.use title: 'component two', (next, capsule) -> 
 
     #
     # register middleware on bus1
     #
 
-    console.log 'component_TWO received:', msg
-    if msg.event == 'start' then interval = setInterval sendUpdate, msg.interval
-    if msg.event == 'stop'  then clearInterval interval
-    done()
+    console.log 'component_TWO received:', capsule
+    if capsule.event == 'start' then interval = setInterval sendUpdate, capsule.interval
+    if capsule.event == 'stop'  then clearInterval interval
+    next()

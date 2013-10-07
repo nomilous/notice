@@ -4,7 +4,7 @@ notice = require '../../lib/notice'
 
 TelevisionRemote = notice.client(
 
-    messages: 
+    capsules: 
 
         channel: {}
         volume:  {}

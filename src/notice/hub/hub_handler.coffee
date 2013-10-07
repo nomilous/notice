@@ -15,23 +15,23 @@ module.exports.handler  = (config = {}) ->
                     #
                     # #DUPLICATE1
                     # 
-                    # subscribe handlers for all configured messages
+                    # subscribe handlers for all configured capsules
                     # ----------------------------------------------
                     # 
-                    # * these are for inbound messages
+                    # * these are for inbound capsules
                     # 
 
-                    for type of config.messages
+                    for type of config.capsules
 
                             #
-                            # * control messages are local only
+                            # * control capsules are local only
                             #  
 
                         continue if type == 'control'
                         do (type) -> 
 
                             #
-                            # * all other messages are proxied into the local 
+                            # * all other capsules are proxied into the local 
                             #   middleware pipeline (hub) 
                             #
 
@@ -40,14 +40,14 @@ module.exports.handler  = (config = {}) ->
                                 unless typeof hubNotifier[type] == 'function'
 
                                     # 
-                                    # * client and hub should use a common messages config
+                                    # * client and hub should use a common capsules config
                                     # 
 
-                                    process.stderr.write "notice undefined message type '#{type}'"
+                                    process.stderr.write "notice undefined capsule type '#{type}'"
                                     return
 
                                 #
-                                # * proxy the inbound message onto the middleware pipeline
+                                # * proxy the inbound capsule onto the middleware pipeline
                                 # TODO: typeValue, protected, hidden, watched
                                 # 
 

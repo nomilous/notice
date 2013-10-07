@@ -6,7 +6,7 @@ require './lib/app_component_two'
 {bus1, bus2} = require './lib/message_bus'
 
 bus1.event 'start', interval: 1000
-bus2.use title: 'middleware title', (done, msg) -> 
+bus2.use title: 'middleware title', (next, capsule) -> 
 
     #
     # register middleware on message bus 2
@@ -16,33 +16,35 @@ bus2.use title: 'middleware title', (done, msg) ->
     # 
     # * Throws or uncaught Exceptions will terminate the sequence
     #   and the error is passed to the callback/promise at the
-    #   message creator.
+    #   capsule creator.
     # 
 
-    if msg.progress == '1 of 2'
-        msg.state = 'failed'
+    if capsule.progress == '1 of 2'
+        capsule.state = 'failed'
+
+        console.log 'THROW'
         throw new Error 'oh dear...' 
 
     # 
-    # * Middlewares can ammend the message and the final result
-    #   is passed to the callback/promise at the message creator.
+    # * Middlewares can ammend the capsule and the final result
+    #   is passed to the callback/promise at the capsule creator.
     # 
 
-    msg.ok = true + true
-    console.log 'on bus2:', JSON.stringify msg, null, 2
-    msg.state = 'done'
+    capsule.ok = true + true
+    console.log 'on bus2:', JSON.stringify capsule, null, 2
+    capsule.state = 'done'
 
     # 
     # * Messages do not proceed to the next middleware until done()
     #   is called. This allows the middleware to perform an asynchronous 
-    #   activity of some kind (eg. www/DB/wait ) and keep the message 
+    #   activity of some kind (eg. www/DB/wait ) and keep the capsule 
     #   on hold while doing so.
     # 
 
-    done()
+    next()
 
     #
-    # * Never calling done() is a PROBLEM if the message creator is 
+    # * Never calling done() is a PROBLEM if the capsule creator is 
     #   expecting a final result.
     # 
     

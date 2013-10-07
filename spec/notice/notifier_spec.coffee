@@ -11,10 +11,10 @@ describe 'notifier', ->
             done()
 
 
-        it 'allows message type definitions', (done) -> 
+        it 'allows capsule type definitions', (done) -> 
 
             Notifier = notifier
-                messages: 
+                capsules: 
                     event:       {}
                     info:        {}
                     alert:       {}
@@ -25,25 +25,25 @@ describe 'notifier', ->
 
             instance = Notifier.create 'originCode'
 
-            should.exist _notifier().messageTypes.event
-            should.exist _notifier().messageTypes.info
-            should.exist _notifier().messageTypes.alert
-            should.exist _notifier().messageTypes.assign
-            should.exist _notifier().messageTypes.mollycoddle
-            should.exist _notifier().messageTypes.placate
+            should.exist _notifier().capsuleTypes.event
+            should.exist _notifier().capsuleTypes.info
+            should.exist _notifier().capsuleTypes.alert
+            should.exist _notifier().capsuleTypes.assign
+            should.exist _notifier().capsuleTypes.mollycoddle
+            should.exist _notifier().capsuleTypes.placate
             done()
 
 
-        it 'creates event() as default message emitter if none defined', (done) ->  
+        it 'creates event() as default capsule emitter if none defined', (done) ->  
 
             Notifier = notifier()
             instance = Notifier.create 'originCode'
             instance.event.should.be.an.instanceof Function
             done()
 
-        it 'creates builtin control message emitter', (done) -> 
+        it 'creates builtin control capsule emitter', (done) -> 
 
-            Notifier = notifier messages: userDefinedMessage: {}
+            Notifier = notifier capsules: userDefinedMessage: {}
             instance = Notifier.create 'originCode'
             instance.userDefinedMessage.should.be.an.instanceof Function
             instance.control.should.be.an.instanceof Function
@@ -69,22 +69,22 @@ describe 'notifier', ->
                 done()
 
 
-        it 'creates a function to send each defined message type', (done) ->
+        it 'creates a function to send each defined capsule type', (done) ->
 
             Date.now = -> 'wrist watch'
 
             Notifier = notifier 
-                messages:
+                capsules:
                     pheeew:  
-                        afterCreate: (done, msg) ->
+                        afterCreate: (done, capsule) ->
 
                             #
-                            # eg. push the new message to a database
+                            # eg. push the new capsule to a database
                             #     before sending it.
                             #
 
-                            msg.id        = 'new database record id'
-                            msg.createdAt = Date.now() 
+                            capsule.id        = 'new database record id'
+                            capsule.createdAt = Date.now() 
                             done()
 
 
@@ -94,34 +94,34 @@ describe 'notifier', ->
                 defcon:  1
                 change: -4
 
-            .then (newMessage) -> 
+            .then (newCapsule) -> 
 
-                #console.log newMessage
-                newMessage.should.eql 
+                #console.log newCapsule
+                newCapsule.should.eql 
 
                     id:        'new database record id'
                     createdAt: 'wrist watch'
                     defcon:     1
                     change:     -4
 
-                #console.log newMessage.sourceHost
+                #console.log newCapsule.sourceHost
                 done()
 
 
-        it 'assigns the message typeValue from string or number', (done) -> 
+        it 'assigns the capsule typeValue from string or number', (done) -> 
 
             Notifier = notifier 
-                messages: 
+                capsules: 
                     alert: {}
 
             instance = Notifier.create 'originCode'
 
-            messages = []
+            capsules = []
 
-            instance.alert( 'something bad' ).then (m) -> messages.push m
+            instance.alert( 'something bad' ).then (m) -> capsules.push m
             instance.alert( 3 ).then (m) -> 
-                messages.push m
-                messages.should.eql [
+                capsules.push m
+                capsules.should.eql [
                     { alert: 'something bad' }
                     { alert: 3 }
                 ]
@@ -208,8 +208,8 @@ describe 'notifier', ->
         it 'provides middleware registrar', (done) -> 
 
             Notifier = notifier
-                messages:
-                    use: 'this message definition is ignored'
+                capsules:
+                    use: 'this capsule definition is ignored'
 
             nine = Notifier.create 'Assembly Line 9'
 
@@ -248,7 +248,7 @@ describe 'notifier', ->
             mmm['put a lid on it']          done, {}
 
 
-        it 'passes message capsule through all middleware if they call next', (done) -> 
+        it 'passes capsule through all middleware if they call next', (done) -> 
 
             mix  = notifier().create 'Assembly Line Mix'
 
@@ -439,10 +439,10 @@ describe 'notifier', ->
                 msg.array.should.eql  [ 1, 'new 2', 3 ]
                 done()
 
-        it 'returns the promise of a message traversing the middleware pipeline', (done) -> 
+        it 'returns the promise of a capsule traversing the middleware pipeline', (done) -> 
 
             Notifier = notifier 
-                messages:
+                capsules:
                     makeThing: 
                         beforeCreate: (done, msg) ->
                             msg.serialNo = '0000000000001'
@@ -474,7 +474,7 @@ describe 'notifier', ->
 
         it 'rejects on failing middleware', (done) -> 
 
-            Notifier = notifier messages: info: {}
+            Notifier = notifier capsules: info: {}
             broken = Notifier.create 'broken pipeline'
             broken.use title: 'fails', (done, msg) -> 
                 throw new Error 'ka-pow!'
@@ -486,7 +486,7 @@ describe 'notifier', ->
                 done()
 
 
-        it 'also accepts traditional node style callback to receive the error or final message', (done) -> 
+        it 'also accepts traditional node style callback to receive the error or final capsule', (done) -> 
 
             Notifier = notifier()
             instance = Notifier.create 'originCode'

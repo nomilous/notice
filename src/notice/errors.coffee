@@ -8,9 +8,9 @@ module.exports.terminal = (error, reject, callback) ->
     if typeof callback == 'function' then callback error
 
 
-module.exports.reservedMessage = (type) -> 
+module.exports.reservedCapsule = (type) -> 
     
-    return error = new Error "notice: '#{type}' is a reserved message type" 
+    return error = new Error "notice: '#{type}' is a reserved capsule type" 
 
 
 module.exports.undefinedArg = (arg, functionSignature) -> 

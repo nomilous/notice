@@ -13,7 +13,7 @@ Creating a Notifier
 notice = require 'notice'
 TelevisionRemote = notice.client
 
-    messages: 
+    capsules: 
 
         channel: {}
         volume:  {}
@@ -56,7 +56,7 @@ notice = require 'notice'
 Television = notice.hub
 
         #
-        # requires the same message definitions as the client
+        # requires the same capsule definitions as the client
         #
 
 Television.create
@@ -113,7 +113,7 @@ Using the middleware pipeline
 * Do some stuff and call `next()` when done.
 * Possibly make ammendments to the capsule.
 * The capsule does not continue to the next middleware until `next()` is called.
-* Intentionally not calling next is OK - it means you don't want the message to continue further.
+* Intentionally not calling next is OK - it means you don't want the capsule to continue further.
 * Future versions may require calling next.cancel() to facilitate pipeline metrics and bottleneck detection.
 * **Unintentionally not calling next is BAD**
 

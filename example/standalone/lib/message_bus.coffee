@@ -1,28 +1,28 @@
 notice = require '../../../lib/notice'
 
-MessageBus1 = notice() # default messages config
+MessageBus1 = notice() # default capsules config
 MessageBus2 = notice  
 
-    messages: 
+    capsules: 
 
         #
-        # bus2 defines 'update' message
+        # bus2 defines 'update' capsule
         #
 
         update: 
-            afterCreate: (done, msg) -> 
-                msg.createdAt = new Date
+            afterCreate: (next, capsule) -> 
+                capsule.createdAt = new Date
 
                 #
-                # create a watched property on the 'update' msg
+                # create a watched property on the 'update' capsule
                 #
 
-                msg.set
+                capsule.set
                     state: 'pending'
                     watched: (property, change, object) -> 
                         console.log 'changed property:', property, change
                     
-                done()
+                next()
 
 module.exports.bus1 = MessageBus1.create 'app_name::bus1'
 module.exports.bus2 = MessageBus2.create 'app_name::bus2'
