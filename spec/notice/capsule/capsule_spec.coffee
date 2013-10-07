@@ -13,10 +13,10 @@ describe 'Capsule', ->
     it 'can set the uuid at creation (and it sticks)', (done) -> 
 
         Capsule  = capsule()
-        instance = new Capsule uuid: 'Tx1234'
-        instance._uuid.should.equal 'Tx1234'
+        instance = new Capsule uuid: 'https://cluster.dc.city.domain.com/entity/:id:'
+        instance._uuid.should.equal 'https://cluster.dc.city.domain.com/entity/:id:'
         instance._uuid = 'erg2q3'
-        instance._uuid.should.equal 'Tx1234'
+        instance._uuid.should.equal 'https://cluster.dc.city.domain.com/entity/:id:'
         done()
 
 
