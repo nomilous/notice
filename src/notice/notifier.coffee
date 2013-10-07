@@ -67,7 +67,16 @@ module.exports.notifier  = (config = {}) ->
 
                 context = 
                     # TODO_LINK
-                    info: 'https://github.com/nomilous/notice/tree/develop/spec/notice#the-context'
+                    info: -> 'https://github.com/nomilous/notice/tree/develop/spec/notice#the-context'
+
+                        #
+                        # a usefull idea: certain components carry .info
+                        # ----------------------------------------------
+                        # 
+                        # * for now it quotes doc url tag whan called
+                        # * it could do so much more...
+                        # * perhaps attention to NODE_ENV
+                        # 
 
                 middleware = for title of list
                     do (title) -> 
@@ -91,7 +100,7 @@ module.exports.notifier  = (config = {}) ->
                             next = -> process.nextTick -> resolve capsule
 
                             # TODO_LINK
-                            next.info   = 'https://github.com/nomilous/notice/tree/develop/spec/notice#the-next-function'
+                            next.info   = -> 'https://github.com/nomilous/notice/tree/develop/spec/notice#the-next-function'
                             next.notify = (update) -> process.nextTick -> notify update
 
                             try list[title] next, capsule, context  #, hubs

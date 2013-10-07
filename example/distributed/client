@@ -38,19 +38,8 @@ TelevisionRemote = notice.client(
             title: 'illustate .info'
             (next, capsule, context) -> 
 
-                #
-                # a usefull idea: the next function has an info property
-                # ------------------------------------------------------
-                # 
-                # * while writing code / tests to have a .info look upper
-                # * this simply returns a link to the relevant doc, but
-                #   much more could be done
-                # * it will be necessary to explore ways to keep it's impact
-                #   on the code speed/etc to a minimum
-                # 
-
-                console.log next.info
-                console.log context.info
+                console.log next.info()
+                console.log context.info()
                 next()
 
 
