@@ -9,7 +9,7 @@ fix all TODO_LINKS
 notice
 ======
 
-A middleware based communications scaffold.
+A communicator.
 
 Quick Faqts
 -----------

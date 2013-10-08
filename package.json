@@ -1,6 +1,6 @@
 {
   "name": "notice",
-  "description": "A middleware based communications scaffold.",
+  "description": "A communicator.",
   "version": "0.0.11",
   "author": "nomilous <nomilous@gmail.com>",
   "contributors": [
