@@ -17,7 +17,7 @@ module.exports.hub  = (config = {}) ->
     for type of config.capsules
 
         throw reservedCapsule type if type.match(
-             /^connect$|^handshake$|^accept$|^reject$|^disconnect$|^resume$|^capsule$|^error$/
+             /^connect$|^handshake$|^accept$|^reject$|^disconnect$|^resume$|^capsule$|^nak$|^ack$|^error$/
         )
 
 

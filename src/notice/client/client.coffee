@@ -19,7 +19,7 @@ module.exports.client  = (config = {}) ->
     for type of config.capsules
 
         throw reservedCapsule type if type.match(
-            /^connect$|^handshake$|^accept$|^reject$|^disconnect$|^resume$|^capsule$|^error$/
+            /^connect$|^handshake$|^accept$|^reject$|^disconnect$|^resume$|^capsule$|^nak$|^ack$|^error$/
         )
 
 
@@ -132,8 +132,15 @@ module.exports.client  = (config = {}) ->
 
             version  = 1    # protocol version
                             # TODO: version into handshake
-            sequence = 0
+            
 
+            #
+            # * The final middleware resolver for each capsule sent to the
+            #   hub is placed into the transit collection pending certainty
+            #   of handover to the hub. (ack)
+            # 
+
+            transit = {}
 
             client.use
 
@@ -147,8 +154,8 @@ module.exports.client  = (config = {}) ->
                     # TODO: is socket connected?
                     #       what happens when sending on not 
                     #
-                    sequence++
-                    header = [version, sequence]
+                    # sequence++
+                    header = [version]
 
                     #
                     # TODO: much room for optimization here
@@ -183,8 +190,35 @@ module.exports.client  = (config = {}) ->
                         #?
 
                     socket.emit 'capsule', header, control, capsule.all
-                    next()
+                    
+                    #
+                    # TODO: transit collection needs limits set, it is conceivable
+                    #       that an ongoing malfunction could guzzle serious memory
+                    #
+                    # * using a fullblown uuid as key is possibly excessive?
+                    # 
 
+                    transit[capsule._uuid] = next: next
+
+
+            socket.on 'ack', (control) -> 
+
+                try 
+                    {uuid} = control
+                    {next} = transit[uuid]
+
+                catch error
+                    process.stderr.write 'notice: invalid or unexpected ack'
+                    return
+
+                console.log ack: control
+                next()
+
+
+
+            socket.on 'nak', (control) -> 
+
+                console.log nak: control
 
 
 

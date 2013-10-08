@@ -54,7 +54,7 @@ TelevisionRemote = notice.client(
 
         client.volume( 'up', amount: 3 ).then(
 
-            (capsule) -> 
+            (capsule) -> console.log AFTER_ACK: capsule
             (error)   -> console.log ERROR: error
             (notify)  -> console.log NOTIFY: notify 
 

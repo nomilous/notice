@@ -89,9 +89,21 @@ module.exports.handler  = (config = {}) ->
 
                     ### grep PROTOCOL1 decode ###
                 
-                    (header, config, payload) -> 
+                    (header, control, payload) -> 
 
-                        console.log arguments
+                        [version] = header
+                        uuid      = control.uuid
+
+                        unless version == 1
+                            return socket.emit 'nak',
+                                uuid: control.uuid
+                                reason: 'protocol mismatch'
+                                support: [1]
+
+                        socket.emit 'ack',
+                            uuid: control.uuid
+
+                    
 
 
 

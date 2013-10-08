@@ -203,12 +203,12 @@ describe 'client', ->
                     should.exist @EMITTED.capsule
                     done()
 
-            it 'includes a header with protocol version and sequence number', (done) -> 
+            it 'includes a header with protocol version and ))sequence number((', (done) -> 
 
                 @EMITTED = {}
                 @client.event 'test', => 
 
-                    @EMITTED.capsule.header.should.eql [1,1]
+                    @EMITTED.capsule.header.should.eql [1]
                     done()
 
             it 'includes config body with event type, and hidden and protected property lists', (done) -> 

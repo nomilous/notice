@@ -147,15 +147,52 @@ describe 'handler', ->
                     
             )
 
-        it 'reassembles the inbound payload into a capusle for the hubside middleware traversal', (done) -> 
+        it 'naks the capsule on unsupported protocol version', (done) -> 
+
+            handle = @instance.capsule 
+                id: 'SOCKET_ID'
+                emit: (event, args...) -> 
+
+                    event.should.equal 'nak'
+                    args.should.eql [
+                        { uuid: 'UUID', reason: 'protocol mismatch', support: [1] }
+                    ]
+                    done()
+
+            handle( 
+                header   = [2]
+                control  = uuid: 'UUID'
+                payload  = {}
+            )
+
+
+        it 'acks the capsule on supported protocol version', (done) -> 
+
+            handle = @instance.capsule 
+                id: 'SOCKET_ID'
+                emit: (event, args...) -> 
+
+                    event.should.equal 'ack'
+                    args.should.eql [
+                        { uuid: 'UUID' }
+                    ]
+                    done()
+
+            handle( 
+                header   = [1]
+                control  = uuid: 'UUID'
+                payload  = {}
+            )
+
+        xit 'reassembles the inbound payload into a capusle for the hubside middleware traversal', (done) -> 
 
             handle = @instance.capsule 
                 id: 'SOCKET_ID'
             
             handle( 
-                header  = [1]
-                config  = {}
-                payload = {}
+                header   = [1]
+                control  = uuid: 'UUID'
+                payload  = {}
             )
 
             done() 
