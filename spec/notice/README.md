@@ -113,17 +113,15 @@ Using the middleware pipeline
 * Do some stuff and call `next()` when done.
 * Possibly make ammendments to the capsule.
 * The capsule does not continue to the next middleware until `next()` is called.
-* Intentionally not calling next is OK - it means you don't want the capsule to continue further.
-* Future versions may require calling next.cancel() to facilitate pipeline metrics and bottleneck detection.
-* **Unintentionally not calling next is BAD**
-
+* Intentionally not calling `next()` is BAD - the introspection subsystem will consider the middleware as a bottleneck. Use `next.cancel()`.
 
 
 #### the next function
 
 The next function has some nested tools.
 
-* `next.notify()` sends a payload back to the emitter's promise `(notify) ->`
+* TODO: `next.cancel()` suspends further traversol of the pipeline.
+* `next.notify(payload)` sends a payload back to the emitter's promise notify function. Emitters with a node style callback waiting have no mechanism to receive these notifications.
 * `next.reject(error)` terminates the middleware traversal (same as throw)
 
 #### the capsule
