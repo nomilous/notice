@@ -100,43 +100,19 @@ module.exports.client  = (config = {}) ->
 
 
             #
-            # final middleware on the local bus transfers capsule onto socket 
-            # ---------------------------------------------------------------
+            # last middleware on the local bus transfers capsule onto socket 
+            # --------------------------------------------------------------
             # 
-            # * Notifications generated localy traverse the local middleware
-            #   first.
+            # * This only occurrs if the capsule reaches the end of the local 
+            #   middleware pipeline.
             # 
-            # * If they reach the end of the pipeline they are transferred
-            #   onto the hub-bound socket AND called back to the original 
-            #   capsule creator.
-            # 
-            # * later, capsule.boomerang makes this final middleware not
-            #          callback to the creator until the capsule returns 
-            #          from the netork     
-            #
-            #    boomerang may become the default configuration later 
-            # 
-
-            #
-            # * the capsule is popped off the tail of the local
-            #   middleware pipeline after the hub acks the capsule
-            # 
-            # * use the promise notify() call to inform the capsule origin
-            #   of the capsule being sent.
-            #   
-            #   Unfortunately a capsule origin with a node style callback
-            #   waiting has no concrete facility to receive this information
-            #   and will remain in the dark until the hub ack.
-            #         
-
 
             version  = 1    # protocol version
                             # TODO: version into handshake
             
-
             #
             # * The final middleware resolver for each capsule sent to the
-            #   hub is placed into the transit collection pending certainty
+            #   hub is placed into this transit collection pending certainty
             #   of handover to the hub. (ack)
             # 
 
@@ -154,7 +130,7 @@ module.exports.client  = (config = {}) ->
                     # TODO: is socket connected?
                     #       what happens when sending on not 
                     #
-                    # sequence++
+                    # 
                     header = [version]
 
                     #
@@ -195,10 +171,29 @@ module.exports.client  = (config = {}) ->
                     # TODO: transit collection needs limits set, it is conceivable
                     #       that an ongoing malfunction could guzzle serious memory
                     #
-                    # * using a fullblown uuid as key is possibly excessive?
+                    # TODO: using a fullblown uuid as key is possibly excessive?
                     # 
 
+                    #
+                    # * pend the final middleware resolver till either ack or nak
+                    #   from the hub
+                    #
+
                     transit[capsule._uuid] = next: next
+
+                    # 
+                    # * Send notification of the transmission to the promise notifier
+                    #   waiting at the capsule origin.
+                    #   
+                    #   Unfortunately a capsule origin with a node style callback
+                    #   waiting has no concrete facility to receive this information
+                    #   and will remain in the dark until the hub ack / nak.
+                    # 
+
+                    process.nextTick -> next.notify
+                        _type:   'control'
+                        control: 'transmitted'
+                        capsule: capsule
 
 
             socket.on 'ack', (control) -> 
@@ -211,7 +206,11 @@ module.exports.client  = (config = {}) ->
                     process.stderr.write 'notice: invalid or unexpected ack'
                     return
 
-                console.log ack: control
+                #
+                # * ack calls the next() that was pended in the final middleware
+                #   at the time of sending the capsule to the hub.
+                #
+
                 next()
 
 
@@ -396,157 +395,4 @@ module.exports.client  = (config = {}) ->
 
     return api = 
         create: local.create
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-return 
-connector   = require './connector'
-notifier    = require './notifier'
-{defer}     = require 'when'
-
-createClient = (title, opts) -> 
-    
-    notice = notifier.create title
-
-    onAssign: ({socket}) -> 
-
-        #
-        # * assign socket to notifier
-        # * return promise that resolves with the assigned notifier
-        #
-
-        assigning = defer()
-
-        process.nextTick ->
-
-            notice.first = (msg, next) -> 
-                
-                msg.direction = 'out'
-                next()
-
-            notice.last = (msg, next) -> 
-                
-                if msg.direction == 'out'
-
-                    #
-                    # TODO: strip context (it was/shouldBe sent on handshake)
-                    # 
-                    #       - some context should remain (title, type)
-                    #       - no point in sending the origin on each capsule
-                    #       - allows for much more context at no extra cost
-                    #       - keep in pending persistance layer in mind here
-                    #
-
-                    type = msg.context.type
-                    socket.emit type, msg.context, msg
-
-                next()
-
-
-            for event in ['info', 'event']
-
-                do (event) -> 
-
-                    #
-                    # inbound event from the socket are directed into
-                    # the middleware pipeline
-                    #
-
-                    socket.on event, (context, msg) -> 
-
-                        #
-                        # TODO: reconstitute context (stripped from all but handshake)
-                        #       
-                        #       - assuming hub also provides its context to client
-                        #         (this is inbound to client capsule)
-                        #
-
-                        msg.direction = 'in'
-                        msg.origin    = context.origin
-                        title         = context.title
-                        tenor         = context.tenor
-
-                        notice[event][tenor] title, msg
-
-            assigning.resolve notice
-
-
-        assigning.promise
-
-
-    onConnect: ({socket}) ->
-
-        #
-        # * notifier is assigned and handshake is complete
-        # * returns promise
-        # 
-
-        return notice.event 'connect'
-
-
-    onReconnect: ({socket}) -> 
-
-        #
-        # * emit reconnect notification down the pipeline, the implementations
-        #   local middleware can ammend this capsule before it gets emitted
-        #   hubward
-        # * returns promise
-        #
-
-        return notice.event 'reconnect'
-
-
-    onDisconnect: ({socket}) -> 
-
-        #
-        # * this event is primary for local middlewares, it may or may not reach
-        #   the other side of the socket (which has just disconnected, but may have 
-        #   re-established by the time the local pipeline traversal is complete)
-        # * return promsie
-        # 
-
-        return notice.event 'disconnect'
-
-
-module.exports = 
-
-    connect: (title, opts, callback) -> 
-
-        client = createClient title, opts
-
-        connector.connect
-
-            loglevel:     opts.connect.loglevel
-            secret:       opts.connect.secret
-            transport:    opts.connect.transport
-            address:      opts.connect.address
-            port:         opts.connect.port
-
-            #
-            # * origin context
-            # * sent on handshake
-            #
-
-            origin:       opts.origin
-
-            onAssign:     client.onAssign
-            onConnect:    client.onConnect
-            onReconnect:  client.onReconnect
-            onDisconnect: client.onDisconnect
-
-            callback
 
