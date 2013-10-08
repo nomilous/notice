@@ -1,3 +1,5 @@
+PROTOCOL_VERSION = 2
+
 {hostname} = require 'os'
 {deferred} = require 'also'
 notifier   = require '../notifier'
@@ -105,11 +107,6 @@ module.exports.client  = (config = {}) ->
             # 
             # * This only occurrs if the capsule reaches the end of the local 
             #   middleware pipeline.
-            # 
-
-            version  = 1    # protocol version
-                            # TODO: version into handshake
-            
             #
             # * The final middleware resolver for each capsule sent to the
             #   hub is placed into this transit collection pending certainty
@@ -131,7 +128,7 @@ module.exports.client  = (config = {}) ->
                     #       what happens when sending on not 
                     #
                     # 
-                    header = [version]
+                    header = [PROTOCOL_VERSION]
 
                     #
                     # TODO: much room for optimization here
@@ -181,7 +178,7 @@ module.exports.client  = (config = {}) ->
                     {next} = transit[uuid]
 
                 catch error
-                    process.stderr.write 'notice: invalid or unexpected ack'
+                    process.stderr.write 'notice: invalid or unexpected ACK ' + uuid + '\n'
                     return
 
                 #
@@ -195,7 +192,20 @@ module.exports.client  = (config = {}) ->
 
             socket.on 'nak', (control) -> 
 
-                console.log nak: control
+                try 
+                    {uuid, reason} = control
+                    {next} = transit[uuid]
+
+                catch error
+                    process.stderr.write 'notice: invalid or unexpected NAK ' + uuid + '\n'
+                    return
+
+                switch reason
+
+                    when 'protocol mismatch' 
+
+                        try support = control.support.join ','
+                        next.reject new Error "notice: #{reason} - hub:#{support} thisclient:#{PROTOCOL_VERSION}"
 
 
 

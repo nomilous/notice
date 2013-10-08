@@ -88,6 +88,9 @@ module.exports.handler  = (config = {}) ->
                 capsule: (socket) -> 
 
                     ### grep PROTOCOL1 decode ###
+
+                    id = socket.id
+                    mismatch = false
                 
                     (header, control, payload) -> 
 
@@ -95,6 +98,22 @@ module.exports.handler  = (config = {}) ->
                         uuid      = control.uuid
 
                         unless version == 1
+
+                            # 
+                            # protocol mismatch
+                            # -----------------
+                            # 
+                            # * logged only once per remote client socket
+                            # 
+
+                            try 
+                                client = hubContext.clients[id]
+                                who = "#{client.context.pid}.#{client.context.hostname}"
+
+                            unless mismatch
+                                process.stderr.write "notice: protocol mismatch - thishub:1 client:#{version} #{who}\n" 
+                                mismatch = true
+                            
                             return socket.emit 'nak',
                                 uuid: control.uuid
                                 reason: 'protocol mismatch'
@@ -103,7 +122,7 @@ module.exports.handler  = (config = {}) ->
                         socket.emit 'ack',
                             uuid: control.uuid
 
-                    
+
 
 
 
