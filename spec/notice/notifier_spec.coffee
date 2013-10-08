@@ -312,6 +312,29 @@ describe 'notifier', ->
 
             )
 
+        it 'middleware can reject the promise via next.reject()', (done) -> 
+
+            mix = notifier().create 'Assembly Line Mix'
+
+            mix.use 
+                title: '1. intro'
+                (next, capsule, context) ->
+                    capsule.one = 1
+                    context.one = 1
+                    next()
+            mix.use 
+                title: '2. one the sun'
+                (next, capsule, context) -> 
+                    
+                    next.reject new Error 'ERROR'
+
+
+            mix.event (err, finalCapsule) -> 
+
+                err.should.match /ERROR/
+                done()
+
+
 
         it 'can use the force() to replace middleware', (done) -> 
 

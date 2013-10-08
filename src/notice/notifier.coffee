@@ -102,6 +102,17 @@ module.exports.notifier  = (config = {}) ->
                             # TODO_LINK
                             next.info   = -> 'https://github.com/nomilous/notice/tree/develop/spec/notice#the-next-function'
                             next.notify = (update) -> process.nextTick -> notify update
+                            next.reject = (error)  -> process.nextTick -> 
+
+                                #
+                                # * calling next.reject() results in 'no capsule'
+                                #
+
+                                # error.capsule = capsule  
+                                # error.context = context
+                                reject error
+
+
 
                             try list[title] next, capsule, context  #, hubs
                                                                             #
@@ -118,6 +129,7 @@ module.exports.notifier  = (config = {}) ->
                         
                         next = -> process.nextTick -> resolve capsule
                         next.notify = (update) -> process.nextTick -> notify update
+                        next.reject = (error)  -> process.nextTick -> reject error
 
                         try last next, capsule, context
                         catch error
@@ -130,6 +142,7 @@ module.exports.notifier  = (config = {}) ->
                         
                         next = -> process.nextTick -> resolve capsule
                         next.notify = (update) -> process.nextTick -> notify update
+                        next.reject = (error)  -> process.nextTick -> reject error
 
                         try first next, capsule, context
                         catch error

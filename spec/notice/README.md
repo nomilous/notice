@@ -124,6 +124,7 @@ Using the middleware pipeline
 The next function has some nested tools.
 
 * `next.notify()` sends a payload back to the emitter's promise `(notify) ->`
+* `next.reject(error)` terminates the middleware traversal (same as throw)
 
 #### the capsule
 
