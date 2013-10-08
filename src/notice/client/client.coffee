@@ -1,4 +1,4 @@
-PROTOCOL_VERSION = 2
+PROTOCOL_VERSION = 1
 
 {hostname} = require 'os'
 {deferred} = require 'also'
@@ -176,6 +176,7 @@ module.exports.client  = (config = {}) ->
                 try 
                     {uuid} = control
                     {next} = transit[uuid]
+                    try delete transit[uuid]
 
                 catch error
                     process.stderr.write 'notice: invalid or unexpected ACK ' + uuid + '\n'
@@ -195,6 +196,7 @@ module.exports.client  = (config = {}) ->
                 try 
                     {uuid, reason} = control
                     {next} = transit[uuid]
+                    try delete transit[uuid]
 
                 catch error
                     process.stderr.write 'notice: invalid or unexpected NAK ' + uuid + '\n'

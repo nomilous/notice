@@ -1,3 +1,5 @@
+PROTOCOL_VERSION = 1
+
 Testable            = undefined
 testable            = undefined
 module.exports._Handler = -> Testable
@@ -97,13 +99,15 @@ module.exports.handler  = (config = {}) ->
                         [version] = header
                         uuid      = control.uuid
 
-                        unless version == 1
+                        unless version == PROTOCOL_VERSION
 
                             # 
                             # protocol mismatch
                             # -----------------
                             # 
                             # * logged only once per remote client socket
+                            # * could still spew if the clientside is in a tight respawn loop
+                            # * see 
                             # 
 
                             try 
@@ -111,13 +115,13 @@ module.exports.handler  = (config = {}) ->
                                 who = "#{client.context.pid}.#{client.context.hostname}"
 
                             unless mismatch
-                                process.stderr.write "notice: protocol mismatch - thishub:1 client:#{version} #{who}\n" 
+                                process.stderr.write "notice: protocol mismatch - thishub:#{PROTOCOL_VERSION} client:#{version} #{who}\n" 
                                 mismatch = true
                             
                             return socket.emit 'nak',
                                 uuid: control.uuid
                                 reason: 'protocol mismatch'
-                                support: [1]
+                                support: [PROTOCOL_VERSION]
 
                         socket.emit 'ack',
                             uuid: control.uuid
