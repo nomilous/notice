@@ -144,33 +144,11 @@ module.exports.client  = (config = {}) ->
                         protected: capsule._protected
                         hidden:    capsule._hidden
 
-                        #?
-                        #? TODO: is maintaining the watched property callback
-                        #?       link even after emitting the capsule a poss-
-                        #?       ibility?
-                        #?
-                        #?       would doing so provide __ACTUAL_VALUE__
-                        #?
-                        #?       what if the destination emits it again, even
-                        #?       further
-                        #?
-                        #?       what if some portion of the capsules lifetime
-                        #?       is spent on the other side of a tightened fi-
-                        #?       rewall
-                        #?
-                        #?       (preventing certain easy solutions)
-                        #?
-                        #?       breadcrumbs didn't work for hansel and getel
-                        #?
-                        #?       are there birds in the fiber
-                        #?
-
                     socket.emit 'capsule', header, control, capsule.all
                     
                     #
                     # TODO: transit collection needs limits set, it is conceivable
                     #       that an ongoing malfunction could guzzle serious memory
-                    #
                     # TODO: using a fullblown uuid as key is possibly excessive?
                     # 
 

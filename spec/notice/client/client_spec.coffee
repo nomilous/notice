@@ -165,6 +165,15 @@ describe 'client', ->
                         switch event 
                             when 'connect' then handler()
                             when 'accept'  then handler()
+                            when 'ack'     then setTimeout (=> 
+
+                                #
+                                # mock inbound ack after 50 millis
+                                #
+
+                                handler uuid: @EMITTED['capsule'].control.uuid
+
+                            ), 50
 
                     emit: (event, args...) => 
 
@@ -188,9 +197,6 @@ describe 'client', ->
                                 routingCode: 'x'
                                 protected: true
                                 hidden: true
-                            capsule.set
-                                createdAt: Date.now()
-                                protected: true
                             next()
                     done()
 
@@ -202,6 +208,7 @@ describe 'client', ->
                     
                     should.exist @EMITTED.capsule
                     done()
+
 
             it 'includes a header with protocol version and ))sequence number((', (done) -> 
 
@@ -224,7 +231,6 @@ describe 'client', ->
                             _type: 1
                             event: 1
                             routingCode: 1
-                            createdAt: 1
                         hidden: 
                             _type: 1
                             routingCode: 1
@@ -232,7 +238,6 @@ describe 'client', ->
 
             it 'includes capsule content payload', (done) -> 
 
-                Date.now = -> 1
                 @EMITTED = {}
                 @client.event 'test event 1', => 
                     #console.log @EMITTED.capsule.payload
@@ -242,13 +247,11 @@ describe 'client', ->
                         _type: 'event'
                         event: 'test event 1'
                         routingCode: 'x'
-                        createdAt: 1
                         
                     done()
 
             it 'includes extended payload content', (done) -> 
 
-                Date.now = -> 1
                 @EMITTED = {}
                 @client.event 'test event 2', 
                     more: 'stuff'
@@ -263,7 +266,6 @@ describe 'client', ->
                             _type: 'event'
                             event: 'test event 2'
                             routingCode: 'x'
-                            createdAt: 1
                             more: 'stuff'
                             also:
                                 much: 
