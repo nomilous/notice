@@ -21,26 +21,26 @@ notice.listen 'hub name', {
 
     hub.use 
         title: 'first middleware'
-        (next, capsule, context) -> 
+        (next, capsule, traversal) -> 
 
             if capsule._type == 'control'
 
                 console.log "[#{capsule.control}]", 
-                    context.origin.title
-                    hostname: context.origin.context.hostname
-                    pid: context.origin.context.pid
+                    traversal.origin.title
+                    hostname: traversal.origin.context.hostname
+                    pid: traversal.origin.context.pid
 
                 return next()
 
 
             console.log """
             \ncapsule:
-            from: #{context.origin.title} (#{context.origin.context.pid}.#{context.origin.context.hostname})
-            socketUptime: #{ (Date.now() - context.origin.connection.stateAt) / 1000} seconds
+            from: #{traversal.origin.title} (#{traversal.origin.context.pid}.#{traversal.origin.context.hostname})
+            socketUptime: #{ (Date.now() - traversal.origin.connection.stateAt) / 1000} seconds
             """
 
             setInterval (->
-                console.log context #.origin.connection
+                console.log traversal.origin.connection
             ), 1000 unless already
             already = true
 

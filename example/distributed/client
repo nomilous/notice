@@ -37,7 +37,7 @@ TelevisionRemote = notice.client(
         client.use 
 
             title: 'illustate .info'
-            (next, capsule, context) -> 
+            (next, capsule, traversal) -> 
 
                 console.log next.info()
                 next()
@@ -46,7 +46,7 @@ TelevisionRemote = notice.client(
         client.use
 
             title: 'illustrate notifiying the message origin promise'
-            (next, capsule) -> 
+            (next, capsule, traversal) -> 
 
                 if capsule._type == 'volume' then next.notify 'increasing now'
                 # throw new Error 'error'

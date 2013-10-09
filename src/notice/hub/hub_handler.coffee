@@ -16,14 +16,14 @@ module.exports.handler  = (config = {}) ->
                 title: 'inbound socket interface'
                 first:  true
 
-                (next, raw, context) -> 
+                (next, raw, traversal) -> 
 
                     next() unless id = raw._socket_id
                    
                     try 
 
                         client = hubContext.clients[id]
-                        context.origin = client
+                        traversal.origin = client
 
                     next()
 

@@ -65,7 +65,7 @@ module.exports.notifier  = (config = {}) ->
                 #     ie. (next, capsule, context) -> 
                 # 
 
-                context = {}
+                traversal = {}
 
                 middleware = for title of list
                     do (title) -> 
@@ -96,7 +96,7 @@ module.exports.notifier  = (config = {}) ->
 
 
 
-                            try list[title] next, capsule, context  #, hubs
+                            try list[title] next, capsule, traversal  #, hubs
                                                                             #
                                                                             # TODO: consider enabling access to 
                                                                             #       all hubs in this process for 
@@ -114,7 +114,7 @@ module.exports.notifier  = (config = {}) ->
                         next.reject = (error)  -> process.nextTick -> reject error
                         next.cancel = ->
 
-                        try last next, capsule, context
+                        try last next, capsule, traversal
                         catch error
                             reject error
                 
@@ -128,7 +128,7 @@ module.exports.notifier  = (config = {}) ->
                         next.reject = (error)  -> process.nextTick -> reject error
                         next.cancel = ->
 
-                        try first next, capsule, context
+                        try first next, capsule, traversal
                         catch error
                             reject error
                 
