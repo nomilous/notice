@@ -29,7 +29,7 @@ Implementes a MessageBus for communications confined to a single process.
 ```coffee
 
 notice   = require 'notice'
-notifier = notice.create 'origin name'
+notifier = notice.create 'origin title'
 
 ```
 #### send an event

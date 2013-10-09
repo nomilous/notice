@@ -48,12 +48,20 @@ TelevisionRemote.create 'Family Room',
 
 ```
 
+#### The Title
+
+* Should be unique. 
+* The hub will not allow a second instance of the 'Family Room' television remote to connect.
+
 #### The Context
 
 * The client sends the context object to the hub during the connection handshake.
 * This becomes available in the `context.origin` object as passed along all hubside middleware traversals that contain a capsule originating from this client.
 
 #### The Connect
+
+* The connection specification sets paramaters used for connecting to the hub. 
+* Both https and http are using socket.io to facilitate the transport. 
 
 
 ### The Hub
