@@ -93,7 +93,7 @@ Television.create
 
 * Hub configuration should define a listen specification.
 * It starts a socket.io server.
-* An existing `httpServer` object (eg express) can be assigned.
+* An existing `httpServer` object (eg express) can be assigned for socket.io to piggyback onto.
 * Otherwise a new http or https server will be created.
 * If specified and present, cert and key lead to the creation of an https server.
 
