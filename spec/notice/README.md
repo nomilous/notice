@@ -160,6 +160,9 @@ TODO_LINK: capsule page
 * has `.connection` with basic details about the origins connection state.
 * has `.whateverWasPutThere` still present the next time a capsule from that same origin traverses the pipeline (ie. It is a place to accumulate per client hubside state)
 
+`traversal.peers` **pending consideration**
+
+* enables hub middleware to route capsules between clients
 
 
 #### throwing errors
