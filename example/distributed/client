@@ -39,7 +39,6 @@ TelevisionRemote = notice.client(
             (next, capsule, context) -> 
 
                 console.log next.info()
-                console.log context.info()
                 next()
 
 

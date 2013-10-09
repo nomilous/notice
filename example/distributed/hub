@@ -19,9 +19,9 @@ notice.listen 'hub name', {
 
     hub.use 
         title: 'first middleware'
-        (next, capsule) -> 
+        (next, capsule, context) -> 
 
-            console.log RECEIVED: capsule
+            console.log cc: context
 
             if capsule._type == 'control'
 

@@ -65,18 +65,7 @@ module.exports.notifier  = (config = {}) ->
                 #     ie. (next, capsule, context) -> 
                 # 
 
-                context = 
-                    # TODO_LINK
-                    info: -> 'https://github.com/nomilous/notice/tree/develop/spec/notice#the-context'
-
-                        #
-                        # a usefull idea: certain components carry .info
-                        # ----------------------------------------------
-                        # 
-                        # * for now it quotes doc url tag whan called
-                        # * it could do so much more...
-                        # * perhaps attention to NODE_ENV
-                        # 
+                context = {}
 
                 middleware = for title of list
                     do (title) -> 

@@ -34,7 +34,7 @@ describe 'handler', ->
         instance.disconnect.should.be.an.instanceof Function
         done()
 
-    context 'inbound socket interface', -> 
+    context 'inbound socket interface -', -> 
 
         it 'is a middleware registered first in the pipeline', (done) -> 
 
@@ -51,6 +51,54 @@ describe 'handler', ->
                             done()
 
             )
+
+        context 'traversal context assembly - ', -> 
+
+            beforeEach -> 
+
+                HandlerClass = handler()
+                instance = HandlerClass.create(
+                    hubName     = 'hubname'
+                    hubNotifier = 
+                        raw: ->
+                        use: (opts, fn) => if opts.first then @inbound = fn
+
+                    @hubContext  = 
+                        clients: 
+                            SOCKET_ID: 
+                                title:   'client notifier name'
+                                context: 'client context as at handshake'
+                                connected:
+                                    state:   'connected'
+                                    stateAt: '1'
+                )
+
+            it.only 'includes client object', (done) -> 
+
+                raw     = id: 'SOCKET_ID'
+                context = {}
+
+                @inbound (->), raw, context
+
+                context.client.should.eql 
+
+                    title:   'client notifier name'
+                    context: 'client context as at handshake'
+                    connected:
+                        state:   'connected'
+                        stateAt: '1'
+
+                done()
+
+
+
+
+
+        context 'capsule reassembly -', -> 
+
+
+
+
 
 
     context 'assign', -> 

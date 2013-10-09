@@ -18,10 +18,18 @@ module.exports.handler  = (config = {}) ->
 
                 (next, raw, context) -> 
 
-                    console.log 
-                        next: next
-                        raw: raw
-                        context: context
+                    raw._type == 'XXX'
+
+                    next() unless id = raw.id
+                    next() unless client = hubContext.clients[id]
+
+                    # console.log CC: client
+
+                    context.client = 
+                        title:     client.title
+                        context:   client.context
+                        connected: client.connected
+
 
                     next()
 
@@ -145,7 +153,6 @@ module.exports.handler  = (config = {}) ->
 
 
                         hubNotifier.raw
-                            raw: true
                             id:  id
                             control: control
                             payload: payload
