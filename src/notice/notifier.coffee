@@ -102,15 +102,8 @@ module.exports.notifier  = (config = {}) ->
                             # TODO_LINK
                             next.info   = -> 'https://github.com/nomilous/notice/tree/develop/spec/notice#the-next-function'
                             next.notify = (update) -> process.nextTick -> notify update
-                            next.reject = (error)  -> process.nextTick -> 
-
-                                #
-                                # * calling next.reject() results in 'no capsule'
-                                #
-
-                                # error.capsule = capsule  
-                                # error.context = context
-                                reject error
+                            next.reject = (error)  -> process.nextTick -> reject error
+                            next.cancel = -> # TODO: terminate the promise? (later: set appropriatly in introspection structures)
 
 
 
@@ -130,7 +123,8 @@ module.exports.notifier  = (config = {}) ->
                         next = -> process.nextTick -> resolve capsule
                         next.notify = (update) -> process.nextTick -> notify update
                         next.reject = (error)  -> process.nextTick -> reject error
-
+                        next.cancel = ->
+                            
                         try last next, capsule, context
                         catch error
                             reject error
@@ -143,6 +137,7 @@ module.exports.notifier  = (config = {}) ->
                         next = -> process.nextTick -> resolve capsule
                         next.notify = (update) -> process.nextTick -> notify update
                         next.reject = (error)  -> process.nextTick -> reject error
+                        next.cancel = ->
 
                         try first next, capsule, context
                         catch error

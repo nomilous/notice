@@ -170,6 +170,11 @@ module.exports.client  = (config = {}) ->
                         control: 'transmitted'
                         capsule: capsule
 
+            #
+            # TODO: no ack or nak ever arrives, entries remain in transit 
+            #       collection indefinately 
+            #    
+            #
 
             socket.on 'ack', (control) -> 
 
@@ -188,7 +193,6 @@ module.exports.client  = (config = {}) ->
                 #
 
                 next()
-
 
 
             socket.on 'nak', (control) -> 
