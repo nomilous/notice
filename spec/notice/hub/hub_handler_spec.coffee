@@ -19,12 +19,39 @@ describe 'handler', ->
     it 'creates a handler', (done) -> 
 
         HandlerClass = handler()
-        instance = HandlerClass.create()
+        instance = HandlerClass.create(
+
+            hubName     = 'hubname'
+            hubNotifier = 
+                raw: ->
+                use: ->
+
+        )
+
 
         instance.handshake.should.be.an.instanceof  Function
         instance.resume.should.be.an.instanceof     Function
         instance.disconnect.should.be.an.instanceof Function
         done()
+
+    context 'inbound socket interface', -> 
+
+        it 'is a middleware registered first in the pipeline', (done) -> 
+
+            HandlerClass = handler()
+            instance = HandlerClass.create(
+
+                hubName     = 'hubname'
+                hubNotifier = 
+                    raw: ->
+                    use: (opts, fn) ->
+
+                        if opts.title == 'inbound socket interface'
+                            opts.first.should.equal true
+                            done()
+
+            )
+
 
     context 'assign', -> 
 
@@ -42,7 +69,8 @@ describe 'handler', ->
             instance = DeploymentChannel.create(
 
                 hubName     = 'hubname'
-                hubNotifier = {}
+                hubNotifier = 
+                    use: ->
                 # hubContext  = 
                 #     clients: {}
                 #     connections: -> # TODO: remove this 
@@ -74,6 +102,7 @@ describe 'handler', ->
                 hubName     = 'hubname'
                 hubNotifier = 
                     createUser: -> done()
+                    use: ->
 
                 # hubContext  = 
                 #     clients: {}
@@ -96,7 +125,9 @@ describe 'handler', ->
             @instance = @HandlerClass.create(
                 
                 hubName      = 'hubname'
-                @hubNotifier = control: -> 
+                @hubNotifier = 
+                    control: -> 
+                    use: ->
                 @hubContext  = 
                     clients: 
                         SOCKET_ID: 
@@ -139,7 +170,10 @@ describe 'handler', ->
             @instance = @HandlerClass.create(
 
                 hubName      = 'hubname'
-                @hubNotifier = control: -> 
+                @hubNotifier = 
+                    control: -> 
+                    raw: ->
+                    use: ->
                 @hubContext  = 
                     clients: {}
                     name2id: {}
@@ -184,7 +218,7 @@ describe 'handler', ->
                 payload  = {}
             )
 
-        it.only 'reassembles the inbound payload into a capusle for the hubside middleware traversal', (done) -> 
+        it 'reassembles the inbound payload into a capusle for the hubside middleware traversal', (done) -> 
 
             handle = @instance.capsule 
                 id: 'SOCKET_ID'
@@ -208,7 +242,9 @@ describe 'handler', ->
             @instance = @HandlerClass.create(
 
                 hubName      = 'hubname'
-                @hubNotifier = control: -> 
+                @hubNotifier = 
+                    control: -> 
+                    use: ->
                 @hubContext  = 
                     clients: {}
                     name2id: {}
@@ -345,7 +381,9 @@ describe 'handler', ->
             @instance = @HandlerClass.create(
 
                 hubName      = 'hubname'
-                @hubNotifier = control: -> 
+                @hubNotifier = 
+                    control: ->
+                    use: ->
                 @hubContext  = 
                     clients: {}
                     name2id: {}

@@ -213,7 +213,7 @@ module.exports.notifier  = (config = {}) ->
             #
 
             Object.defineProperty notifier, 'raw', 
-
+                #enumerated: false
                 get: -> (payload) -> 
 
                     traverse payload

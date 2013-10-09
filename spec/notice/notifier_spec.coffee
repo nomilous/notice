@@ -251,6 +251,7 @@ describe 'notifier', ->
         it 'creates a function to send a raw payload into the pipeline', (done) -> 
 
             mix = notifier().create 'Assembly Line Mix'
+            console.log mix
             mix.use 
                 title: '1. intro'
                 (next, capsule) -> 

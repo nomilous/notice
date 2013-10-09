@@ -21,7 +21,7 @@ notice.listen 'hub name', {
         title: 'first middleware'
         (next, capsule) -> 
 
-            console.log RECEIVED: msg  
+            console.log RECEIVED: capsule
 
             if capsule._type == 'control'
 

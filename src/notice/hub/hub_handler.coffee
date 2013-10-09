@@ -10,6 +10,23 @@ module.exports.handler  = (config = {}) ->
 
         create: (hubName, hubNotifier, hubContext, opts) -> 
 
+
+            hubNotifier.use 
+
+                title: 'inbound socket interface'
+                first:  true
+
+                (next, raw, context) -> 
+
+                    console.log 
+                        next: next
+                        raw: raw
+                        context: context
+
+                    next()
+
+
+
             testable = handler = 
 
                 assign: (socket) -> 
@@ -127,9 +144,11 @@ module.exports.handler  = (config = {}) ->
                             uuid: control.uuid
 
 
-                        hubNotifier.raw uuid: uuid
-
-
+                        hubNotifier.raw
+                            raw: true
+                            id:  id
+                            control: control
+                            payload: payload
 
 
                 handshake: (socket) -> 
