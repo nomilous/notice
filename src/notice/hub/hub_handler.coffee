@@ -23,10 +23,7 @@ module.exports.handler  = (config = {}) ->
                     try 
 
                         client = hubContext.clients[id]
-                        context.origin = 
-                            title:      client.title
-                            context:    client.context
-                            connection: client.connection
+                        context.origin = client
 
                     next()
 
@@ -93,6 +90,7 @@ module.exports.handler  = (config = {}) ->
                         try client = hubContext.clients[id]
                         return unless client?
 
+                        client.connection ||= {}
                         client.connection.state    = 'disconnected'
                         client.connection.stateAt  = Date.now()
 
@@ -158,7 +156,7 @@ module.exports.handler  = (config = {}) ->
 
                 handshake: (socket) -> 
 
-                    (originName, secret, context) -> 
+                    (originTitle, secret, context) -> 
 
                         unless secret == opts.listen.secret
 
@@ -179,16 +177,16 @@ module.exports.handler  = (config = {}) ->
                         #       be accepted
                         #
 
-                        if previousID = hubContext.name2id[originName]
+                        if previousID = hubContext.name2id[originTitle]
 
-                            return handler.handleExisting 'start', socket, previousID, originName, context
+                            return handler.handleExisting 'start', socket, previousID, originTitle, context
                             
-                        return handler.handleNew 'start', socket, originName, context
+                        return handler.handleNew 'start', socket, originTitle, context
 
 
                 resume: (socket) -> 
 
-                    (originName, secret, context) -> 
+                    (originTitle, secret, context) -> 
 
                         unless secret == opts.listen.secret
 
@@ -207,15 +205,15 @@ module.exports.handler  = (config = {}) ->
                         # identical to on connect (for now)
                         #
 
-                        if previousID = hubContext.name2id[originName]
+                        if previousID = hubContext.name2id[originTitle]
 
-                            return handler.handleExisting 'resume', socket, previousID, originName, context 
+                            return handler.handleExisting 'resume', socket, previousID, originTitle, context 
 
-                        return handler.handleNew 'resume', socket, originName, context
+                        return handler.handleNew 'resume', socket, originTitle, context
 
 
 
-                accept: (startOrResume, newSocket, client, originName, newContext) ->
+                accept: (startOrResume, newSocket, client, originTitle, newContext) ->
 
                     id = newSocket.id
                     hubContext.clients[id] = client
@@ -233,8 +231,6 @@ module.exports.handler  = (config = {}) ->
                     for key of newContext
                         client.context[key] = newContext[key]
 
-                    client.context.origin = originName
-
                     #
                     # emit control 'start' or 'resume'
                     # --------------------------------
@@ -246,7 +242,7 @@ module.exports.handler  = (config = {}) ->
                     hubNotifier.control startOrResume, 
                         _socket_id: id
                     
-                    hubContext.name2id[originName] = id
+                    hubContext.name2id[originTitle] = id
                     newSocket.emit 'accept'
                     hubContext.connections()
 
@@ -258,26 +254,31 @@ module.exports.handler  = (config = {}) ->
                     return
 
 
-                handleNew: (startOrResume, socket, originName, context) ->
+                handleNew: (startOrResume, socket, originTitle, context) ->
 
                     client = 
-                        title:   originName
+                        title:   originTitle
                         context: context
                         hub:     hubName
-                        socket:  socket
+                    
+                    Object.defineProperty client, 'socket', 
+                        enumerable: false
+                        get: -> 
+                            process.stderr.write "notice: capacity to use the client socket directly is unlikely permanent functionality"
+                            socket
 
                     handler.assign socket
-                    handler.accept startOrResume, socket, client, originName, context
+                    handler.accept startOrResume, socket, client, originTitle, context
 
 
-                handleExisting: (startOrResume, newSocket, previousID, originName, newContext) -> 
+                handleExisting: (startOrResume, newSocket, previousID, originTitle, newContext) -> 
 
                     client = hubContext.clients[previousID]
 
                     if client.connection.state == 'connected'
 
                         #
-                        # first client with this originName is still 
+                        # first client with this originTitle is still 
                         # connected... do not allow new connection.
                         #
                         # TODO: make this configurable
@@ -310,9 +311,9 @@ module.exports.handler  = (config = {}) ->
                     # 
 
                     delete hubContext.clients[previousID]
-                    delete hubContext.name2id[originName]
+                    delete hubContext.name2id[originTitle]
                     handler.assign newSocket
-                    handler.accept startOrResume, newSocket, client, originName, newContext
+                    handler.accept startOrResume, newSocket, client, originTitle, newContext
 
 
     return api = 

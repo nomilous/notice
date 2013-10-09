@@ -23,7 +23,7 @@ describe 'notifier', ->
                     placate:     {}
 
 
-            instance = Notifier.create 'originCode'
+            instance = Notifier.create 'title'
 
             should.exist _notifier().capsuleTypes.event
             should.exist _notifier().capsuleTypes.info
@@ -37,14 +37,14 @@ describe 'notifier', ->
         it 'creates event() as default capsule emitter if none defined', (done) ->  
 
             Notifier = notifier()
-            instance = Notifier.create 'originCode'
+            instance = Notifier.create 'title'
             instance.event.should.be.an.instanceof Function
             done()
 
         it 'creates builtin control capsule emitter', (done) -> 
 
             Notifier = notifier capsules: userDefinedMessage: {}
-            instance = Notifier.create 'originCode'
+            instance = Notifier.create 'title'
             instance.userDefinedMessage.should.be.an.instanceof Function
             instance.control.should.be.an.instanceof Function
             done()
@@ -59,13 +59,13 @@ describe 'notifier', ->
             Date.now = @now
 
 
-        it 'requires an originCode', (done) -> 
+        it 'requires a title', (done) -> 
 
             Notifier = notifier()
 
             try Notifier.create()
             catch error
-                error.should.match /requires originCode as string/
+                error.should.match /requires title as string/
                 done()
 
 
@@ -88,7 +88,7 @@ describe 'notifier', ->
                             done()
 
 
-            instance = Notifier.create 'originCode'
+            instance = Notifier.create 'title'
             instance.pheeew
 
                 defcon:  1
@@ -114,7 +114,7 @@ describe 'notifier', ->
                 capsules: 
                     alert: {}
 
-            instance = Notifier.create 'originCode'
+            instance = Notifier.create 'title'
 
             capsules = []
 
@@ -130,7 +130,7 @@ describe 'notifier', ->
 
         it 'can assign additional payload after the typeValue', (done) -> 
 
-            instance = notifier().create 'originCode'
+            instance = notifier().create 'title'
             instance.event( 'event name', more: 'info' ).then (m) -> 
 
                 m.should.eql 
@@ -141,7 +141,7 @@ describe 'notifier', ->
 
         it 'can assign additional payload before the typeValue', (done) -> 
 
-            instance = notifier().create 'originCode'
+            instance = notifier().create 'title'
 
             instance.event
 
@@ -161,7 +161,7 @@ describe 'notifier', ->
 
         it 'merges multiple payloads', (done) -> 
 
-            instance = notifier().create 'originCode'
+            instance = notifier().create 'title'
             payload1 = {a: 1}
             payload2 = {b: 2}
             instance.event 'name', payload1, payload2, (err, msg) -> 
@@ -175,7 +175,7 @@ describe 'notifier', ->
 
         it 'will not overwrite typeValue is also present in payload', (done) -> 
 
-            instance = notifier().create 'originCode'
+            instance = notifier().create 'title'
             instance.event 'event name', 
                 event: 'accidental second definition of event name'
                 (err, msg) -> 
@@ -185,7 +185,7 @@ describe 'notifier', ->
 
         it 'creates description with second string', (done) -> 
 
-            instance = notifier().create 'originCode'
+            instance = notifier().create 'title'
             instance.event 'string1', 'string2', (err, msg) -> 
                 msg.should.eql
                     event: 'string1'
@@ -193,13 +193,13 @@ describe 'notifier', ->
                 done()
 
 
-        it 'creates middleware storage and throws on duplicate originCode', (done) -> 
+        it 'creates middleware storage and throws on duplicate title', (done) -> 
 
             Notifier = notifier()
             Notifier.create 'bakery'
             try Notifier.create 'bakery'
             catch π
-
+                #console.log π
                 should.exist _notifier().middleware.bakery
                 π.should.match /is already defined/
                 done()
@@ -571,7 +571,7 @@ describe 'notifier', ->
         it 'also accepts traditional node style callback to receive the error or final capsule', (done) -> 
 
             Notifier = notifier()
-            instance = Notifier.create 'originCode'
+            instance = Notifier.create 'title'
 
             instance.use title: 'title', (done, msg) -> 
                 msg.ok = 'good'

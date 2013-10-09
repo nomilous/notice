@@ -41,12 +41,12 @@ describe 'client', ->
 
     context 'create()', -> 
 
-        it 'requires originName', (done) -> 
+        it 'requires title', (done) -> 
 
             Client = client()
             Client.create undefined, @opts, (error) -> 
 
-                error.should.match /requires arg originName/
+                error.should.match /requires arg title/
                 done()
 
         it 'requires unique client name', (done) -> 

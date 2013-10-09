@@ -24,19 +24,19 @@ module.exports.notifier  = (config = {}) ->
         middleware:   {}
         notifiers:    {}
 
-        create: (originCode) ->
+        create: (title) ->
         
             throw new Error( 
-                'Notifier.create(originCode) requires originCode as string'
-            ) unless typeof originCode is 'string'
+                'Notifier.create(title) requires title as string'
+            ) unless typeof title is 'string'
 
             throw new Error(
-                "Notifier.create('#{originCode}') is already defined"
-            ) if local.middleware[originCode]?
+                "Notifier.create('#{title}') is already defined"
+            ) if local.middleware[title]?
 
             
             middlewareCount = 0
-            local.middleware[originCode] = list = {}
+            local.middleware[title] = list = {}
             
             #
             # first and last middleware reserved for hub and client
@@ -137,7 +137,7 @@ module.exports.notifier  = (config = {}) ->
 
                 return pipeline middleware
 
-            local.notifiers[originCode] = notifier = 
+            local.notifiers[title] = notifier = 
 
                 use: (opts, fn) -> 
 
@@ -168,7 +168,7 @@ module.exports.notifier  = (config = {}) ->
                         middlewareCount++
                         return
 
-                    process.stderr.write "notice: middleware '#{originCode}' already exists, use the force()"
+                    process.stderr.write "notice: middleware '#{title}' already exists, use the force()"
 
                 force: (opts, fn) ->
 

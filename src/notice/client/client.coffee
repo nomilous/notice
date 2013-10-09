@@ -30,16 +30,16 @@ module.exports.client  = (config = {}) ->
         Notifier: notifier.notifier config
         clients:  {}
 
-        create: deferred ({reject, resolve, notify}, originName, opts = {}, callback) -> 
+        create: deferred ({reject, resolve, notify}, title, opts = {}, callback) -> 
             
             try 
 
-                throw undefinedArg 'originName' unless typeof originName is 'string'
-                throw alreadyDefined 'originName', originName if local.clients[originName]?
+                throw undefinedArg 'title' unless typeof title is 'string'
+                throw alreadyDefined 'title', title if local.clients[title]?
                 throw undefinedArg 'opts.connect.port' unless opts.connect? and typeof opts.connect.port is 'number'
                 
-                client = local.Notifier.create originName
-                local.clients[originName] = client
+                client = local.Notifier.create title
+                local.clients[title] = client
 
             catch error
 
@@ -230,7 +230,7 @@ module.exports.client  = (config = {}) ->
 
                     client.connection.state   = 'resuming'
                     client.connection.stateAt = Date.now()
-                    socket.emit 'resume', originName, opts.connect.secret || '', opts.context || {}
+                    socket.emit 'resume', title, opts.connect.secret || '', opts.context || {}
 
                     #
                     # * server will respond with 'accept' on success, or disconnect()
@@ -244,7 +244,7 @@ module.exports.client  = (config = {}) ->
 
                 client.connection.state   = 'connecting'
                 client.connection.stateAt = Date.now()
-                socket.emit 'handshake', originName, opts.connect.secret || '', opts.context || {}
+                socket.emit 'handshake', title, opts.connect.secret || '', opts.context || {}
 
                 #
                 # * server will respond with 'accept' on success, or disconnect()
@@ -287,7 +287,7 @@ module.exports.client  = (config = {}) ->
 
                 ### it may happen that the disconnect occurs before the reject, making the rejection reason 'vanish' ###
 
-                terminal connectRejected(originName, rejection), reject, callback
+                terminal connectRejected(title, rejection), reject, callback
                 already = true
 
             socket.on 'disconnect', -> 
@@ -297,15 +297,15 @@ module.exports.client  = (config = {}) ->
                     # the connection was never fully established
                     # ------------------------------------------
                     #
-                    # TODO: notifier.destroy originName (another one in on 'error' below)
+                    # TODO: notifier.destroy title (another one in on 'error' below)
                     #       (it will still be present in the collection there)
                     #
                     # TODO: formalize errors 
                     #       (this following is horrible)
                     # 
 
-                    delete local.clients[originName]
-                    terminal disconnected(originName), reject, callback unless already
+                    delete local.clients[title]
+                    terminal disconnected(title), reject, callback unless already
                     already = true
                     return 
                 
@@ -336,7 +336,7 @@ module.exports.client  = (config = {}) ->
                     return
 
 
-                delete local.clients[originName]
+                delete local.clients[title]
                 setTimeout (-> 
 
                     # 
@@ -378,7 +378,7 @@ module.exports.client  = (config = {}) ->
 
 
                 # opts.connect.retryWait = 0 # ignore crazy retryWait milliseconds
-                # error = new Error "Client.create( '#{originName}', opts ) failed connect"
+                # error = new Error "Client.create( '#{title}', opts ) failed connect"
                 # reject error
                 # if typeof callback == 'function' then callback error
 

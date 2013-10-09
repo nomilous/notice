@@ -75,7 +75,7 @@ describe 'handler', ->
                                     stateAt: '1'
                 )
 
-            it.only 'includes subset of client object', (done) -> 
+            it 'includes subset of client object', (done) -> 
 
                 raw     = _socket_id: 'SOCKET_ID'
                 context = {}
@@ -182,7 +182,7 @@ describe 'handler', ->
                 @hubContext  = 
                     clients: 
                         SOCKET_ID: 
-                            connected:
+                            connection:
                                 state:   'connected'
                                 stateAt: '1'
                     connections: -> # TODO: remove this
@@ -207,8 +207,8 @@ describe 'handler', ->
             handle = @instance.disconnect id: 'SOCKET_ID'
             handle()
 
-            connected = @hubContext.clients.SOCKET_ID.connected
-            connected.should.eql 
+            connection = @hubContext.clients.SOCKET_ID.connection
+            connection.should.eql 
                 state: 'disconnected'
                 stateAt: 2
             done()
@@ -327,8 +327,8 @@ describe 'handler', ->
                 emit: ->
 
             handle 'origin name', 'secret', 'origin context'
-            connected = @hubContext.clients.SOCKET_ID.connected
-            connected.should.eql 
+            connection = @hubContext.clients.SOCKET_ID.connection
+            connection.should.eql 
                 state: 'connected'
                 stateAt: 2
             done()
@@ -389,19 +389,19 @@ describe 'handler', ->
             it 'keeps the old context but refreshes from new', (done) -> 
 
                 @hubContext.clients.OLD_SOCKET_ID = 
-                    connected: {}
+                    connection: {}
                     context:   
                         accumulated: 'STUFF from BEFORE'
                         willRefresh: 'this'
 
-                @hubContext.name2id['origin name'] = 'OLD_SOCKET_ID'
+                @hubContext.name2id['origin title'] = 'OLD_SOCKET_ID'
 
                 handle = @instance.handshake 
                     id: 'SOCKET_ID'
                     emit: -> 
                     disconnect: ->
 
-                handle 'origin name', 'secret', context = 
+                handle 'origin title', 'secret', context = 
                     hostname:    'new.host.name'
                     pid:         'new pid'
                     willRefresh: 'new this'
@@ -411,14 +411,13 @@ describe 'handler', ->
                 updatedContext = @hubContext.clients.SOCKET_ID.context
                 
                 updatedContext.should.eql
-                    origin: 'origin name'
                     accumulated: 'STUFF from BEFORE'
                     hostname: 'new.host.name'
                     pid: 'new pid'
                     willRefresh: 'new this'
 
-                @hubContext.name2id['origin name'].should.not.equal 'OLD_SOCKET_ID'
-                @hubContext.name2id['origin name'].should.equal 'SOCKET_ID'
+                @hubContext.name2id['origin title'].should.not.equal 'OLD_SOCKET_ID'
+                @hubContext.name2id['origin title'].should.equal 'SOCKET_ID'
 
                 done()
 
