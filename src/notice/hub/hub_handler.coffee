@@ -6,6 +6,14 @@ module.exports._Handler = -> Testable
 module.exports._handler = -> testable
 module.exports.handler  = (config = {}) ->
 
+    #
+    # TODO: this bypasses config of the capsule supercope, 
+    #       not doing so becomes necessary later.
+    #
+
+    Capsule = require('../capsule/capsule').capsule()
+
+
     Testable = Handler =
 
         create: (hubName, hubNotifier, hubContext, opts) -> 
@@ -24,6 +32,35 @@ module.exports.handler  = (config = {}) ->
 
                         client = hubContext.clients[id]
                         traversal.origin = client
+
+                    #
+                    # TODO: raw.control.type might may be extraneous
+                    #
+
+                    #
+                    # re-assemble the capsule
+                    # -----------------------
+                    # 
+                    # * assigns the capsule._uuid as generated at the origin
+                    # * applies hidden and protected property setting as specified 
+                    #   at the origin
+                    #
+
+
+
+                    try uuid    = raw.control.uuid
+                    try tected  = raw.control.protected
+                    try hidden  = raw.control.hidden
+                    try payload = raw.payload
+
+                    capsule = new Capsule uuid: uuid
+                    for property of payload
+                        assign = {}
+                        assign[property] = payload[property]
+                        assign.hidden    = true if hidden[property]
+                        assign.protected = true if tected[property]
+                        capsule.set assign
+
 
                     next()
 

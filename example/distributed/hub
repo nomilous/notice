@@ -17,7 +17,7 @@ notice.listen 'hub name', {
 
     return process.stdout.write err.toString() if err?
     
-    already = false
+    # already = false
 
     hub.use 
         title: 'first middleware'
@@ -36,12 +36,13 @@ notice.listen 'hub name', {
             console.log """
             \ncapsule:
             from: #{traversal.origin.title} (#{traversal.origin.context.pid}.#{traversal.origin.context.hostname})
+            uuid: #{capsule._uuid}
             socketUptime: #{ (Date.now() - traversal.origin.connection.stateAt) / 1000} seconds
-            """
+            """, '\ncapsule:', capsule
 
-            setInterval (->
-                console.log traversal.origin.connection
-            ), 1000 unless already
-            already = true
+            # setInterval (->
+            #     console.log traversal.origin.connection
+            # ), 1000 unless already
+            # already = true
 
             next()

@@ -1,5 +1,6 @@
 should      = require 'should'
 {handler, _Handler, _handler} = require '../../../lib/notice/hub/hub_handler'
+{_capsule} = require '../../../lib/notice/capsule/capsule'
 
 describe 'handler', -> 
     
@@ -52,7 +53,10 @@ describe 'handler', ->
 
             )
 
-        context 'traversal context assembly - ', -> 
+
+
+        context 'assembly of', -> 
+
 
             beforeEach -> 
 
@@ -75,33 +79,42 @@ describe 'handler', ->
                                     stateAt: '1'
                 )
 
-            it 'includes subset of client object', (done) -> 
+            context 'traversal -', ->
 
-                raw     = _socket_id: 'SOCKET_ID'
-                context = {}
-                @inbound (->), raw, context
+                it 'includes the client object', (done) -> 
 
-                context.origin.should.eql 
+                    raw     = _socket_id: 'SOCKET_ID'
+                    context = {}
+                    @inbound (->), raw, context
 
-                    title:   'client notifier name'
-                    context: 
-                        hostname: 'host.name'
-                        pid:      1111
-                    connection:
-                        state:   'connected'
-                        stateAt: '1'
+                    context.origin.should.eql 
 
-                done()
+                        title:   'client notifier name'
+                        context: 
+                            hostname: 'host.name'
+                            pid:      1111
+                        connection:
+                            state:   'connected'
+                            stateAt: '1'
 
-
-
-
-
-        context 'capsule reassembly -', -> 
+                    done()
 
 
 
 
+
+            context 'capsule', -> 
+
+                it 'creates a new capsule', (done) -> 
+
+                    raw = 
+                        _socket_id: 'SOCKET_ID'
+                        control: uuid: 'UU        ID'
+
+                    context = {}
+                    @inbound (->), raw, context
+                    _capsule()._uuid.should.equal 'UU        ID'
+                    done()
 
 
     context 'assign', -> 

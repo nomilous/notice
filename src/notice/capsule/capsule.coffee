@@ -1,7 +1,10 @@
 uuid = require 'node-uuid'
 
+Testable                = undefined
 testable                = undefined
+module.exports._Capsule = -> Testable
 module.exports._capsule = -> testable
+
 module.exports.capsule  = (config = {}) ->
 
     #
@@ -44,6 +47,8 @@ module.exports.capsule  = (config = {}) ->
                             key
                     )
                     allProperties
+
+            testable = @ # latest instance available for testing
 
 
         set: (opts) -> 
