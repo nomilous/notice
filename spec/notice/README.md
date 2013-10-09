@@ -58,7 +58,7 @@ TelevisionRemote.create 'Family Room',
 * The client sends the context object to the hub during the connection handshake.
 * This becomes available in the `context.origin` object as passed along all hubside middleware traversals that contain a capsule originating from this client.
 
-#### The Connect
+#### The Connect Spec
 
 * The connection specification sets paramaters used for connecting to the hub. 
 * Both https and http are using socket.io to facilitate the transport. 
@@ -69,12 +69,7 @@ TelevisionRemote.create 'Family Room',
 ```coffee
 
 notice = require 'notice'
-Television = notice.hub
-
-        #
-        # requires the same capsule definitions as the client
-        #
-
+Television = notice.hub()
 Television.create
 
     listen:  
@@ -93,6 +88,14 @@ Television.create
 
 
 ```
+
+#### The Listen Spec
+
+* Hub configuration should define a listen specification.
+* It starts a socket.io server.
+* An existing `httpServer` object (eg express) can be assigned.
+* Otherwise a new http or https server will be created.
+* If specified and present, cert and key lead to the creation of an https server.
 
 
 Emitting Capsules
