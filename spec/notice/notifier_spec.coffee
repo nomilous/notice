@@ -248,6 +248,21 @@ describe 'notifier', ->
             mmm['put a lid on it']          done, {}
 
 
+        it 'creates a function to send a raw payload into the pipeline', (done) -> 
+
+            mix = notifier().create 'Assembly Line Mix'
+            mix.use 
+                title: '1. intro'
+                (next, capsule) -> 
+
+                    capsule.should.equal 'VALUE'
+                    done()
+
+
+            mix.raw 'VALUE'
+
+
+
         it 'passes capsule through all middleware if they call next', (done) -> 
 
             mix  = notifier().create 'Assembly Line Mix'

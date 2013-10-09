@@ -124,7 +124,7 @@ module.exports.notifier  = (config = {}) ->
                         next.notify = (update) -> process.nextTick -> notify update
                         next.reject = (error)  -> process.nextTick -> reject error
                         next.cancel = ->
-                            
+
                         try last next, capsule, context
                         catch error
                             reject error
@@ -198,6 +198,25 @@ module.exports.notifier  = (config = {}) ->
                     
                     middlewareCount++ unless list[opts.title]?
                     list[opts.title] = fn
+
+
+            #
+            # create a function for push a raw payload into the middleware
+            # ------------------------------------------------------------
+            # 
+            # * not exposed on visible api, only marginally likely to remain
+            #   a permanent functionality
+            # 
+            # * used by the hub / client to transfer inbound payload from the
+            #   socket onto the middleware where the builtin first middleware
+            #   capsualizes it appropriately.
+            #
+
+            Object.defineProperty notifier, 'raw', 
+
+                get: -> (payload) -> 
+
+                    traverse payload
 
 
             #

@@ -127,6 +127,8 @@ module.exports.handler  = (config = {}) ->
                             uuid: control.uuid
 
 
+                        hubNotifier.raw uuid: uuid
+
 
 
 

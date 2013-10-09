@@ -184,10 +184,11 @@ describe 'handler', ->
                 payload  = {}
             )
 
-        xit 'reassembles the inbound payload into a capusle for the hubside middleware traversal', (done) -> 
+        it.only 'reassembles the inbound payload into a capusle for the hubside middleware traversal', (done) -> 
 
             handle = @instance.capsule 
                 id: 'SOCKET_ID'
+                emit: ->
             
             handle( 
                 header   = [1]

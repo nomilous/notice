@@ -21,6 +21,8 @@ notice.listen 'hub name', {
         title: 'first middleware'
         (next, capsule) -> 
 
+            console.log RECEIVED: msg  
+
             if capsule._type == 'control'
 
                 #
@@ -35,6 +37,5 @@ notice.listen 'hub name', {
                     pid: capsule.client.pid
 
                 return next()
-            
-            console.log RECEIVED: msg
+
             next()
