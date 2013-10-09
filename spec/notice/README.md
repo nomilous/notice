@@ -2,11 +2,49 @@
 Hub and Client Configurables
 ----------------------------
 
+### Creating a Notifier Hub
 
-Creating a Notifier
--------------------
+```coffee
 
-### The Client
+notice = require 'notice'
+Television = notice.hub()
+Television.create
+
+    listen:  
+        # server:  existingHttpServer
+        # address: '0.0.0.0'
+        port:    10101
+        secret:  'right'
+        cert:    __dirname + '/../../cert/develop-cert.pem'
+        key:     __dirname + '/../../cert/develop-key.pem'
+
+    (error, hub) ->
+
+        #
+        # callback receives listening hub or error
+        # 
+
+        hub.use 
+            
+            title: 'middleware title'
+            (next, capsule, traversal) -> 
+
+                next()
+
+
+```
+
+#### The Listen Spec
+
+* Hub configuration should define a listen specification.
+* It starts a socket.io server.
+* An existing `httpServer` object (eg express) can be assigned for socket.io to piggyback onto.
+* Otherwise a new http or https server will be created.
+* If specified and present, cert and key lead to the creation of an https server.
+
+
+
+### Creating a Notifier Client
 
 ```coffee
 
@@ -56,46 +94,12 @@ TelevisionRemote.create 'Family Room',
 #### The Context
 
 * The client sends the context object to the hub during the connection handshake.
-* This becomes available in the `context.origin` object as passed along all hubside middleware traversals that contain a capsule originating from this client.
+* This becomes available in the `traversal.origin` object passed along all hubside middleware traversals that contain a capsule originating from this client.
 
 #### The Connect Spec
 
 * The connection specification sets paramaters used for connecting to the hub. 
 * Both https and http are using socket.io to facilitate the transport. 
-
-
-### The Hub
-
-```coffee
-
-notice = require 'notice'
-Television = notice.hub()
-Television.create
-
-    listen:  
-        # server:  existingHttpServer
-        # address: '0.0.0.0'
-        port:    10101
-        secret:  'right'
-        cert:    __dirname + '/../../cert/develop-cert.pem'
-        key:     __dirname + '/../../cert/develop-key.pem'
-
-    (error, hub) ->
-
-        #
-        # callback receives listening hub or error
-        # 
-
-
-```
-
-#### The Listen Spec
-
-* Hub configuration should define a listen specification.
-* It starts a socket.io server.
-* An existing `httpServer` object (eg express) can be assigned for socket.io to piggyback onto.
-* Otherwise a new http or https server will be created.
-* If specified and present, cert and key lead to the creation of an https server.
 
 
 Emitting Capsules
@@ -119,7 +123,7 @@ Using the middleware pipeline
 
 ```coffee
 
-(next, capsule, context) -> 
+(next, capsule, traversal) -> 
 
     getSomethingFromADatabaseOrWhatever (err, something) -> 
 
@@ -147,11 +151,13 @@ The next function has some nested tools.
 
 TODO_LINK: capsule page
 
-#### the context
+#### the traversal object
 
-* `context.origin.title` contains the originName of the remote notifier that created the currently traversing capsule
-* `context.origin.context` contains the context of the capsule's origin as defined in `opts.context` at the remote notifiers initialization. 
-* `context.origin.connection` contains basic details about the origins connection state.
+`traversal.origin`
+
+* has `.title` of the remote notifier that created the currently traversing capsule
+* has `.context` containing the context of the capsule's origin as defined in `opts.context` at the remote notifiers initialization. 
+* has `.connection` with basic details about the origins connection state.
 
 
 
