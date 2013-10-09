@@ -16,6 +16,7 @@ TelevisionRemote = notice.client(
 
     context: 
         supremeAuthority: 'Mother' unless Grandfather? || Saturday?
+        batteryLevel: 4 / 9
 
     connect: 
         address: 'localhost'

@@ -67,24 +67,27 @@ describe 'handler', ->
                         clients: 
                             SOCKET_ID: 
                                 title:   'client notifier name'
-                                context: 'client context as at handshake'
-                                connected:
+                                context: 
+                                    hostname: 'host.name'
+                                    pid:      1111
+                                connection:
                                     state:   'connected'
                                     stateAt: '1'
                 )
 
-            it.only 'includes client object', (done) -> 
+            it.only 'includes subset of client object', (done) -> 
 
-                raw     = id: 'SOCKET_ID'
+                raw     = _socket_id: 'SOCKET_ID'
                 context = {}
-
                 @inbound (->), raw, context
 
-                context.client.should.eql 
+                context.origin.should.eql 
 
                     title:   'client notifier name'
-                    context: 'client context as at handshake'
-                    connected:
+                    context: 
+                        hostname: 'host.name'
+                        pid:      1111
+                    connection:
                         state:   'connected'
                         stateAt: '1'
 

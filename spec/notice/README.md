@@ -48,6 +48,14 @@ TelevisionRemote.create 'Family Room',
 
 ```
 
+#### The Context
+
+* The client sends the context object to the hub during the connection handshake.
+* This becomes available in the `context.origin` object as passed along all hubside middleware traversals that contain a capsule originating from this client.
+
+#### The Connect
+
+
 ### The Hub
 
 ```coffee
@@ -129,6 +137,11 @@ The next function has some nested tools.
 TODO_LINK: capsule page
 
 #### the context
+
+* `context.origin.title` contains the originName of the remote notifier that created the currently traversing capsule
+* `context.origin.context` contains the context of the capsule's origin as defined in `opts.context` at the remote notifiers initialization. 
+* `context.origin.connection` contains basic details about the origins connection state.
+
 
 
 #### throwing errors

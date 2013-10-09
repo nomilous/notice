@@ -21,8 +21,6 @@ notice.listen 'hub name', {
         title: 'first middleware'
         (next, capsule, context) -> 
 
-            console.log cc: context
-
             if capsule._type == 'control'
 
                 #
@@ -32,10 +30,18 @@ notice.listen 'hub name', {
                 #
                 
                 console.log "[#{capsule.control}]", 
-                    capsule.client.origin
-                    hostname: capsule.client.hostname
-                    pid: capsule.client.pid
+                    context.origin.title
+                    hostname: context.origin.context.hostname
+                    pid: context.origin.context.pid
 
                 return next()
+
+
+            console.log """
+            \ncapsule:
+            from: #{context.origin.title} (#{context.origin.context.pid}.#{context.origin.context.hostname})
+            socketUptime: #{ (Date.now() - context.origin.connection.stateAt) / 1000} seconds
+            """
+
 
             next()

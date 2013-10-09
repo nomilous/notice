@@ -18,18 +18,15 @@ module.exports.handler  = (config = {}) ->
 
                 (next, raw, context) -> 
 
-                    raw._type == 'XXX'
+                    next() unless id = raw._socket_id
+                   
+                    try 
 
-                    next() unless id = raw.id
-                    next() unless client = hubContext.clients[id]
-
-                    # console.log CC: client
-
-                    context.client = 
-                        title:     client.title
-                        context:   client.context
-                        connected: client.connected
-
+                        client = hubContext.clients[id]
+                        context.origin = 
+                            title:      client.title
+                            context:    client.context
+                            connection: client.connection
 
                     next()
 
@@ -96,8 +93,8 @@ module.exports.handler  = (config = {}) ->
                         try client = hubContext.clients[id]
                         return unless client?
 
-                        client.connected.state    = 'disconnected'
-                        client.connected.stateAt  = Date.now()
+                        client.connection.state    = 'disconnected'
+                        client.connection.stateAt  = Date.now()
 
                         #
                         # emit control 'suspend'
@@ -107,7 +104,8 @@ module.exports.handler  = (config = {}) ->
                         # * TODO: ensure this does not go to the client
                         # 
 
-                        hubNotifier.control 'suspend', client: client.context
+                        hubNotifier.control 'suspend', 
+                            _socket_id: id
 
                         hubContext.connections()
 
@@ -153,9 +151,9 @@ module.exports.handler  = (config = {}) ->
 
 
                         hubNotifier.raw
-                            id:  id
-                            control: control
-                            payload: payload
+                            _socket_id: id
+                            control:    control
+                            payload:    payload
 
 
                 handshake: (socket) -> 
@@ -221,9 +219,9 @@ module.exports.handler  = (config = {}) ->
 
                     id = newSocket.id
                     hubContext.clients[id] = client
-                    client.connected ||= {}
-                    client.connected.state    = 'connected'
-                    client.connected.stateAt  = Date.now()
+                    client.connection ||= {}
+                    client.connection.state    = 'connected'
+                    client.connection.stateAt  = Date.now()
 
                     #
                     # TODO: context as capsule with watched properties
@@ -246,7 +244,7 @@ module.exports.handler  = (config = {}) ->
                     # 
 
                     hubNotifier.control startOrResume, 
-                        client: client.context
+                        _socket_id: id
                     
                     hubContext.name2id[originName] = id
                     newSocket.emit 'accept'
@@ -276,7 +274,7 @@ module.exports.handler  = (config = {}) ->
 
                     client = hubContext.clients[previousID]
 
-                    if client.connected.state == 'connected'
+                    if client.connection.state == 'connected'
 
                         #
                         # first client with this originName is still 
