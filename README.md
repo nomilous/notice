@@ -2,9 +2,7 @@
 
 fix all TODO_LINKS
 
-### Version 0.0.11
-
-**unstable** - api changes almost certainly will occur (without deprecation warnings)
+#### Version 0.0.11 **stable-ish** - minor api changes may still occur
 
 notice
 ======
