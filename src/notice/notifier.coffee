@@ -221,6 +221,7 @@ module.exports.notifier  = (config = {}) ->
             #
 
             for type of config.capsule
+                continue if type == 'uuid'
                 continue if notifier[type]?
                 do (type) -> 
                     notifier[type] = deferred (args...) -> 
