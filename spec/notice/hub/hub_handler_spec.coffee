@@ -107,7 +107,7 @@ describe 'handler', ->
 
             DeploymentChannel = handler
 
-                capsules: 
+                capsule: 
 
                     getVersion:  {}
                     gotVersion:  {}
@@ -140,7 +140,7 @@ describe 'handler', ->
 
             ConfigurationChannel = handler
 
-                capsules: 
+                capsule: 
 
                     createUser:     {}
                     installService: {}

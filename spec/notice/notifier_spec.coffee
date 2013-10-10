@@ -14,7 +14,7 @@ describe 'notifier', ->
         it 'allows capsule type definitions', (done) -> 
 
             Notifier = notifier
-                capsules: 
+                capsule: 
                     event:       {}
                     info:        {}
                     alert:       {}
@@ -43,7 +43,7 @@ describe 'notifier', ->
 
         it 'creates builtin control capsule emitter', (done) -> 
 
-            Notifier = notifier capsules: userDefinedMessage: {}
+            Notifier = notifier capsule: userDefinedMessage: {}
             instance = Notifier.create 'title'
             instance.userDefinedMessage.should.be.an.instanceof Function
             instance.control.should.be.an.instanceof Function
@@ -74,7 +74,7 @@ describe 'notifier', ->
             Date.now = -> 'wrist watch'
 
             Notifier = notifier 
-                capsules:
+                capsule:
                     pheeew:  
                         afterCreate: (done, capsule) ->
 
@@ -111,7 +111,7 @@ describe 'notifier', ->
         it 'assigns the capsule typeValue from string or number', (done) -> 
 
             Notifier = notifier 
-                capsules: 
+                capsule: 
                     alert: {}
 
             instance = Notifier.create 'title'
@@ -208,7 +208,7 @@ describe 'notifier', ->
         it 'provides middleware registrar', (done) -> 
 
             Notifier = notifier
-                capsules:
+                capsule:
                     use: 'this capsule definition is ignored'
 
             nine = Notifier.create 'Assembly Line 9'
@@ -524,7 +524,7 @@ describe 'notifier', ->
         it 'returns the promise of a capsule traversing the middleware pipeline', (done) -> 
 
             Notifier = notifier 
-                capsules:
+                capsule:
                     makeThing: 
                         beforeCreate: (done, msg) ->
                             msg.serialNo = '0000000000001'
@@ -556,7 +556,7 @@ describe 'notifier', ->
 
         it 'rejects on failing middleware', (done) -> 
 
-            Notifier = notifier capsules: info: {}
+            Notifier = notifier capsule: info: {}
             broken = Notifier.create 'broken pipeline'
             broken.use title: 'fails', (done, msg) -> 
                 throw new Error 'ka-pow!'

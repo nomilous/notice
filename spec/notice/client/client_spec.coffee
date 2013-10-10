@@ -35,7 +35,7 @@ describe 'client', ->
 
         it 'throws when attempting to assign reserved capsule types', (done) -> 
 
-            try Client = client capsules: connect: {}
+            try Client = client capsule: connect: {}
             catch error
                 error.should.match /is a reserved capsule type/
                 done()
@@ -115,7 +115,7 @@ describe 'client', ->
             it 'assigns handlers for each capsule type onto the connecting socket', (done) -> 
 
                 Client = client 
-                    capsules: 
+                    capsule: 
                         capsuleType: {}
 
                 ASSIGNED = {}
@@ -129,7 +129,7 @@ describe 'client', ->
             it 'assigns handers that proxy inbound capsules into the middleware pipeline', (done) ->
 
                 Client = client 
-                    capsules: 
+                    capsule: 
                         capsuleType: {}
 
                 ASSIGNED = {}

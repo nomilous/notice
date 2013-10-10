@@ -1,7 +1,7 @@
 #require('nez').realize 'Message', (Message, test, context, should) -> 
     
 {_message, message} = require '../../../lib/notice/capsule/message'
-{_capsule} = require '../../../lib/notice/capsule/capsule'
+{_Capsule} = require '../../../lib/notice/capsule/capsule'
 should  = require 'should'
 
 describe 'Message', -> 
@@ -35,7 +35,8 @@ describe 'Message', ->
             Message = message 'type'
             Message.create().then (m) -> 
 
-                m.should.be.an.instanceof _capsule()
+                m.set.should.be.an.instanceof Function
+                #m.should.be.an.instanceof _Capsule()
                 done()
 
 
@@ -77,7 +78,7 @@ describe 'Message', ->
         it 'calls beforeCreate ahead of property assignment', (done) -> 
 
             Message = message 'type',
-                capsules: type: beforeCreate: (done, msg) -> 
+                capsule: type: beforeCreate: (done, msg) -> 
                     msg.preAssigned = 'value'
                     done()
 
@@ -88,7 +89,7 @@ describe 'Message', ->
         it 'sets _type before beforeCreate', (done) -> 
 
             Message = message 'type',
-                capsules: type: beforeCreate: (next, msg) -> 
+                capsule: type: beforeCreate: (next, msg) -> 
                     msg._type.should.equal 'type'
                     done()
 
@@ -97,7 +98,7 @@ describe 'Message', ->
         it 'calls afterCreate after property assignment', (done) -> 
 
             Message = message 'type',
-                capsules: type: afterCreate: (next, msg) ->  
+                capsule: type: afterCreate: (next, msg) ->  
                     msg.one++
                     done()
 
@@ -112,7 +113,7 @@ describe 'Message', ->
         it 'beforeCreate and afterCreate can fail the message creation', (done) -> 
 
             Message = message 'type',
-                capsules: type: beforeCreate: (done, msg) ->  
+                capsule: type: beforeCreate: (done, msg) ->  
                     done new Error 'darn, no DB to save initial message state'
 
             Message.create( 'helloo-oo-oo': 'bat flies out' ).then (->), (error) ->

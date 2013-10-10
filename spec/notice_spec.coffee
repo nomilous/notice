@@ -63,7 +63,7 @@ describe 'standalone configured notifier', ->
 
         seq = 0
         Messenger = notice 
-            capsules: 
+            capsule: 
                 capsuleTypeName:
                     beforeCreate: (done, capsule) -> 
                         capsule.sequence = seq++

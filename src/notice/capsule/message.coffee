@@ -6,7 +6,7 @@ module.exports._message = -> testable
 module.exports.message  = (type, config = {}) ->
 
     thisConfig = {}
-    try thisConfig = config.capsules[type]
+    try thisConfig = config.capsule[type]
 
     local = 
 

@@ -49,7 +49,7 @@ module.exports.handler  = (config = {}) ->
                     # * these are for inbound capsules
                     # 
 
-                    for type of config.capsules
+                    for type of config.capsule
 
                             #
                             # * control capsules are local only
@@ -68,7 +68,7 @@ module.exports.handler  = (config = {}) ->
                                 unless typeof hubNotifier[type] == 'function'
 
                                     # 
-                                    # * client and hub should use a common capsules config
+                                    # * client and hub should use a common capsule config
                                     # 
 
                                     process.stderr.write "notice undefined capsule type '#{type}'"

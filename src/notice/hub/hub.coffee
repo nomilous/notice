@@ -14,7 +14,7 @@ testable            = undefined
 module.exports._hub = -> testable
 module.exports.hub  = (config = {}) ->
 
-    for type of config.capsules
+    for type of config.capsule
 
         throw reservedCapsule type if type.match(
              /^connect$|^handshake$|^accept$|^reject$|^disconnect$|^resume$|^capsule$|^nak$|^ack$|^error$/

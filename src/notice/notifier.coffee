@@ -10,13 +10,13 @@ module.exports.notifier  = (config = {}) ->
     # create default capsule emitter if none defined
     #
 
-    config.capsules = event: {} unless config.capsules?
+    config.capsule = event: {} unless config.capsule?
 
     #
     # for builtin control capsules
     #
 
-    config.capsules.control = {}
+    config.capsule.control = {}
 
     testable = local = 
 
@@ -220,7 +220,7 @@ module.exports.notifier  = (config = {}) ->
             #   not receive the capsule
             #
 
-            for type of config.capsules
+            for type of config.capsule
                 continue if notifier[type]?
                 do (type) -> 
                     notifier[type] = deferred (args...) -> 
@@ -261,7 +261,7 @@ module.exports.notifier  = (config = {}) ->
     # * create pre-defined capsule types
     #
 
-    for type of config.capsules
+    for type of config.capsule
         local.capsuleTypes[type] = message type, config
 
 

@@ -18,7 +18,7 @@ testable               = undefined
 module.exports._client = -> testable
 module.exports.client  = (config = {}) ->
 
-    for type of config.capsules
+    for type of config.capsule
 
         throw reservedCapsule type if type.match(
             /^connect$|^handshake$|^accept$|^reject$|^disconnect$|^resume$|^capsule$|^nak$|^ack$|^error$/
@@ -68,7 +68,7 @@ module.exports.client  = (config = {}) ->
             # TODO: set capsule.inbound
             # 
 
-            for type of config.capsules
+            for type of config.capsule
 
                     #
                     # * control capsules are local only
