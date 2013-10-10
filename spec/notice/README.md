@@ -112,17 +112,24 @@ Emitting Capsules
 
 ```coffee
 
-theRemote.volume up: 3, (err, capsule) -> 
+theRemote.volume 'up', amount: 3, (err, capsule) -> 
 
     #
     # callback receives final capsule,
     # or err
     #
 
+    #console.log capsule._uuid
+    console.log capsule
+
+    #
+    # => { volume: 'up', amount: 3 }
+    # 
+
     console.log capsule.all 
 
     #
-    # => { _type: 'volume', up: 3 }
+    # => { _type: 'volume', volume: 'up', amount: 3 }
     # 
 
 ```
@@ -134,6 +141,24 @@ theRemote.volume up: 3, (err, capsule) ->
 
 ### With promise
 
+```coffee
+
+theRemote.volume( 'up', amount: 3 ).then(
+
+    (capsule) -> console.log 'Hub acknowledged', capsule._uuid
+    (error)   -> console.log error
+    (notify)  -> console.log 'Notify', notify 
+
+        # 
+        # => Notify { _type: 'control', control: 'transmitted', capsule: ...
+        # => Hub acknowledged 75fa0370-31ce-11e3-8fda-879806fe07a4
+        # 
+
+)
+
+```
+
+* Emitting a capsule with a promise waiting behaves similarly to the node style example but with an additional capacity to receive control notifications.
 
 
 

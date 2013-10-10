@@ -35,19 +35,22 @@ TelevisionRemote = notice.client(
 
         return console.log error if error?
 
-        theRemote.volume up: 3, (err, capsule) -> 
+        # theRemote.volume 'up', amount: 3, (err, capsule) -> 
     
-            return console.log 'ERROR', err if err?
-            console.log capsule.all
-            # console.log capsule
+        #     return console.log 'ERROR', err if err?
+        #     # console.log capsule.all
+        #     console.log capsule
 
 
 
-        # client.volume( 'up', amount: 3 ).then(
+        theRemote.volume( 'up', amount: 3 ).then(
 
-        #     (capsule) -> console.log AFTER_ACK: capsule
-        #     (error)   -> console.log ERROR: error
-        #     (notify)  -> console.log NOTIFY: notify 
+            (capsule) -> console.log 'Hub acknowledged', capsule._uuid
+            (error)   -> console.log error
+            (notify)  -> console.log 'Notify', notify 
 
-        # )
+                # 
+                # => Notify { _type: 'control', control: 'transmitted', capsule: ...
+                # 
 
+        )
