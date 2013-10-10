@@ -30,6 +30,7 @@ Television.create
             title: 'middleware title'
             (next, capsule, traversal) -> 
 
+                console.log traversal.origin
                 next()
 
 
