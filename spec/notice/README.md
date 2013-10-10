@@ -244,7 +244,7 @@ TODO_LINK: capsule page
 * enables hub middleware to route capsules between clients
 
 
-#### throwing errors
+#### throwing errors (or failing to catch them)
 
 ```coffee
 
