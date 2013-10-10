@@ -215,7 +215,7 @@ hub.use
 * Do some stuff and call `next()` when done.
 * Possibly make ammendments to the capsule.
 * The capsule does not continue to the next middleware until `next()` is called.
-* Intentionally not calling `next()` is BAD - the introspection subsystem will consider the middleware as a bottleneck. Use `next.cancel()`.
+* Intentionally not calling `next()` is bad - the **pending** introspection subsystem will consider the middleware as a bottleneck. Use `next.cancel()`.
 
 
 #### the next function
