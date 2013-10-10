@@ -38,10 +38,12 @@ Television.create
 #### The Listen Spec
 
 * Hub configuration should define a listen specification.
+* socket.io is currenly the only available transport adaptor.
 * It starts a socket.io server.
 * An existing `httpServer` object (eg express) can be assigned for socket.io to piggyback onto.
 * Otherwise a new http or https server will be created.
 * If specified and present, cert and key lead to the creation of an https server.
+
 
 
 
@@ -100,7 +102,7 @@ TelevisionRemote.create 'Family Room',
 #### The Connect Spec
 
 * The connection specification sets paramaters used for connecting to the hub. 
-* Both https and http are using socket.io to facilitate the transport. 
+* socket.io is currenly the only available transport adaptor.
 
 
 Emitting Capsules
