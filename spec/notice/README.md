@@ -202,6 +202,12 @@ hub.use
 
         throw err if err?
         capsule.something = something
+        traversal.origin.whateverIsPutHere = """
+
+            * will still be here @ next capsule from same origin
+            * for as long as the hub process is not restarted
+
+        """
         next()
 
 ```
