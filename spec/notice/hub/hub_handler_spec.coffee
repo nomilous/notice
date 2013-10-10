@@ -55,7 +55,7 @@ describe 'handler', ->
 
 
 
-        context 'assembly of', -> 
+        context 'first middleware', -> 
 
 
             beforeEach -> 
@@ -79,42 +79,26 @@ describe 'handler', ->
                                     stateAt: '1'
                 )
 
-            context 'traversal -', ->
+            
+            it 'attaches cllent object onto traversal', (done) -> 
 
-                it 'includes the client object', (done) -> 
+                raw     = 
+                    _socket_id: 'SOCKET_ID'
+                    uuid: 'UUID'
+                context = {}
+                @inbound (->), raw, context
 
-                    raw     = _socket_id: 'SOCKET_ID'
-                    context = {}
-                    @inbound (->), raw, context
+                context.origin.should.eql 
 
-                    context.origin.should.eql 
+                    title:   'client notifier name'
+                    context: 
+                        hostname: 'host.name'
+                        pid:      1111
+                    connection:
+                        state:   'connected'
+                        stateAt: '1'
 
-                        title:   'client notifier name'
-                        context: 
-                            hostname: 'host.name'
-                            pid:      1111
-                        connection:
-                            state:   'connected'
-                            stateAt: '1'
-
-                    done()
-
-
-
-
-
-            context 'capsule', -> 
-
-                it 'creates a new capsule', (done) -> 
-
-                    raw = 
-                        _socket_id: 'SOCKET_ID'
-                        control: uuid: 'UU        ID'
-
-                    context = {}
-                    @inbound (->), raw, context
-                    _capsule()._uuid.should.equal 'UU        ID'
-                    done()
+                done()
 
 
     context 'assign', -> 
@@ -236,8 +220,9 @@ describe 'handler', ->
                 hubName      = 'hubname'
                 @hubNotifier = 
                     control: -> 
-                    raw: ->
+                    raw: (@capsule) => 
                     use: ->
+
                 @hubContext  = 
                     clients: {}
                     name2id: {}
@@ -290,11 +275,42 @@ describe 'handler', ->
             
             handle( 
                 header   = [1]
-                control  = uuid: 'UUID'
+                control  = 
+                    uuid:      'UUID'
+                    hidden:    hiddenKey:    1
+                    protected: protectedKey: 1
+                payload  = 
+                    key:          'value'
+                    hiddenKey:    'hValue'
+                    protectedKey: 'pValue'
+            )
+
+            @capsule._uuid       .should.equal 'UUID'
+            @capsule.key         .should.equal 'value'
+            @capsule.hiddenKey   .should.equal 'hValue' 
+            @capsule.protectedKey = 'kfdlkmsdfdsfqoknojk'
+            @capsule.protectedKey.should.equal 'pValue'
+            done() 
+
+
+        it """loads the _socket_id onto the capsule for the first middleware 
+              to assign the client objecj from the collection onto the traversal object""", (done) -> 
+
+            handle = @instance.capsule 
+                id: 'SOCKET_ID'
+                emit: ->
+
+            handle( 
+                header   = [1]
+                control  = 
+                    uuid:      'UUID'
+                    hidden:    {}
+                    protected: {}
                 payload  = {}
             )
 
-            done() 
+            @capsule._socket_id.should.equal 'SOCKET_ID'
+            done()
 
 
     context 'handshake', -> 

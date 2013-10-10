@@ -24,43 +24,19 @@ module.exports.handler  = (config = {}) ->
                 title: 'inbound socket interface'
                 first:  true
 
-                (next, raw, traversal) -> 
+                (next, capsule, traversal) -> 
 
-                    next() unless id = raw._socket_id
+                    next() unless id = capsule._socket_id
                    
                     try 
 
+                        delete capsule._socket_id
                         client = hubContext.clients[id]
                         traversal.origin = client
 
                     #
                     # TODO: raw.control.type might may be extraneous
                     #
-
-                    #
-                    # re-assemble the capsule
-                    # -----------------------
-                    # 
-                    # * assigns the capsule._uuid as generated at the origin
-                    # * applies hidden and protected property setting as specified 
-                    #   at the origin
-                    #
-
-
-
-                    try uuid    = raw.control.uuid
-                    try tected  = raw.control.protected
-                    try hidden  = raw.control.hidden
-                    try payload = raw.payload
-
-                    capsule = new Capsule uuid: uuid
-                    for property of payload
-                        assign = {}
-                        assign[property] = payload[property]
-                        assign.hidden    = true if hidden[property]
-                        assign.protected = true if tected[property]
-                        capsule.set assign
-
 
                     next()
 
@@ -154,6 +130,10 @@ module.exports.handler  = (config = {}) ->
                 
                     (header, control, payload) -> 
 
+                        # console.log HEADER : header
+                        # console.log CONTROL: control
+                        # console.log PAYLOAD: payload
+
                         [version] = header
                         uuid      = control.uuid
 
@@ -185,10 +165,29 @@ module.exports.handler  = (config = {}) ->
                             uuid: control.uuid
 
 
-                        hubNotifier.raw
-                            _socket_id: id
-                            control:    control
-                            payload:    payload
+                        #
+                        # re-assemble the capsule
+                        # -----------------------
+                        # 
+                        # * assigns the capsule._uuid as generated at the origin
+                        # * applies hidden and protected property setting as specified 
+                        #   at the origin
+                        #
+
+                        try tected  = control.protected
+                        try hidden  = control.hidden
+
+                        capsule = new Capsule uuid: uuid || 'moo'
+                        for property of payload
+                            assign = {}
+                            assign[property] = payload[property]
+                            assign.hidden    = true if hidden[property]
+                            assign.protected = true if tected[property]
+                            capsule.set assign
+
+                        capsule._socket_id = id
+
+                        hubNotifier.raw capsule
 
 
                 handshake: (socket) -> 
