@@ -26,36 +26,28 @@ TelevisionRemote = notice.client(
         rejectUnauthorized: false # tolerate self sighned cert on serverside
 
 
-        
-        
+    (error, theRemote) -> 
 
-    (error, client) -> 
+        #
+        # callback receives connected theRemote as a notifier,
+        # or error
+        #
 
         return console.log error if error?
 
-        client.use 
-
-            title: 'illustate .info'
-            (next, capsule, traversal) -> 
-
-                console.log next.info()
-                next()
+        theRemote.volume up: 3, (err, capsule) -> 
+    
+            return console.log 'ERROR', err if err?
+            console.log capsule.all
+            # console.log capsule
 
 
-        client.use
 
-            title: 'illustrate notifiying the message origin promise'
-            (next, capsule, traversal) -> 
+        # client.volume( 'up', amount: 3 ).then(
 
-                if capsule._type == 'volume' then next.notify 'increasing now'
-                # throw new Error 'error'
-                next()
+        #     (capsule) -> console.log AFTER_ACK: capsule
+        #     (error)   -> console.log ERROR: error
+        #     (notify)  -> console.log NOTIFY: notify 
 
-        client.volume( 'up', amount: 3 ).then(
-
-            (capsule) -> console.log AFTER_ACK: capsule
-            (error)   -> console.log ERROR: error
-            (notify)  -> console.log NOTIFY: notify 
-
-        )
+        # )
 

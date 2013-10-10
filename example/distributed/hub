@@ -17,10 +17,13 @@ notice.listen 'hub name', {
 } , (err, hub) -> 
 
     return process.stdout.write err.toString() if err?
-    
-    # already = false
 
-    hub.use 
+    hub.use
+
+        #
+        # register middleware (title is required)
+        #
+
         title: 'first middleware'
         (next, capsule, traversal) -> 
 
@@ -35,16 +38,13 @@ notice.listen 'hub name', {
 
 
             console.log """
-            \nRECEIVED::
+            \n
+            RECEIVED::
                 from: #{traversal.origin.title} (#{traversal.origin.context.pid}.#{traversal.origin.context.hostname})
                 socketUptime: #{ (Date.now() - traversal.origin.connection.stateAt) / 1000} seconds
             CAPSULE:
+                type: #{capsule._type}
                 uuid: #{capsule._uuid}
                 content: """, capsule
-
-            # setInterval (->
-            #     console.log traversal.origin.connection
-            # ), 1000 unless already
-            # already = true
 
             next()

@@ -78,10 +78,11 @@ TelevisionRemote.create 'Family Room',
         errorWait:          1000
         rejectUnauthorized: false # tolerate self sighned cert on serverside
 
-    (err, remote) -> 
+    (err, theRemote) -> 
 
         #
-        # callback receives the connected remote or error
+        # callback receives connected theRemote as a notifier,
+        # or error
         #
 
 ```
@@ -107,6 +108,27 @@ Emitting Capsules
 
 ### Node style
 
+```coffee
+
+theRemote.volume up: 3, (err, capsule) -> 
+
+    #
+    # callback receives final capsule,
+    # or err
+    #
+
+    console.log capsule.all 
+
+    #
+    # => { _type: 'volume', up: 3 }
+    # 
+
+```
+
+* Each message capsule first traverses all locally registered middleware.
+* If it reaches the end of the pipeline it is sent to the hub.
+* The callback is executed with the capsule after the hub ACK
+* The callback is executed with err if any middlewares throw, or if the hub NAKs the capsule.
 
 ### With promise
 
