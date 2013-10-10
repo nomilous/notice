@@ -159,6 +159,8 @@ theRemote.volume( 'up', amount: 3 ).then(
 ```
 
 * Emitting a capsule with a promise waiting behaves similarly to the node style example but with an additional capacity to receive control notifications.
+* Each capsule is assigned a uuid when it is created. It will be available all local and remote middleware functions that receive this capsule as it traverses the system.
+* More on the [./capsule](./capsule) TODO_LINKS
 
 
 
