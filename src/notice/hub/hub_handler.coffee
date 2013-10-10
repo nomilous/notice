@@ -13,11 +13,9 @@ module.exports.handler  = (config = {}) ->
 
     Capsule = require('../capsule/capsule').capsule()
 
-
     Testable = Handler =
 
         create: (hubName, hubNotifier, hubContext, opts) -> 
-
 
             hubNotifier.use 
 
@@ -27,16 +25,12 @@ module.exports.handler  = (config = {}) ->
                 (next, capsule, traversal) -> 
 
                     next() unless id = capsule._socket_id
+                    delete capsule._socket_id
                    
                     try 
 
-                        delete capsule._socket_id
                         client = hubContext.clients[id]
                         traversal.origin = client
-
-                    #
-                    # TODO: raw.control.type might may be extraneous
-                    #
 
                     next()
 
@@ -172,6 +166,10 @@ module.exports.handler  = (config = {}) ->
                         # * assigns the capsule._uuid as generated at the origin
                         # * applies hidden and protected property setting as specified 
                         #   at the origin
+                        #
+
+                        #
+                        # TODO: raw.control.type might may be extraneous
                         #
 
                         try tected  = control.protected

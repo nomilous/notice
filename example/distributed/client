@@ -19,9 +19,8 @@ TelevisionRemote = notice.client(
         batteryLevel: 4 / 9
 
     connect: 
-        address: 'localhost'
-        transport:         'https'
-        port:               10101
+        adaptor:            'socket.io'
+        url:                'https://localhost:10101'
         secret:             process.env.SECRET
         errorWait:          1000
         rejectUnauthorized: false # tolerate self sighned cert on serverside

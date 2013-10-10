@@ -14,8 +14,9 @@ describe 'client', ->
             context:
                 some: 'details'
             connect: 
-                secret: 'secret'
-                port: 3000
+                secret:  'secret'
+                adaptor: 'socket.io'
+                url:     'http://localhost:3000'
                 errorWait: 500
         connector.connect = (opts) -> on: (event, handler)-> 
             if event == 'accept' then handler()

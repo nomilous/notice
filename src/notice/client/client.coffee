@@ -36,7 +36,7 @@ module.exports.client  = (config = {}) ->
 
                 throw undefinedArg 'title' unless typeof title is 'string'
                 throw alreadyDefined 'title', title if local.clients[title]?
-                throw undefinedArg 'opts.connect.port' unless opts.connect? and typeof opts.connect.port is 'number'
+                throw undefinedArg 'opts.connect.url' unless opts.connect? and typeof opts.connect.url is 'string'
                 
                 client = local.Notifier.create title
                 local.clients[title] = client
