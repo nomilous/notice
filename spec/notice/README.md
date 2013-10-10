@@ -246,6 +246,25 @@ TODO_LINK: capsule page
 
 #### throwing errors
 
+```coffee
+
+π = new Error()
+
+notice.use 
+    
+    title: 'Pied Pipeliner'
+    (next) -> throw π
+
+notice.event().then(
+    
+    (capsule) ->  # caspule does not reach the end of the pipeline
+    (error)   ->  error == π
+    (notfiy)  -> 
+
+)
+
+```
+
 
 Management (REST api)
 ---------------------
