@@ -62,6 +62,8 @@ TelevisionRemote = notice.client
         play:    {}
         ffwd:    {}
 
+        # uuid: -> 'override uuid generator' # dangerous, must be unique
+
 ```
 The `TelevisionRemote` definition can now be used to create a notifier instance.
 
