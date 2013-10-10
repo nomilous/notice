@@ -20,6 +20,22 @@ describe 'Capsule', ->
         instance._uuid.should.equal 'assigned'
         done()
 
+    it 'can be assigned uuid from predefined function', (done) -> 
+
+        seq = 0
+        Capsule = capsule 
+            capsule: 
+                uuid: -> ++seq
+
+        instance1 = new Capsule
+        instance2 = new Capsule
+
+        instance1._uuid.should.equal 1
+        instance2._uuid.should.equal 2
+        done()
+
+    it 'can assign uuid from asynchronously' # pending possibly never
+
 
     context 'set()', -> 
 

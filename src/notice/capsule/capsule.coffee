@@ -7,9 +7,8 @@ module.exports._capsule = -> testable
 
 module.exports.capsule  = (config = {}) ->
 
-    #
-    # TODO: config defined uuid construction
-    #
+    config.capsule || = {}
+    config.capsule.uuid ||= uuid.v1
 
     testable = class Capsule
 
@@ -31,7 +30,7 @@ module.exports.capsule  = (config = {}) ->
             Object.defineProperty @, '_uuid', 
                 enumarable: false
                 writable: false
-                value: params.uuid || uuid.v1() 
+                value: params.uuid || config.capsule.uuid()
 
             Object.defineProperty @, 'all', 
                 enumerable: false
