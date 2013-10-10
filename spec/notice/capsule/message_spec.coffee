@@ -35,8 +35,7 @@ describe 'Message', ->
             Message = message 'type'
             Message.create().then (m) -> 
 
-                m.set.should.be.an.instanceof Function
-                #m.should.be.an.instanceof _Capsule()
+                m.should.be.an.instanceof _Capsule()
                 done()
 
 

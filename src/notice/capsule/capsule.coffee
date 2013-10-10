@@ -10,7 +10,7 @@ module.exports.capsule  = (config = {}) ->
     config.capsule || = {}
     config.capsule.uuid ||= uuid.v1
 
-    testable = class Capsule
+    Testable = class Capsule   # latest Definition available for testing
 
         #
         # ./message  - creates one of these
@@ -47,7 +47,7 @@ module.exports.capsule  = (config = {}) ->
                     )
                     allProperties
 
-            testable = @ # latest instance available for testing
+            testable = @  # latest instance available for testing
 
 
         set: (opts) -> 
