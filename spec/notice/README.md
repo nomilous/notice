@@ -173,6 +173,24 @@ Using the middleware pipeline
 
 ### Registering middleware
 
+```coffee
+
+hub.use 
+    
+    title: 'meaningful title'
+    (next, capsule, traversal) -> 
+
+        #
+        # do something
+        #
+
+        next()
+
+```
+* Middleware requires a title.
+* `hub.force()` to replace the middleware.
+
+
 
 ### The middleware function
 
@@ -213,7 +231,7 @@ TODO_LINK: capsule page
 * has `.title` of the remote notifier that created the currently traversing capsule
 * has `.context` containing the context of the capsule's origin as defined in `opts.context` at the remote notifiers initialization. 
 * has `.connection` with basic details about the origins connection state.
-* has `.whateverWasPutThere` still present the next time a capsule from that same origin traverses the pipeline (ie. It is a place to accumulate per client hubside state)
+* has `.whateverWasPutThere` still present the next time a capsule from the same origin traverses the pipeline (does not ?yet! survive a hub process restart)
 
 `traversal.peers` **pending consideration**
 
