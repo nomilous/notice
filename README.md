@@ -16,3 +16,5 @@ Quick Faqts
 * `cake dev` watches & compiles & tests
 * `browse('./spec') = clarity++` 
 
+
+TODO_LINKS (toc for ./spec here)

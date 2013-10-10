@@ -37,24 +37,33 @@ TelevisionRemote = notice.client(
 
         return console.log error if error?
 
+        # #
+        # # emit capsule with node style callback
+        # #
+        # 
         # theRemote.volume 'up', amount: 3, (err, capsule) -> 
-    
         #     return console.log 'ERROR', err if err?
-        #     # console.log capsule.all
+        #     console.log capsule.all
         #     console.log capsule
 
 
-        console.log theRemote
+        setInterval (-> 
 
+            #
+            # emit capsule with promise waiting
+            #
 
-        theRemote.volume( 'up', amount: 3 ).then(
+            theRemote.volume( 'up', amount: 3 ).then(
 
-            (capsule) -> console.log 'Hub acknowledged', capsule._uuid
-            (error)   -> console.log error
-            (notify)  -> console.log 'Notify', notify 
+                (capsule) -> console.log 'Hub acknowledged', capsule._uuid
+                (error)   -> console.log error
+                (notify)  -> console.log 'Notify', notify 
 
-                # 
-                # => Notify { _type: 'control', control: 'transmitted', capsule: ...
-                # 
+                    # 
+                    # => Notify { _type: 'control', control: 'transmitted', capsule: ...
+                    # => Hub acknowledged 8afa4990-31e4-11e3-94c8-11feca0da255
+                    # 
 
-        )
+            )
+
+        ), 1000
