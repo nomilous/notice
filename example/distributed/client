@@ -12,7 +12,7 @@ TelevisionRemote = notice.client(
         play:    {}
         ffwd:    {}
 
-        uuid: -> 'override uuid generator'
+        # uuid: -> 'override uuid generator'
 
 ).create "Television Remote #{process.env.NAME}",
 
