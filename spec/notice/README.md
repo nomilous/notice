@@ -108,7 +108,7 @@ TelevisionRemote.create 'Family Room',
 Emitting Capsules
 -----------------
 
-### Node style
+### With a Node Style Callback Waiting
 
 ```coffee
 
@@ -139,7 +139,7 @@ theRemote.volume 'up', amount: 3, (err, capsule) ->
 * The callback is executed with the capsule after the hub ACK
 * The callback is executed with err if any middlewares throw, or if the hub NAKs the capsule.
 
-### With promise
+### With a Promise Waiting
 
 ```coffee
 
