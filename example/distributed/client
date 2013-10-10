@@ -15,7 +15,7 @@ TelevisionRemote = notice.client(
 ).create "Television Remote #{process.env.NAME}",
 
     context: 
-        supremeAuthority: 'Mother' unless Grandfather? || Saturday?
+        supremeAuthority: 'Mother' unless Grandfather? or Saturday?
         batteryLevel: 4 / 9
 
     connect: 

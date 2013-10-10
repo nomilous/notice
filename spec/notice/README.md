@@ -11,6 +11,7 @@ Television = notice.hub()
 Television.create
 
     listen:  
+        adaptor: 'socket.io'
         # server:  existingHttpServer
         # address: '0.0.0.0'
         port:    10101
@@ -68,12 +69,11 @@ The `TelevisionRemote` definition can now be used to create a notifier instance.
 TelevisionRemote.create 'Family Room',
 
     context: 
-        supremeAuthority: 'Mother' unless Grandfather? || Saturday?
+        supremeAuthority: 'Mother' unless Grandfather? or Saturday?
 
     connect: 
-        address:           'localhost'
-        transport:         'https'
-        port:               10101
+        adaptor:            'socket.io'
+        url:                'https://localhost:10101'
         secret:             process.env.SECRET
         errorWait:          1000
         rejectUnauthorized: false # tolerate self sighned cert on serverside

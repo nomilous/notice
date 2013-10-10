@@ -6,6 +6,7 @@ notice.listen 'hub name', {
 
     listen: 
         
+        adaptor: 'socket.io'
         # server:  existingHttpServer
         # address: '0.0.0.0'
         port:    10101
