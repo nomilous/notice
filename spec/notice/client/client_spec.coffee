@@ -110,45 +110,45 @@ describe 'client', ->
 
 
 
-        context 'assign', -> 
+        # context 'assign', -> 
 
-            it 'assigns handlers for each capsule type onto the connecting socket', (done) -> 
+        #     it 'assigns handlers for each capsule type onto the connecting socket', (done) -> 
 
-                Client = client 
-                    capsule: 
-                        capsuleType: {}
+        #         Client = client 
+        #             capsule: 
+        #                 capsuleType: {}
 
-                ASSIGNED = {}
-                socket = on: (event, handler) -> ASSIGNED[event] = handler
-                connector.connect = -> socket
-                Client.create 'client name', @opts, ->
+        #         ASSIGNED = {}
+        #         socket = on: (event, handler) -> ASSIGNED[event] = handler
+        #         connector.connect = -> socket
+        #         Client.create 'client name', @opts, ->
 
-                ASSIGNED.capsuleType.should.be.an.instanceof Function
-                done()
+        #         ASSIGNED.capsuleType.should.be.an.instanceof Function
+        #         done()
 
-            it 'assigns handers that proxy inbound capsules into the middleware pipeline', (done) ->
+        #     it 'assigns handers that proxy inbound capsules into the middleware pipeline', (done) ->
 
-                Client = client 
-                    capsule: 
-                        capsuleType: {}
+        #         Client = client 
+        #             capsule: 
+        #                 capsuleType: {}
 
-                ASSIGNED = {}
-                socket = 
-                    on: (event, handler) -> ASSIGNED[event] = handler
-                    emit: ->
-                connector.connect = -> socket
-                Client.create 'client name', @opts, (error, client) -> 
+        #         ASSIGNED = {}
+        #         socket = 
+        #             on: (event, handler) -> ASSIGNED[event] = handler
+        #             emit: ->
+        #         connector.connect = -> socket
+        #         Client.create 'client name', @opts, (error, client) -> 
 
-                    client.use
-                        title: 'test middleware'
-                        (next, msg) -> 
-                            msg.property.should.equal 'value'
-                            done()
+        #             client.use
+        #                 title: 'test middleware'
+        #                 (next, msg) -> 
+        #                     msg.property.should.equal 'value'
+        #                     done()
 
 
-                ASSIGNED['connect']()
-                ASSIGNED['accept']()
-                ASSIGNED['capsuleType'] property: 'value'
+        #         ASSIGNED['connect']()
+        #         ASSIGNED['accept']()
+        #         ASSIGNED['capsuleType'] property: 'value'
 
 
         context 'transmission onto socket', -> 

@@ -38,48 +38,52 @@ module.exports.handler  = (config = {}) ->
 
             testable = handler = 
 
-                assign: (socket) -> 
+                # assign: (socket) -> 
 
-                    #
-                    # #DUPLICATE1
-                    # 
-                    # subscribe handlers for all configured capsules
-                    # ----------------------------------------------
-                    # 
-                    # * these are for inbound capsules
-                    # 
+                #     #
+                #     # #DUPLICATE1
+                #     # 
+                #     # subscribe handlers for all configured capsules
+                #     # ----------------------------------------------
+                #     # 
+                #     # * these are for inbound capsules
+                #     # 
 
-                    for type of config.capsule
+                #     for type of config.capsule
 
-                            #
-                            # * control capsules are local only
-                            #  
+                #             #
+                #             # * control capsules are local only
+                #             #  
 
-                        continue if type == 'control'
-                        do (type) -> 
 
-                            #
-                            # * all other capsules are proxied into the local 
-                            #   middleware pipeline (hub) 
-                            #
 
-                            socket.on type, (payload) -> 
+                #         continue if type == 'control'
 
-                                unless typeof hubNotifier[type] == 'function'
+                #         console.log ASSIGN: type
+                #         do (type) -> 
 
-                                    # 
-                                    # * client and hub should use a common capsule config
-                                    # 
+                #             #
+                #             # * all other capsules are proxied into the local 
+                #             #   middleware pipeline (hub) 
+                #             #
 
-                                    process.stderr.write "notice undefined capsule type '#{type}'"
-                                    return
+                #             socket.on type, (payload) -> 
 
-                                #
-                                # * proxy the inbound capsule onto the middleware pipeline
-                                # TODO: typeValue, protected, hidden, watched
-                                # 
+                #                 unless typeof hubNotifier[type] == 'function'
 
-                                hubNotifier[type] payload
+                #                     # 
+                #                     # * client and hub should use a common capsule config
+                #                     # 
+
+                #                     process.stderr.write "notice undefined capsule type '#{type}'"
+                #                     return
+
+                #                 #
+                #                 # * proxy the inbound capsule onto the middleware pipeline
+                #                 # TODO: typeValue, protected, hidden, watched
+                #                 # 
+
+                #                 hubNotifier[type] payload
 
 
                 disconnect: (socket) -> 
@@ -123,10 +127,6 @@ module.exports.handler  = (config = {}) ->
                     mismatch = false
                 
                     (header, control, payload) -> 
-
-                        # console.log HEADER : header
-                        # console.log CONTROL: control
-                        # console.log PAYLOAD: payload
 
                         [version] = header
                         uuid      = control.uuid
@@ -256,6 +256,35 @@ module.exports.handler  = (config = {}) ->
                     client.connection.stateAt  = Date.now()
 
                     #
+                    # create hubside clientbound capsule emitters
+                    # -------------------------------------------
+                    # 
+                    # * these do not have an associated middleware pipeline
+                    # * it does send with capsule format format (which needs tightenting)
+                    # 
+
+                    if config.client? and config.client.capsule?
+                        
+                        for type of config.client.capsule
+
+                            do (type) ->  
+
+                                client[type] = (title, payload) -> 
+
+                                    header  = [PROTOCOL_VERSION]
+                                    control = 
+                                        type: type
+                                        # uuid: 
+                                        protected: { _type: 1 }
+                                        hidden:    { _type: 1 }
+
+                                    payload ||= {}
+                                    payload._type = type
+                                    payload[type] = title
+                                    newSocket.emit 'capsule', header, control, payload
+
+
+                    #
                     # TODO: context as capsule with watched properties
                     # TODO: store context (persistance plugin) to enable
                     #       client attach to different server and resume
@@ -278,7 +307,6 @@ module.exports.handler  = (config = {}) ->
                     
                     hubContext.name2id[originTitle] = id
                     newSocket.emit 'accept'
-                    hubContext.connections()
 
 
                 reject: (socket, details) -> 
@@ -301,7 +329,7 @@ module.exports.handler  = (config = {}) ->
                             process.stderr.write "notice: capacity to use the client socket directly is unlikely permanent functionality"
                             socket
 
-                    handler.assign socket
+                    #handler.assign socket
                     handler.accept startOrResume, socket, client, originTitle, context
 
 
@@ -346,7 +374,7 @@ module.exports.handler  = (config = {}) ->
 
                     delete hubContext.clients[previousID]
                     delete hubContext.name2id[originTitle]
-                    handler.assign newSocket
+                    #handler.assign newSocket
                     handler.accept startOrResume, newSocket, client, originTitle, newContext
 
 

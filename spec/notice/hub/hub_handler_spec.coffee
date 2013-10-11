@@ -101,67 +101,109 @@ describe 'handler', ->
                 done()
 
 
-    context 'assign', -> 
+    # context 'assign', -> 
 
-        it 'assigns handlers for each capsule type onto the connecting socket', (done) -> 
+    #     it 'assigns handlers for each capsule type onto the connecting socket', (done) -> 
 
-            DeploymentChannel = handler
+    #         DeploymentChannel = handler
 
-                capsule: 
+    #             capsule: 
 
-                    getVersion:  {}
-                    gotVersion:  {}
-                    rollForward: {}
-                    rollBack:    {}
+    #                 getVersion:  {}
+    #                 gotVersion:  {}
+    #                 rollForward: {}
+    #                 rollBack:    {}
 
-            instance = DeploymentChannel.create(
+    #         instance = DeploymentChannel.create(
 
-                hubName     = 'hubname'
+    #             hubName     = 'hubname'
+    #             hubNotifier = 
+    #                 use: ->
+    #             # hubContext  = 
+    #             #     clients: {}
+    #             #     connections: -> # TODO: remove this 
+
+    #         )
+
+    #         ASSIGNED = {}
+    #         socket   = on: (event, handler) -> ASSIGNED[event] = handler
+    #         instance.assign socket
+
+    #         ASSIGNED.getVersion .should.be.an.instanceof Function
+    #         ASSIGNED.gotVersion .should.be.an.instanceof Function
+    #         ASSIGNED.rollForward.should.be.an.instanceof Function
+    #         ASSIGNED.rollBack   .should.be.an.instanceof Function
+    #         done()
+
+
+    #     it 'assigns handers that proxy inbound capsules into the middleware pipeline', (done) ->
+
+    #         ConfigurationChannel = handler
+
+    #             capsule: 
+
+    #                 createUser:     {}
+    #                 installService: {}
+
+    #         instance = ConfigurationChannel.create(
+
+    #             hubName     = 'hubname'
+    #             hubNotifier = 
+    #                 createUser: -> done()
+    #                 use: ->
+
+    #             # hubContext  = 
+    #             #     clients: {}
+    #             #     connections: -> # TODO: remove this 
+
+    #         ) 
+
+    #         ASSIGNED = {}
+    #         socket   = on: (event, handler) -> ASSIGNED[event] = handler
+    #         instance.assign socket
+    #         ASSIGNED.createUser()
+
+
+    context 'accept', -> 
+
+        it 'assign clientbound notification emitters according to config.client.capsule', (done) -> 
+
+            Handler = handler
+                client: 
+                    capsule: 
+                        hup: {}
+
+            instance = Handler.create(
+                hubName = 'hubName'
                 hubNotifier = 
+                    control: -> 
                     use: ->
-                # hubContext  = 
-                #     clients: {}
-                #     connections: -> # TODO: remove this 
-
+                hubContext  = 
+                    clients: {}
+                    name2id: {}
             )
 
-            ASSIGNED = {}
-            socket   = on: (event, handler) -> ASSIGNED[event] = handler
-            instance.assign socket
-
-            ASSIGNED.getVersion .should.be.an.instanceof Function
-            ASSIGNED.gotVersion .should.be.an.instanceof Function
-            ASSIGNED.rollForward.should.be.an.instanceof Function
-            ASSIGNED.rollBack   .should.be.an.instanceof Function
-            done()
+            socket = id: 'SOCKET_ID', emit: ->
+            client = {}
+            clientContext = {}
+            instance.accept 'start', socket, client, 'client title', clientContext
 
 
-        it 'assigns handers that proxy inbound capsules into the middleware pipeline', (done) ->
+            socket.emit = (event, header, control, payload) -> 
 
-            ConfigurationChannel = handler
+                event.should.equal 'capsule'
+                header.should.eql [1]
+                control.should.eql 
+                    type: 'hup'
+                    protected: { _type: 1 }
+                    hidden: { _type: 1 } 
+                payload.should.eql
+                    _type: 'hup'
+                    hup: 1
 
-                capsule: 
+                done()
 
-                    createUser:     {}
-                    installService: {}
-
-            instance = ConfigurationChannel.create(
-
-                hubName     = 'hubname'
-                hubNotifier = 
-                    createUser: -> done()
-                    use: ->
-
-                # hubContext  = 
-                #     clients: {}
-                #     connections: -> # TODO: remove this 
-
-            ) 
-
-            ASSIGNED = {}
-            socket   = on: (event, handler) -> ASSIGNED[event] = handler
-            instance.assign socket
-            ASSIGNED.createUser()
+            client.hup 1
 
 
     context 'disconnect', -> 

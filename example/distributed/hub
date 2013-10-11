@@ -2,6 +2,8 @@
 
 notice = require '../../lib/notice'
 
+console.log moo: 1
+
 notice.listen 'hub name', {
 
     listen: 

@@ -59,46 +59,46 @@ module.exports.client  = (config = {}) ->
             already = false 
 
 
-            #
-            # #DUPLICATE1
-            # 
-            # subscribe inbound handlers for all configured capsules
-            # ------------------------------------------------------
-            # 
-            # TODO: set capsule.inbound
-            # 
+            # #
+            # # #DUPLICATE1
+            # # 
+            # # subscribe inbound handlers for all configured capsules
+            # # ------------------------------------------------------
+            # # 
+            # # TODO: set capsule.inbound
+            # # 
 
-            for type of config.capsule
+            # for type of config.capsule
 
-                    #
-                    # * control capsules are local only
-                    #  
+            #         #
+            #         # * control capsules are local only
+            #         #  
 
-                continue if type == 'control'
-                do (type) -> 
+            #     continue if type == 'control'
+            #     do (type) -> 
 
-                    #
-                    # * all other capsules are proxied into the local 
-                    #   middleware pipeline (hub) 
-                    #
+            #         #
+            #         # * all other capsules are proxied into the local 
+            #         #   middleware pipeline (hub) 
+            #         #
 
-                    socket.on type, (payload) -> 
+            #         socket.on type, (payload) -> 
 
-                        unless typeof client[type] == 'function'
+            #             unless typeof client[type] == 'function'
 
-                            # 
-                            # * client and hub should use a common capsules config
-                            # 
+            #                 # 
+            #                 # * client and hub should use a common capsules config
+            #                 # 
 
-                            process.stderr.write "notice undefined capsule type '#{type}'"
-                            return
+            #                 process.stderr.write "notice undefined capsule type '#{type}'"
+            #                 return
 
-                        #
-                        # * proxy the inbound capsules onto the middleware pipeline
-                        # TODO: typeValue, protected, hidden, watched
-                        # 
+            #             #
+            #             # * proxy the inbound capsules onto the middleware pipeline
+            #             # TODO: typeValue, protected, hidden, watched
+            #             # 
 
-                        client[type] payload
+            #             client[type] payload
 
 
             #
@@ -169,6 +169,13 @@ module.exports.client  = (config = {}) ->
                         _type:   'control'
                         control: 'transmitted'
                         capsule: capsule
+
+
+            socket.on 'capsule', (header, control, payload) -> 
+
+
+                console.log RECEIVED_CAPSULE: [header, control, payload]
+
 
             #
             # TODO: no ack or nak ever arrives, entries remain in transit 
