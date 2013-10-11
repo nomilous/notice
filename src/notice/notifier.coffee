@@ -150,14 +150,14 @@ module.exports.notifier  = (config = {}) ->
 
                     if opts.last?
                         if typeof last is 'function'
-                            process.stderr.write "notice: last middleware cannot be reset! Not even using the force()"
+                            process.stderr.write "notice: last middleware cannot be reset! Not even using the force()\n"
                             return 
                         last = fn
                         return
 
                     if opts.first?
                         if typeof first is 'function'
-                            process.stderr.write "notice: first middleware cannot be reset! Not even using the force()"
+                            process.stderr.write "notice: first middleware cannot be reset! Not even using the force()\n"
                             return 
                         first = fn
                         return
@@ -168,7 +168,7 @@ module.exports.notifier  = (config = {}) ->
                         middlewareCount++
                         return
 
-                    process.stderr.write "notice: middleware '#{title}' already exists, use the force()"
+                    process.stderr.write "notice: middleware '#{opts.title}' already exists, use the force()\n"
 
                 force: (opts, fn) ->
 
