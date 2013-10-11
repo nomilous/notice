@@ -46,6 +46,12 @@ module.exports.hub  = (config = {}) ->
 
             try 
 
+                if typeof hubName is 'object'
+
+                    callback = opts
+                    opts = hubName
+                    hubName = hubName.title
+
                 throw undefinedArg 'hubName' unless typeof hubName is 'string'
                 throw alreadyDefined 'hubName', hubName if local.hubs[hubName]?
 

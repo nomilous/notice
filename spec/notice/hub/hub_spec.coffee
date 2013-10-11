@@ -39,6 +39,13 @@ describe 'hub', ->
                 error.should.match /requires arg hubName/
                 done()
 
+        it 'falls back to opts.title if no hubName', (done) -> 
+
+            Hub = hub()
+            Hub.create title: 'Title'
+            should.exist _hub().hubs.Title
+            done()
+
 
         it 'calls back with a hub instance', (done) -> 
 
