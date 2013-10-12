@@ -68,8 +68,6 @@ module.exports.handler  = (config = {}) ->
                         hubNotifier.control 'suspend', 
                             _socket_id: id
 
-                        hubContext.connections()
-
 
                 capsule: (socket) -> 
 
@@ -311,7 +309,6 @@ module.exports.handler  = (config = {}) ->
                             pid: client.context.pid
 
                         newSocket.disconnect()
-                        hubContext.connections()
                         return
 
 

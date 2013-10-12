@@ -101,69 +101,6 @@ describe 'handler', ->
                 done()
 
 
-    # context 'assign', -> 
-
-    #     it 'assigns handlers for each capsule type onto the connecting socket', (done) -> 
-
-    #         DeploymentChannel = handler
-
-    #             capsule: 
-
-    #                 getVersion:  {}
-    #                 gotVersion:  {}
-    #                 rollForward: {}
-    #                 rollBack:    {}
-
-    #         instance = DeploymentChannel.create(
-
-    #             hubName     = 'hubname'
-    #             hubNotifier = 
-    #                 use: ->
-    #             # hubContext  = 
-    #             #     clients: {}
-    #             #     connections: -> # TODO: remove this 
-
-    #         )
-
-    #         ASSIGNED = {}
-    #         socket   = on: (event, handler) -> ASSIGNED[event] = handler
-    #         instance.assign socket
-
-    #         ASSIGNED.getVersion .should.be.an.instanceof Function
-    #         ASSIGNED.gotVersion .should.be.an.instanceof Function
-    #         ASSIGNED.rollForward.should.be.an.instanceof Function
-    #         ASSIGNED.rollBack   .should.be.an.instanceof Function
-    #         done()
-
-
-    #     it 'assigns handers that proxy inbound capsules into the middleware pipeline', (done) ->
-
-    #         ConfigurationChannel = handler
-
-    #             capsule: 
-
-    #                 createUser:     {}
-    #                 installService: {}
-
-    #         instance = ConfigurationChannel.create(
-
-    #             hubName     = 'hubname'
-    #             hubNotifier = 
-    #                 createUser: -> done()
-    #                 use: ->
-
-    #             # hubContext  = 
-    #             #     clients: {}
-    #             #     connections: -> # TODO: remove this 
-
-    #         ) 
-
-    #         ASSIGNED = {}
-    #         socket   = on: (event, handler) -> ASSIGNED[event] = handler
-    #         instance.assign socket
-    #         ASSIGNED.createUser()
-
-
     context 'accept', -> 
 
         it 'assign clientbound notification emitters according to config.client.capsule', (done) -> 
@@ -224,7 +161,6 @@ describe 'handler', ->
                             connection:
                                 state:   'connected'
                                 stateAt: '1'
-                    connections: -> # TODO: remove this
 
             )
 
@@ -370,7 +306,6 @@ describe 'handler', ->
                 @hubContext  = 
                     clients: {}
                     name2id: {}
-                    connections: -> # TODO: remove this
                 opts = 
                     listen: 
                         secret: 'secret'
@@ -508,7 +443,6 @@ describe 'handler', ->
                 @hubContext  = 
                     clients: {}
                     name2id: {}
-                    connections: -> # TODO: remove this
                 opts = 
                     listen: 
                         secret: 'secret'
