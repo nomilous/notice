@@ -8,8 +8,8 @@ module.exports.capsule  = (config = {}) ->
     Testable = class Capsule   # latest Definition available for testing
 
         #
-        # ./message  - creates one of these
-        # ./notifier - pushes it down the middleware pipeline
+        # ./lifecycle  - creates one of these
+        # ../notifier  - pushes it down the middleware pipeline
         #
 
         constructor: (params = {}) -> 
