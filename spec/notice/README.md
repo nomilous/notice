@@ -161,7 +161,7 @@ TelevisionRemote.create 'Family Room',
 #### The callback
 
 * It receives the notifier or an error
-* It is only called after succesfully attaching to the hub
+* **It is only called after succesfully attaching to the hub**
 
 
 Emitting Capsules
