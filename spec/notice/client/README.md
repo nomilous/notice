@@ -64,7 +64,7 @@ TelevisionRemote.create 'Family Room',
     connect: 
         adaptor:            'socket.io'
         url:                'https://localhost:10101'
-        secret:             process.env.SECRET
+        secret:             process.env.NODE_SECRET
         errorWait:          1000
         rejectUnauthorized: false # tolerate self sighned cert on serverside
 

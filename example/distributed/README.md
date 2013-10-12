@@ -13,7 +13,7 @@ Requires coffee-script `npm install -g coffee-script`
 #### terminal 2
 
 ```bash
-NAME=name1 SECRET=right ./client
-NAME=name1 SECRET=right ./client # rejected, already connected
-NAME=name2 SECRET=wrong ./client # rejected, wrong secret
+NAME=Name1 NODE_SECRET=right ./client
+NAME=Name1 NODE_SECRET=right ./client # rejected, already connected
+NAME=Name2 NODE_SECRET=wrong ./client # rejected, wrong secret
 ```
