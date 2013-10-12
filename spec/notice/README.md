@@ -9,7 +9,7 @@ Hub and Client Configurables
 ```coffee
 
 notice = require 'notice'
-Television = notice.hub
+Television = notice.hub # a factory
     
     client: 
         capsule: 
@@ -59,11 +59,9 @@ Television.create
 * Hub configuration should define a listen specification.
 * socket.io is currenly the only available transport adaptor.
 * It starts a socket.io server.
-* An existing `httpServer` object (eg express) can be assigned for socket.io to piggyback onto.
+* [UNVERIFIED] An existing `httpServer` object (eg express) can be assigned for socket.io to piggyback onto.
 * Otherwise a new http or https server will be created.
-* If specified and present, cert and key lead to the creation of an https server.
-
-
+* If specified and present, cert and key lead socket.io listening on an https server.
 
 
 ### Creating a Notifier Client
@@ -92,14 +90,14 @@ TelevisionRemote = notice.client # a factory
 * `capsule._uuid`
 * The uuid will be available to all local and remote middleware functions that receive this capsule as it traverses the system.
 * The uuid is hidden from serializers and protected from changes once created.
-* More on the [./capsule](./capsule) TODO_LINKS
+* More on the [./capsule](./capsule)
 * The creation sequence passes the capsule through a before hook (if defined).
-* The hook receives the capsule **after property assignment** but **before the uuid assignment**.
+* The hook receives the capsule **after property assignment** but **before uuid assignment**.
 
 
 ```coffee
 
-TelevisionRemote = notice.client
+module.exports.TelevisionRemote = notice.client
     
     capsule:
         ...
@@ -135,10 +133,10 @@ TelevisionRemote.create 'Family Room',
         errorWait:          1000
         rejectUnauthorized: false # tolerate self sighned cert on serverside
 
-    (err, notifier) -> 
+    (err, theConnectedRemote) -> 
 
         #
-        # callback receives connected notifier,
+        # callback receives theConnectedRemote as notifier,
         # or error
         #
 
@@ -173,7 +171,7 @@ Emitting Capsules
 
 ```coffee
 
-theRemote.volume 'up', amount: 3, (err, capsule) -> 
+theConnectedRemote.volume 'up', amount: 3, (err, capsule) -> 
 
     #
     # callback receives final capsule,
@@ -204,7 +202,7 @@ theRemote.volume 'up', amount: 3, (err, capsule) ->
 
 ```coffee
 
-theRemote.volume( 'up', amount: 3 ).then(
+theConnectedRemote.volume( 'up', amount: 3 ).then(
 
     (capsule) -> console.log 'Hub acknowledged', capsule._uuid
     (error)   -> console.log error
