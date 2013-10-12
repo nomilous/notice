@@ -60,7 +60,7 @@ module.exports.authenticator = (config = {}) ->
                 # TODO: error properly?
                 # 
                 # * it re-requests auth on error or not isAuthentic
-                # * otherwise it hands over to the original responder 
+                # * otherwise call onward to the requestHandler
                 # 
 
                 return requestHandler request, response if isAuthentic is true
