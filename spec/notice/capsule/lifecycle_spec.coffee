@@ -46,7 +46,7 @@ describe 'lifecycle', ->
 
 
         it 'protects from hooks that never resolve'
-        it 'passes a resolver that pends the creation', (done) -> 
+        it 'passes a resolver to the hook that pends the creation resolution', (done) -> 
 
             DONE    = undefined
             CAPSULE = undefined
@@ -65,4 +65,21 @@ describe 'lifecycle', ->
                 done()
 
             ), 30
+
+
+        it 'passes the capsule to the hook', (done) ->
+
+            ls = lifecycle 'event', 
+                capsule: 
+                    event: 
+                        before: (done, capsule) -> 
+
+                            setTimeout (->
+                                capsule.did = 'an async thing'
+                                done()
+                            ), 30
+
+            ls.create().then (capsule) -> 
+                capsule.did.should.equal 'an async thing'
+                done()
 

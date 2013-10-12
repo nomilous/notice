@@ -14,9 +14,9 @@ module.exports.lifecycle  = (type, config = {}) ->
 
             try if local.config.before
 
-                return local.config.before ->
-                    
-                    resolve new local.Capsule
+                cap = new local.Capsule
+                done = -> resolve cap
+                return local.config.before done, cap
 
             return resolve new local.Capsule
 
