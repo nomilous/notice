@@ -87,7 +87,7 @@ TelevisionRemote.create 'Family Room',
 #### The `context` subconfg
 
 * The client sends the context object to the hub during the connection handshake.
-* This becomes available in the `traversal.origin` object passed along all hubside middleware traversals that contain a capsule originating from this client.
+* This becomes available in the `traversal.origin` object that is passed along all hubside middleware traversals that contain a capsule originating from this client.
 
 #### The `connect` subconfg
 
