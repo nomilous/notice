@@ -1,6 +1,8 @@
 The Capsule
 -----------
 
+next: **Emitting Capsules** [`../`](../)
+
 ### Quick Faqts
 
 * The **first** `key:'value'` passed to `capsule.set()` is the one that sets the property.
