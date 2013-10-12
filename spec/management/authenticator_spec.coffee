@@ -71,7 +71,7 @@ describe 'authenticator', ->
         authenticate( (request, response) ->
 
             #
-            # authentic, runs this (the actual)
+            # authentic, runs this (the actual request handler)
             #
 
             done()
