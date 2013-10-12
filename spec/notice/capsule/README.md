@@ -14,6 +14,7 @@ The Capsule
 ### Watched properties
 
 * Can assign a callback to receive notification of a propery change.
+* The watching listener is not called once the capsule has been emitted to the hub.
 * Useful as a **comms.** *back-channel* to some previous middleware in the pipeline.
 * Keep in mind that middleware are run in the same sequence that they were registered.
 
@@ -21,8 +22,7 @@ The Capsule
 
 notifier.use
 
-    title:       'index'
-    description: 'save selected capsules onto an elasticsearch cluster'
+    title: 'resaver'
     (next, capsule) -> 
 
         capsule.set
@@ -32,8 +32,13 @@ notifier.use
             watched: (change) -> 
 
                 #
-                # this will now be called whenever a middleware further down the 
-                # pipeline updates capsule.needsSave
+                # * this will now be called whenever a middleware further down the 
+                #   pipeline updates capsule.needsSave
+                # 
+                # * the `capsule.change` is a reference to the capsule, it should
+                #   not be assumed that the content of the capsule remains static
+                #   for the period between the setting of the needsSave flag and
+                #   the running of this callback.
                 #
 
                 return unless change.to # == true
@@ -41,8 +46,13 @@ notifier.use
                 if change.capsule._type.match /ticket|escalation|resolution/
 
                     #
-                    # post the capsule to elasticsearch
-                    #
+                    # perform save to database of choice
+                    # ----------------------------------
+                    # 
+                    # * it probably makes more sense to place this functionality
+                    #   in the capsule definition's before hook, along with the 
+                    #   initial database create() call.
+                    # 
 
                     #
                     # IMPORTANT: There is no `next()` for the change watcher

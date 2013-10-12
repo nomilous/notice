@@ -59,5 +59,5 @@ Television.create
 * It starts a socket.io server.
 * [UNVERIFIED] An existing `httpServer` object (eg express) can be assigned for socket.io to piggyback onto.
 * Otherwise a new http or https server will be created.
-* If specified and present, cert and key lead socket.io listening on an https server.
+* If specified and present, cert and key files an https server is created for the socket.io listener.
 
