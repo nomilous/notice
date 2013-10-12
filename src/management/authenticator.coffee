@@ -1,6 +1,6 @@
 module.exports.authenticator = (config = {}) -> 
 
-    authenticateFn = try config.manager.authenticate
+    authentic = try config.manager.authenticate
 
     requestAuth = (response) -> 
 
@@ -15,7 +15,7 @@ module.exports.authenticator = (config = {}) ->
 
         response.end()
 
-    decodeAuth = (authorization, request, response) -> 
+    decodeAuth = (authorization, response) -> 
 
         #
         # how to decode the basic auth string
@@ -46,13 +46,36 @@ module.exports.authenticator = (config = {}) ->
 
         try authorization = request.headers.authorization
         return requestAuth response unless authorization? 
-        return unless {username, password} = decodeAuth authorization, request, response
+        return unless {username, password} = decodeAuth authorization, response
 
-        authenticateFn username, password, (error, result) -> 
+        if typeof authentic is 'function'
 
             #
-            # * call the actual requestHandler
+            # * use configured upstream authentication function
             #
 
-            requestHandler request, response
+            authentic username, password, (error, isAuthentic) -> 
 
+                #
+                # TODO: error properly?
+                # 
+                # * it re-requests auth on error or not isAuthentic
+                # * otherwise it hands over to the original responder 
+                # 
+
+                return requestHandler request, response if isAuthentic is true
+                requestAuth response
+
+        #
+        # * use 'hard'coded username and password in config
+        #
+
+        if username == authentic.username and password == authentic.password
+
+            return requestHandler request, response
+
+        #
+        # no. try again!
+        #
+
+        requestAuth response

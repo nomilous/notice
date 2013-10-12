@@ -36,9 +36,10 @@ NetworkAlertRouter = notice.hub
 
             #
             # perform upstream authentication
+            # callback true if authetic
             #
 
-            callback null, user || true
+            callback null, true
 
 
 hub = NetworkAlertRouter.create( ...

@@ -37,8 +37,6 @@ describe 'authenticator', ->
         done()
 
 
-
-
     it 'responds with 401 if no auth provided', (done) -> 
 
         authenticate = authenticator 
@@ -64,9 +62,70 @@ describe 'authenticator', ->
 
         authenticate = authenticator 
             manager: 
-                authenticate: (username, password) -> 
+                authenticate: (username, password, callback) -> 
                     username.should.equal 'username'
                     password.should.equal 'password'
-                    done()
+                    callback null, true
+                    
 
-        authenticate(->) @mockRequest, @mockResponse
+        authenticate( (request, response) ->
+
+            #
+            # authentic, runs this (the actual)
+            #
+
+            done()
+
+        ) @mockRequest, @mockResponse
+
+
+    it 'does not call the request handler if not authentic', (done) -> 
+
+        authenticate = authenticator 
+            manager: 
+                authenticate: (username, password, callback) -> 
+                    callback null, false
+
+        authenticate( (request, response) ->
+
+            throw 'should not run'
+
+        ) @mockRequest, @mockResponse
+        
+        setTimeout done, 10
+
+
+    it 'uses configured "hard"coded username and password', (done) -> 
+
+        authenticate = authenticator 
+            manager: 
+                authenticate:
+                    username: 'username'
+                    password: 'password'
+
+
+        authenticate( (request, response) ->
+
+            done()
+
+        ) @mockRequest, @mockResponse
+
+
+
+    it 'does not call the request handler if non matching from config', (done) -> 
+
+        @headers = authorization: new Buffer('username:wrongpassword', 'utf8').toString 'base64'
+        authenticate = authenticator 
+            manager: 
+                authenticate:
+                    username: 'username'
+                    password: 'password'
+
+
+        authenticate( (request, response) ->
+
+            throw 'should not run'
+
+        ) @mockRequest, @mockResponse
+        setTimeout done, 10
+
