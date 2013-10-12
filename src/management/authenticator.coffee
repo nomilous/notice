@@ -54,7 +54,7 @@ module.exports.authenticator = (config = {}) ->
             # * use configured upstream authentication function
             #
 
-            authentic username, password, (error, isAuthentic) -> 
+            return authentic username, password, (error, isAuthentic) -> 
 
                 #
                 # TODO: error properly?

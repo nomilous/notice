@@ -2,9 +2,15 @@
 
 notice = require '../../lib/notice'
 
-console.log moo: 1
+MessageHub = notice.hub
 
-notice.listen 'hub name', {
+    manager: 
+        authenticate: 
+            username: 'nomilous'
+            password: '∆'
+
+
+MessageHub.create 'hub name', {
 
     listen: 
         

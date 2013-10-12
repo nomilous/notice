@@ -45,16 +45,12 @@ describe 'authenticator', ->
 
         @headers = {}
         @writeHead = (statusCode, headers) ->
-
             statusCode.should.equal 401
             headers.should.eql 'www-authenticate': 'BASIC'
             done()
 
 
-        authenticate(-> 
-
-            throw 'should not run actual handler'
-
+        authenticate( (request, response) -> throw 'should not run actual handler'
         ) @mockRequest, @mockResponse
 
 
@@ -68,14 +64,7 @@ describe 'authenticator', ->
                     callback null, true
                     
 
-        authenticate( (request, response) ->
-
-            #
-            # authentic, runs this (the actual request handler)
-            #
-
-            done()
-
+        authenticate( (request, response) -> done()
         ) @mockRequest, @mockResponse
 
 
@@ -86,13 +75,12 @@ describe 'authenticator', ->
                 authenticate: (username, password, callback) -> 
                     callback null, false
 
-        authenticate( (request, response) ->
+        @writeHead = (statusCode, headers) -> 
+            statusCode.should.equal 401
+            done()
 
-            throw 'should not run'
-
+        authenticate( (request, response) -> throw 'should not run'
         ) @mockRequest, @mockResponse
-        
-        setTimeout done, 10
 
 
     it 'uses configured "hard"coded username and password', (done) -> 
@@ -103,11 +91,7 @@ describe 'authenticator', ->
                     username: 'username'
                     password: 'password'
 
-
-        authenticate( (request, response) ->
-
-            done()
-
+        authenticate( (request, response) -> done()
         ) @mockRequest, @mockResponse
 
 
@@ -121,11 +105,11 @@ describe 'authenticator', ->
                     username: 'username'
                     password: 'password'
 
+        @writeHead = (statusCode, headers) -> 
+            statusCode.should.equal 401
+            done()
 
-        authenticate( (request, response) ->
 
-            throw 'should not run'
-
+        authenticate( (request, response) -> throw 'should not run'
         ) @mockRequest, @mockResponse
-        setTimeout done, 10
 
