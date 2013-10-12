@@ -15,11 +15,14 @@ module.exports.lifecycle  = (type, config = {}) ->
             try if local.config.before
 
                 cap = new local.Capsule
+                cap.set 
+                    _type: type
+                    protected: true
+                    hidden: true
+
+
                 done = -> resolve cap
                 return local.config.before done, cap
 
             return resolve new local.Capsule
-
-
-
 

@@ -83,3 +83,15 @@ describe 'lifecycle', ->
                 capsule.did.should.equal 'an async thing'
                 done()
 
+
+        it 'assigns capsule type before the before hook', (done) -> 
+
+            ls = lifecycle 'event', 
+                capsule: 
+                    event: 
+                        before: (dun, capsule) -> 
+                            capsule._type.should.equal 'event'
+                            done()
+
+            ls.create()
+
