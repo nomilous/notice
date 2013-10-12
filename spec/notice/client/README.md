@@ -82,6 +82,7 @@ TelevisionRemote.create 'Family Room',
 
 * Should be unique. 
 * The hub will not allow a second instance of the 'Family Room' television remote to connect.
+* NOTE! **There may be some issues here is the hub mistakenly thinks a client is still connected. Trusting socket.io disconnect event. Will take measures as-at and when-if.**
 
 #### The `context` subconfg
 
