@@ -24,6 +24,13 @@ module.exports.client  = (config = {}) ->
             /^connect$|^handshake$|^accept$|^reject$|^disconnect$|^resume$|^capsule$|^nak$|^ack$|^error$/
         )
 
+    #
+    # TODO: this bypasses config of the capsule supercope, 
+    #       not doing so becomes necessary later.
+    #
+
+    Capsule = require('../capsule/capsule').capsule()
+
 
     testable = local = 
 
@@ -173,9 +180,28 @@ module.exports.client  = (config = {}) ->
 
             socket.on 'capsule', (header, control, payload) -> 
 
+                #
+                # inbound capsule onto the client side middleware
+                #
 
-                console.log RECEIVED_CAPSULE: [header, control, payload]
+                [version] = header
+                uuid      = control.uuid
 
+                unless version == PROTOCOL_VERSION
+                    throw new Error "notice: #{reason} - hub:#{version} thisclient:#{PROTOCOL_VERSION}"
+
+                try tected  = control.protected
+                try hidden  = control.hidden
+
+                capsule = new Capsule uuid: uuid
+                for property of payload
+                    assign = {}
+                    assign[property] = payload[property]
+                    assign.hidden    = true if hidden[property]
+                    assign.protected = true if tected[property]
+                    capsule.set assign
+
+                client.raw capsule
 
             #
             # TODO: no ack or nak ever arrives, entries remain in transit 

@@ -67,6 +67,8 @@ module.exports.notifier  = (config = {}) ->
 
                 traversal = {}
 
+                # console.log MIDDLEWARES: list
+
                 middleware = for title of list
                     do (title) -> 
                         deferred ({resolve, reject, notify}) -> 
