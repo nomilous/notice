@@ -12,6 +12,9 @@ module.exports.reservedCapsule = (type) ->
     
     return error = new Error "notice: '#{type}' is a reserved capsule type" 
 
+module.exports.missingConfig = (opt, module) -> 
+    
+    return error = new Error "notice: #{module} requires opt #{opt}"
 
 module.exports.undefinedArg = (arg, functionSignature) -> 
 
