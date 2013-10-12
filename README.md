@@ -10,6 +10,7 @@ A communicator.
 Quick Faqts
 -----------
 
+* **all examples use coffee-script**
 * coffee-script is zen-garden
 * `cake dev` watches & compiles & tests
 * browseDirectory( [`./spec`](./spec) ).should.equal `clarity`
