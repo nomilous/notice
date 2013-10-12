@@ -6,7 +6,7 @@ describe 'authenticator', ->
     beforeEach -> 
 
 
-        @headers = authorization: {}
+        @headers = authorization: new Buffer('username:password', 'utf8').toString 'base64'
         @mockRequest = {}
         Object.defineProperty @mockRequest, 'headers', 
             get: => @headers
@@ -53,10 +53,10 @@ describe 'authenticator', ->
             done()
 
 
-        authenticate( -> 
+        authenticate(-> 
 
             throw 'should not run actual handler'
-            
+
         ) @mockRequest, @mockResponse
 
 
@@ -64,6 +64,9 @@ describe 'authenticator', ->
 
         authenticate = authenticator 
             manager: 
-                authenticate: -> done()
+                authenticate: (username, password) -> 
+                    username.should.equal 'username'
+                    password.should.equal 'password'
+                    done()
 
         authenticate(->) @mockRequest, @mockResponse
