@@ -6,8 +6,15 @@ module.exports.manager  = (config = {}) ->
 
     listen       = config.manage.listen
     authenticate = authenticator config
+
     
-    server = require('http').createServer()
+    server = if listen.cert? and listen.key?
+
+        require('https').createServer()
+
+
+    server ||= require('http').createServer()
 
 
     testable = local = {}
+

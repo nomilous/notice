@@ -26,3 +26,11 @@ describe 'manage', ->
         http.createServer = -> done()
         manager manage: listen: {}
 
+
+    it 'creates an https server if cert an key are configured', (done) -> 
+
+        https.createServer = -> done()
+        manager manage: listen:
+            cert: 'cert'
+            key:  'key'
+
