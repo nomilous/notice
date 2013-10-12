@@ -37,7 +37,8 @@ NetworkAlertRouter = notice.hub
             #
             # perform upstream authentication
             # callback true if authetic
-            #
+            # error is ignored, it just reposts the 401
+            # 
 
             callback null, true
 
