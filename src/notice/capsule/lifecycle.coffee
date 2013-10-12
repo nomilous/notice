@@ -11,7 +11,7 @@ module.exports.lifecycle  = (type, config = {}) ->
         cache:   {}
 
 
-        create: deferred ({resolve}, properties = {}) -> 
+        create: deferred ({resolve, reject}, properties = {}) -> 
 
             cap = new local.Capsule
             cap.set 
@@ -34,7 +34,12 @@ module.exports.lifecycle  = (type, config = {}) ->
                 done = -> 
                     cap._uuid = v1() unless cap._uuid?
                     resolve cap
-                return local.config.before done, cap
+
+                try 
+                    return local.config.before done, cap
+                catch error 
+                    return reject error
+
 
             cap._uuid = v1() unless cap._uuid?
             return resolve cap

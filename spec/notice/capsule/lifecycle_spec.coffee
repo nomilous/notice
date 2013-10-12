@@ -43,7 +43,7 @@ describe 'lifecycle', ->
 
 
 
-        it 'protects from hooks that never resolve'
+        it 'protects from hooks that never resolve' # how long is a piece of string's timeout
         it 'passes a resolver to the hook that pends the creation resolution', (done) -> 
 
             DONE    = undefined
@@ -173,7 +173,19 @@ describe 'lifecycle', ->
 
 
 
-        it 'rejects on error in hook'
+        it 'rejects on error in hook', (done) -> 
+
+            π = new Error
+            ls = lifecycle 'event', 
+                capsule: 
+                    event: before: (done, capsule) -> throw π
+
+            ls.create().then(
+                ->
+                (error) -> 
+                    error.should.equal π
+                    done()
+            )
 
 
 
