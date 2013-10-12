@@ -2,7 +2,7 @@ module.exports.authenticator = (config = {}) ->
 
     authenticateFn = try config.manager.authenticate
 
-    (request, response) -> 
+    (requestHandler) -> (request, response) -> 
 
         try authorization = request.headers.authorization
         unless authorization? 
@@ -29,9 +29,9 @@ module.exports.authenticator = (config = {}) ->
 
         authenticateFn()
 
+        #
+        # * call the actual requestHandler
+        #
 
-
-
-
-
+        requestHandler request, response
 

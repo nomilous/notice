@@ -18,10 +18,30 @@ describe 'authenticator', ->
             get: => => @writeHead.apply null, arguments
 
 
+    it 'decorates an http request handler', (done) -> 
+
+        authenticate = authenticator 
+            manager: 
+                authenticate: -> 
+
+        decoratedHandler = authenticate (req, res) -> 
+
+            #
+            # actual handler is only called if authentic
+            #
+
+            throw 'should not run'
+
+        @headers = {}
+        decoratedHandler @mockRequest, @mockResponse
+        done()
+
+
+
 
     it 'responds with 401 if no auth provided', (done) -> 
 
-        a = authenticator 
+        authenticate = authenticator 
             manager: 
                 authenticate: -> 
 
@@ -33,13 +53,13 @@ describe 'authenticator', ->
             done()
 
 
-        a @mockRequest, @mockResponse
+        authenticate(->) @mockRequest, @mockResponse
 
 
     it 'uses configured upstream authorization call', (done) -> 
 
-        a = authenticator 
+        authenticate = authenticator 
             manager: 
                 authenticate: -> done()
 
-        a @mockRequest, @mockResponse
+        authenticate(->) @mockRequest, @mockResponse
