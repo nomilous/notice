@@ -4,10 +4,21 @@ Hub and Client Configurables
 
 ### Creating a Notifier Hub
 
+#### The `Definition`
+
 ```coffee
 
 notice = require 'notice'
 Television = notice.hub()
+
+```
+
+#### The `subconfigs`
+
+#### The `instance`
+
+```coffee
+
 Television.create
 
     listen:  
@@ -36,7 +47,7 @@ Television.create
 
 ```
 
-#### The Listen Spec
+#### The `listen` subconfig
 
 * Hub configuration should define a listen specification.
 * socket.io is currenly the only available transport adaptor.
@@ -50,10 +61,12 @@ Television.create
 
 ### Creating a Notifier Client
 
+#### The `Definition`
+
 ```coffee
 
 notice = require 'notice'
-TelevisionRemote = notice.client
+TelevisionRemote = notice.client # a factory
 
     capsule: 
 
@@ -64,10 +77,44 @@ TelevisionRemote = notice.client
         ffwd:    {}
 
 ```
-The `TelevisionRemote` definition can now be used to create a notifier instance.
+
+#### The `capsule` subconfig
+
+* Capsules are created asynchronously.
+* Each **capsule is assigned a uuid when it is created**. 
+* `capsule._uuid`
+* The uuid will be available to all local and remote middleware functions that receive this capsule as it traverses the system.
+* The uuid is hidden from serializers and protected from changes once created.
+* More on the [./capsule](./capsule) TODO_LINKS
+* The creation sequence passes the capsule through a before hook (if defined).
+* The hook receives the capsule **after property assignment** but **before the uuid assignment**.
+
 
 ```coffee
-{TelevisionRemote} = require './the/previous/block'
+
+TelevisionRemote = notice.client
+    
+    capsule:
+        ...
+        play:
+            before: (done, capsule) -> 
+
+                #
+                # do something to the play capsule before it is pushed
+                # onto the middleware pipeline
+                # 
+
+                play._uuid = 'my own uuid'
+                done()
+        ...
+
+```
+
+
+#### The `instance`
+
+```coffee
+{TelevisionRemote} = require './the/definition/from/above'
 
 TelevisionRemote.create 'Family Room',
 
@@ -81,12 +128,13 @@ TelevisionRemote.create 'Family Room',
         errorWait:          1000
         rejectUnauthorized: false # tolerate self sighned cert on serverside
 
-    (err, theRemote) -> 
+    (err, notifier) -> 
 
         #
-        # callback receives connected theRemote as a notifier,
+        # callback receives connected notifier,
         # or error
         #
+
 
 ```
 
@@ -95,15 +143,20 @@ TelevisionRemote.create 'Family Room',
 * Should be unique. 
 * The hub will not allow a second instance of the 'Family Room' television remote to connect.
 
-#### The Context
+#### The `context` subconfg
 
 * The client sends the context object to the hub during the connection handshake.
 * This becomes available in the `traversal.origin` object passed along all hubside middleware traversals that contain a capsule originating from this client.
 
-#### The Connect Spec
+#### The `connect` subconfg
 
 * The connection specification sets paramaters used for connecting to the hub. 
 * socket.io is currenly the only available transport adaptor.
+
+#### The callback
+
+* It receives the notifier or an error
+* It is only called after succesfully attaching to the hub
 
 
 Emitting Capsules
@@ -160,11 +213,6 @@ theRemote.volume( 'up', amount: 3 ).then(
 ```
 
 * Emitting a capsule with a promise waiting behaves similarly to the node style example but with an additional capacity to receive control notifications.
-* Each **capsule is assigned a uuid when it is created**. It will be available to all local and remote middleware functions that receive this capsule as it traverses the system.
-* the uuid is hidden from serializers and protected from changes once created.
-* `config.capsule[type].before` can be assigned an async hook function to pre-assign the uuid
-* More on the [./capsule](./capsule) TODO_LINKS
-
 
 
 Using the middleware pipeline

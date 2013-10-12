@@ -84,7 +84,7 @@ describe 'lifecycle', ->
                 done()
 
 
-        it 'assigns capsule type before the before hook', (done) -> 
+        it 'assigns capsule type before before', (done) -> 
 
             ls = lifecycle 'event', 
                 capsule: 
@@ -94,4 +94,7 @@ describe 'lifecycle', ->
                             done()
 
             ls.create()
+
+        it 'assigns capsule properties before the hook'
+        it 'assigns uuid adterwards if the hook didnt'
 
