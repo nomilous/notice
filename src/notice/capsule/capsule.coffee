@@ -8,7 +8,6 @@ module.exports._capsule = -> testable
 module.exports.capsule  = (config = {}) ->
 
     config.capsule || = {}
-    config.capsule.uuid ||= uuid.v1
 
     Testable = class Capsule   # latest Definition available for testing
 

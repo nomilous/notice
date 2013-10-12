@@ -10,15 +10,17 @@ module.exports.lifecycle  = (type, config = {}) ->
 
         Capsule: capsule()
 
-        create: deferred ({resolve}) -> 
+        create: deferred ({resolve}, properties = {}) -> 
+
+            cap = new local.Capsule
+            cap.set 
+                _type: type
+                protected: true
+                hidden: true
+
+            cap[key] = properties[key] for key of properties
 
             try if local.config.before
-
-                cap = new local.Capsule
-                cap.set 
-                    _type: type
-                    protected: true
-                    hidden: true
 
                 done = -> resolve cap
                 return local.config.before done, cap

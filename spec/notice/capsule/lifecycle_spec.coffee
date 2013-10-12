@@ -95,6 +95,18 @@ describe 'lifecycle', ->
 
             ls.create()
 
-        it 'assigns capsule properties before the hook'
+        it 'assigns capsule properties before the hook', (done) -> 
+
+            ls = lifecycle 'event', 
+                capsule: 
+                    event: 
+                        before: (dun, capsule) -> 
+                            capsule.should.eql key: 'value'
+                            done()
+
+
+            ls.create key: 'value'
+
+
         it 'assigns uuid adterwards if the hook didnt'
 
