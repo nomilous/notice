@@ -1,3 +1,5 @@
+[`../notice`](../notice)
+
 Management (REST api)
 ---------------------
 
