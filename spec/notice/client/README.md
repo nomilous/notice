@@ -26,7 +26,6 @@ TelevisionRemote = notice.client # a factory
 * `capsule._uuid`
 * The uuid will be available to all local and remote middleware functions that receive this capsule as it traverses the system.
 * The uuid is hidden from serializers and protected from changes once created.
-* More on the [./capsule](./capsule)
 * The creation sequence passes the capsule through a before hook (if defined).
 * The hook receives the capsule **after property assignment** but **before uuid assignment**.
 
