@@ -23,21 +23,21 @@ describe 'manage', ->
 
     it 'throws on missing port', (done) -> 
 
-        try manager manage: listen: {}
+        try manager manager: listen: {}
         catch error
-            error.should.match /manage requires opt config.manage.port/
+            error.should.match /manage requires opt config.manager.listen.port/
             done()
 
     it 'creates an http server', (done) -> 
 
         http.createServer = -> done(); listen: ->
-        manager manage: listen: port: 3210
+        manager manager: listen: port: 3210
 
 
     it 'creates an https server if cert an key are configured', (done) -> 
 
         https.createServer = -> done(); listen: ->
-        manager manage: listen:
+        manager manager: listen:
             port: 3210
             cert: 'cert'
             key:  'key'

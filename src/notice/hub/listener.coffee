@@ -48,7 +48,7 @@ module.exports.listen = (opts, callback) ->
         server.listen opts.port, opts.address, -> 
 
             {address, port} = server.address()
-            console.log 'listening @ %s://%s:%s', 
+            console.log 'HUB @ %s://%s:%s', 
                 transport, address, port
 
             callback null, 

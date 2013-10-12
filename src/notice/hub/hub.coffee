@@ -1,7 +1,9 @@
-{deferred} = require 'also'
-listener   = require './listener'
+{deferred}  = require 'also'
+listener    = require './listener'
 {handler}   = require './hub_handler'
 {notifier}  = require '../notifier'
+{manager}   = require '../../management/manager'
+
 {
     terminal
     reservedCapsule
@@ -49,6 +51,8 @@ module.exports.hub  = (config = {}) ->
 
                 hub = local.Notifier.create hubName
                 local.hubs[hubName] = hub
+
+                manager config if config.manager?
 
             catch error
 

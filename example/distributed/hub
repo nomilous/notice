@@ -5,6 +5,8 @@ notice = require '../../lib/notice'
 MessageHub = notice.hub
 
     manager: 
+        listen: 
+            port: 11011
         authenticate: 
             username: 'nomilous'
             password: '∆'
