@@ -9,11 +9,18 @@ Hub and Client Configurables
 ```coffee
 
 notice = require 'notice'
-Television = notice.hub()
+Television = notice.hub
+    
+    client: 
+        capsule: 
+            start: {}
 
 ```
 
-#### The `subconfigs`
+#### The `client` subconfig
+
+* Defines the set of capsules that this hub can send to attached clients.
+
 
 #### The `instance`
 
