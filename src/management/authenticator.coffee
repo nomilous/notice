@@ -10,8 +10,6 @@ module.exports.authenticator = (config = {}) ->
             #
             # no authorization in header
             # --------------------------
-            # 
-            # * send the usual 401
             #
 
             response.writeHead 401, 
