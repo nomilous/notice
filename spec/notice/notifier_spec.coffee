@@ -76,7 +76,7 @@ describe 'notifier', ->
             Notifier = notifier 
                 capsule:
                     pheeew:  
-                        afterCreate: (done, capsule) ->
+                        before: (done, capsule) ->
 
                             #
                             # eg. push the new capsule to a database
@@ -84,6 +84,7 @@ describe 'notifier', ->
                             #
 
                             capsule.id        = 'new database record id'
+                            # or capsule._uuid = 'if you want it the same'
                             capsule.createdAt = Date.now() 
                             done()
 
@@ -526,8 +527,8 @@ describe 'notifier', ->
             Notifier = notifier 
                 capsule:
                     makeThing: 
-                        beforeCreate: (done, msg) ->
-                            msg.serialNo = '0000000000001'
+                        before: (done, capsule) ->
+                            capsule.serialNo = '0000000000001'
                             done()
 
             four = Notifier.create 'Assembly Line 4'

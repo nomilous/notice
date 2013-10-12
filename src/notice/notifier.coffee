@@ -1,5 +1,5 @@
 {pipeline, deferred} = require 'also'
-{message}  = require './capsule/message'
+{lifecycle}    = require './capsule/lifecycle'
 {undefinedArg} = require './errors'
 
 testable                 = undefined
@@ -265,7 +265,7 @@ module.exports.notifier  = (config = {}) ->
     #
 
     for type of config.capsule
-        local.capsuleTypes[type] = message type, config
+        local.capsuleTypes[type] = lifecycle type, config
 
 
     return api = 
