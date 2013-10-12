@@ -67,44 +67,20 @@ module.exports.notifier  = (config = {}) ->
 
                 traversal = {}
 
-                # console.log MIDDLEWARES: list
-
                 middleware = for title of list
                     do (title) -> 
                         deferred ({resolve, reject, notify}) -> 
 
-                            #
-                            # TODO: (possibly)
-                            #
-                            # * coherently facilitate transactionality.
-                            # 
-                            #    eg. if 3rd middleware fails then something 
-                            #        might like the opportunity to undo stuff
-                            #        that the 1st and 2nd middleware did.
-                            # 
-                            # * handle middleware that never calls next()
-                            #   or at least have queryable tracked traversal 
-                            #   state and 'time in middleware' to identify 
-                            #   such.
-                            # 
-
                             next = -> process.nextTick -> resolve capsule
 
                             # TODO_LINK
-                            next.info   = -> 'https://github.com/nomilous/notice/tree/develop/spec/notice#the-next-function'
+                            # next.info   = -> 'https://github.com/nomilous/notice/tree/develop/spec/notice#the-next-function'
                             next.notify = (update) -> process.nextTick -> notify update
                             next.reject = (error)  -> process.nextTick -> reject error
                             next.cancel = -> # TODO: terminate the promise? (later: set appropriatly in introspection structures)
 
+                            try list[title] next, capsule, traversal
 
-
-                            try list[title] next, capsule, traversal  #, hubs
-                                                                            #
-                                                                            # TODO: consider enabling access to 
-                                                                            #       all hubs in this process for 
-                                                                            #       the middleware handlers to
-                                                                            #       switch / route capsules.
-                                                                            # 
                             catch error
                                 reject error
 
@@ -192,8 +168,8 @@ module.exports.notifier  = (config = {}) ->
 
 
             #
-            # create a function for push a raw payload into the middleware
-            # ------------------------------------------------------------
+            # create a function for pushing a raw payload into the middleware
+            # ---------------------------------------------------------------
             # 
             # * not exposed on visible api, only marginally likely to remain
             #   a permanent functionality
@@ -205,9 +181,7 @@ module.exports.notifier  = (config = {}) ->
 
             Object.defineProperty notifier, 'raw', 
                 #enumerated: false
-                get: -> (payload) -> 
-
-                    traverse payload
+                get: -> (payload) -> traverse payload
 
 
             #
@@ -223,7 +197,6 @@ module.exports.notifier  = (config = {}) ->
             #
 
             for type of config.capsule
-                continue if type == 'uuid'
                 continue if notifier[type]?
                 do (type) -> 
                     notifier[type] = deferred (args...) -> 

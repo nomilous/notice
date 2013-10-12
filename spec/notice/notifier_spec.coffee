@@ -3,6 +3,8 @@ should   = require 'should'
 
 describe 'notifier', -> 
 
+    it 'needs the next().cancel before release', -> throw 'vital'
+
     context 'factory', -> 
 
         it 'creates a Notifier definition', (done) -> 
