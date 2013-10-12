@@ -35,7 +35,8 @@ theConnectedRemote.volume 'up', amount: 3, (err, capsule) ->
 
 * Each message capsule first traverses all locally registered middleware.
 * If it reaches the end of the pipeline it is sent to the hub.
-* The callback is executed with the capsule after the hub ACK
+* TEMPORARY - The callback is executed with the final `capsule` after the hub ACK
+* PENDING - The callback is executed with the final `capsule` after a full hubside middleware traversal.
 * The callback is executed with err if any middlewares throw, or if the hub NAKs the capsule.
 
 ### With a Promise Waiting
