@@ -35,7 +35,7 @@ notifier.use
                 # * this will now be called whenever a middleware further down the 
                 #   pipeline updates capsule.needsSave
                 # 
-                # * the `capsule.change` is a reference to the capsule, it should
+                # * the `change.capsule` is a reference to the capsule, it should
                 #   not be assumed that the content of the capsule remains static
                 #   for the period between the setting of the needsSave flag and
                 #   the running of this callback.
