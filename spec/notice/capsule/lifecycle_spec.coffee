@@ -33,8 +33,9 @@ describe 'lifecycle', ->
             ls = lifecycle 'event', 
                 capsule: 
                     event: 
-                        before: -> 
+                        before: (done) -> 
                             SEQUENCE.push 'before hook'
+                            done()
 
             ls.create().then (capsule) -> 
 
@@ -44,5 +45,24 @@ describe 'lifecycle', ->
 
 
 
+        it 'protects from hooks that never resolve'
+        it 'passes a resolver that pends the creation', (done) -> 
 
+            DONE    = undefined
+            CAPSULE = undefined
+            ls = lifecycle 'event', 
+                capsule: 
+                    event: 
+                        before: (done) -> DONE = done
+            ls.create().then (capsule) -> CAPSULE = capsule
+
+            should.not.exist CAPSULE
+            DONE()
+            # process.nextTick -> # dunno why not?
+            setTimeout (->
+
+                should.exist CAPSULE
+                done()
+
+            ), 30
 

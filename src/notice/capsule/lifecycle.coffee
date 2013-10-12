@@ -14,8 +14,9 @@ module.exports.lifecycle  = (type, config = {}) ->
 
             try if local.config.before
 
-                local.config.before()
-                return resolve new local.Capsule
+                return local.config.before ->
+                    
+                    resolve new local.Capsule
 
             return resolve new local.Capsule
 
