@@ -18,7 +18,15 @@ module.exports.lifecycle  = (type, config = {}) ->
                 protected: true
                 hidden: true
 
-            cap[key] = properties[key] for key of properties
+            for key of properties
+                unless key == type
+                    cap[key] = properties[key]
+                    continue
+
+                assign = {}
+                assign[key]      = properties[key]
+                assign.protected = true
+                cap.set assign
 
             try if local.config.before
 

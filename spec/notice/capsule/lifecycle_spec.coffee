@@ -102,11 +102,36 @@ describe 'lifecycle', ->
                     event: 
                         before: (dun, capsule) -> 
                             capsule.should.eql key: 'value'
+                            dun()
                             done()
 
 
             ls.create key: 'value'
 
 
+        it 'protects the typeValue', (done) -> 
+
+            ls = lifecycle 'event', 
+                capsule: 
+                    event: 
+                        before: (done, capsule) -> 
+                            
+                            capsule.event = 'cannot be renamed'
+                            capsule.evenTho = 'i tried to change it'
+                            done()
+
+            ls.create( event: 'is still this' ).then (capsule) -> 
+                capsule.should.eql
+                    event:    'is still this'
+                    evenTho: 'i tried to change it'
+
+                done()
+
+
         it 'assigns uuid adterwards if the hook didnt'
+
+
+        it 'rejects on error in hook'
+
+
 
