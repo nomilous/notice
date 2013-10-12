@@ -53,7 +53,11 @@ describe 'authenticator', ->
             done()
 
 
-        authenticate(->) @mockRequest, @mockResponse
+        authenticate( -> 
+
+            throw 'should not run actual handler'
+            
+        ) @mockRequest, @mockResponse
 
 
     it 'uses configured upstream authorization call', (done) -> 
