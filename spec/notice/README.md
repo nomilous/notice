@@ -110,7 +110,7 @@ hub.use
 * Intentionally not calling `next()` is bad - the **pending** introspection subsystem will consider the middleware as a bottleneck. Use `next.cancel()`.
 
 
-#### the next function
+#### the `next` function
 
 The next function has some nested tools.
 
@@ -118,11 +118,7 @@ The next function has some nested tools.
 * `next.notify(payload)` sends a payload back to the emitter's promise notify function. Emitters with a node style callback waiting have no mechanism to receive these notifications.
 * `next.reject(error)` terminates the middleware traversal (same as throw)
 
-#### the capsule
-
-TODO_LINK: capsule page
-
-#### the traversal object
+#### the `traversal` object
 
 `traversal.origin`
 
