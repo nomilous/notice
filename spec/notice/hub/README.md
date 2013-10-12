@@ -1,6 +1,6 @@
 ### Creating a Notifier Hub
 
-next: **The Capsule** [`../capsule`](../capsule)
+**next:** The Capsule [`../capsule`](../capsule)
 
 #### The `Definition`
 

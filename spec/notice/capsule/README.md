@@ -1,7 +1,7 @@
 The Capsule
 -----------
 
-next: **Emitting Capsules** [`../`](../)
+**next:** Emitting Capsules [`../`](../)
 
 ### Quick Faqts
 

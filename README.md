@@ -12,10 +12,6 @@ A communicator.
 Quick Faqts
 -----------
 
-* `'coffee-script' is 'zen-garden'`
+* coffee-script is zen-garden
 * `cake dev` watches & compiles & tests
-* `browse('./spec') = clarity++` 
-
-
-TODO_LINKS (toc for ./spec here)
-
+* browseDirectory( [`./spec`](./spec) ).should.equal `clarity`
