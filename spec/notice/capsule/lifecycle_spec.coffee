@@ -13,8 +13,6 @@ describe 'lifecycle', ->
 
     context 'create', -> 
 
-
-
         it 'creates a capsule asynchronously', (done) -> 
 
             #
@@ -95,6 +93,7 @@ describe 'lifecycle', ->
 
             ls.create()
 
+
         it 'assigns capsule properties before the hook', (done) -> 
 
             ls = lifecycle 'event', 
@@ -127,8 +126,51 @@ describe 'lifecycle', ->
 
                 done()
 
+        it 'does not assign a uuid if the hook did', (done) -> 
 
-        it 'assigns uuid adterwards if the hook didnt'
+            ls = lifecycle 'event', 
+                capsule: 
+                    event: before: (done, capsule) -> 
+                        capsule._uuid = 1
+                        done()
+
+            ls.create().then (capsule) -> 
+                capsule._uuid.should.equal 1
+                done()
+
+        it 'does not assign uuid if the emitter did', (done) -> 
+
+            ls = lifecycle 'event', 
+                capsule: 
+                    event: {}
+
+            ls.create( _uuid: 1 ).then (capsule) -> 
+                capsule._uuid.should.equal 1
+                done()
+
+
+        it 'assigns uuid if the hook didnt', (done) -> 
+
+            ls = lifecycle 'event', 
+                capsule: 
+                    event: before: (done, capsule) -> done()
+
+            ls.create().then (capsule) -> 
+
+                should.exist capsule._uuid
+                done()
+
+        it 'assigns uuid if there is no hook', (done) -> 
+
+            ls = lifecycle 'event', 
+                capsule: 
+                    event: {}
+
+            ls.create().then (capsule) -> 
+
+                should.exist capsule._uuid
+                done()
+
 
 
         it 'rejects on error in hook'

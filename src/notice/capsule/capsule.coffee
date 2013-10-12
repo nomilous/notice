@@ -1,13 +1,9 @@
-uuid = require 'node-uuid'
-
 Testable                = undefined
 testable                = undefined
 module.exports._Capsule = -> Testable
 module.exports._capsule = -> testable
 
 module.exports.capsule  = (config = {}) ->
-
-    config.capsule || = {}
 
     Testable = class Capsule   # latest Definition available for testing
 

@@ -1,3 +1,4 @@
+{v1}       = require 'node-uuid'
 {deferred} = require 'also'
 {capsule}  = require './capsule'
 
@@ -5,10 +6,10 @@ module.exports.lifecycle  = (type, config = {}) ->
 
     local = 
 
-        cache:  {}
-        config: try config.capsule[type]
+        Capsule: capsule config
+        config:  try config.capsule[type]
+        cache:   {}
 
-        Capsule: capsule()
 
         create: deferred ({resolve}, properties = {}) -> 
 
@@ -30,7 +31,10 @@ module.exports.lifecycle  = (type, config = {}) ->
 
             try if local.config.before
 
-                done = -> resolve cap
+                done = -> 
+                    cap._uuid = v1() unless cap._uuid?
+                    resolve cap
                 return local.config.before done, cap
 
-            return resolve new local.Capsule
+            cap._uuid = v1() unless cap._uuid?
+            return resolve cap
