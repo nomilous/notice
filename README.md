@@ -2,21 +2,20 @@
 
 **stable**(ish) - minor api changes may still occur
 
-notice
-======
-
 A communicator.
 
+notice
+======
 
 ### The Guiding Epiphanies
 
 * A middleware bus is conceptionally identical to a promise pipeline.
 * The resulting flow-control and sequencial subscribe-ability creates an assembly line.
-* An assembly line can abstractify object storage and retreival.
+* An assembly line can **abstractify object storage and retreival**.
 
 #### Also
 
-* Middleware is perfect for routing information streams.
+* Middleware is perfect *for routing information streams*.
 * Middleware can be hot-swapped.
 
 
@@ -25,5 +24,5 @@ A communicator.
 * **all examples use coffee-script**
 * coffee-script is zen-garden
 * `cake dev` watches & compiles & tests
-* browseDirectory( [`./spec`](./spec) ).should.equal `clarity`
+* directory.browse( [`./spec`](./spec) ).should.equal `clarity`
 
