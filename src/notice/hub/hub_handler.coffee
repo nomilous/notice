@@ -38,54 +38,6 @@ module.exports.handler  = (config = {}) ->
 
             testable = handler = 
 
-                # assign: (socket) -> 
-
-                #     #
-                #     # #DUPLICATE1
-                #     # 
-                #     # subscribe handlers for all configured capsules
-                #     # ----------------------------------------------
-                #     # 
-                #     # * these are for inbound capsules
-                #     # 
-
-                #     for type of config.capsule
-
-                #             #
-                #             # * control capsules are local only
-                #             #  
-
-
-
-                #         continue if type == 'control'
-
-                #         console.log ASSIGN: type
-                #         do (type) -> 
-
-                #             #
-                #             # * all other capsules are proxied into the local 
-                #             #   middleware pipeline (hub) 
-                #             #
-
-                #             socket.on type, (payload) -> 
-
-                #                 unless typeof hubNotifier[type] == 'function'
-
-                #                     # 
-                #                     # * client and hub should use a common capsule config
-                #                     # 
-
-                #                     process.stderr.write "notice undefined capsule type '#{type}'"
-                #                     return
-
-                #                 #
-                #                 # * proxy the inbound capsule onto the middleware pipeline
-                #                 # TODO: typeValue, protected, hidden, watched
-                #                 # 
-
-                #                 hubNotifier[type] payload
-
-
                 disconnect: (socket) -> 
 
 

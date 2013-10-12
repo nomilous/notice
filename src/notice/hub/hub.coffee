@@ -34,14 +34,6 @@ module.exports.hub  = (config = {}) ->
         # TODO: hub has uplink configured from superscope (factory config)
         #
 
-        connections: -> 
-
-            # console.log '---------'
-            # for id of local.clients
-            #     client = local.clients[id]
-            #     console.log client.title, client.context, client.connected
-            # console.log '---------'
-
         create: deferred ({reject, resolve, notify}, hubName, opts = {}, callback) ->
 
             try 

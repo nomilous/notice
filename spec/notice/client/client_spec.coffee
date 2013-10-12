@@ -109,53 +109,16 @@ describe 'client', ->
             done()
 
 
-
-        # context 'assign', -> 
-
-        #     it 'assigns handlers for each capsule type onto the connecting socket', (done) -> 
-
-        #         Client = client 
-        #             capsule: 
-        #                 capsuleType: {}
-
-        #         ASSIGNED = {}
-        #         socket = on: (event, handler) -> ASSIGNED[event] = handler
-        #         connector.connect = -> socket
-        #         Client.create 'client name', @opts, ->
-
-        #         ASSIGNED.capsuleType.should.be.an.instanceof Function
-        #         done()
-
-        #     it 'assigns handers that proxy inbound capsules into the middleware pipeline', (done) ->
-
-        #         Client = client 
-        #             capsule: 
-        #                 capsuleType: {}
-
-        #         ASSIGNED = {}
-        #         socket = 
-        #             on: (event, handler) -> ASSIGNED[event] = handler
-        #             emit: ->
-        #         connector.connect = -> socket
-        #         Client.create 'client name', @opts, (error, client) -> 
-
-        #             client.use
-        #                 title: 'test middleware'
-        #                 (next, msg) -> 
-        #                     msg.property.should.equal 'value'
-        #                     done()
-
-
-        #         ASSIGNED['connect']()
-        #         ASSIGNED['accept']()
-        #         ASSIGNED['capsuleType'] property: 'value'
-
-
         context 'transmission onto socket', -> 
 
             beforeEach (done) -> 
                 @EMITTED = {}
-                Client = client()
+                Client = client
+                    capsule:
+                        event: 
+                            before: (done, capsule) -> 
+                                capsule._uuid = 'testable'
+                                done()
                 socket = 
                     on: (event, handler) => 
 
@@ -223,11 +186,11 @@ describe 'client', ->
 
                 @EMITTED = {}
                 @client.event 'test', => 
-                    #console.log @EMITTED.capsule.control
+                    # console.log @EMITTED.capsule.control
 
                     @EMITTED.capsule.control.should.eql 
                         type: 'event'
-                        uuid: 'testable'
+                        uuid: 'testable' 
                         protected: 
                             _type: 1
                             event: 1
@@ -308,43 +271,6 @@ describe 'client', ->
                         error.should.match /something/
                         _client().clients.should.eql {} # destroyed - no clients
                         done()
-
-
-                # it 'when connect.state is pending it updates retry tracking if retryWait is set', (done) -> 
-                #     count = 0
-                #     Date.now = -> ++count
-                #     @opts.connect.retryWait = 10000
-                #     @whenEvent['error'] = new Error 'something'
-                #     Client = client()
-                #     Client.create 'client name', @opts, (error, client) -> 
-                #     connection = _client().clients['client name'].connection
-                #     connection.should.eql
-                #         state:         'retrying'
-                #         stateAt:        3
-                #         retryStartedAt: 2
-                #         retryCount:     0
-                #     done()
-                # it 'when connect.state is pending it retries connect after retryWait milliseconds', (done) -> 
-                #     @timeout 4000
-                #     # count = 0
-                #     # Date.now = -> ++count # this breaks setTimeout
-                #     @opts.connect.retryWait = 1000
-                #     @whenEvent['error'] = new Error 'something'
-                #     Client = client()
-                #     Client.create 'client name', @opts, (error, client) -> 
-                #     setTimeout (->
-                #         console.log 1
-                #         connection = _client().clients['client name'].connection
-                #         console.log connection
-                #         # connection.should.eql
-                #         #     state:         'retrying'
-                #         #     stateAt:        3
-                #         #     retryStartedAt: 2
-                #         #     retryCount:     0
-                #         done()
-                #     ), 3000
-                    
-
 
                         
             context 'connect', -> 

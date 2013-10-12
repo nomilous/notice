@@ -5,14 +5,12 @@ describe 'standalone default notifier', ->
 
     it """
 
-        * It is created with an origin name
+        * It is created with an origin name.
         * Has a middleware registrar.
         * It can send capsule down the middleware pipeline.
         * Each capsule is assigned the _type (hidden property)
-        * The event sender receives the final capsule or error
-          from the pipeline.
-        * The sender can use a promise instead of callback to 
-          receive the final capsule.
+        * The event emitter receives the final capsule or error from the pipeline.
+        * The sender can use a promise instead of callback to receive the final capsule.
 
     """, (done) -> 
 
@@ -51,13 +49,9 @@ describe 'standalone configured notifier', ->
     it """
 
         * A notifier Definition is configured with capsule definitions
-        * The reslting Definition can be used to create notifiers of the
-          defined type
-        * Each capsule type is emitted through a created function by the 
-          same name.
-        * Casule definitions can be assigned beforeCreate and afterCreate
-          hooks to predefine capsule properties ahead of the middleware 
-          traveral.
+        * The reslting Definition can be used to create notifiers of the defined type.
+        * Each capsule type is emitted through a function by the same name.
+        * Casule definitions can be assigned a before hooks that preceede the middleware traveral.
 
     """, (done) -> 
 
@@ -65,13 +59,15 @@ describe 'standalone configured notifier', ->
         Messenger = notice 
             capsule: 
                 capsuleTypeName:
-                    beforeCreate: (done, capsule) -> 
+                    before: (done, capsule) -> 
                         capsule.sequence = seq++
                         done()
 
         instance = Messenger.create 'origin name'
         instance.use.should.be.an.instanceof Function
+
         instance.capsuleTypeName( 'capsuleTypeValue' ).then (m) -> 
+        
             m._type.should.equal 'capsuleTypeName'
             m.should.eql 
                 capsuleTypeName: 'capsuleTypeValue'
