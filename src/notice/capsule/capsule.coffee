@@ -89,7 +89,3 @@ module.exports.capsule  = (config = {}) ->
                 Object.defineProperty @, key, 
                     writable: not opts.protected
 
-
-        # save:    ->
-        # refresh: ->
-
