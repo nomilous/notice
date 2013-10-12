@@ -63,8 +63,6 @@ TelevisionRemote = notice.client
         play:    {}
         ffwd:    {}
 
-        # uuid: -> 'override uuid generator' # dangerous, must be unique
-
 ```
 The `TelevisionRemote` definition can now be used to create a notifier instance.
 
@@ -163,7 +161,8 @@ theRemote.volume( 'up', amount: 3 ).then(
 
 * Emitting a capsule with a promise waiting behaves similarly to the node style example but with an additional capacity to receive control notifications.
 * Each **capsule is assigned a uuid when it is created**. It will be available to all local and remote middleware functions that receive this capsule as it traverses the system.
-* `config.capsule.uuid()` can be assigned to override the [default uuid generator](https://github.com/broofa/node-uuid) (strange things will happen if the resulting uuids are not unique) 
+* the uuid is hidden from serializers and protected from changes once created.
+* `config.capsule[type].before` can be assigned an async hook function to pre-assign the uuid
 * More on the [./capsule](./capsule) TODO_LINKS
 
 

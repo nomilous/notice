@@ -3,14 +3,6 @@ should    = require 'should'
 
 describe 'Capsule', -> 
 
-
-    it 'has a uuid assigned at creation', (done) -> 
-
-        Capsule  = capsule()
-        instance = new Capsule
-        should.exist instance._uuid
-        done()
-
     it 'can set the uuid at creation (and it sticks)', (done) -> 
 
         Capsule  = capsule()
@@ -20,24 +12,18 @@ describe 'Capsule', ->
         instance._uuid.should.equal 'assigned'
         done()
 
-    it 'can be assigned uuid from predefined function', (done) -> 
+    it 'can set the uuid after creation (only once)', (done) -> 
 
-        seq = 0
-        Capsule = capsule 
-            capsule: 
-                uuid: -> ++seq
-
-        instance1 = new Capsule
-        instance2 = new Capsule
-
-        instance1._uuid.should.equal 1
-        instance2._uuid.should.equal 2
+        Capsule  = capsule()
+        instance = new Capsule
+        should.not.exist instance._uuid
+        instance._uuid = 'UUID'
+        instance._uuid = 'assign another uuid'
+        instance._uuid.should.equal 'UUID'
         done()
+        
 
-    it 'can assign uuid from asynchronously' # pending possibly never
-
-
-    context 'set()', -> 
+    xcontext 'set()', -> 
 
         it 'sets a property', (done) -> 
 

@@ -19,6 +19,8 @@ module.exports.capsule  = (config = {}) ->
 
         constructor: (params = {}) -> 
 
+            uuid = params.uuid
+
             @_hidden = {}
             Object.defineProperty @, '_hidden', 
                 enumerable: false
@@ -29,8 +31,9 @@ module.exports.capsule  = (config = {}) ->
 
             Object.defineProperty @, '_uuid', 
                 enumarable: false
-                writable: false
-                value: params.uuid || config.capsule.uuid()
+                get: -> uuid
+                set: (value) -> uuid = value unless uuid?
+
 
             Object.defineProperty @, 'all', 
                 enumerable: false

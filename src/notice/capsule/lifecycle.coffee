@@ -20,9 +20,7 @@ module.exports.lifecycle  = (type, config = {}) ->
                     protected: true
                     hidden: true
 
-
                 done = -> resolve cap
                 return local.config.before done, cap
 
             return resolve new local.Capsule
-
