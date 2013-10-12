@@ -14,6 +14,8 @@ A communicator.
 * The resulting flow-control and sequencial subscribe-ability creates an assembly line.
 * An assembly line can abstractify object storage and retreival.
 
+#### Also
+
 * Middleware is perfect for routing information streams.
 * Middleware can be hot-swapped.
 
