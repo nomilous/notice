@@ -44,7 +44,7 @@ describe 'lifecycle', ->
 
 
         it 'protects from hooks that never resolve' # how long is a piece of string's timeout
-        it 'passes a resolver to the hook that pends the creation resolution', (done) -> 
+        it 'passes a resolver to the hook and pends the creation resolution thru it', (done) -> 
 
             DONE    = undefined
             CAPSULE = undefined
