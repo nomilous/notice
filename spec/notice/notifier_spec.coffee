@@ -167,9 +167,9 @@ describe 'notifier', ->
             instance = notifier().create 'title'
             payload1 = {a: 1}
             payload2 = {b: 2}
-            instance.event 'name', payload1, payload2, (err, msg) -> 
+            instance.event 'name', payload1, payload2, (err, capsule) -> 
 
-                msg.should.eql 
+                capsule.should.eql 
                     event: 'name'
                     a: 1
                     b: 2
@@ -181,16 +181,16 @@ describe 'notifier', ->
             instance = notifier().create 'title'
             instance.event 'event name', 
                 event: 'accidental second definition of event name'
-                (err, msg) -> 
-                    msg.event.should.not.equal 'accidental second definition of event name'
+                (err, capsule) -> 
+                    capsule.event.should.not.equal 'accidental second definition of event name'
                     done()
 
 
         it 'creates description with second string', (done) -> 
 
             instance = notifier().create 'title'
-            instance.event 'string1', 'string2', (err, msg) -> 
-                msg.should.eql
+            instance.event 'string1', 'string2', (err, capsule) -> 
+                capsule.should.eql
                     event: 'string1'
                     description: 'string2'
                 done()
@@ -225,7 +225,7 @@ describe 'notifier', ->
             seven = notifier().create 'Assembly Line 7'
             try seven.use 
                 titel: 'troubled speller'
-                (done, msg) ->
+                (done, capsule) ->
             catch error
                 error.should.match /requires arg opts.title and fn/
                 done()
@@ -236,13 +236,13 @@ describe 'notifier', ->
             six = notifier().create 'Assembly Line 6'
             six.use 
                 title: 'arrange into single file'
-                (done, msg) -> done()
+                (done, capsule) -> done()
             six.use
                 title: 'squirt the product in'
-                (done, msg) -> done()
+                (done, capsule) -> done()
             six.use
                 title: 'put a lid on it'
-                (done, msg) -> done()
+                (done, capsule) -> done()
 
             mmm = _notifier().middleware['Assembly Line 6']
 
@@ -273,18 +273,18 @@ describe 'notifier', ->
 
             mix.use 
                 title: '1. intro'
-                (done, msg) ->
-                    msg.one = true
+                (done, capsule) ->
+                    capsule.one = true
                     done()
             mix.use 
                 title: '2. one the sun'
-                (done, msg) -> 
-                    msg.two = true
+                (done, capsule) -> 
+                    capsule.two = true
                     done()
             mix.use 
                 title: '3. noon moon'
-                (done, msg) -> 
-                    msg.three = true
+                (done, capsule) -> 
+                    capsule.three = true
                     done()
 
             mix.event().then (m) -> 
@@ -317,9 +317,9 @@ describe 'notifier', ->
 
             mix.use 
                 title: '1. intro'
-                (next, msg) ->
+                (next, capsule) ->
                     next.notify 'update'
-                    msg.one = true
+                    capsule.one = true
                     next()
 
             mix.event().then( 
@@ -362,20 +362,20 @@ describe 'notifier', ->
 
             mix.use 
                 title: '1. intro'
-                (done, msg) -> done()
+                (done, capsule) -> done()
             mix.use 
                 title: '2. one the sun'
-                (done, msg) -> done()
+                (done, capsule) -> done()
             mix.use 
                 title: '3. noon moon'
-                (done, msg) -> done()
+                (done, capsule) -> done()
             mix.use
                 title: '4. byte orbit'
-                (done, msg) -> done()
+                (done, capsule) -> done()
             
             mix.force 
                 title: '1. intro', 
-                (done, msg) -> 
+                (done, capsule) -> 
                     ### replaced ### 
                     done()
 
@@ -389,10 +389,10 @@ describe 'notifier', ->
 
             mix.use 
                 title: '1. intro'
-                (done, msg) -> done()
+                (done, capsule) -> done()
             mix.use 
                 title: '2. one the sun'
-                (done, msg) -> done()
+                (done, capsule) -> done()
 
             mix.force
                 title: '1. intro'
@@ -409,20 +409,20 @@ describe 'notifier', ->
             stix.use 
                 title: 'three'
                 last:   true
-                (done, msg) -> 
-                    msg.array.push 'three'
+                (done, capsule) -> 
+                    capsule.array.push 'three'
                     done()
 
             stix.use 
                 title: 'one'
-                (done, msg) -> 
-                    msg.array = []
-                    msg.array.push 'one'
+                (done, capsule) -> 
+                    capsule.array = []
+                    capsule.array.push 'one'
                     done()
             stix.use 
                 title: 'two'
-                (done, msg) -> 
-                    msg.array.push 'two'
+                (done, capsule) -> 
+                    capsule.array.push 'two'
                     done()
 
             stix.event (err, res) -> 
@@ -440,20 +440,20 @@ describe 'notifier', ->
             stix.use 
                 title: 'three'
                 last:   true
-                (done, msg) -> 
-                    msg.array.push 'three'
+                (done, capsule) -> 
+                    capsule.array.push 'three'
                     done()
 
             stix.use 
                 title: 'one'
-                (done, msg) -> 
-                    msg.array = []
-                    msg.array.push 'one'
+                (done, capsule) -> 
+                    capsule.array = []
+                    capsule.array.push 'one'
                     done()
             stix.use 
                 title: 'two'
-                (done, msg) -> 
-                    msg.array.push 'two'
+                (done, capsule) -> 
+                    capsule.array.push 'two'
                     done()
 
             swap = process.stderr.write # sssht, once
@@ -462,8 +462,8 @@ describe 'notifier', ->
             stix.use 
                 title: 'three'
                 last:   true
-                (done, msg) -> 
-                    msg.array.push 'replace three'
+                (done, capsule) -> 
+                    capsule.array.push 'replace three'
                     done()
 
             stix.event (err, res) -> 
@@ -477,16 +477,16 @@ describe 'notifier', ->
             stix = notifier().create 'Happy Beginning'
             stix.use 
                 title: 'one'
-                (done, msg) -> 
-                    msg.array ||= []
-                    msg.array.push 'one'
+                (done, capsule) -> 
+                    capsule.array ||= []
+                    capsule.array.push 'one'
                     done()
             stix.use 
                 title: 'two'
                 first:          true
-                (done, msg) -> 
-                    msg.array ||= []
-                    msg.array.push 'zero'
+                (done, capsule) -> 
+                    capsule.array ||= []
+                    capsule.array.push 'zero'
                     done()
 
              stix.event (err, res) -> 
@@ -500,28 +500,28 @@ describe 'notifier', ->
             five = notifier().create 'Assembly Line 5'
             five.use 
                 title: 'one'
-                (done, msg) -> 
-                    msg.array = [1]
+                (done, capsule) -> 
+                    capsule.array = [1]
                     done()
             five.use 
                 title: 'REPLACE ME'
-                (done, msg) -> 
-                    msg.array.push 2
+                (done, capsule) -> 
+                    capsule.array.push 2
                     done()
             five.use 
                 title: 'three'
-                (done, msg) -> 
-                    msg.array.push 3
+                (done, capsule) -> 
+                    capsule.array.push 3
                     done()
             five.force 
                 title: 'REPLACE ME'
-                (done, msg) -> 
-                    msg.array.push 'new 2'
+                (done, capsule) -> 
+                    capsule.array.push 'new 2'
                     done()
 
-            five.event().then (msg) -> 
+            five.event().then (capsule) -> 
 
-                msg.array.should.eql  [ 1, 'new 2', 3 ]
+                capsule.array.should.eql  [ 1, 'new 2', 3 ]
                 done()
 
         it 'returns the promise of a capsule traversing the middleware pipeline', (done) -> 
@@ -534,11 +534,11 @@ describe 'notifier', ->
                             done()
 
             four = Notifier.create 'Assembly Line 4'
-            four.use title: 'step1', (done, msg) -> 
-                msg.step1 = 'done'
+            four.use title: 'step1', (done, capsule) -> 
+                capsule.step1 = 'done'
                 done()
-            four.use title: 'step2', (done, msg) ->
-                msg.step2 = 'done'
+            four.use title: 'step2', (done, capsule) ->
+                capsule.step2 = 'done'
                 done()
 
             four.makeThing
@@ -561,7 +561,7 @@ describe 'notifier', ->
 
             Notifier = notifier capsule: info: {}
             broken = Notifier.create 'broken pipeline'
-            broken.use title: 'fails', (done, msg) -> 
+            broken.use title: 'fails', (done, capsule) -> 
                 throw new Error 'ka-pow!'
                 done()
 
@@ -576,14 +576,14 @@ describe 'notifier', ->
             Notifier = notifier()
             instance = Notifier.create 'title'
 
-            instance.use title: 'title', (done, msg) -> 
-                msg.ok = 'good'
+            instance.use title: 'title', (done, capsule) -> 
+                capsule.ok = 'good'
                 done()
 
 
-            instance.event payload: 'ABCDEFG', (err, msg) -> 
+            instance.event payload: 'ABCDEFG', (err, capsule) -> 
 
-                msg.should.eql
+                capsule.should.eql
                      payload: 'ABCDEFG'
                      ok:      'good'
                 done()

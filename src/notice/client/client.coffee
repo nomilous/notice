@@ -65,49 +65,6 @@ module.exports.client  = (config = {}) ->
             client.connection.stateAt = Date.now()
             already = false 
 
-
-            # #
-            # # #DUPLICATE1
-            # # 
-            # # subscribe inbound handlers for all configured capsules
-            # # ------------------------------------------------------
-            # # 
-            # # TODO: set capsule.inbound
-            # # 
-
-            # for type of config.capsule
-
-            #         #
-            #         # * control capsules are local only
-            #         #  
-
-            #     continue if type == 'control'
-            #     do (type) -> 
-
-            #         #
-            #         # * all other capsules are proxied into the local 
-            #         #   middleware pipeline (hub) 
-            #         #
-
-            #         socket.on type, (payload) -> 
-
-            #             unless typeof client[type] == 'function'
-
-            #                 # 
-            #                 # * client and hub should use a common capsules config
-            #                 # 
-
-            #                 process.stderr.write "notice undefined capsule type '#{type}'"
-            #                 return
-
-            #             #
-            #             # * proxy the inbound capsules onto the middleware pipeline
-            #             # TODO: typeValue, protected, hidden, watched
-            #             # 
-
-            #             client[type] payload
-
-
             #
             # last middleware on the local bus transfers capsule onto socket 
             # --------------------------------------------------------------
