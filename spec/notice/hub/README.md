@@ -1,5 +1,7 @@
 ### Creating a Notifier Hub
 
+next: [The Capsule `../capsule`](../capsule)
+
 #### The `Definition`
 
 ```coffee

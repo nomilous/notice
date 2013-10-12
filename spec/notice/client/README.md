@@ -1,5 +1,7 @@
 ### Creating a Notifier Client
 
+next: [Creating a Notifier Hub `../hub`](../hub)
+
 #### The `Definition`
 
 ```coffee
