@@ -28,6 +28,11 @@ module.exports.manager  = (config = {}) ->
             response.writeHead 405
             response.end()
 
+        objectNotFound: (response) -> 
+
+            response.writeHead 404
+            response.end()
+
 
         respond: (data, statusCode, response) -> 
 
@@ -45,7 +50,8 @@ module.exports.manager  = (config = {}) ->
             '/about': 
 
                 description: 'show this'
-                handler: (request, response, statusCode = 200) -> 
+                methods: ['GET']
+                handler: (matched, request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
                     local.respond
@@ -62,13 +68,11 @@ module.exports.manager  = (config = {}) ->
 
             '/v1/hubs': 
 
-                description: 'list present hub records'
-                handler: (request, response, statusCode = 200) -> 
-
-                    console.log local.hubContext
+                description: 'list present hubs'
+                methods: ['GET']
+                handler: (matched, request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
-
                     hubs = records: []
                     for hubname of local.hubContext.hubs
                         hubs.records.push 
@@ -76,6 +80,22 @@ module.exports.manager  = (config = {}) ->
                             uuid:  local.hubContext.hubs[hubname].uuid
 
                     local.respond hubs,
+                        statusCode
+                        response
+
+            '/v1/hubs/:uuid:': 
+
+                description: 'get a hub'
+                methods: ['GET']
+                handler: ([uuid], request, response, statusCode = 200) -> 
+
+                    return local.methodNotAllowed response unless request.method == 'GET'
+                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
+
+                    notifier = local.hubContext.uuids[uuid]
+
+                    local.respond 
+                        records: [notifier.serialize()]
                         statusCode
                         response
 
@@ -93,16 +113,28 @@ module.exports.manager  = (config = {}) ->
 
         path = request.url
 
+        try 
+            [match, uuid] = matched = path.match /v1\/hubs\/(.*)/
+            
+            unless uuid.match /\//
+
+                return local.routes['/v1/hubs/:uuid:'].handler [uuid], request, response
+                
+
+        catch error
+
+
         unless local.routes[path]? 
 
             #
             # request for undefined route, respond 404 (but with help)
             #
 
-            return local.routes['/about'].handler request, response, 404 
+            return local.routes['/about'].handler null, request, response, 404 
 
-        local.routes[path].handler request, response
-
+        
+        local.routes[path].handler null, request, response
+            
 
 
     server.listen port, address, -> 

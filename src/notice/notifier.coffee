@@ -178,6 +178,15 @@ module.exports.notifier  = (config = {}) ->
                 enumerable: true
                 value:      uuid
 
+            Object.defineProperty notifier, 'title', 
+                writable:   false
+                enumerable: true
+                value:      title
+
+            Object.defineProperty notifier, 'serialize',
+                writable:   false
+                value: -> 'serialize'
+
 
 
             #

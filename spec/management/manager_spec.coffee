@@ -78,6 +78,9 @@ describe 'manage', ->
                 hubs: 
                     'hub name 1': uuid: 1
                     'hub name 2': uuid: 2
+                uuids:
+                    '1': serialize: -> 'HUB 1 RECORD'
+                    '2': serialize: -> 'HUB 2 RECORD'
 
         beforeEach -> 
             @writeHead = ->
@@ -110,8 +113,14 @@ describe 'manage', ->
                     endpoints: 
                         '/about': 
                             description: 'show this'
+                            methods: ['GET']
                         '/v1/hubs':
-                            description: 'list present hub records'
+                            description: 'list present hubs'
+                            methods: ['GET']
+                        '/v1/hubs/:uuid:':
+                            description: 'get a hub'
+                            methods: ['GET']
+
 
                     done()
 
@@ -145,6 +154,28 @@ describe 'manage', ->
             _manager().requestHandler @mockRequest, @mockResponse
 
 
+        it 'respods 404 to no such /v1/hubs/:uuid:', (done) -> 
+
+            @writeHead = (statusCode) ->
+                statusCode.should.equal 404
+                done()
+
+
+            @mockRequest.url = '/v1/hubs/3'
+            _manager().requestHandler @mockRequest, @mockResponse
+
+
+        it 'responds to /v1/hubs/:uuid: with specific hub record', (done) -> 
+
+            @write = (body) ->
+                JSON.parse( body ).should.eql 
+                    records: [
+                        'HUB 1 RECORD'
+                    ]
+                done()
+
+            @mockRequest.url = '/v1/hubs/1'
+            _manager().requestHandler @mockRequest, @mockResponse
 
 
 
