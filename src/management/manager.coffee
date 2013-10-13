@@ -1,5 +1,6 @@
 {authenticator} = require './authenticator'
 {missingConfig} = require '../notice/errors'
+{start}         = require '../notice/hub/listener'
 
 testable               = undefined
 module.exports._manager = -> testable
@@ -14,21 +15,19 @@ module.exports.manager  = (config = {}) ->
     unless typeof listen.port is 'number'
         throw missingConfig 'config.manager.listen.port', 'manage' 
 
+    port         = listen.port
+    address      = if listen.hostname? then listen.hostname else '127.0.0.1'
+    opts         = {}
+    opts.key     = listen.key
+    opts.cert    = listen.cert
 
-    transport = if listen.cert? and listen.key? then 'https' else 'http'
-    hostname  = if listen.hostname? then listen.hostname else '127.0.0.1'
-    port      = listen.port
-    testable  = local = {}
-    
+    {server, transport} = start opts, (request, response) ->
 
-    server = if transport == 'https' 
-
-        try require( transport ).createServer()
-
-    server ||= require('http').createServer()
+        response.writeHead 200
+        response.end 'okgood'
 
 
-    server.listen port, hostname, -> 
+    server.listen port, address, -> 
         {address, port} = server.address()
         console.log 'API @ %s://%s:%s', 
             transport, address, port

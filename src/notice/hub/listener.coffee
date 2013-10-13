@@ -2,24 +2,30 @@ http      = require 'http'
 https     = require 'https'
 fs        = require 'fs'
 socketio  = require 'socket.io'
-transport = 'http'
+# transport = 'http'
 
-start = (opts) -> 
+module.exports.start = start = (opts, handler) -> 
     
     if opts.cert? and opts.key? 
 
         try
 
             transport = 'https'
-            return https.createServer
+            server = https.createServer
 
                 key:  fs.readFileSync opts.key
                 cert: fs.readFileSync opts.cert
+                handler
+
+            return server: server, transport: transport
 
         #catch error
 
     transport = 'http'
-    http.createServer()
+    server = http.createServer handler
+
+    return server: server, transport: transport
+
 
 module.exports.listen = (opts, callback) -> 
 
@@ -32,8 +38,9 @@ module.exports.listen = (opts, callback) ->
     # create server unless provided and bind socket.io
     #
 
-    server = opts.server || start opts
-    io     = socketio.listen server
+    {server, transport} = start opts unless opts.server?
+    server ||= opts.server
+    io       = socketio.listen server
     io.configure -> io.set 'log level', opts.loglevel || 1
 
 
