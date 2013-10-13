@@ -61,6 +61,24 @@ MessageHub.create 'hub 1 name', {
                 uuid: #{capsule._uuid}
                 content: """, capsule
 
+
+            setTimeout (->
+
+                #
+                # swap this middleware in 2 seconds
+                #
+
+                hub.force
+
+                    title: 'first middleware'
+                    (next, capsule) -> 
+
+                        console.log 'replaced...'
+                        next()
+
+            ), 2000
+
+
             next()
 
 
