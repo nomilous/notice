@@ -20,7 +20,19 @@ module.exports.manager  = (config = {}) ->
 
     testable = local = 
 
-        register: (hubContext) -> 
+        hubContext: undefined
+        register: (hubContext) -> local.hubContext = hubContext
+
+        respond: (data, statusCode, response) -> 
+
+            body = JSON.stringify data, null, 2
+            response.writeHead statusCode,
+                'Content-Type': 'application/json'
+                'Content-Length': body.length
+
+            response.write body
+            response.end()            
+
 
         routes: 
 
@@ -29,7 +41,7 @@ module.exports.manager  = (config = {}) ->
                 description: 'show this'
                 handler: (request, response, statusCode = 200) -> 
 
-                    body = JSON.stringify 
+                    local.respond
 
                         module:  'notice'
                         version: version
@@ -37,19 +49,24 @@ module.exports.manager  = (config = {}) ->
                         doc: 'https://github.com/nomilous/notice/tree/develop/spec/management'
                         endpoints: local.routes
 
-                        #
-                        # pretty for now
-                        #
+                        statusCode
+                        response
 
-                        null
-                        2
 
-                    response.writeHead statusCode,
-                        'Content-Type': 'application/json'
-                        'Content-Length': body.length
 
-                    response.write body
-                    response.end()
+            '/v1/hubs': 
+
+                description: 'list present hub records'
+                handler: (request, response, statusCode = 200) -> 
+
+                    hubs = records: []
+                    for hubname of local.hubContext.hubs
+                        hubs.records.push 
+                            title: hubname
+
+                    local.respond hubs,
+                        statusCode
+                        response
 
 
 

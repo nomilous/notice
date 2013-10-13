@@ -68,11 +68,16 @@ describe 'manage', ->
             Object.defineProperty @mockResponse, 'write', 
                 get: => => @write.apply null, arguments
 
-            manager manager: 
+            m = manager manager: 
                 authenticate: 
                     username: 'username'
                     password: 'password'
                 listen: port: 3210
+
+            m.register 
+                hubs: 
+                    'hub name 1': {}
+                    'hub name 2': {}
 
         beforeEach -> 
             @writeHead = ->
@@ -105,9 +110,10 @@ describe 'manage', ->
                     endpoints: 
                         '/about': 
                             description: 'show this'
+                        '/v1/hubs':
+                            description: 'list present hub records'
 
                     done()
-
 
             @mockRequest.url = '/no/such/route'
             _manager().requestHandler @mockRequest, @mockResponse
@@ -122,5 +128,28 @@ describe 'manage', ->
 
             @mockRequest.url = '/about'
             _manager().requestHandler @mockRequest, @mockResponse
+
+
+        it 'responds to /v1/hubs with a array of records for each hub', (done) -> 
+
+            @write = (body) ->
+                JSON.parse( body ).should.eql 
+                    records: [
+                        {title: 'hub name 1'}
+                        {title: 'hub name 2'}
+                    ]
+                done()
+
+
+            @mockRequest.url = '/v1/hubs'
+            _manager().requestHandler @mockRequest, @mockResponse
+
+
+
+
+
+
+
+
 
 
