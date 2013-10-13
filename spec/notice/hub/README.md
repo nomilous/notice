@@ -27,7 +27,7 @@ Television = notice.hub # a factory
 #### The `client` subconfig
 
 * Defines the set of capsules that this hub can send to attached clients.
-* Emitters for these capsule definitions are available in the hubside middleware `traversal.origin` and are therefore only available upon handling a capsule originating from the client.
+* Emitters for these capsule definitions are available in the hubside middleware `traversal.origin` object and are therefore only available upon handling a capsule originating from the client.
 * It is therefore up to the client to bootstrap the necessary protocol sequences.
 
 
