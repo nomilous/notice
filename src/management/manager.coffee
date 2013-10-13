@@ -42,4 +42,6 @@ module.exports.manager  = (config = {}) ->
             transport, address, port
 
 
-    return api = register: local.register
+    return api = 
+        register: local.register
+
