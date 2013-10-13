@@ -107,7 +107,7 @@ describe 'manage', ->
                             description: 'show this'
 
                     done()
-                    
+
 
             @mockRequest.url = '/no/such/route'
             _manager().requestHandler @mockRequest, @mockResponse
