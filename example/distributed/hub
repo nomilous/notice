@@ -18,6 +18,8 @@ MessageHub = notice.hub
 
 MessageHub.create 'hub 1 name', {
 
+    uuid: 1
+
     listen: 
         
         adaptor: 'socket.io'
@@ -84,6 +86,8 @@ MessageHub.create 'hub 1 name', {
 
 
 MessageHub.create 'hub 2 name', {
+
+    uuid: 2
 
     listen: 
         

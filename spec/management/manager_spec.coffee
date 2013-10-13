@@ -76,8 +76,8 @@ describe 'manage', ->
 
             m.register 
                 hubs: 
-                    'hub name 1': {}
-                    'hub name 2': {}
+                    'hub name 1': uuid: 1
+                    'hub name 2': uuid: 2
 
         beforeEach -> 
             @writeHead = ->
@@ -130,13 +130,13 @@ describe 'manage', ->
             _manager().requestHandler @mockRequest, @mockResponse
 
 
-        it 'responds to /v1/hubs with a array of records for each hub', (done) -> 
+        it 'responds to /v1/hubs with an array of records for each hub', (done) -> 
 
             @write = (body) ->
                 JSON.parse( body ).should.eql 
                     records: [
-                        {title: 'hub name 1'}
-                        {title: 'hub name 2'}
+                        {title: 'hub name 1', uuid: 1}
+                        {title: 'hub name 2', uuid: 2}
                     ]
                 done()
 

@@ -59,6 +59,22 @@ describe 'hub', ->
             should.exist _hub().hubs.Title
             done()
 
+        it 'generates a uuid for the notifier', (done) -> 
+
+            Hub = hub()
+            Hub.create title: 'Title'
+
+            should.exist _hub().hubs.Title.uuid
+            done()
+
+
+        it 'uses a provided uuid for the notifier', (done) -> 
+
+            Hub = hub()
+            Hub.create title: 'Title', uuid: 1
+            _hub().hubs.Title.uuid.should.equal 1
+            done()
+
 
         it 'calls back with a hub instance', (done) -> 
 

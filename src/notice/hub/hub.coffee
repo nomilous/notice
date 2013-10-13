@@ -3,6 +3,7 @@ listener    = require './listener'
 {handler}   = require './hub_handler'
 {notifier}  = require '../notifier'
 {manager}   = require '../../management/manager'
+{v1}        = require 'node-uuid'
 
 {
     terminal
@@ -45,12 +46,16 @@ module.exports.hub  = (config = {}) ->
         hubs:    {}
         clients: {}
         name2id: {} # same client on multiple hubs? later...
+
+        uuids:   {} # taken list for hubs
         
         #
         # TODO: hub has uplink configured from superscope (factory config)
         #
 
         create: deferred ({reject, resolve, notify}, hubName, opts = {}, callback) ->
+
+            opts.uuid ||= v1()
 
             try 
 
@@ -62,9 +67,11 @@ module.exports.hub  = (config = {}) ->
 
                 throw undefinedArg 'hubName' unless typeof hubName is 'string'
                 throw alreadyDefined 'hubName', hubName if local.hubs[hubName]?
+                throw alreadyDefined 'hubUUID', opts.uuid if local.uuids[opts.uuid]?
 
-                hub = local.Notifier.create hubName
-                local.hubs[hubName] = hub
+                hub = local.Notifier.create hubName, opts.uuid
+                local.hubs[hubName]    = hub
+                local.uuids[opts.uuid] = hub
 
             catch error
 

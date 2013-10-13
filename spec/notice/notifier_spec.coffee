@@ -70,6 +70,20 @@ describe 'notifier', ->
                 error.should.match /requires title as string/
                 done()
 
+        it 'is assigned a uuid', (done) -> 
+
+            Notifier = notifier()
+            n = Notifier.create 'title'
+            should.exist n.uuid
+            done()
+
+        it 'uses a provided uuid', (done) -> 
+
+            Notifier = notifier()
+            n = Notifier.create 'title', 'uuid'
+            n.uuid.should.equal 'uuid'
+            done()
+
 
         it 'creates a function to send each defined capsule type', (done) ->
 

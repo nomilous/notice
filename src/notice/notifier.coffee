@@ -1,6 +1,7 @@
 {pipeline, deferred} = require 'also'
 {lifecycle}    = require './capsule/lifecycle'
 {undefinedArg} = require './errors'
+{v1}           = require 'node-uuid'
 
 testable                 = undefined
 module.exports._notifier = -> testable
@@ -24,8 +25,8 @@ module.exports.notifier  = (config = {}) ->
         middleware:   {}
         notifiers:    {}
 
-        create: (title) ->
-        
+        create: (title, uuid = v1()) ->
+
             throw new Error( 
                 'Notifier.create(title) requires title as string'
             ) unless typeof title is 'string'
@@ -165,6 +166,18 @@ module.exports.notifier  = (config = {}) ->
                     
                     middlewareCount++ unless list[opts.title]?
                     list[opts.title] = fn
+
+            #
+            # each notifier is assigned a uuid unless already defined
+            # -------------------------------------------------------
+            # 
+
+            
+            Object.defineProperty notifier, 'uuid', 
+                writable:   false
+                enumerable: true
+                value:      uuid
+
 
 
             #

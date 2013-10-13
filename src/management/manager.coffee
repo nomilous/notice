@@ -37,7 +37,7 @@ module.exports.manager  = (config = {}) ->
                 'Content-Length': body.length
 
             response.write body
-            response.end()            
+            response.end()
 
 
         routes: 
@@ -65,20 +65,19 @@ module.exports.manager  = (config = {}) ->
                 description: 'list present hub records'
                 handler: (request, response, statusCode = 200) -> 
 
+                    console.log local.hubContext
+
                     return local.methodNotAllowed response unless request.method == 'GET'
 
                     hubs = records: []
                     for hubname of local.hubContext.hubs
                         hubs.records.push 
                             title: hubname
+                            uuid:  local.hubContext.hubs[hubname].uuid
 
                     local.respond hubs,
                         statusCode
                         response
-
-
-
-
 
 
 
