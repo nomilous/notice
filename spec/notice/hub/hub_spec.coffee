@@ -29,7 +29,7 @@ describe 'hub', ->
                 error.should.match /is a reserved capsule type/
                 done()
 
-        it 'starts a manager if configured and shares in on the definition config', (done) -> 
+        it 'starts a manager if configured and shares it on the definition config', (done) -> 
 
             config =
                 manager: 

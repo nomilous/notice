@@ -105,6 +105,17 @@ module.exports.hub  = (config = {}) ->
                 socket.on 'resume',     handle.resume      socket
                 socket.on 'capsule',    handle.capsule     socket
                 
+    #
+    # register hubContext with the manager
+    # ------------------------------------
+    # 
+    # * only done once, it registers the hub `Definition`
+    # * manager also has access to the Hub.create() [later]
+    # 
+
+    if config.running.manager? 
+        config.running.manager.register local
+
 
 
     return api = 
