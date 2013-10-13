@@ -73,13 +73,13 @@ module.exports.manager  = (config = {}) ->
                 handler: (matched, request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
-                    hubs = records: []
+                    data = records: []
                     for hubname of local.hubContext.hubs
-                        hubs.records.push 
-                            title: hubname
-                            uuid:  local.hubContext.hubs[hubname].uuid
+                        uuid = local.hubContext.hubs[hubname].uuid
+                        notifier  = local.hubContext.uuids[uuid]
+                        data.records.push notifier.serialize(1)
 
-                    local.respond hubs,
+                    local.respond data,
                         statusCode
                         response
 
@@ -94,10 +94,14 @@ module.exports.manager  = (config = {}) ->
 
                     notifier = local.hubContext.uuids[uuid]
 
+                    #console.log notifier.serialize(2)
+
                     local.respond 
-                        records: [notifier.serialize()]
+                        records: [notifier.serialize(2)]
                         statusCode
                         response
+
+                    console.log notifier.serialize(2)
 
 
 
@@ -112,6 +116,7 @@ module.exports.manager  = (config = {}) ->
     {server, transport} = start opts, local.requestHandler = authenticated (request, response) ->
 
         path = request.url
+        if path[-1..] == '/' then path = path[0..-2]
 
         try 
             [match, uuid] = matched = path.match /v1\/hubs\/(.*)/

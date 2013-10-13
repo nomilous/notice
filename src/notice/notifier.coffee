@@ -21,9 +21,10 @@ module.exports.notifier  = (config = {}) ->
 
     testable = local = 
 
-        capsuleTypes: {}
-        middleware:   {}
-        notifiers:    {}
+        capsuleTypes:      {}
+        middleware:        {}
+        middlewareMetrics: {}
+        notifiers:         {}
 
         create: (title, uuid = v1()) ->
 
@@ -38,6 +39,7 @@ module.exports.notifier  = (config = {}) ->
             
             middlewareCount = 0
             local.middleware[title] = list = {}
+            local.middlewareMetrics[title] = metrics = {}
             
             #
             # first and last middleware reserved for hub and client
@@ -185,7 +187,25 @@ module.exports.notifier  = (config = {}) ->
 
             Object.defineProperty notifier, 'serialize',
                 writable:   false
-                value: -> 'serialize'
+                value: (detail = 1) -> 
+                    switch detail
+                        when 1 
+                            title:   notifier.title
+                            uuid:    notifier.uuid
+                            metrics: {}
+                        when 2
+
+                            middlewares = local.middleware[notifier.title]
+                            mmetics     = local.middlewareMetrics[notifier.title]
+
+                            title:   notifier.title
+                            uuid:    notifier.uuid
+                            metrics: {}
+                            middleware: for middlewareTitle of middlewares
+                                
+                                title:   middlewareTitle
+                                metrics: mmetics
+
 
 
 

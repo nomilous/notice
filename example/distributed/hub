@@ -34,6 +34,8 @@ MessageHub.create 'hub 1 name', {
 
     return process.stdout.write err.toString() if err?
 
+    seq = 0
+
     hub.use
 
         #
@@ -42,6 +44,9 @@ MessageHub.create 'hub 1 name', {
 
         title: 'first middleware'
         (next, capsule, traversal) -> 
+
+            
+            capsule.seq = seq++
 
             if capsule._type == 'control'
 
@@ -53,41 +58,46 @@ MessageHub.create 'hub 1 name', {
                 return next()
 
 
-            console.log """
-            \n
-            RECEIVED::
-                from: #{traversal.origin.title} (#{traversal.origin.context.pid}.#{traversal.origin.context.hostname})
-                socketUptime: #{ (Date.now() - traversal.origin.connection.stateAt) / 1000} seconds
-            CAPSULE:
-                type: #{capsule._type}
-                uuid: #{capsule._uuid}
-                content: """, capsule
+            # console.log """
+            # \n
+            # RECEIVED::
+            #     from: #{traversal.origin.title} (#{traversal.origin.context.pid}.#{traversal.origin.context.hostname})
+            #     socketUptime: #{ (Date.now() - traversal.origin.connection.stateAt) / 1000} seconds
+            # CAPSULE:
+            #     type: #{capsule._type}
+            #     uuid: #{capsule._uuid}
+            #     content: """, capsule
 
 
-            setTimeout (->
+            # setTimeout (->
 
-                #
-                # swap this middleware in 2 seconds
-                #
+            #     #
+            #     # swap this middleware in 2 seconds
+            #     #
 
-                hub.force
+            #     hub.force
 
-                    title: 'first middleware'
-                    (next, capsule) -> 
+            #         title: 'first middleware'
+            #         (next, capsule, {origin}) -> 
 
-                        console.log 'replaced...'
-                        next()
+            #             #console.log 'replaced...'
+            #             next()
 
-            ), 2000
+            # ), 2000
 
 
             next()
 
+    hub.use title: 'slow middleware', (next, capsule, {origin}) -> 
+        time = Math.random() * 10000
+        console.log "#{capsule.seq} #{time}"
+        setTimeout next, time
 
+    hub.use title: 'show done', (next, capsule, {origin}) ->
+        console.log "#{capsule.seq} done"
+        next()
 
 MessageHub.create 'hub 2 name', {
-
-    uuid: 2
 
     listen: 
         
@@ -100,4 +110,6 @@ MessageHub.create 'hub 2 name', {
         key:     __dirname + '/../../cert/develop-key.pem'
 
 } , (err, hub) -> 
+
+    hub.use title: 'only 1', ->
 

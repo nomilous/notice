@@ -64,9 +64,9 @@ describe 'manage', ->
             @write = ->
             @mockResponse = end: ->
             Object.defineProperty @mockResponse, 'writeHead', 
-                get: => => @writeHead.apply null, arguments
+                get: => => try @writeHead.apply null, arguments
             Object.defineProperty @mockResponse, 'write', 
-                get: => => @write.apply null, arguments
+                get: => => try @write.apply null, arguments
 
             m = manager manager: 
                 authenticate: 
@@ -79,12 +79,12 @@ describe 'manage', ->
                     'hub name 1': uuid: 1
                     'hub name 2': uuid: 2
                 uuids:
-                    '1': serialize: -> 'HUB 1 RECORD'
-                    '2': serialize: -> 'HUB 2 RECORD'
+                    '1': serialize: (detail) -> 'HUB 1 RECORD detail:' + detail
+                    '2': serialize: (detail) -> 'HUB 2 RECORD detail:' + detail
 
         beforeEach -> 
-            @writeHead = ->
-            @write = ->
+            @writeHead = -> 
+            @write = -> 
 
 
 
@@ -142,10 +142,11 @@ describe 'manage', ->
         it 'responds to /v1/hubs with an array of records for each hub', (done) -> 
 
             @write = (body) ->
+                console.log body
                 JSON.parse( body ).should.eql 
                     records: [
-                        {title: 'hub name 1', uuid: 1}
-                        {title: 'hub name 2', uuid: 2}
+                        'HUB 1 RECORD detail:1'
+                        'HUB 2 RECORD detail:1'
                     ]
                 done()
 
@@ -165,12 +166,12 @@ describe 'manage', ->
             _manager().requestHandler @mockRequest, @mockResponse
 
 
-        it 'responds to /v1/hubs/:uuid: with specific hub record', (done) -> 
+        it.only 'responds to /v1/hubs/:uuid: with specific hub record', (done) -> 
 
             @write = (body) ->
                 JSON.parse( body ).should.eql 
                     records: [
-                        'HUB 1 RECORD'
+                        'HUB 1 RECORD detail:2'
                     ]
                 done()
 

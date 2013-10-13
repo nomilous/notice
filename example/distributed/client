@@ -55,9 +55,9 @@ TelevisionRemote = notice.client(
 
             theRemote.volume( 'up', amount: 3 ).then(
 
-                (capsule) -> console.log 'Hub acknowledged', capsule._uuid
+                (capsule) -> #console.log 'Hub acknowledged', capsule._uuid
                 (error)   -> console.log error
-                (notify)  -> console.log 'Notify', notify 
+                (notify)  -> #console.log 'Notify', notify 
 
                     # 
                     # => Notify { _type: 'control', control: 'transmitted', capsule: ...
@@ -66,4 +66,4 @@ TelevisionRemote = notice.client(
 
             )
 
-        ), 1000
+        ), 10
