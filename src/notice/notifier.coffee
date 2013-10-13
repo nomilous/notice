@@ -22,9 +22,11 @@ module.exports.notifier  = (config = {}) ->
     testable = local = 
 
         capsuleTypes:      {}
+        notifiers:         {}
+        notifierMetrics:   {}
         middleware:        {}
         middlewareMetrics: {}
-        notifiers:         {}
+        
 
         create: (title, uuid = v1()) ->
 
@@ -39,14 +41,24 @@ module.exports.notifier  = (config = {}) ->
             
             middlewareCount = 0
             local.middleware[title] = list = {}
-            local.middlewareMetrics[title] = metrics = {}
+            local.middlewareMetrics[title] = mwMetrics = {}
+            local.notifierMetrics[title]   = nfMetrics = 
+                in:    0    # capsules in
+                out:   0    # capsules out (successful traversal)
+                fail:  
+                    usr: 0  # exception in user   middleware
+                    sys: 0  # exception in system middleware
+                skip:  
+                    usr: 0  # cancel    in user   middleware
+                    sys: 0  # cancel    in system middleware
+
             
             #
             # first and last middleware reserved for hub and client
             #
 
-            first = undefined
-            last  = undefined
+            first = (next) -> next(); ### null ###
+            last  = (next) -> next(); ### null ###
 
             traverse = (capsule) -> 
 
@@ -56,7 +68,7 @@ module.exports.notifier  = (config = {}) ->
                 # 
                 # * This calls all registered middleware in registered order
                 # * There is a first and last middleware for internal use 
-                # * TODO: already messssy implementation, some repeated bits, fix
+                # * TODO: already messssy implementation, some repeated bits, fix, optimize, later
                 #
                 # 
                                                          # TODO: if only first is present?
@@ -83,8 +95,8 @@ module.exports.notifier  = (config = {}) ->
                             next.cancel = -> # TODO: terminate the promise? (later: set appropriatly in introspection structures)
 
                             try list[title] next, capsule, traversal
-
                             catch error
+                                nfMetrics.fail.usr++
                                 reject error
 
                 middleware.push(
@@ -95,8 +107,11 @@ module.exports.notifier  = (config = {}) ->
                         next.reject = (error)  -> process.nextTick -> reject error
                         next.cancel = ->
 
-                        try last next, capsule, traversal
+                        try 
+                            last next, capsule, traversal
+                            nfMetrics.out++
                         catch error
+                            nfMetrics.fail.sys++
                             reject error
                 
                 ) if last?
@@ -104,6 +119,7 @@ module.exports.notifier  = (config = {}) ->
                 middleware.unshift(
                     deferred ({resolve, reject, notify}) -> 
                         
+                        nfMetrics.in++
                         next = -> process.nextTick -> resolve capsule
                         next.notify = (update) -> process.nextTick -> notify update
                         next.reject = (error)  -> process.nextTick -> reject error
@@ -111,12 +127,14 @@ module.exports.notifier  = (config = {}) ->
 
                         try first next, capsule, traversal
                         catch error
+                            nfMetrics.fail.sys++
                             reject error
                 
                 ) if first?
 
 
                 return pipeline middleware
+
 
             local.notifiers[title] = notifier = 
 
@@ -130,14 +148,14 @@ module.exports.notifier  = (config = {}) ->
                     )
 
                     if opts.last?
-                        if typeof last is 'function'
+                        if typeof last is 'function' and not last.toString().match /null/
                             process.stderr.write "notice: last middleware cannot be reset! Not even using the force()\n"
                             return 
                         last = fn
                         return
 
                     if opts.first?
-                        if typeof first is 'function'
+                        if typeof first is 'function' and not first.toString().match /null/
                             process.stderr.write "notice: first middleware cannot be reset! Not even using the force()\n"
                             return 
                         first = fn
@@ -192,7 +210,7 @@ module.exports.notifier  = (config = {}) ->
                         when 1 
                             title:   notifier.title
                             uuid:    notifier.uuid
-                            metrics: {}
+                            metrics: nfMetrics
                         when 2
 
                             middlewares = local.middleware[notifier.title]
@@ -200,7 +218,7 @@ module.exports.notifier  = (config = {}) ->
 
                             title:   notifier.title
                             uuid:    notifier.uuid
-                            metrics: {}
+                            metrics: nfMetrics
                             middleware: for middlewareTitle of middlewares
                                 
                                 title:   middlewareTitle

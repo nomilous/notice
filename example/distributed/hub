@@ -95,6 +95,7 @@ MessageHub.create 'hub 1 name', {
 
     hub.use title: 'show done', (next, capsule, {origin}) ->
         console.log "#{capsule.seq} done"
+        if Math.random() < 0.2 then throw new Error
         next()
 
 MessageHub.create 'hub 2 name', {
