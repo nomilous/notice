@@ -21,12 +21,12 @@ module.exports.manager  = (config = {}) ->
     testable = local = 
 
         register: (hubContext) -> 
-            
+
         routes: 
 
-            '/help': 
+            '/about': 
 
-                description: 'show this help'
+                description: 'show this'
                 handler: (request, response, statusCode = 200) -> 
 
                     body = JSON.stringify 
@@ -66,15 +66,15 @@ module.exports.manager  = (config = {}) ->
 
         path = request.url
 
-        unless local.routes['path']? 
+        unless local.routes[path]? 
 
             #
             # request for undefined route, respond 404 (but with help)
             #
 
-            return local.routes['/help'].handler request, response, 404 
+            return local.routes['/about'].handler request, response, 404 
 
-            
+        local.routes[path].handler request, response
 
 
 

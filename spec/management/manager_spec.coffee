@@ -93,16 +93,34 @@ describe 'manage', ->
 
 
 
+        it 'responds with /about in 404 body', (done) -> 
+
+            @write = (body) -> 
+
+                JSON.parse( body ).should.eql 
+
+                    module:  'notice'
+                    version: '0.0.11'
+                    doc:     'https://github.com/nomilous/notice/tree/develop/spec/management'
+                    endpoints: 
+                        '/about': 
+                            description: 'show this'
+
+                    done()
+                    
+
+            @mockRequest.url = '/no/such/route'
+            _manager().requestHandler @mockRequest, @mockResponse
 
 
+        it 'responds to /about with 200', (done) -> 
+
+            @writeHead = (statusCode) ->
+                statusCode.should.equal 200
+                done()
 
 
-
-
-
-
-
-
-
+            @mockRequest.url = '/about'
+            _manager().requestHandler @mockRequest, @mockResponse
 
 
