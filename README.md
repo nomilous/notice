@@ -1,6 +1,6 @@
 `npm install notice` 0.0.11 [license](./license)
 
-**stable**(ish) - api will still occur
+**stable**(ish) - api changes [will still occur](./spec/notice/hub#the-capsule-subconfig)
 
 notice
 ======
