@@ -13,11 +13,21 @@ Television = notice.hub # a factory
         capsule: 
             start: {}
 
+    # #
+    # # hubside capsule definition
+    # # 
+    #
+    # capsule: 
+    #    type_name: {}
+    #
+
+
 ```
 
 #### The `client` subconfig
 
 * Defines the set of capsules that this hub can send to attached clients.
+* **The hubside capsule definition api is very likely to change without deprecation warnings**
 
 
 #### The `instance`

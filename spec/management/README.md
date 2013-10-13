@@ -56,3 +56,7 @@ hub = NetworkAlertRouter.create( ...
 
 **pending consideration**
 
+### Starting a Hub Instance
+
+**pending consideration***
+

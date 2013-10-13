@@ -110,7 +110,7 @@ module.exports.hub  = (config = {}) ->
     # ------------------------------------
     # 
     # * only done once, it registers the hub `Definition`
-    # * manager also has access to the Hub.create() [later]
+    # * LATER manager also has access to the Hub.create()
     # 
 
     if config.running.manager? 
