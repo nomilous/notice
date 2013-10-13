@@ -23,6 +23,12 @@ module.exports.manager  = (config = {}) ->
         hubContext: undefined
         register: (hubContext) -> local.hubContext = hubContext
 
+        methodNotAllowed: (response) -> 
+
+            response.writeHead 405
+            response.end()
+
+
         respond: (data, statusCode, response) -> 
 
             body = JSON.stringify data, null, 2
@@ -41,8 +47,8 @@ module.exports.manager  = (config = {}) ->
                 description: 'show this'
                 handler: (request, response, statusCode = 200) -> 
 
+                    return local.methodNotAllowed response unless request.method == 'GET'
                     local.respond
-
                         module:  'notice'
                         version: version
                         # TODO_LINK
@@ -59,6 +65,8 @@ module.exports.manager  = (config = {}) ->
                 description: 'list present hub records'
                 handler: (request, response, statusCode = 200) -> 
 
+                    return local.methodNotAllowed response unless request.method == 'GET'
+
                     hubs = records: []
                     for hubname of local.hubContext.hubs
                         hubs.records.push 
@@ -67,6 +75,9 @@ module.exports.manager  = (config = {}) ->
                     local.respond hubs,
                         statusCode
                         response
+
+
+
 
 
 

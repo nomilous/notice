@@ -56,7 +56,7 @@ describe 'manage', ->
         before -> 
 
             @headers = authorization: 'Basic ' + new Buffer('username:password', 'utf8').toString 'base64'
-            @mockRequest = {}
+            @mockRequest = method: 'GET'
             Object.defineProperty @mockRequest, 'headers', 
                 get: => @headers
 
