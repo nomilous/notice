@@ -19,8 +19,22 @@ module.exports.hub  = (config = {}) ->
     for type of config.capsule
 
         throw reservedCapsule type if type.match(
-                 /^connect$|^handshake$|^accept$|^reject$|^disconnect$|^resume$|^capsule$|^nak$|^ack$|^error$/
+            /^connect$|^handshake$|^accept$|^reject$|^disconnect$|^resume$|^capsule$|^nak$|^ack$|^error$/
         )
+
+    if config.client? then for type in config.client.capsule
+
+        throw reservedCapsule type if type.match(
+            /^connect$|^handshake$|^accept$|^reject$|^disconnect$|^resume$|^capsule$|^nak$|^ack$|^error$/
+        )
+
+    #
+    # * manager is shared on the config object
+    # 
+
+    config.running ||= {}
+    if config.manager? and not config.running.manager?
+        config.running.manager = manager config
 
 
     testable = local = 
@@ -51,8 +65,6 @@ module.exports.hub  = (config = {}) ->
 
                 hub = local.Notifier.create hubName
                 local.hubs[hubName] = hub
-
-                manager config if config.manager?
 
             catch error
 

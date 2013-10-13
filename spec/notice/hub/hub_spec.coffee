@@ -2,6 +2,7 @@ should      = require 'should'
 {parallel}  = require 'also'
 {hub, _hub, listener} = require '../../../lib/notice/hub'
 {_Handler, _handler}  = require '../../../lib/notice/hub/hub_handler'
+{_manager}    = require '../../../lib/management/manager'
 {_notifier} = require '../../../lib/notice/notifier'
 
 
@@ -27,6 +28,18 @@ describe 'hub', ->
             catch error
                 error.should.match /is a reserved capsule type/
                 done()
+
+        it 'starts a manager if configured and shares in on the definition config', (done) -> 
+
+            config =
+                manager: 
+                    authenticate: {}
+                    listen: port: 33333
+            hub config
+            should.exist config.running.manager
+            should.exist _manager().register
+            should.exist _manager().routes
+            done()
 
 
     context 'create()', -> 

@@ -15,6 +15,16 @@ module.exports.manager  = (config = {}) ->
     unless typeof listen.port is 'number'
         throw missingConfig 'config.manager.listen.port', 'manager'
 
+
+    testable = local = 
+
+        register: (hubContext) -> 
+
+            console.log hubContext
+
+        routes: {}
+
+
     port         = listen.port
     address      = if listen.hostname? then listen.hostname else '127.0.0.1'
     opts         = {}
@@ -26,9 +36,10 @@ module.exports.manager  = (config = {}) ->
         response.writeHead 200
         response.end 'okgood'
 
-
     server.listen port, address, -> 
         {address, port} = server.address()
         console.log 'API @ %s://%s:%s', 
             transport, address, port
 
+
+    return api = register: local.register
