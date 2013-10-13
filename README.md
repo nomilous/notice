@@ -1,22 +1,19 @@
 `npm install notice` 0.0.11 [license](./license)
 
-**stable**(ish) - minor api changes may still occur
-
-A communicator.
+**stable**(ish) - api will still occur
 
 notice
 ======
 
+A communicator.
+
+
 ### The Guiding Epiphanies
 
-* A middleware bus is conceptionally identical to a promise pipeline.
-* The resulting flow-control and sequencial subscribe-ability creates an assembly line.
-* An assembly line can **abstractify object storage and retreival**.
-
-#### Also
-
-* Middleware is perfect *for routing information streams*.
 * Middleware can be hot-swapped.
+* Middleware is perfect **for routing information streams**
+* Their flow-control and sequencial subscribe-ability creates something akin to an assembly line.
+* An assembly (|disassembly) line can **abstractify object storage and retreival**.
 
 
 ### Quick Faqts

@@ -27,7 +27,11 @@ Television = notice.hub # a factory
 #### The `client` subconfig
 
 * Defines the set of capsules that this hub can send to attached clients.
-* **The hubside capsule definition api is very likely to change without deprecation warnings**
+
+#### The `capsule` subconfig
+
+* Defines capsules that originate at the hub.
+* **This portion of the api is very likely to change WITHOUT DEPRECATION WARNINGS**
 
 
 #### The `instance`
