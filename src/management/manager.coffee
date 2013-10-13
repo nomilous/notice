@@ -94,14 +94,10 @@ module.exports.manager  = (config = {}) ->
 
                     notifier = local.hubContext.uuids[uuid]
 
-                    #console.log notifier.serialize(2)
-
                     local.respond 
                         records: [notifier.serialize(2)]
                         statusCode
                         response
-
-                    console.log notifier.serialize(2)
 
 
 
