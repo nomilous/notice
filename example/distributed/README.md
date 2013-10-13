@@ -26,6 +26,6 @@ NAME=Name2 NODE_SECRET=wrong ./client # rejected, wrong secret
 
 ```bash
 
-curl -ku nomilous:∆ https://127.0.0.1:11111
+curl -ku nomilous:∆ https://127.0.0.1:30303
 
 ```

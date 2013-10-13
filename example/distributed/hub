@@ -6,7 +6,7 @@ MessageHub = notice.hub
 
     manager: 
         listen: 
-            port: 3000
+            port: 30303
             cert: __dirname + '/../../cert/develop-cert.pem'
             key:  __dirname + '/../../cert/develop-key.pem'
         authenticate: 

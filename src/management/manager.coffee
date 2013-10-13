@@ -1,13 +1,15 @@
 {authenticator} = require './authenticator'
 {missingConfig} = require '../notice/errors'
 {start}         = require '../notice/hub/listener'
+{readFileSync}  = require 'fs'
+version         = JSON.parse( readFileSync __dirname + '/../../package.json', 'utf8' ).version
 
 testable               = undefined
 module.exports._manager = -> testable
 module.exports.manager  = (config = {}) ->
 
-    try listen       = config.manager.listen
-    authenticate = authenticator config
+    try listen    = config.manager.listen
+    authenticated = authenticator config
 
     unless listen?
         throw missingConfig 'config.manager.listen', 'manager' 
@@ -19,10 +21,39 @@ module.exports.manager  = (config = {}) ->
     testable = local = 
 
         register: (hubContext) -> 
+            
+        routes: 
 
-            console.log hubContext
+            '/help': 
 
-        routes: {}
+                description: 'show this help'
+                handler: (request, response, statusCode = 200) -> 
+
+                    body = JSON.stringify 
+
+                        module:  'notice'
+                        version: version
+                        # TODO_LINK
+                        doc: 'https://github.com/nomilous/notice/tree/develop/spec/management'
+                        endpoints: local.routes
+
+                        #
+                        # pretty for now
+                        #
+
+                        null
+                        2
+
+                    response.writeHead statusCode,
+                        'Content-Type': 'application/json'
+                        'Content-Length': body.length
+
+                    response.write body
+                    response.end()
+
+
+
+
 
 
     port         = listen.port
@@ -31,10 +62,21 @@ module.exports.manager  = (config = {}) ->
     opts.key     = listen.key
     opts.cert    = listen.cert
 
-    {server, transport} = start opts, authenticate (request, response) ->
+    {server, transport} = start opts, local.requestHandler = authenticated (request, response) ->
 
-        response.writeHead 200
-        response.end 'okgood'
+        path = request.url
+
+        unless local.routes['path']? 
+
+            #
+            # request for undefined route, respond 404 (but with help)
+            #
+
+            return local.routes['/help'].handler request, response, 404 
+
+            
+
+
 
     server.listen port, address, -> 
         {address, port} = server.address()

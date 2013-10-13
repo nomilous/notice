@@ -49,3 +49,60 @@ describe 'manage', ->
                 port: 3210
                 cert: 'cert'
                 key:  'key'
+
+    context 'routes', -> 
+
+
+        before -> 
+
+            @headers = authorization: 'Basic ' + new Buffer('username:password', 'utf8').toString 'base64'
+            @mockRequest = {}
+            Object.defineProperty @mockRequest, 'headers', 
+                get: => @headers
+
+            @writeHead = ->
+            @write = ->
+            @mockResponse = end: ->
+            Object.defineProperty @mockResponse, 'writeHead', 
+                get: => => @writeHead.apply null, arguments
+            Object.defineProperty @mockResponse, 'write', 
+                get: => => @write.apply null, arguments
+
+            manager manager: 
+                authenticate: 
+                    username: 'username'
+                    password: 'password'
+                listen: port: 3210
+
+        beforeEach -> 
+            @writeHead = ->
+            @write = ->
+
+
+
+        it 'responds with 404 incase of no route', (done) -> 
+
+
+            @mockRequest.url = '/no/such/route'
+            @writeHead = (statusCode) ->
+                statusCode.should.equal 404
+                done()
+
+            _manager().requestHandler @mockRequest, @mockResponse
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

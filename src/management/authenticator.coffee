@@ -35,7 +35,7 @@ module.exports.authenticator = (config = {}) ->
             return requestAuth response unless type == 'Basic'
             decoded = new Buffer(authorization, 'base64').toString 'utf8'
             [input, username, password] = decoded.match /(.*):(.*)/
-            
+
             username: username
             password: password
 
