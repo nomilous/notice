@@ -13,7 +13,7 @@ A communicator.
 ### The Guiding Epiphanies
 
 * Middleware can be hot-swapped.
-* Middleware is perfect for rou[t](https://twitter.com/)ing information streams.
+* Middleware is perfect for `rou[t](https://twitter.com/)ing` information streams.
 * Their flow-control and sequencial subscribe-ability creates something akin to an assembly line.
 * An assembly (or disassembly) line can abstractify object storage and retreival.
 
