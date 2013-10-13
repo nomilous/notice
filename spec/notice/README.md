@@ -1,8 +1,8 @@
 #### Suggested First Readings
 
-* Creating a Notifier Client [`./client`](./client)
-* Creating a Notifier Hub [`./hub`](./hub)
-* The Capsule [`./capsule`](./capsule)
+* [`./client`](./client) Creating a Notifier Client
+* [`./hub`](./hub) Creating a Notifier Hub
+* [`./capsule`](./capsule) The Capsule
 
 Emitting Capsules
 -----------------
