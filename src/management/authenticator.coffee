@@ -1,6 +1,11 @@
+{missingConfig} = require '../notice/errors'
+
 module.exports.authenticator = (config = {}) -> 
 
     authentic = try config.manager.authenticate
+    unless authentic?
+        throw missingConfig 'config.manager.authenticate', 'manager'
+
 
     requestAuth = (response) -> 
 
@@ -26,6 +31,8 @@ module.exports.authenticator = (config = {}) ->
 
         try 
 
+            [type, authorization] = authorization.split ' '
+            return requestAuth response unless type == 'Basic'
             decoded = new Buffer(authorization, 'base64').toString 'utf8'
             [input, username, password] = decoded.match /(.*):(.*)/
             

@@ -9,9 +9,15 @@ MessageHub = notice.hub
             port: 11111
             cert:    __dirname + '/../../cert/develop-cert.pem'
             key:     __dirname + '/../../cert/develop-key.pem'
-        authenticate: 
-            username: 'nomilous'
-            password: '∆'
+        # authenticate: 
+        #     username: 'nomilous'
+        #     password: '∆'
+        authenticate: (username, password, callback) -> 
+            console.log AUTH: [username, password]
+            callback null, (
+                username == 'nomilous' and
+                password == '∆'
+            )
 
 
 MessageHub.create 'hub name', {

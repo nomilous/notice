@@ -7,13 +7,13 @@ module.exports._manager = -> testable
 module.exports.manager  = (config = {}) ->
 
     try listen       = config.manager.listen
-    try authenticate = authenticator config
+    authenticate = authenticator config
 
     unless listen?
-        throw missingConfig 'config.manager.listen', 'manage' 
+        throw missingConfig 'config.manager.listen', 'manager' 
 
     unless typeof listen.port is 'number'
-        throw missingConfig 'config.manager.listen.port', 'manage' 
+        throw missingConfig 'config.manager.listen.port', 'manager'
 
     port         = listen.port
     address      = if listen.hostname? then listen.hostname else '127.0.0.1'
@@ -21,7 +21,7 @@ module.exports.manager  = (config = {}) ->
     opts.key     = listen.key
     opts.cert    = listen.cert
 
-    {server, transport} = start opts, (request, response) ->
+    {server, transport} = start opts, authenticate (request, response) ->
 
         response.writeHead 200
         response.end 'okgood'

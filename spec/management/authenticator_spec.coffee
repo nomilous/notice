@@ -6,7 +6,7 @@ describe 'authenticator', ->
     beforeEach -> 
 
 
-        @headers = authorization: new Buffer('username:password', 'utf8').toString 'base64'
+        @headers = authorization: 'Basic ' + new Buffer('username:password', 'utf8').toString 'base64'
         @mockRequest = {}
         Object.defineProperty @mockRequest, 'headers', 
             get: => @headers
@@ -98,7 +98,7 @@ describe 'authenticator', ->
 
     it 'does not call the request handler if non matching from config', (done) -> 
 
-        @headers = authorization: new Buffer('username:wrongpassword', 'utf8').toString 'base64'
+        @headers = authorization: 'Basic ' + new Buffer('username:wrongpassword', 'utf8').toString 'base64'
         authenticate = authenticator 
             manager: 
                 authenticate:
