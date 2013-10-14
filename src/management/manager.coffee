@@ -93,13 +93,60 @@ module.exports.manager  = (config = {}) ->
                     return local.objectNotFound response unless local.hubContext.uuids[uuid]
 
                     notifier = local.hubContext.uuids[uuid]
-
                     local.respond 
                         records: [notifier.serialize(2)]
                         statusCode
                         response
 
+            '/v1/hubs/:uuid:/metrics': 
 
+                description: 'get only the metrics'
+                methods: ['GET']
+                handler: ([uuid], request, response, statusCode = 200) -> 
+
+                    return local.methodNotAllowed response unless request.method == 'GET'
+                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
+
+                    notifier = local.hubContext.uuids[uuid]
+                    local.respond 
+                        records: [notifier.serialize(2).metrics]
+                        statusCode
+                        response
+
+            '/v1/hubs/:uuid:/errors': 
+
+                description: 'get only the recent errors'
+                methods: ['GET']
+                handler: ([uuid], request, response, statusCode = 200) -> 
+
+                    return local.methodNotAllowed response unless request.method == 'GET'
+                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
+                    
+                    notifier = local.hubContext.uuids[uuid]
+                    
+                    #
+                    # * responds with the recent array inside the records array which is a bit messy
+                    #   but it's likely that more items will be added to the errors branch
+                    #
+
+                    local.respond 
+                        records: [notifier.serialize(2).errors]
+                        statusCode
+                        response
+
+            '/v1/hubs/:uuid:/middlewares': 
+
+                description: 'get only the middlewares'
+                methods: ['GET']
+                handler: ([uuid], request, response, statusCode = 200) -> 
+
+                    return local.methodNotAllowed response unless request.method == 'GET'
+                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
+                    notifier = local.hubContext.uuids[uuid]
+                    local.respond 
+                        records: notifier.serialize(2).middlewares
+                        statusCode
+                        response
 
 
 
@@ -120,6 +167,10 @@ module.exports.manager  = (config = {}) ->
             unless uuid.match /\//
 
                 return local.routes['/v1/hubs/:uuid:'].handler [uuid], request, response
+
+            if [match, uuid, child] = uuid.match /(.*)\/(.*)/
+
+                return local.routes["/v1/hubs/:uuid:/#{child}"].handler [uuid], request, response
                 
 
         catch error

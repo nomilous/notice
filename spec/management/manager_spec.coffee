@@ -105,6 +105,8 @@ describe 'manage', ->
 
             @write = (body) -> 
 
+                #console.log body
+
                 JSON.parse( body ).should.eql 
 
                     module:  'notice'
@@ -120,9 +122,17 @@ describe 'manage', ->
                         '/v1/hubs/:uuid:':
                             description: 'get a hub'
                             methods: ['GET']
+                        '/v1/hubs/:uuid:/metrics':
+                            description: 'get only the metrics'
+                            methods: ['GET']
+                        '/v1/hubs/:uuid:/errors':
+                            description: 'get only the recent errors'
+                            methods: ['GET']
+                        '/v1/hubs/:uuid:/middlewares':
+                            description: 'get only the middlewares'
+                            methods: ['GET']
 
-
-                    done()
+                done()
 
             @mockRequest.url = '/no/such/route'
             _manager().requestHandler @mockRequest, @mockResponse
@@ -178,9 +188,9 @@ describe 'manage', ->
             _manager().requestHandler @mockRequest, @mockResponse
 
 
-
-
-
+        it 'responds to /v1/hubs/:uuid:/metrics'
+        it 'responds to /v1/hubs/:uuid:/errors'
+        it 'responds to /v1/hubs/:uuid:/middlewares'
 
 
 
