@@ -1,5 +1,5 @@
 #! /usr/bin/env coffee
-
+{memoryUsage} = process
 notice = require '../../lib/notice'
 
 MessageHub = notice.hub
@@ -83,6 +83,7 @@ MessageHub.create 'hub 1 name', {
     time     = undefined
     count    = undefined
     sequence = undefined
+    mem      = 
 
     hub.use title: 'count', (next) -> 
 
@@ -91,7 +92,8 @@ MessageHub.create 'hub 1 name', {
         count    = 0          unless count?
         sequence = 0          unless sequence?
         
-        console.log 'seq\tcapsule_rate' if sequence is 0
+        console.log '\tper sec\t\tmem MB\theap MB' if sequence is 0
+        console.log 'seq\tcapsules\trss\ttot\tused' if sequence is 0
         sequence++
         if sequence.toString()[-3..] == '000' 
 
@@ -101,22 +103,26 @@ MessageHub.create 'hub 1 name', {
             count  = sequence 
 
             perSecond = Math.floor( deltaC / deltaT * 100000 ) / 100
-            console.log "#{sequence}\t#{perSecond}"
+            {rss, heapTotal, heapUsed} = memoryUsage()
+            rss = Math.floor(rss / 1024 / 1024 * 100) / 100
+            heapTotal = Math.floor(heapTotal / 1024 / 1024 * 100) / 100
+            heapUsed = Math.floor(heapUsed / 1024 / 1024 * 100) / 100
+            console.log "#{sequence}\t#{perSecond}\t\t#{rss}\t#{heapTotal}\t#{heapUsed}"
 
 
-MessageHub.create 'hub 2 name', {
+# MessageHub.create 'hub 2 name', {
 
-    listen: 
+#     listen: 
         
-        adaptor: 'socket.io'
-        # server:  existingHttpServer
-        # address: '0.0.0.0'
-        port:    20202
-        secret:  'right'
-        cert:    __dirname + '/../../cert/develop-cert.pem'
-        key:     __dirname + '/../../cert/develop-key.pem'
+#         adaptor: 'socket.io'
+#         # server:  existingHttpServer
+#         # address: '0.0.0.0'
+#         port:    20202
+#         secret:  'right'
+#         cert:    __dirname + '/../../cert/develop-cert.pem'
+#         key:     __dirname + '/../../cert/develop-key.pem'
 
-} , (err, hub) -> 
+# } , (err, hub) -> 
 
-    hub.use title: 'only 1', ->
+#     hub.use title: 'only 1', ->
 
