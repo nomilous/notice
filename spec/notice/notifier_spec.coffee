@@ -417,11 +417,16 @@ describe 'notifier', ->
                     DURING.output    .should.equal 0
                     DURING.reject.usr.should.equal 0
                     DURING.reject.sys.should.equal 0
+                    DURING.cancel.usr.should.equal 0
+                    DURING.cancel.sys.should.equal 0
 
                     AFTER .input     .should.equal 1
                     AFTER .output    .should.equal 1
                     AFTER .reject.usr.should.equal 0
                     AFTER .reject.sys.should.equal 0
+                    AFTER .cancel.usr.should.equal 0
+                    AFTER .cancel.sys.should.equal 0
+
                     done()
 
                 ), 100
@@ -452,12 +457,15 @@ describe 'notifier', ->
                 DURING.output    .should.equal 0
                 DURING.reject.usr.should.equal 0
                 DURING.reject.sys.should.equal 0
+                DURING.cancel.usr.should.equal 0
+                DURING.cancel.sys.should.equal 0
 
                 AFTER .input     .should.equal 1
                 AFTER .output    .should.equal 0
                 AFTER .reject.usr.should.equal 1
                 AFTER .reject.sys.should.equal 0
-
+                AFTER .cancel.usr.should.equal 0
+                AFTER .cancel.sys.should.equal 0
 
                 done()
 
@@ -496,12 +504,103 @@ describe 'notifier', ->
                 DURING.output    .should.equal 0
                 DURING.reject.usr.should.equal 0
                 DURING.reject.sys.should.equal 0
+                DURING.cancel.usr.should.equal 0
+                DURING.cancel.sys.should.equal 0
 
                 AFTER .input     .should.equal 1
                 AFTER .output    .should.equal 0
                 AFTER .reject.usr.should.equal 0
                 AFTER .reject.sys.should.equal 1
+                AFTER .cancel.usr.should.equal 0
+                AFTER .cancel.sys.should.equal 0
 
+                done()
+
+            ), 100
+
+
+        it 'increments sys.cancel instead of output if cancelled by system middleware', (done) -> 
+
+            DURING = undefined
+            AFTER  = undefined
+            mix    = notifier().create 'Assembly Line Mix'
+
+            mix.use title: 'last', last: true, (next, capsule) ->
+
+                DURING = JSON.parse JSON.stringify mix.serialize().metrics.local
+                next.cancel()
+
+
+            mix.use title: '1. intro', (next, capsule) ->
+                
+                next()
+
+            mix.event()
+
+
+            setTimeout (->
+
+                AFTER = mix.serialize().metrics.local
+
+                DURING.input     .should.equal 1
+                DURING.output    .should.equal 0
+                DURING.reject.usr.should.equal 0
+                DURING.reject.sys.should.equal 0
+                DURING.cancel.usr.should.equal 0
+                DURING.cancel.sys.should.equal 0
+
+                # console.log AFTER
+
+                AFTER .input     .should.equal 1
+                AFTER .output    .should.equal 0
+                AFTER .reject.usr.should.equal 0
+                AFTER .reject.sys.should.equal 0
+                AFTER .cancel.usr.should.equal 0
+                AFTER .cancel.sys.should.equal 1
+
+                done()
+
+            ), 100
+
+
+        it 'increments usr.cancel instead of output if cancelled by user middleware', (done) -> 
+
+            DURING = undefined
+            AFTER  = undefined
+            mix    = notifier().create 'Assembly Line Mix'
+
+            mix.use title: 'last', last: true, (next, capsule) ->
+
+                next()
+
+
+            mix.use title: '1. intro', (next, capsule) ->
+                
+                DURING = JSON.parse JSON.stringify mix.serialize().metrics.local
+                next.cancel()
+
+            mix.event()
+
+
+            setTimeout (->
+
+                AFTER = mix.serialize().metrics.local
+
+                DURING.input     .should.equal 1
+                DURING.output    .should.equal 0
+                DURING.reject.usr.should.equal 0
+                DURING.reject.sys.should.equal 0
+                DURING.cancel.usr.should.equal 0
+                DURING.cancel.sys.should.equal 0
+
+                # console.log AFTER
+
+                AFTER .input     .should.equal 1
+                AFTER .output    .should.equal 0
+                AFTER .reject.usr.should.equal 0
+                AFTER .reject.sys.should.equal 0
+                AFTER .cancel.usr.should.equal 1
+                AFTER .cancel.sys.should.equal 0
 
                 done()
 

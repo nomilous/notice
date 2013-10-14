@@ -80,7 +80,7 @@ module.exports.notifier  = (config = {}) ->
                 # 
 
                 traversal = {}
-
+                cancelled = false
                 localMetrics.input++
 
                 functions = for middleware in mwBus
@@ -94,6 +94,9 @@ module.exports.notifier  = (config = {}) ->
                         next.notify = (update) -> process.nextTick -> notify update
                         next.reject = (error)  -> process.nextTick -> reject error
                         next.cancel = -> 
+                            cancelled = true
+                            localMetrics.cancel.usr++ if type == 'usr'
+                            localMetrics.cancel.sys++ if type == 'sys'
                             process.nextTick -> 
                                 notify 
                                     _type:     'control'
@@ -103,7 +106,7 @@ module.exports.notifier  = (config = {}) ->
 
                         try 
                             fn next, capsule, traversal
-                            localMetrics.output++ if title == 'last'
+                            localMetrics.output++ if title == 'last' and not cancelled
 
                         catch error
                             localMetrics.reject.usr++ if type == 'usr'
