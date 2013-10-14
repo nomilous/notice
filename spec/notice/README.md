@@ -115,8 +115,8 @@ hub.use
 
 The next function has some nested tools.
 
-* TODO: `next.cancel()` suspends further traversol of the pipeline.
 * `next.notify(payload)` sends a payload back to the emitter's promise notify function. Emitters with a node style callback waiting have no mechanism to receive these notifications.
+* `next.cancel()` suspends further traversal of the pipeline and sends a cancel notification back to the emitter's promise notify function. **It does not call an error into the waiting node style callback.**
 * `next.reject(error)` terminates the middleware traversal (same as throw)
 
 #### the `traversal` object

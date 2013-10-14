@@ -278,7 +278,7 @@ describe 'notifier', ->
             mix.raw 'VALUE'
 
 
-        it 'rejects (promise) the middleware traversal on throw', (done) -> 
+        it 'rejects the middleware traversal (promise) on throw', (done) -> 
 
             mix = notifier().create 'Assembly Line Mix'
             mix.use 
@@ -296,7 +296,7 @@ describe 'notifier', ->
 
 
 
-        it 'error (callback) the middleware traversal on throw', (done) -> 
+        it 'error the middleware traversal (callback) on throw', (done) -> 
 
             mix = notifier().create 'Assembly Line Mix'
             mix.use 
@@ -310,6 +310,28 @@ describe 'notifier', ->
                 error.message.should.equal 'reeror'
                 done()
 
+
+        it 'notifies the middleware traversal (promise) on cancel', (done) -> 
+
+            mix = notifier().create 'Assembly Line Mix'
+            mix.use 
+                title: 'middleware title'
+                (next, capsule) -> 
+                    next.cancel()
+
+
+            mix.event( 'VALUE' ).then( 
+                ->
+                (error) -> 
+                (notify) -> 
+
+                    {_type, control, middleware, capsule} = notify
+                    _type.should.equal 'control'
+                    control.should.equal   'cancel'
+                    middleware.should.equal 'middleware title'
+                    capsule.event.should.equal 'VALUE'
+                    done()
+            )
 
 
         it 'passes capsule through all middleware if they call next', (done) -> 

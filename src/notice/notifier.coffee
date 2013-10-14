@@ -91,17 +91,20 @@ module.exports.notifier  = (config = {}) ->
                         {type, title, fn} = middleware
 
                         next = -> process.nextTick -> resolve capsule
-
-                        # TODO_LINK
-                        # next.info   = -> 'https://github.com/nomilous/notice/tree/develop/spec/notice#the-next-function'
                         next.notify = (update) -> process.nextTick -> notify update
                         next.reject = (error)  -> process.nextTick -> reject error
-                        next.cancel = -> # TODO: terminate the promise? (later: set appropriatly in introspection structures)
+                        next.cancel = -> 
+                            process.nextTick -> 
+                                notify 
+                                    _type:     'control'
+                                    control:   'cancel'
+                                    middleware: title
+                                    capsule:    capsule
 
                         try 
                             fn next, capsule, traversal
                             localMetrics.output++ if title == 'last'
-                            
+
                         catch error
                             localMetrics.reject.usr++ if type == 'usr'
                             localMetrics.reject.sys++ if type == 'sys'
