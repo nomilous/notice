@@ -81,6 +81,8 @@ module.exports.notifier  = (config = {}) ->
 
                 traversal = {}
 
+                localMetrics.input++
+
                 functions = for middleware in mwBus
 
                     do (middleware) -> deferred (action) -> 
@@ -96,7 +98,9 @@ module.exports.notifier  = (config = {}) ->
                         next.reject = (error)  -> process.nextTick -> reject error
                         next.cancel = -> # TODO: terminate the promise? (later: set appropriatly in introspection structures)
 
-                        try fn next, capsule, traversal
+                        try 
+                            fn next, capsule, traversal
+                            localMetrics.output++ if title == 'last'
                         catch error
                             #localMetrics.reject.usr++
                             reject error

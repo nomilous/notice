@@ -306,6 +306,38 @@ describe 'notifier', ->
                 m.should.eql one: true, two: true, three: true
                 done()
 
+        context 'local metrics', -> 
+
+            it.only 'increments input and output for each traversal', (done) -> 
+
+                DURING = undefined
+                AFTER  = undefined
+                mix    = notifier().create 'Assembly Line Mix'
+                mix.use title: '1. intro', (next, capsule) ->
+                        
+                    #
+                    # mocha throws on fail
+                    # middleware redirects the uncaught exception as a promise rejection
+                    # so this is tricky to test
+                    # 
+
+                    DURING = JSON.parse JSON.stringify mix.serialize().metrics.local
+                    next()
+
+                mix.event().then -> 
+
+                    AFTER = mix.serialize().metrics.local
+
+                setTimeout (->
+
+                    DURING.input .should.equal 1
+                    DURING.output.should.equal 0
+                    AFTER .input .should.equal 1
+                    AFTER .output.should.equal 1
+                    done()
+
+                ), 100
+
         it 'a traversal context travels the pipeline in tandem with the capsule', (done) -> 
 
             mix  = notifier().create 'Assembly Line Mix'
