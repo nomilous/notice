@@ -42,64 +42,29 @@ MessageHub.create 'hub 1 name', {
         # register middleware (title is required)
         #
 
-        title: 'first middleware'
+        title: 'middleware 01'
         (next, capsule, traversal) -> 
 
-            
-            
-
             if capsule._type == 'control'
-
                 console.log "[#{capsule.control}]", 
                     traversal.origin.title
                     hostname: traversal.origin.context.hostname
                     pid: traversal.origin.context.pid
-
                 return next()
 
+
             capsule.seq = seq++
-
-
-            # console.log """
-            # \n
-            # RECEIVED::
-            #     from: #{traversal.origin.title} (#{traversal.origin.context.pid}.#{traversal.origin.context.hostname})
-            #     socketUptime: #{ (Date.now() - traversal.origin.connection.stateAt) / 1000} seconds
-            # CAPSULE:
-            #     type: #{capsule._type}
-            #     uuid: #{capsule._uuid}
-            #     content: """, capsule
-
-
-            # setTimeout (->
-
-            #     #
-            #     # swap this middleware in 2 seconds
-            #     #
-
-            #     hub.force
-
-            #         title: 'first middleware'
-            #         (next, capsule, {origin}) -> 
-
-            #             #console.log 'replaced...'
-            #             next()
-
-            # ), 2000
-
-
             next()
 
-    hub.use title: 'slow middleware', (next, capsule, {origin}) -> 
-        time = Math.random() * 10000
-        #console.log "#{capsule.seq} #{time}"
-        #setTimeout next, time
-        next()
-
-    hub.use title: 'show done', (next, capsule, {origin}) ->
-        #console.log "#{capsule.seq} done"
-        #if Math.random() < 0.2 then throw new Error
-        next()
+    hub.use title: 'middleware 02', (next, capsule, {origin}) -> next()
+    hub.use title: 'middleware 03', (next, capsule, {origin}) -> next()
+    hub.use title: 'middleware 04', (next, capsule, {origin}) -> next()
+    hub.use title: 'middleware 05', (next, capsule, {origin}) -> next()
+    hub.use title: 'middleware 06', (next, capsule, {origin}) -> next()
+    hub.use title: 'middleware 07', (next, capsule, {origin}) -> next()
+    hub.use title: 'middleware 08', (next, capsule, {origin}) -> next()
+    hub.use title: 'middleware 09', (next, capsule, {origin}) -> next()
+    hub.use title: 'middleware 10', (next, capsule, {origin}) -> next()
 
 MessageHub.create 'hub 2 name', {
 
