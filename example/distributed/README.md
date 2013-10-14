@@ -37,7 +37,8 @@ curl -ku nomilous:∆ https://127.0.0.1:30303/v1/hubs/1
 #### with basic introspection
 
 ```
-          distributed/• NAME=Name1 NODE_SECRET=right ./client
+
+./hub
 
         per sec     mem MB  heap MB
 seq     capsules    rss tot used
@@ -92,12 +93,6 @@ seq     capsules    rss tot used
 49000   703.72      85.97   55.53   24.16
 50000   733.13      81.13   50.61   30.24
 51000   791.13      80.72   50.61   25.28
-
-
-
-
-
-
 52000   747.38      84.14   52.58   22.17
 53000   757.57      80.08   48.64   18.67
 54000   726.74      80.35   48.64   15.51
