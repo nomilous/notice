@@ -113,11 +113,20 @@ hub.use
 
 #### the `next` function
 
-The next function has some nested tools.
+The next function has some nested functions.
 
-* `next.notify(payload)` sends a payload back to the emitter's promise notify function. Emitters with a node style callback waiting have no mechanism to receive these notifications.
-* `next.cancel()` suspends further traversal of the pipeline and sends a cancel notification back to the emitter's promise notify function. **It does not call an error into the waiting node style callback.**
-* `next.reject(error)` terminates the middleware traversal (same as throw)
+`next.notify(payload)` 
+* Sends a payload back to the emitter's promise notify function. 
+* Emitters with a node style callback waiting have no mechanism to receive these notifications.
+
+`next.cancel()` 
+* Suspends further traversal of the pipeline.
+* Sends a cancel notification back to the emitter's promise notify function. 
+* **It does not call an error into the waiting node style callback.**
+
+`next.reject(error)`
+* Terminates the middleware traversal.
+* Calls the error back to the emitter promise/callback.
 
 #### the `traversal` object
 
