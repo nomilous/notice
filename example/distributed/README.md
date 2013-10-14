@@ -41,7 +41,7 @@ curl -ku nomilous:∆ https://127.0.0.1:30303/v1/hubs/1
 ./hub
 
         per sec     mem MB  heap MB
-seq     capsules    rss tot used
+seq     capsules    rss     tot     used
 1000    674.76      62.6    47.66   17.77
 2000    632.51      66.72   50.61   20.95
 3000    653.16      70.96   54.55   31.02

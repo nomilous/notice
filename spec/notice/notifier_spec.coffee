@@ -3,8 +3,6 @@ should   = require 'should'
 
 describe 'notifier', -> 
 
-    it 'needs the next().cancel before release', -> throw 'vital'
-
     context 'factory', -> 
 
         it 'creates a Notifier definition', (done) -> 
@@ -280,6 +278,39 @@ describe 'notifier', ->
             mix.raw 'VALUE'
 
 
+        it 'rejects (promise) the middleware traversal on throw', (done) -> 
+
+            mix = notifier().create 'Assembly Line Mix'
+            mix.use 
+                title: 'one'
+                (next, capsule) -> 
+                    throw new Error 'reeror'
+
+
+            mix.event( 'VALUE' ).then( 
+                ->
+                (error) -> 
+                    error.message.should.equal 'reeror'
+                    done()
+            )
+
+
+
+        it 'error (callback) the middleware traversal on throw', (done) -> 
+
+            mix = notifier().create 'Assembly Line Mix'
+            mix.use 
+                title: 'one'
+                (next, capsule) -> 
+                    throw new Error 'reeror'
+
+
+            mix.event 'VALUE', (error, capsule) -> 
+
+                error.message.should.equal 'reeror'
+                done()
+
+
 
         it 'passes capsule through all middleware if they call next', (done) -> 
 
@@ -380,7 +411,7 @@ describe 'notifier', ->
 
             ), 100
 
-        it.only 'increments sys.reject instead of output if rejected by system middleware', (done) -> 
+        it 'increments sys.reject instead of output if rejected by system middleware', (done) -> 
 
             DURING = undefined
             AFTER  = undefined
