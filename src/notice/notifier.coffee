@@ -94,6 +94,14 @@ module.exports.notifier  = (config = {}) ->
                         next.notify = (update) -> process.nextTick -> notify update
                         next.reject = (error)  -> process.nextTick -> reject error
                         next.cancel = -> 
+
+                            #
+                            # * UNKNOWN - cancel() leaves the remaining promises dangling,
+                            #             benchmarks suggest this is not a promblem.
+                            # 
+                            #             But it might be.
+                            #
+
                             cancelled = true
                             localMetrics.cancel.usr++ if type == 'usr'
                             localMetrics.cancel.sys++ if type == 'sys'

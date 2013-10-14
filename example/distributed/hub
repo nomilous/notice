@@ -109,21 +109,8 @@ MessageHub.create 'hub 1 name', {
         start    = Date.now() unless start?
         time     = start      unless time?
         sequence++
-        # next()
+        next()
 
-
-        next.cancel()  # seems ok, what if there's a whole bunch
-
-
-    hub.use title: 'middleware 02', (next, capsule, {origin}) -> next()
-    hub.use title: 'middleware 03', (next, capsule, {origin}) -> next()
-    hub.use title: 'middleware 04', (next, capsule, {origin}) -> next()
-    hub.use title: 'middleware 05', (next, capsule, {origin}) -> next()
-    hub.use title: 'middleware 06', (next, capsule, {origin}) -> next()
-    hub.use title: 'middleware 07', (next, capsule, {origin}) -> next()
-    hub.use title: 'middleware 08', (next, capsule, {origin}) -> next()
-    hub.use title: 'middleware 09', (next, capsule, {origin}) -> next()
-    hub.use title: 'middleware 10', (next, capsule, {origin}) -> next()
 
 # MessageHub.create 'hub 2 name', {
 
