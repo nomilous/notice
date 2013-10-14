@@ -308,7 +308,7 @@ describe 'notifier', ->
 
         context 'local metrics', -> 
 
-            it.only 'increments input and output for each traversal', (done) -> 
+            it 'increments input and output for each traversal', (done) -> 
 
                 DURING = undefined
                 AFTER  = undefined
@@ -330,13 +330,49 @@ describe 'notifier', ->
 
                 setTimeout (->
 
-                    DURING.input .should.equal 1
-                    DURING.output.should.equal 0
-                    AFTER .input .should.equal 1
-                    AFTER .output.should.equal 1
+                    DURING.input     .should.equal 1
+                    DURING.output    .should.equal 0
+
+                    AFTER .input     .should.equal 1
+                    AFTER .output    .should.equal 1
+                    AFTER .reject.usr.should.equal 0
                     done()
 
                 ), 100
+
+        it.only 'increments reject instead of output if rejected', (done) -> 
+
+            DURING = undefined
+            AFTER  = undefined
+            mix    = notifier().create 'Assembly Line Mix'
+            mix.use title: '1. intro', (next, capsule) ->
+                    
+                #
+                # mocha throws on fail
+                # middleware redirects the uncaught exception as a promise rejection
+                # so this is tricky to test
+                # 
+
+                DURING = JSON.parse JSON.stringify mix.serialize().metrics.local
+                throw new Error
+
+            mix.event().then (->), -> 
+
+                AFTER = mix.serialize().metrics.local
+
+            setTimeout (->
+
+                DURING.input     .should.equal 1
+                DURING.output    .should.equal 0
+
+                AFTER .input     .should.equal 1
+                AFTER .output    .should.equal 0
+                AFTER .reject.usr.should.equal 1
+
+
+                done()
+
+            ), 100
 
         it 'a traversal context travels the pipeline in tandem with the capsule', (done) -> 
 

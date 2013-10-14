@@ -102,7 +102,7 @@ module.exports.notifier  = (config = {}) ->
                             fn next, capsule, traversal
                             localMetrics.output++ if title == 'last'
                         catch error
-                            #localMetrics.reject.usr++
+                            localMetrics.reject.usr++
                             reject error
 
                 return pipeline functions
