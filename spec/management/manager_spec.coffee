@@ -142,7 +142,6 @@ describe 'manage', ->
         it 'responds to /v1/hubs with an array of records for each hub', (done) -> 
 
             @write = (body) ->
-                console.log body
                 JSON.parse( body ).should.eql 
                     records: [
                         'HUB 1 RECORD detail:1'
@@ -166,7 +165,7 @@ describe 'manage', ->
             _manager().requestHandler @mockRequest, @mockResponse
 
 
-        it.only 'responds to /v1/hubs/:uuid: with specific hub record', (done) -> 
+        it 'responds to /v1/hubs/:uuid: with specific hub record', (done) -> 
 
             @write = (body) ->
                 JSON.parse( body ).should.eql 

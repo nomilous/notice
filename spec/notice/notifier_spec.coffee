@@ -415,15 +415,15 @@ describe 'notifier', ->
 
                     DURING.input     .should.equal 1
                     DURING.output    .should.equal 0
-                    DURING.reject.usr.should.equal 0
-                    DURING.reject.sys.should.equal 0
+                    DURING.error .usr.should.equal 0
+                    DURING.error .sys.should.equal 0
                     DURING.cancel.usr.should.equal 0
                     DURING.cancel.sys.should.equal 0
 
                     AFTER .input     .should.equal 1
                     AFTER .output    .should.equal 1
-                    AFTER .reject.usr.should.equal 0
-                    AFTER .reject.sys.should.equal 0
+                    AFTER .error .usr.should.equal 0
+                    AFTER .error .sys.should.equal 0
                     AFTER .cancel.usr.should.equal 0
                     AFTER .cancel.sys.should.equal 0
 
@@ -455,15 +455,15 @@ describe 'notifier', ->
 
                 DURING.input     .should.equal 1
                 DURING.output    .should.equal 0
-                DURING.reject.usr.should.equal 0
-                DURING.reject.sys.should.equal 0
+                DURING.error .usr.should.equal 0
+                DURING.error .sys.should.equal 0
                 DURING.cancel.usr.should.equal 0
                 DURING.cancel.sys.should.equal 0
 
                 AFTER .input     .should.equal 1
                 AFTER .output    .should.equal 0
-                AFTER .reject.usr.should.equal 1
-                AFTER .reject.sys.should.equal 0
+                AFTER .error .usr.should.equal 1
+                AFTER .error .sys.should.equal 0
                 AFTER .cancel.usr.should.equal 0
                 AFTER .cancel.sys.should.equal 0
 
@@ -502,15 +502,15 @@ describe 'notifier', ->
 
                 DURING.input     .should.equal 1
                 DURING.output    .should.equal 0
-                DURING.reject.usr.should.equal 0
-                DURING.reject.sys.should.equal 0
+                DURING.error .usr.should.equal 0
+                DURING.error .sys.should.equal 0
                 DURING.cancel.usr.should.equal 0
                 DURING.cancel.sys.should.equal 0
 
                 AFTER .input     .should.equal 1
                 AFTER .output    .should.equal 0
-                AFTER .reject.usr.should.equal 0
-                AFTER .reject.sys.should.equal 1
+                AFTER .error .usr.should.equal 0
+                AFTER .error .sys.should.equal 1
                 AFTER .cancel.usr.should.equal 0
                 AFTER .cancel.sys.should.equal 0
 
@@ -544,8 +544,8 @@ describe 'notifier', ->
 
                 DURING.input     .should.equal 1
                 DURING.output    .should.equal 0
-                DURING.reject.usr.should.equal 0
-                DURING.reject.sys.should.equal 0
+                DURING.error .usr.should.equal 0
+                DURING.error .sys.should.equal 0
                 DURING.cancel.usr.should.equal 0
                 DURING.cancel.sys.should.equal 0
 
@@ -553,8 +553,8 @@ describe 'notifier', ->
 
                 AFTER .input     .should.equal 1
                 AFTER .output    .should.equal 0
-                AFTER .reject.usr.should.equal 0
-                AFTER .reject.sys.should.equal 0
+                AFTER .error .usr.should.equal 0
+                AFTER .error .sys.should.equal 0
                 AFTER .cancel.usr.should.equal 0
                 AFTER .cancel.sys.should.equal 1
 
@@ -588,8 +588,8 @@ describe 'notifier', ->
 
                 DURING.input     .should.equal 1
                 DURING.output    .should.equal 0
-                DURING.reject.usr.should.equal 0
-                DURING.reject.sys.should.equal 0
+                DURING.error .usr.should.equal 0
+                DURING.error .sys.should.equal 0
                 DURING.cancel.usr.should.equal 0
                 DURING.cancel.sys.should.equal 0
 
@@ -597,8 +597,8 @@ describe 'notifier', ->
 
                 AFTER .input     .should.equal 1
                 AFTER .output    .should.equal 0
-                AFTER .reject.usr.should.equal 0
-                AFTER .reject.sys.should.equal 0
+                AFTER .error .usr.should.equal 0
+                AFTER .error .sys.should.equal 0
                 AFTER .cancel.usr.should.equal 1
                 AFTER .cancel.sys.should.equal 0
 

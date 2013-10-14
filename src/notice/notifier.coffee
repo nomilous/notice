@@ -61,7 +61,7 @@ module.exports.notifier  = (config = {}) ->
 
                     input:    0     # capsules in
                     output:   0     # capsules out (transmitted)
-                    reject:
+                    error:
                         usr: 0      # exception in user   middleware
                         sys: 0      # exception in system middleware
                     cancel:
@@ -109,8 +109,8 @@ module.exports.notifier  = (config = {}) ->
                             localMetrics.output++ if title == 'last' and not cancelled
 
                         catch error
-                            localMetrics.reject.usr++ if type == 'usr'
-                            localMetrics.reject.sys++ if type == 'sys'
+                            localMetrics.error.usr++ if type == 'usr'
+                            localMetrics.error.sys++ if type == 'sys'
                             reject error
 
                 return pipeline functions
