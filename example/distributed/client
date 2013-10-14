@@ -48,28 +48,9 @@ TelevisionRemote = notice.client(
         #     console.log capsule.all
         #     console.log capsule
 
-        process.on 'SIGINT', -> 
-            console.log '\n', seq
-            process.exit()
 
-
-        time  = Date.now()
-        count = 0
-        console.log 'seq\tcapsule_rate'
 
         setInterval (-> 
-
-            seq++
-
-            if seq.toString()[-3..] == '000' 
-
-                deltaC = seq - count
-                deltaT = Date.now() - time
-                time   = Date.now()
-                count  = seq 
-
-                perSecond = Math.floor( deltaC / deltaT * 100000 ) / 100
-                console.log "#{seq}\t#{perSecond}"
 
             #
             # emit capsule with promise waiting

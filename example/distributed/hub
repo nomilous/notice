@@ -45,12 +45,12 @@ MessageHub.create 'hub 1 name', {
         title: 'middleware 1'
         (next, capsule, traversal) -> 
 
-            if capsule._type == 'control'
-                console.log "[#{capsule.control}]", 
-                    traversal.origin.title
-                    hostname: traversal.origin.context.hostname
-                    pid: traversal.origin.context.pid
-                return next()
+            # if capsule._type == 'control'
+            #     console.log "[#{capsule.control}]", 
+            #         traversal.origin.title
+            #         hostname: traversal.origin.context.hostname
+            #         pid: traversal.origin.context.pid
+            #     return next()
 
 
             capsule.seq = seq++
@@ -62,7 +62,6 @@ MessageHub.create 'hub 1 name', {
 
     ) for i in [2..3] 
 
-
     # hub.use title: 'middleware 02', (next, capsule, {origin}) -> next()
     # hub.use title: 'middleware 03', (next, capsule, {origin}) -> next()
     # hub.use title: 'middleware 04', (next, capsule, {origin}) -> next()
@@ -72,6 +71,38 @@ MessageHub.create 'hub 1 name', {
     # hub.use title: 'middleware 08', (next, capsule, {origin}) -> next()
     # hub.use title: 'middleware 09', (next, capsule, {origin}) -> next()
     # hub.use title: 'middleware 10', (next, capsule, {origin}) -> next()
+
+
+
+
+    process.on 'SIGINT', -> 
+        console.log '\n', seq, avg_rate: Math.floor( sequence / ( Date.now() - start ) * 100000 ) / 100
+        process.exit()
+
+    start    = undefined
+    time     = undefined
+    count    = undefined
+    sequence = undefined
+
+    hub.use title: 'count', (next) -> 
+
+        start    = Date.now() unless start?
+        time     = start      unless time?
+        count    = 0          unless count?
+        sequence = 0          unless sequence?
+        
+        console.log 'seq\tcapsule_rate' if sequence is 0
+        sequence++
+        if sequence.toString()[-3..] == '000' 
+
+            deltaC = sequence - count
+            deltaT = Date.now() - time
+            time   = Date.now()
+            count  = sequence 
+
+            perSecond = Math.floor( deltaC / deltaT * 100000 ) / 100
+            console.log "#{sequence}\t#{perSecond}"
+
 
 MessageHub.create 'hub 2 name', {
 
