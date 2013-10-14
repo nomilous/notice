@@ -333,6 +333,36 @@ describe 'notifier', ->
                     done()
             )
 
+        it 'suspends further traversal of the pipeline on cancel', (done) -> 
+
+            mix = notifier().create 'Assembly Line Mix'
+            mix.use title: 'one'  , (next, capsule) -> capsule.one   = true; next()
+            mix.use title: 'two'  , (next, capsule) -> capsule.two   = true; next()
+            mix.use title: 'three', (next, capsule) -> capsule.three = true; next()
+            mix.use title: 'four' , (next, capsule) -> next.cancel()
+            mix.use title: 'five' , (next, capsule) -> 
+                console.log FIVE: capsule
+                capsule.five  = true; next()
+
+
+            CANCELLED = undefined
+            mix.event( 'VALUE' ).then( 
+                (capsule) -> console.log capsule
+                (error)   -> console.log error
+                (notify)  -> CANCELLED = notify.capsule if notify.control == 'cancel'    
+            )
+
+
+            setTimeout (->
+                CANCELLED.should.eql 
+                    event: 'VALUE'
+                    one: true
+                    two: true
+                    three: true
+                
+                done()
+            ), 100
+
 
         it 'passes capsule through all middleware if they call next', (done) -> 
 

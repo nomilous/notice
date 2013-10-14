@@ -109,7 +109,10 @@ MessageHub.create 'hub 1 name', {
         start    = Date.now() unless start?
         time     = start      unless time?
         sequence++
-        next()
+        # next()
+
+
+        next.cancel()  # what happens to memory as dangling promises accumulate
 
 
 # MessageHub.create 'hub 2 name', {
