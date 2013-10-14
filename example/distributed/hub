@@ -42,7 +42,7 @@ MessageHub.create 'hub 1 name', {
         # register middleware (title is required)
         #
 
-        title: 'middleware 01'
+        title: 'middleware 1'
         (next, capsule, traversal) -> 
 
             if capsule._type == 'control'
@@ -56,15 +56,22 @@ MessageHub.create 'hub 1 name', {
             capsule.seq = seq++
             next()
 
-    hub.use title: 'middleware 02', (next, capsule, {origin}) -> next()
-    hub.use title: 'middleware 03', (next, capsule, {origin}) -> next()
-    hub.use title: 'middleware 04', (next, capsule, {origin}) -> next()
-    hub.use title: 'middleware 05', (next, capsule, {origin}) -> next()
-    hub.use title: 'middleware 06', (next, capsule, {origin}) -> next()
-    hub.use title: 'middleware 07', (next, capsule, {origin}) -> next()
-    hub.use title: 'middleware 08', (next, capsule, {origin}) -> next()
-    hub.use title: 'middleware 09', (next, capsule, {origin}) -> next()
-    hub.use title: 'middleware 10', (next, capsule, {origin}) -> next()
+    hub.use( 
+        title: 'middleware ' + i
+        (next, capsule, {origin}) -> next() 
+
+    ) for i in [2..100] 
+
+
+    # hub.use title: 'middleware 02', (next, capsule, {origin}) -> next()
+    # hub.use title: 'middleware 03', (next, capsule, {origin}) -> next()
+    # hub.use title: 'middleware 04', (next, capsule, {origin}) -> next()
+    # hub.use title: 'middleware 05', (next, capsule, {origin}) -> next()
+    # hub.use title: 'middleware 06', (next, capsule, {origin}) -> next()
+    # hub.use title: 'middleware 07', (next, capsule, {origin}) -> next()
+    # hub.use title: 'middleware 08', (next, capsule, {origin}) -> next()
+    # hub.use title: 'middleware 09', (next, capsule, {origin}) -> next()
+    # hub.use title: 'middleware 10', (next, capsule, {origin}) -> next()
 
 MessageHub.create 'hub 2 name', {
 
