@@ -113,7 +113,17 @@ MessageHub.create 'hub 1 name', {
         sequence++
         next()
 
-    hub.use title: 'thrower', -> throw new Error 'darn'
+    hub.use title: 'thrower', (next) -> 
+
+        #
+        # randomize introspection load
+        #
+
+        throw new Error 'darn' if Math.random() < 0.05
+        next.cancel() if Math.random() < 0.05
+        next()
+
+
 
 
 # MessageHub.create 'hub 2 name', {
