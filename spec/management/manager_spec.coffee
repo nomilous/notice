@@ -131,6 +131,9 @@ describe 'manage', ->
                         '/v1/hubs/:uuid:/middlewares':
                             description: 'get only the middlewares'
                             methods: ['GET']
+                        '/v1/hubs/:uuid:/middlewares/:title:':
+                            description: 'get or modify a middleware'
+                            methods: ['GET', 'POST', 'DELETE']
 
                 done()
 
@@ -138,7 +141,7 @@ describe 'manage', ->
             _manager().requestHandler @mockRequest, @mockResponse
 
 
-        it 'responds to /about with 200', (done) -> 
+        it 'responds to GET /about with 200', (done) -> 
 
             @writeHead = (statusCode) ->
                 statusCode.should.equal 200
@@ -149,7 +152,7 @@ describe 'manage', ->
             _manager().requestHandler @mockRequest, @mockResponse
 
 
-        it 'responds to /v1/hubs with an array of records for each hub', (done) -> 
+        it 'responds to GET /v1/hubs with an array of records for each hub', (done) -> 
 
             @write = (body) ->
                 JSON.parse( body ).should.eql 
@@ -175,7 +178,7 @@ describe 'manage', ->
             _manager().requestHandler @mockRequest, @mockResponse
 
 
-        it 'responds to /v1/hubs/:uuid: with specific hub record', (done) -> 
+        it 'responds to GET /v1/hubs/:uuid: with specific hub record', (done) -> 
 
             @write = (body) ->
                 JSON.parse( body ).should.eql 
@@ -188,9 +191,14 @@ describe 'manage', ->
             _manager().requestHandler @mockRequest, @mockResponse
 
 
-        it 'responds to /v1/hubs/:uuid:/metrics'
-        it 'responds to /v1/hubs/:uuid:/errors'
-        it 'responds to /v1/hubs/:uuid:/middlewares'
+        it 'responds to GET /v1/hubs/:uuid:/metrics'
+        it 'responds to GET /v1/hubs/:uuid:/errors'
+        it 'responds to GET /v1/hubs/:uuid:/middlewares'
+        it 'responds to GET /v1/hubs/:uuid:/middlewares/:title:'
 
+        context 'POST /v1/hubs/:uuid:/middlewares/:title:', ->
+
+            # as text/javascript or text/coffee-script 
+        context 'DELETE /v1/hubs/:uuid:/middlewares/:title:', ->
 
 

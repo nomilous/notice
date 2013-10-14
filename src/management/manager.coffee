@@ -148,6 +148,19 @@ module.exports.manager  = (config = {}) ->
                         statusCode
                         response
 
+            '/v1/hubs/:uuid:/middlewares/:title:':
+
+                description: 'get or modify a middleware'
+                methods: ['GET', 'POST', 'DELETE']
+                handler: ([uuid], request, response, statusCode = 200) -> 
+
+                    local.respond 
+                        todo: 1
+                        statusCode
+                        response
+
+
+
 
 
     port         = listen.port
