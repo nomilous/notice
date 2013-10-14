@@ -12,15 +12,17 @@ NetworkAlertRouter = notice.hub
 
     ... # other config
 
-    introspector:
+    # 
+    # error:
+    #     keep: 10 # oldest first
+    #
 
+    introspector:
         level: 0  # none
         level: 1  # not none
 
     manager:
-
         listen: 
-
             # hostname: 'localhost'
             port: 11011
             key:  '/path/to/key'

@@ -8,10 +8,18 @@ module.exports._notifier = -> testable
 module.exports.notifier  = (config = {}) ->
 
     #
-    # create default capsule emitter if none defined
-    #
+    # defaults
+    # --------
+    # 
+    # * If no capsule type is defined (in config.capsule.*) than an event capsule is created.
+    # * Keeps error history of 10, available via notice.serialize(2) or REST api
+    # 
 
     config.capsule = event: {} unless config.capsule?
+    config.error ||= {}
+    config.error.keep ?= 10
+
+
 
     #
     # for builtin control capsules
@@ -68,6 +76,28 @@ module.exports.notifier  = (config = {}) ->
                         usr: 0      # cancel    in user   middleware
                         sys: 0      # cancel    in system middleware
 
+                #
+                # * keep history of recent errors (config.error.keep)
+                #
+
+                errors: localErrors = 
+                    recent: []
+
+
+            tooManyErrorsToKeep = -> localErrors.recent.length > config.error.keep
+            keepErrors = (title, type, error) -> 
+
+                localErrors.recent.push
+
+                    timestamp: new Date
+                    error: error.toString()
+                    middleware: 
+                        title: title
+                        type:  type
+
+                localErrors.recent.shift() while tooManyErrorsToKeep()
+
+
             traverse = (capsule) -> 
 
                 #
@@ -92,7 +122,14 @@ module.exports.notifier  = (config = {}) ->
 
                         next = -> process.nextTick -> resolve capsule
                         next.notify = (update) -> process.nextTick -> notify update
-                        next.reject = (error)  -> process.nextTick -> reject error
+                        
+                        next.reject = (error)  -> 
+
+                            keepErrors title, type, error
+                            localMetrics.error.usr++ if type == 'usr'
+                            localMetrics.error.sys++ if type == 'sys'
+                            process.nextTick -> reject error
+                        
                         next.cancel = -> 
 
                             #
@@ -117,6 +154,7 @@ module.exports.notifier  = (config = {}) ->
                             localMetrics.output++ if title == 'last' and not cancelled
 
                         catch error
+                            keepErrors title, type, error
                             localMetrics.error.usr++ if type == 'usr'
                             localMetrics.error.sys++ if type == 'sys'
                             reject error
@@ -231,7 +269,7 @@ module.exports.notifier  = (config = {}) ->
                         when 1 
                             title:   notifier.title
                             uuid:    notifier.uuid
-                            metrics: nfMetrics
+                            metrics: local: nfMetrics.local
                         when 2
 
                             middlewares = local.middleware[notifier.title]
@@ -239,8 +277,9 @@ module.exports.notifier  = (config = {}) ->
 
                             title:   notifier.title
                             uuid:    notifier.uuid
-                            metrics: nfMetrics
-                            middleware: for middlewareTitle of middlewares
+                            metrics: local: nfMetrics.local
+                            errors: nfMetrics.errors
+                            middlewares: for middlewareTitle of middlewares
                                 
                                 title:   middlewareTitle
                                 metrics: mmetics

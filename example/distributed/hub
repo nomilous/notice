@@ -3,7 +3,9 @@
 notice = require '../../lib/notice'
 
 MessageHub = notice.hub
-
+    
+    error:
+        keep: 2
     manager: 
         listen: 
             port: 30303
@@ -110,6 +112,8 @@ MessageHub.create 'hub 1 name', {
         time     = start      unless time?
         sequence++
         next()
+
+    hub.use title: 'thrower', -> throw new Error 'darn'
 
 
 # MessageHub.create 'hub 2 name', {

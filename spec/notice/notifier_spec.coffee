@@ -1,4 +1,5 @@
 {_notifier, notifier} = require '../../lib/notice/notifier'
+{sequence} = require 'also'
 should   = require 'should'
 
 describe 'notifier', -> 
@@ -605,6 +606,34 @@ describe 'notifier', ->
                 done()
 
             ), 100
+
+        it 'keeps a recent error history', (done) -> 
+
+            seq = 0 
+            mix = notifier().create 'Assembly Line Mix'
+            mix.use title: 'middleware title', (next, capsule) -> 
+
+                throw new Error 'message ' + ++seq
+                #next()
+
+
+            mix.event() for i in [0..19]
+            setTimeout (->
+        
+                recent = mix.serialize(2).errors.recent
+                recent[0].middleware.should.eql
+                    title: 'middleware title'
+                    type:  'usr'
+
+                recent[0].error.should.equal 'Error: message 11'
+                recent[9].error.should.equal 'Error: message 20'  # keeps 10 by default
+                should.exist recent[9].timestamp
+
+                done()
+
+            ), 20
+
+
 
         it 'a traversal context travels the pipeline in tandem with the capsule', (done) -> 
 
