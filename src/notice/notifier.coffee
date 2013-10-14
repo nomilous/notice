@@ -49,7 +49,7 @@ module.exports.notifier  = (config = {}) ->
             
             middlewareCount = 0
             local.middleware[title] = list = {}
-            local.middlewareArray[title]   = mwBus = [first, last] 
+            local.middlewareArray[title]   = mwBus = [] 
             local.middlewareMetrics[title] = mwMetrics = {}
             local.notifierMetrics[title]   = nfMetrics = 
 
@@ -90,9 +90,11 @@ module.exports.notifier  = (config = {}) ->
 
                 traversal = {}
 
-                middleware = for middlewareFn in mwBus
-                    do (middlewareFn) -> 
+                middleware = for definition in mwBus
+
+                    do (definition) -> 
                         deferred ({resolve, reject, notify}) -> 
+                            {type, title, fn} = definition
 
                             next = -> process.nextTick -> resolve capsule
 
@@ -102,7 +104,7 @@ module.exports.notifier  = (config = {}) ->
                             next.reject = (error)  -> process.nextTick -> reject error
                             next.cancel = -> # TODO: terminate the promise? (later: set appropriatly in introspection structures)
 
-                            try middlewareFn next, capsule, traversal
+                            try fn next, capsule, traversal
                             catch error
                                 #localMetrics.reject.usr++
                                 reject error
@@ -113,10 +115,12 @@ module.exports.notifier  = (config = {}) ->
             reload = -> 
 
                 mwBus.length = 0
-                mwBus.push first
-                mwBus.push list[title] for title of list
-                mwBus.push last
+                mwBus.push type: 'sys', title: 'first', fn: first
+                mwBus.push type: 'usr', title: title, fn: list[title] for title of list
+                mwBus.push type: 'sys', title: 'last', fn: last
                 middlewareCount = mwBus.length - 2
+
+            reload()
 
 
             local.notifiers[title] = notifier = 
@@ -129,6 +133,10 @@ module.exports.notifier  = (config = {}) ->
                         opts? and opts.title? and 
                         fn? and typeof fn == 'function'
                     )
+
+                    if opts.title == 'first' or opts.title == 'last'
+                        process.stderr.write "notice: 'first' and 'last' are reserved middleware titles\n"
+                        return
 
                     if opts.last?
                         if typeof last is 'function' and not last.toString().match /null/
