@@ -152,6 +152,7 @@ module.exports.manager  = (config = {}) ->
 
                 description: 'get or update or delete a middleware'
                 methods: ['GET', 'POST', 'DELETE']
+                accepts: ['text/javascript', 'text/coffee-script']
                 handler: ([uuid], request, response, statusCode = 200) -> 
 
                     local.respond 
