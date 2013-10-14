@@ -150,7 +150,7 @@ module.exports.manager  = (config = {}) ->
 
             '/v1/hubs/:uuid:/middlewares/:title:':
 
-                description: 'get or modify a middleware'
+                description: 'get or update or delete a middleware'
                 methods: ['GET', 'POST', 'DELETE']
                 handler: ([uuid], request, response, statusCode = 200) -> 
 
