@@ -74,43 +74,40 @@ module.exports.notifier  = (config = {}) ->
                 # sends the capsule down the middleware pipeline
                 # ----------------------------------------------
                 # 
-                # * This calls all registered middleware in registered order
-                # * There is a first and last middleware for internal use 
-                # * TODO: already messssy implementation, some repeated bits, fix, optimize, later
-                #
-                # 
-                                                         # TODO: if only first is present?
-                return capsule unless middlewareCount || last? # no middleware
-
-                #
                 # * A traversal context travels the pipeline in tandem with the capsule
                 # 
-                #     ie. (next, capsule, context) -> 
+                #     ie. (next, capsule, traversal) -> 
                 # 
 
                 traversal = {}
 
-                middleware = for definition in mwBus
+                functions = for middleware in mwBus
 
-                    do (definition) -> 
-                        deferred ({resolve, reject, notify}) -> 
-                            {type, title, fn} = definition
+                    do (middleware) -> deferred (action) -> 
 
-                            next = -> process.nextTick -> resolve capsule
+                        {resolve, reject, notify} = action
+                        {type, title, fn} = middleware
 
-                            # TODO_LINK
-                            # next.info   = -> 'https://github.com/nomilous/notice/tree/develop/spec/notice#the-next-function'
-                            next.notify = (update) -> process.nextTick -> notify update
-                            next.reject = (error)  -> process.nextTick -> reject error
-                            next.cancel = -> # TODO: terminate the promise? (later: set appropriatly in introspection structures)
+                        next = -> process.nextTick -> resolve capsule
 
-                            try fn next, capsule, traversal
-                            catch error
-                                #localMetrics.reject.usr++
-                                reject error
+                        # TODO_LINK
+                        # next.info   = -> 'https://github.com/nomilous/notice/tree/develop/spec/notice#the-next-function'
+                        next.notify = (update) -> process.nextTick -> notify update
+                        next.reject = (error)  -> process.nextTick -> reject error
+                        next.cancel = -> # TODO: terminate the promise? (later: set appropriatly in introspection structures)
 
-                return pipeline middleware
+                        try fn next, capsule, traversal
+                        catch error
+                            #localMetrics.reject.usr++
+                            reject error
 
+                return pipeline functions
+
+
+            #
+            # the set of middleware has been modified
+            # ---------------------------------------
+            #
 
             reload = -> 
 
@@ -119,6 +116,10 @@ module.exports.notifier  = (config = {}) ->
                 mwBus.push type: 'usr', title: title, fn: list[title] for title of list
                 mwBus.push type: 'sys', title: 'last', fn: last
                 middlewareCount = mwBus.length - 2
+
+            #
+            # * first load
+            #
 
             reload()
 
@@ -137,6 +138,10 @@ module.exports.notifier  = (config = {}) ->
                     if opts.title == 'first' or opts.title == 'last'
                         process.stderr.write "notice: 'first' and 'last' are reserved middleware titles\n"
                         return
+
+                    #
+                    # * first and last can only be set once 
+                    #
 
                     if opts.last?
                         if typeof last is 'function' and not last.toString().match /null/
@@ -161,7 +166,12 @@ module.exports.notifier  = (config = {}) ->
 
                     process.stderr.write "notice: middleware '#{opts.title}' already exists, use the force()\n"
 
+
                 force: (opts, fn) ->
+
+                    #
+                    # * force() can replace or delete middleware
+                    #
 
                     throw undefinedArg( 
                         'opts.title and fn', 'use(opts, middlewareFn)'
@@ -178,6 +188,10 @@ module.exports.notifier  = (config = {}) ->
                     
                     list[opts.title] = fn
                     reload()
+
+
+
+
 
             
             Object.defineProperty notifier, 'uuid', 
