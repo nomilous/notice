@@ -60,7 +60,7 @@ MessageHub.create 'hub 1 name', {
         title: 'middleware ' + i
         (next, capsule, {origin}) -> next() 
 
-    ) for i in [2..100] 
+    ) for i in [2..3] 
 
 
     # hub.use title: 'middleware 02', (next, capsule, {origin}) -> next()
