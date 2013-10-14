@@ -277,7 +277,7 @@ describe 'notifier', ->
 
             mix.raw 'VALUE'
 
-
+        #DUPLICATE
         it 'rejects the middleware traversal (promise) on throw', (done) -> 
 
             mix = notifier().create 'Assembly Line Mix'
@@ -341,7 +341,7 @@ describe 'notifier', ->
             mix.use title: 'three', (next, capsule) -> capsule.three = true; next()
             mix.use title: 'four' , (next, capsule) -> next.cancel()
             mix.use title: 'five' , (next, capsule) -> 
-                console.log FIVE: capsule
+                console.log SHOULD_NOT_SEE_THIS: capsule
                 capsule.five  = true; next()
 
 
@@ -738,73 +738,3 @@ describe 'notifier', ->
 
                 capsule.array.should.eql  [ 1, 'new 2', 3 ]
                 done()
-
-        it 'returns the promise of a capsule traversing the middleware pipeline', (done) -> 
-
-            Notifier = notifier 
-                capsule:
-                    makeThing: 
-                        before: (done, capsule) ->
-                            capsule.serialNo = '0000000000001'
-                            done()
-
-            four = Notifier.create 'Assembly Line 4'
-            four.use title: 'step1', (done, capsule) -> 
-                capsule.step1 = 'done'
-                done()
-            four.use title: 'step2', (done, capsule) ->
-                capsule.step2 = 'done'
-                done()
-
-            four.makeThing
-
-                colour: 'red'
-
-            .then (result) -> 
-
-                result.should.eql
-
-                    serialNo: '0000000000001'
-                    colour: 'red'
-                    step1: 'done'
-                    step2: 'done'
-
-                done()
-
-
-        it 'rejects on failing middleware', (done) -> 
-
-            Notifier = notifier capsule: info: {}
-            broken = Notifier.create 'broken pipeline'
-            broken.use title: 'fails', (done, capsule) -> 
-                throw new Error 'ka-pow!'
-                done()
-
-            broken.info().then (->), (error) ->
-
-                error.message.should.equal 'ka-pow!'
-                done()
-
-
-        it 'also accepts traditional node style callback to receive the error or final capsule', (done) -> 
-
-            Notifier = notifier()
-            instance = Notifier.create 'title'
-
-            instance.use title: 'title', (done, capsule) -> 
-                capsule.ok = 'good'
-                done()
-
-
-            instance.event payload: 'ABCDEFG', (err, capsule) -> 
-
-                capsule.should.eql
-                     payload: 'ABCDEFG'
-                     ok:      'good'
-                done()
-
-
-
-        it 'has mech for first and last middlewares for hub and client'
-
-
