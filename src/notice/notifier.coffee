@@ -25,6 +25,7 @@ module.exports.notifier  = (config = {}) ->
         notifiers:         {}
         notifierMetrics:   {}
         middleware:        {}
+        middlewareArray:   {}
         middlewareMetrics: {}
         
 
@@ -38,9 +39,17 @@ module.exports.notifier  = (config = {}) ->
                 "Notifier.create('#{title}') is already defined"
             ) if local.middleware[title]?
 
+
+            #
+            # first and last middleware reserved for hub and client
+            #
+
+            first = (next) -> next(); ### null ###
+            last  = (next) -> next(); ### null ###
             
             middlewareCount = 0
             local.middleware[title] = list = {}
+            local.middlewareArray[title]   = mwBus = [first, last] 
             local.middlewareMetrics[title] = mwMetrics = {}
             local.notifierMetrics[title]   = nfMetrics = 
 
@@ -58,14 +67,6 @@ module.exports.notifier  = (config = {}) ->
                     cancel:
                         usr: 0      # cancel    in user   middleware
                         sys: 0      # cancel    in system middleware
-
-            
-            #
-            # first and last middleware reserved for hub and client
-            #
-
-            first = (next) -> next(); ### null ###
-            last  = (next) -> next(); ### null ###
 
             traverse = (capsule) -> 
 
@@ -89,8 +90,8 @@ module.exports.notifier  = (config = {}) ->
 
                 traversal = {}
 
-                middleware = for title of list
-                    do (title) -> 
+                middleware = for middlewareFn in mwBus
+                    do (middlewareFn) -> 
                         deferred ({resolve, reject, notify}) -> 
 
                             next = -> process.nextTick -> resolve capsule
@@ -101,46 +102,21 @@ module.exports.notifier  = (config = {}) ->
                             next.reject = (error)  -> process.nextTick -> reject error
                             next.cancel = -> # TODO: terminate the promise? (later: set appropriatly in introspection structures)
 
-                            try list[title] next, capsule, traversal
+                            try middlewareFn next, capsule, traversal
                             catch error
-                                localMetrics.reject.usr++
+                                #localMetrics.reject.usr++
                                 reject error
 
-                middleware.push(
-                    deferred ({resolve, reject, notify}) -> 
-                        
-                        next = -> process.nextTick -> resolve capsule
-                        next.notify = (update) -> process.nextTick -> notify update
-                        next.reject = (error)  -> process.nextTick -> reject error
-                        next.cancel = ->
-
-                        try 
-                            last next, capsule, traversal
-                            localMetrics.output++
-                        catch error
-                            localMetrics.reject.sys++
-                            reject error
-                
-                ) if last?
-
-                middleware.unshift(
-                    deferred ({resolve, reject, notify}) -> 
-                        
-                        localMetrics.input++
-                        next = -> process.nextTick -> resolve capsule
-                        next.notify = (update) -> process.nextTick -> notify update
-                        next.reject = (error)  -> process.nextTick -> reject error
-                        next.cancel = ->
-
-                        try first next, capsule, traversal
-                        catch error
-                            localMetrics.reject.sys++
-                            reject error
-                
-                ) if first?
-
-
                 return pipeline middleware
+
+
+            reload = -> 
+
+                mwBus.length = 0
+                mwBus.push first
+                mwBus.push list[title] for title of list
+                mwBus.push last
+                middlewareCount = mwBus.length - 2
 
 
             local.notifiers[title] = notifier = 
@@ -159,6 +135,7 @@ module.exports.notifier  = (config = {}) ->
                             process.stderr.write "notice: last middleware cannot be reset! Not even using the force()\n"
                             return 
                         last = fn
+                        reload()
                         return
 
                     if opts.first?
@@ -166,12 +143,12 @@ module.exports.notifier  = (config = {}) ->
                             process.stderr.write "notice: first middleware cannot be reset! Not even using the force()\n"
                             return 
                         first = fn
+                        reload()
                         return
 
                     unless list[opts.title]?
-
                         list[opts.title] = fn
-                        middlewareCount++
+                        reload()
                         return
 
                     process.stderr.write "notice: middleware '#{opts.title}' already exists, use the force()\n"
@@ -188,11 +165,11 @@ module.exports.notifier  = (config = {}) ->
 
                     if opts.delete and list[opts.title]?
                         delete list[opts.title]
-                        middlewareCount++
+                        reload()
                         return
                     
-                    middlewareCount++ unless list[opts.title]?
                     list[opts.title] = fn
+                    reload()
 
             
             Object.defineProperty notifier, 'uuid', 
