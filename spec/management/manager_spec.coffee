@@ -134,6 +134,7 @@ describe 'manage', ->
                         '/v1/hubs/:uuid:/middlewares/:title:':
                             description: 'get or update or delete a middleware'
                             methods: ['GET', 'POST', 'DELETE']
+                            accepts: ['text/javascript', 'text/coffee-script']
 
                 done()
 
@@ -200,5 +201,17 @@ describe 'manage', ->
 
             # as text/javascript or text/coffee-script 
         context 'DELETE /v1/hubs/:uuid:/middlewares/:title:', ->
+
+
+        context 'POST /vi/hubs/:uuid:/configure', -> 
+
+            it 'modifies introspection level'
+            it 'and possibly other things'
+
+        context 'GET /v1/hubs/:uuid:/reset', -> 
+
+            it 'zeroes all metric counters'
+
+
 
 

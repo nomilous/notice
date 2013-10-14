@@ -238,6 +238,20 @@ describe 'client', ->
                             
                         done()
 
+        context 'boomerang', -> 
+
+
+            it 'notifies on transmission'
+            it 'notifies on acknowledgement'
+            it 'resolves / callsback with final capsule after full hubside traversal'
+
+            #
+            # a hubside middleware can do the same - pending the final capsule via some deeper hub
+            # 
+            # ...fractal
+            #
+
+
 
         context 'on socket event', -> 
 
