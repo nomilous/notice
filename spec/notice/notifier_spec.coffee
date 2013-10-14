@@ -332,15 +332,18 @@ describe 'notifier', ->
 
                     DURING.input     .should.equal 1
                     DURING.output    .should.equal 0
+                    DURING.reject.usr.should.equal 0
+                    DURING.reject.sys.should.equal 0
 
                     AFTER .input     .should.equal 1
                     AFTER .output    .should.equal 1
                     AFTER .reject.usr.should.equal 0
+                    AFTER .reject.sys.should.equal 0
                     done()
 
                 ), 100
 
-        it.only 'increments reject instead of output if rejected', (done) -> 
+        it 'increments usr.reject instead of output if rejected by user middleware', (done) -> 
 
             DURING = undefined
             AFTER  = undefined
@@ -364,10 +367,57 @@ describe 'notifier', ->
 
                 DURING.input     .should.equal 1
                 DURING.output    .should.equal 0
+                DURING.reject.usr.should.equal 0
+                DURING.reject.sys.should.equal 0
 
                 AFTER .input     .should.equal 1
                 AFTER .output    .should.equal 0
                 AFTER .reject.usr.should.equal 1
+                AFTER .reject.sys.should.equal 0
+
+
+                done()
+
+            ), 100
+
+        it.only 'increments sys.reject instead of output if rejected by system middleware', (done) -> 
+
+            DURING = undefined
+            AFTER  = undefined
+            mix    = notifier().create 'Assembly Line Mix'
+
+            mix.use title: 'last', last: true, (next, capsule) ->
+
+                throw new Error
+
+
+            mix.use title: '1. intro', (next, capsule) ->
+                
+                #
+                # mocha throws on fail
+                # middleware redirects the uncaught exception as a promise rejection
+                # so this is tricky to test
+                # 
+
+                DURING = JSON.parse JSON.stringify mix.serialize().metrics.local
+                next()
+
+            mix.event()
+
+
+            setTimeout (->
+
+                AFTER = mix.serialize().metrics.local
+
+                DURING.input     .should.equal 1
+                DURING.output    .should.equal 0
+                DURING.reject.usr.should.equal 0
+                DURING.reject.sys.should.equal 0
+
+                AFTER .input     .should.equal 1
+                AFTER .output    .should.equal 0
+                AFTER .reject.usr.should.equal 0
+                AFTER .reject.sys.should.equal 1
 
 
                 done()

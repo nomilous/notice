@@ -101,8 +101,10 @@ module.exports.notifier  = (config = {}) ->
                         try 
                             fn next, capsule, traversal
                             localMetrics.output++ if title == 'last'
+                            
                         catch error
-                            localMetrics.reject.usr++
+                            localMetrics.reject.usr++ if type == 'usr'
+                            localMetrics.reject.sys++ if type == 'sys'
                             reject error
 
                 return pipeline functions
@@ -139,9 +141,10 @@ module.exports.notifier  = (config = {}) ->
                         fn? and typeof fn == 'function'
                     )
 
-                    if opts.title == 'first' or opts.title == 'last'
-                        process.stderr.write "notice: 'first' and 'last' are reserved middleware titles\n"
-                        return
+                    unless opts.first or opts.last
+                        if opts.title == 'first' or opts.title == 'last'
+                            process.stderr.write "notice: 'first' and 'last' are reserved middleware titles\n"
+                            return
 
                     #
                     # * first and last can only be set once 

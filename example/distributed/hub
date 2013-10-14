@@ -81,33 +81,35 @@ MessageHub.create 'hub 1 name', {
 
     start    = undefined
     time     = undefined
-    count    = undefined
-    sequence = undefined
-    mem      = 
+    count    = 0
+    sequence = 0
+
+
+    console.log '\tper sec\t\tmem MB\theap MB' if sequence is 0
+    console.log 'seq\tcapsules\trss\ttot\tused' if sequence is 0
+
+    setInterval (->
+
+        deltaC = sequence - count
+        deltaT = Date.now() - time
+        time   = Date.now()
+        count  = sequence
+
+        perSecond = Math.floor( deltaC / deltaT * 100000 ) / 100
+        {rss, heapTotal, heapUsed} = memoryUsage()
+        rss = Math.floor(rss / 1024 / 1024 * 100) / 100
+        heapTotal = Math.floor(heapTotal / 1024 / 1024 * 100) / 100
+        heapUsed = Math.floor(heapUsed / 1024 / 1024 * 100) / 100
+        console.log "#{sequence}\t#{perSecond}\t\t#{rss}\t#{heapTotal}\t#{heapUsed}"
+
+    ), 1000
 
     hub.use title: 'count', (next) -> 
 
         start    = Date.now() unless start?
         time     = start      unless time?
-        count    = 0          unless count?
-        sequence = 0          unless sequence?
-        
-        console.log '\tper sec\t\tmem MB\theap MB' if sequence is 0
-        console.log 'seq\tcapsules\trss\ttot\tused' if sequence is 0
         sequence++
-        if sequence.toString()[-3..] == '000' 
-
-            deltaC = sequence - count
-            deltaT = Date.now() - time
-            time   = Date.now()
-            count  = sequence 
-
-            perSecond = Math.floor( deltaC / deltaT * 100000 ) / 100
-            {rss, heapTotal, heapUsed} = memoryUsage()
-            rss = Math.floor(rss / 1024 / 1024 * 100) / 100
-            heapTotal = Math.floor(heapTotal / 1024 / 1024 * 100) / 100
-            heapUsed = Math.floor(heapUsed / 1024 / 1024 * 100) / 100
-            console.log "#{sequence}\t#{perSecond}\t\t#{rss}\t#{heapTotal}\t#{heapUsed}"
+        next()
 
 
 # MessageHub.create 'hub 2 name', {
