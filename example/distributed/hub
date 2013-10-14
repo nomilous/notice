@@ -46,7 +46,7 @@ MessageHub.create 'hub 1 name', {
         (next, capsule, traversal) -> 
 
             
-            capsule.seq = seq++
+            
 
             if capsule._type == 'control'
 
@@ -56,6 +56,8 @@ MessageHub.create 'hub 1 name', {
                     pid: traversal.origin.context.pid
 
                 return next()
+
+            capsule.seq = seq++
 
 
             # console.log """
@@ -90,12 +92,13 @@ MessageHub.create 'hub 1 name', {
 
     hub.use title: 'slow middleware', (next, capsule, {origin}) -> 
         time = Math.random() * 10000
-        console.log "#{capsule.seq} #{time}"
-        setTimeout next, time
+        #console.log "#{capsule.seq} #{time}"
+        #setTimeout next, time
+        next()
 
     hub.use title: 'show done', (next, capsule, {origin}) ->
-        console.log "#{capsule.seq} done"
-        if Math.random() < 0.2 then throw new Error
+        #console.log "#{capsule.seq} done"
+        #if Math.random() < 0.2 then throw new Error
         next()
 
 MessageHub.create 'hub 2 name', {

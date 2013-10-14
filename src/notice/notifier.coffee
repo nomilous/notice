@@ -43,14 +43,21 @@ module.exports.notifier  = (config = {}) ->
             local.middleware[title] = list = {}
             local.middlewareMetrics[title] = mwMetrics = {}
             local.notifierMetrics[title]   = nfMetrics = 
-                in:    0    # capsules in
-                out:   0    # capsules out (successful traversal)
-                fail:  
-                    usr: 0  # exception in user   middleware
-                    sys: 0  # exception in system middleware
-                skip:  
-                    usr: 0  # cancel    in user   middleware
-                    sys: 0  # cancel    in system middleware
+
+                #
+                # * refers to capsule in the local middleware pipeline
+                #
+
+                local: localMetrics = 
+
+                    input:    0     # capsules in
+                    output:   0     # capsules out (transmitted)
+                    reject:
+                        usr: 0      # exception in user   middleware
+                        sys: 0      # exception in system middleware
+                    cancel:
+                        usr: 0      # cancel    in user   middleware
+                        sys: 0      # cancel    in system middleware
 
             
             #
@@ -96,7 +103,7 @@ module.exports.notifier  = (config = {}) ->
 
                             try list[title] next, capsule, traversal
                             catch error
-                                nfMetrics.fail.usr++
+                                localMetrics.reject.usr++
                                 reject error
 
                 middleware.push(
@@ -109,9 +116,9 @@ module.exports.notifier  = (config = {}) ->
 
                         try 
                             last next, capsule, traversal
-                            nfMetrics.out++
+                            localMetrics.output++
                         catch error
-                            nfMetrics.fail.sys++
+                            localMetrics.reject.sys++
                             reject error
                 
                 ) if last?
@@ -119,7 +126,7 @@ module.exports.notifier  = (config = {}) ->
                 middleware.unshift(
                     deferred ({resolve, reject, notify}) -> 
                         
-                        nfMetrics.in++
+                        localMetrics.input++
                         next = -> process.nextTick -> resolve capsule
                         next.notify = (update) -> process.nextTick -> notify update
                         next.reject = (error)  -> process.nextTick -> reject error
@@ -127,7 +134,7 @@ module.exports.notifier  = (config = {}) ->
 
                         try first next, capsule, traversal
                         catch error
-                            nfMetrics.fail.sys++
+                            localMetrics.reject.sys++
                             reject error
                 
                 ) if first?
@@ -187,11 +194,6 @@ module.exports.notifier  = (config = {}) ->
                     middlewareCount++ unless list[opts.title]?
                     list[opts.title] = fn
 
-            #
-            # each notifier is assigned a uuid unless already defined
-            # -------------------------------------------------------
-            # 
-
             
             Object.defineProperty notifier, 'uuid', 
                 writable:   false
@@ -204,7 +206,6 @@ module.exports.notifier  = (config = {}) ->
                 value:      title
 
             Object.defineProperty notifier, 'serialize',
-                writable:   false
                 value: (detail = 1) -> 
                     switch detail
                         when 1 
