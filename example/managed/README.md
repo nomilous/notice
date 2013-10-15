@@ -9,8 +9,8 @@
       "uuid": 1,
       "metrics": {
         "local": {
-          "input": 0,
-          "output": 0,
+          "input": 294,
+          "output": 294,
           "error": {
             "usr": 0,
             "sys": 0
@@ -26,15 +26,19 @@
       },
       "middlewares": [
         {
-          "title": "middleware one",
+          "title": "warehouse",
           "metrics": {}
         },
         {
-          "title": "middleware two",
+          "title": "accounts",
           "metrics": {}
         },
         {
-          "title": "middleware three",
+          "title": "despatch",
+          "metrics": {}
+        },
+        {
+          "title": "new line",
           "metrics": {}
         }
       ]
@@ -48,20 +52,23 @@
 {
   "records": [
     {
-      "title": "middleware one",
+      "title": "warehouse",
       "metrics": {}
     },
     {
-      "title": "middleware two",
+      "title": "accounts",
       "metrics": {}
     },
     {
-      "title": "middleware three",
+      "title": "despatch",
+      "metrics": {}
+    },
+    {
+      "title": "new line",
       "metrics": {}
     }
   ]
 }
-
 ```
 
 `curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/middlewares/middleware%20one`
