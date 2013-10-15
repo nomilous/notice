@@ -41,11 +41,17 @@ module.exports.client  = (config = {}) ->
             
             try 
 
+                if typeof title is 'object'
+
+                    callback = opts
+                    opts     = title
+                    title    = opts.title
+
                 throw undefinedArg 'title' unless typeof title is 'string'
                 throw alreadyDefined 'title', title if local.clients[title]?
                 throw undefinedArg 'opts.connect.url' unless opts.connect? and typeof opts.connect.url is 'string'
                 
-                client = local.Notifier.create title
+                client = local.Notifier.create title, opts.uuid
                 local.clients[title] = client
 
             catch error

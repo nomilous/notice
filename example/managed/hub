@@ -1,0 +1,58 @@
+#! /usr/bin/env coffee
+
+notice = require '../../lib/notice'
+
+MessageHub = notice.hub
+    
+    error:
+        keep: 2
+    manager: 
+        listen: 
+            port: 44444
+            cert: __dirname + '/../../cert/develop-cert.pem'
+            key:  __dirname + '/../../cert/develop-key.pem'
+        authenticate: 
+            username: 'username'
+            password: 'password'
+
+MessageHub.create
+
+    title: 'Managed Hub'
+    uuid:  1
+    listen: 
+        adaptor: 'socket.io'
+        port:    11111
+        secret:  'secret'
+        cert:    __dirname + '/../../cert/develop-cert.pem'
+        key:     __dirname + '/../../cert/develop-key.pem'
+
+    (error, hub) -> 
+
+        return process.stdout.write error.toString() if error?
+
+
+        hub.use 
+            title: 'warehouse'
+            (next, capsule, traversal) -> 
+                console.log warehouse: capsule
+                next()
+
+        hub.use 
+            title: 'accounts'
+            (next, capsule, traversal) -> 
+                console.log accounts: capsule
+                next()
+
+        hub.use 
+            title: 'despatch'
+            (next, capsule, traversal) -> 
+                console.log despatch: capsule
+                next()
+
+        hub.use
+            title: 'new line', 
+            (next) -> 
+                console.log()
+                next()
+
+

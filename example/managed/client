@@ -1,0 +1,36 @@
+#! /usr/bin/env coffee
+
+notice = require '../../lib/notice'
+Client = notice.client
+
+    capsule: 
+        purchase: {}
+
+Client.create
+    
+    title: 'Shop 123'
+    uuid:  'some-unique-code'
+    connect: 
+        adaptor:            'socket.io'
+        url:                'https://localhost:11111'
+        secret:             'secret'
+        errorWait:          1000
+        rejectUnauthorized: false
+
+    (error, client) -> 
+
+        return process.stdout.write error.toString() if error?
+        console.log client
+
+        setInterval (->
+
+            client.purchase 'thing',
+
+                item_id:  Math.floor Math.random() * 1000000
+                quantity: Math.floor Math.random() * 100
+
+                (error, item) -> 
+
+                    console.log item
+
+        ), 1000
