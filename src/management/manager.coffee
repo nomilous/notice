@@ -145,18 +145,18 @@ module.exports.manager  = (config = {}) ->
                         statusCode
                         response
 
-            '/v1/hubs/:uuid:/middlewares/:uuid:':
+            '/v1/hubs/:uuid:/middlewares/:id:':
 
                 description: 'get or update or delete a middleware'
                 methods: ['GET', 'POST', 'DELETE']
                 accepts: ['text/javascript', 'text/coffee-script']
-                handler: ([uuid1,uuid2], request, response, statusCode = 200) -> 
+                handler: ([uuid,id], request, response, statusCode = 200) -> 
 
-                    uuid2 = decodeURIComponent uuid2
-                    notifier = local.hubContext.uuids[uuid1]
+                    id = decodeURIComponent id
+                    notifier = local.hubContext.uuids[uuid]
                     middlewares = notifier.serialize(2).middlewares
                     for middleware in middlewares
-                        if middleware.uuid == uuid2
+                        if middleware.id == id
                             return local.respond middleware, statusCode, response
 
                     objectNotFound response
@@ -177,16 +177,16 @@ module.exports.manager  = (config = {}) ->
         if path[-1..] == '/' then path = path[0..-2]
 
         try 
-            [match, uuid1] = matched = path.match /v1\/hubs\/(.*)/
-            unless uuid1.match /\//
-                return local.routes['/v1/hubs/:uuid:'].handler [uuid1], request, response
+            [match, uuid] = matched = path.match /v1\/hubs\/(.*)/
+            unless uuid.match /\//
+                return local.routes['/v1/hubs/:uuid:'].handler [uuid], request, response
 
-            if [match, uuid1, nested] = uuid1.match /(.*?)\/(.*)/
+            if [match, uuid, nested] = uuid.match /(.*?)\/(.*)/
                 unless nested.match /\//
-                    return local.routes["/v1/hubs/:uuid:/#{nested}"].handler [uuid1], request, response
+                    return local.routes["/v1/hubs/:uuid:/#{nested}"].handler [uuid], request, response
                 
-                if [match, nested, uuid2] = nested.match /(.*?)\/(.*)/
-                    return local.routes["/v1/hubs/:uuid:/#{nested}/:uuid:"].handler [uuid1, uuid2], request, response
+                if [match, nested, id] = nested.match /(.*?)\/(.*)/
+                    return local.routes["/v1/hubs/:uuid:/#{nested}/:id:"].handler [uuid, id], request, response
 
         catch error
 

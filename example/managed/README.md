@@ -58,27 +58,27 @@
   "records": [
     {
       "title": "initialize",
-      "uuid": "initialize",
+      "id": "initialize",
       "metrics": {}
     },
     {
       "title": "warehouse",
-      "uuid": "warehouse",
+      "id": "warehouse",
       "metrics": {}
     },
     {
       "title": "accounts",
-      "uuid": "accounts",
+      "id": "accounts",
       "metrics": {}
     },
     {
       "title": "despatch",
-      "uuid": "despatch",
+      "id": "despatch",
       "metrics": {}
     },
     {
       "title": "final ize",
-      "uuid": "final ize",
+      "id": "final ize",
       "metrics": {}
     }
   ]
