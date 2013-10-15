@@ -115,49 +115,52 @@ module.exports.notifier  = (config = {}) ->
 
                 functions = for middleware in mwBus
 
-                    do (middleware) -> deferred (action) -> 
+                    do (middleware) -> 
 
-                        {resolve, reject, notify} = action
-                        {type, title, fn} = middleware
+                        return (->) unless middleware.enabled
+                        deferred (action) -> 
 
-                        next = -> process.nextTick -> resolve capsule
-                        next.notify = (update) -> process.nextTick -> notify update
-                        
-                        next.reject = (error)  -> 
+                            {resolve, reject, notify} = action
+                            {type, title, fn} = middleware
 
-                            keepErrors title, type, error
-                            localMetrics.error.usr++ if type == 'usr'
-                            localMetrics.error.sys++ if type == 'sys'
-                            process.nextTick -> reject error
-                        
-                        next.cancel = -> 
+                            next = -> process.nextTick -> resolve capsule
+                            next.notify = (update) -> process.nextTick -> notify update
+                            
+                            next.reject = (error)  -> 
 
-                            #
-                            # * UNKNOWN - cancel() leaves the remaining promises dangling,
-                            #             benchmarks suggest this is not a promblem.
-                            # 
-                            #             But it might be.
-                            #
+                                keepErrors title, type, error
+                                localMetrics.error.usr++ if type == 'usr'
+                                localMetrics.error.sys++ if type == 'sys'
+                                process.nextTick -> reject error
+                            
+                            next.cancel = -> 
 
-                            cancelled = true
-                            localMetrics.cancel.usr++ if type == 'usr'
-                            localMetrics.cancel.sys++ if type == 'sys'
-                            process.nextTick -> 
-                                notify 
-                                    _type:     'control'
-                                    control:   'cancel'
-                                    middleware: title
-                                    capsule:    capsule
+                                #
+                                # * UNKNOWN - cancel() leaves the remaining promises dangling,
+                                #             benchmarks suggest this is not a promblem.
+                                # 
+                                #             But it might be.
+                                #
 
-                        try 
-                            fn next, capsule, traversal
-                            localMetrics.output++ if title == 'last' and not cancelled
+                                cancelled = true
+                                localMetrics.cancel.usr++ if type == 'usr'
+                                localMetrics.cancel.sys++ if type == 'sys'
+                                process.nextTick -> 
+                                    notify 
+                                        _type:     'control'
+                                        control:   'cancel'
+                                        middleware: title
+                                        capsule:    capsule
 
-                        catch error
-                            keepErrors title, type, error
-                            localMetrics.error.usr++ if type == 'usr'
-                            localMetrics.error.sys++ if type == 'sys'
-                            reject error
+                            try 
+                                fn next, capsule, traversal
+                                localMetrics.output++ if title == 'last' and not cancelled
+
+                            catch error
+                                keepErrors title, type, error
+                                localMetrics.error.usr++ if type == 'usr'
+                                localMetrics.error.sys++ if type == 'sys'
+                                reject error
 
                 return pipeline functions
 
@@ -170,7 +173,12 @@ module.exports.notifier  = (config = {}) ->
             reload = -> 
 
                 mwBus.length = 0
-                mwBus.push type: 'sys', title: 'first', fn: first
+
+                mwBus.push 
+                    type: 'sys'
+                    title: 'first'
+                    enabled: true
+                    fn: first
 
                 for title of list
                     mwBus.push 
@@ -179,7 +187,12 @@ module.exports.notifier  = (config = {}) ->
                         enabled: list[title].enabled
                         fn: list[title].fn 
 
-                mwBus.push type: 'sys', title: 'last', fn: last
+                mwBus.push 
+                    type: 'sys'
+                    title: 'last'
+                    enabled: true
+                    fn: last
+
                 middlewareCount = mwBus.length - 2
 
             #
@@ -292,7 +305,7 @@ module.exports.notifier  = (config = {}) ->
 
                             middlewares = local.middleware[notifier.title]
                             mmetics     = local.middlewareMetrics[notifier.title]
-                            
+
                             title:   notifier.title
                             uuid:    notifier.uuid
                             metrics: local: nfMetrics.local
