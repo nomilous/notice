@@ -257,20 +257,28 @@ module.exports.notifier  = (config = {}) ->
                     # * force() can replace or delete middleware
                     #
 
-                    opts.enabled ?= true
-
                     throw undefinedArg( 
                         'opts.title and fn', 'use(opts, middlewareFn)'
                     ) unless ( 
                         opts? and opts.title? and 
                         ( fn? and typeof fn == 'function' ) or
-                        ( opts.delete? and opts.delete is true )
+                        ( opts.delete? and opts.delete is true ) or 
+                        ( opts.enabled? and typeof opts.enabled is 'boolean' )
+
                     )
 
                     if opts.delete and list[opts.title]?
                         delete list[opts.title]
                         reload()
                         return
+
+                    if opts.enabled? 
+                        list[opts.title].enabled = opts.enabled
+                        if opts.fn? then list[opts.title].fn = opts.fn
+                        reload()
+                        return
+
+                    opts.enabled ?= true
                     
                     list[opts.title] = 
                         title: opts.title
@@ -313,7 +321,6 @@ module.exports.notifier  = (config = {}) ->
                             middlewares: for middlewareTitle of middlewares
                                 
                                 title:   middlewareTitle
-                                id:      middlewareTitle
                                 enabled: middlewares[middlewareTitle].enabled
                                 metrics: mmetics
 

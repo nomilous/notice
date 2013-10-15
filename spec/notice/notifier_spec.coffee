@@ -314,6 +314,24 @@ describe 'notifier', ->
                     three: 3
                 done()
 
+        it 'can toggle enabled using force', (done) -> 
+
+            six = notifier().create 'Assembly Line 6'
+            six.use 
+                title: 'one'
+                enabled: false
+                (done, capsule) -> 
+                    capsule.one = 1
+                    done()
+
+            six.event (err, capsule) -> 
+
+                capsule.should.eql {}
+                six.force title: 'one', enabled: true
+                six.event (err, capsule) -> 
+                    capsule.should.eql one: 1
+                    done()
+
 
         it 'creates a function to send a raw payload into the pipeline', (done) -> 
 
