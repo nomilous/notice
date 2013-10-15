@@ -145,18 +145,17 @@ module.exports.manager  = (config = {}) ->
                         statusCode
                         response
 
-            '/v1/hubs/:uuid:/middlewares/:id:':
+            '/v1/hubs/:uuid:/middlewares/:title:':
 
                 description: 'get or update or delete a middleware'
-                methods: ['GET', 'POST', 'DELETE']
-                accepts: ['text/javascript', 'text/coffee-script']
-                handler: ([uuid,id], request, response, statusCode = 200) -> 
+                methods: ['GET', 'DELETE']
+                handler: ([uuid,title], request, response, statusCode = 200) -> 
 
-                    id = decodeURIComponent id
+                    title = decodeURIComponent title
                     notifier = local.hubContext.uuids[uuid]
                     middlewares = notifier.serialize(2).middlewares
                     for middleware in middlewares
-                        if middleware.id == id
+                        if middleware.title == title
                             return local.respond middleware, statusCode, response
 
                     objectNotFound response
@@ -185,8 +184,8 @@ module.exports.manager  = (config = {}) ->
                 unless nested.match /\//
                     return local.routes["/v1/hubs/:uuid:/#{nested}"].handler [uuid], request, response
                 
-                if [match, nested, id] = nested.match /(.*?)\/(.*)/
-                    return local.routes["/v1/hubs/:uuid:/#{nested}/:id:"].handler [uuid, id], request, response
+                if [match, nested, title] = nested.match /(.*?)\/(.*)/
+                    return local.routes["/v1/hubs/:uuid:/#{nested}/:title:"].handler [uuid, title], request, response
 
         catch error
 

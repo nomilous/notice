@@ -135,10 +135,9 @@ describe 'manage', ->
                         '/v1/hubs/:uuid:/middlewares':
                             description: 'get only the middlewares'
                             methods: ['GET']
-                        '/v1/hubs/:uuid:/middlewares/:id:':
+                        '/v1/hubs/:uuid:/middlewares/:title:':
                             description: 'get or update or delete a middleware'
-                            methods: ['GET', 'POST', 'DELETE']
-                            accepts: ['text/javascript', 'text/coffee-script']
+                            methods: ['GET', 'DELETE']
 
                 done()
 
@@ -227,20 +226,17 @@ describe 'manage', ->
             _manager().requestHandler @mockRequest, @mockResponse
 
 
-        it 'responds to GET /v1/hubs/:uuid:/middlewares/:id:', (done) -> 
+        it 'responds to GET /v1/hubs/:uuid:/middlewares/:title:', (done) -> 
 
             @write = (body) -> 
-                console.log body
                 JSON.parse( body ).should.eql 
                     title: 'title'
-                    id:  'title'
                     metrics: []
                     
                 done()
 
             @serialize1 = -> middlewares: [
                 title: 'title'
-                id:  'title'
                 metrics: []
             ]
             @mockRequest.url = '/v1/hubs/1/middlewares/title'
