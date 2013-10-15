@@ -17,7 +17,7 @@ MessageHub = notice.hub
 
 MessageHub.create
 
-    title: 'Managed Hub'
+    title: 'Purchases Processor'
     uuid:  1
     listen: 
         adaptor: 'socket.io'
@@ -30,6 +30,11 @@ MessageHub.create
 
         return process.stdout.write error.toString() if error?
 
+        hub.use 
+            title: 'initialize'
+            (next, capsule, traversal) -> 
+                console.log warehouse: capsule
+                next()
 
         hub.use 
             title: 'warehouse'
@@ -50,7 +55,7 @@ MessageHub.create
                 next()
 
         hub.use
-            title: 'new line', 
+            title: 'finalize', 
             (next) -> 
                 console.log()
                 next()

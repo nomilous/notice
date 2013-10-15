@@ -5,12 +5,12 @@
 {
   "records": [
     {
-      "title": "Managed Hub",
+      "title": "Purchases Processor",
       "uuid": 1,
       "metrics": {
         "local": {
-          "input": 294,
-          "output": 294,
+          "input": 9,
+          "output": 9,
           "error": {
             "usr": 0,
             "sys": 0
@@ -26,6 +26,10 @@
       },
       "middlewares": [
         {
+          "title": "initialize",
+          "metrics": {}
+        },
+        {
           "title": "warehouse",
           "metrics": {}
         },
@@ -38,7 +42,7 @@
           "metrics": {}
         },
         {
-          "title": "new line",
+          "title": "finalize",
           "metrics": {}
         }
       ]
@@ -52,6 +56,10 @@
 {
   "records": [
     {
+      "title": "initialize",
+      "metrics": {}
+    },
+    {
       "title": "warehouse",
       "metrics": {}
     },
@@ -64,14 +72,14 @@
       "metrics": {}
     },
     {
-      "title": "new line",
+      "title": "finalize",
       "metrics": {}
     }
   ]
 }
 ```
 
-`curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/middlewares/middleware%20one`
+`curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/middlewares/warehouse`
 ```json
 
 
