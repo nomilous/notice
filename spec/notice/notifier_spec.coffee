@@ -264,6 +264,30 @@ describe 'notifier', ->
             mmm['put a lid on it'].fn          done, {}
 
 
+        it 'stores middlewares in a hash with title, enabled, fn', (done) -> 
+
+            #
+            # half way to changing to an array (maybe)
+            #
+
+            six = notifier().create 'Assembly Line 6'
+            six.use 
+                title: 'arrange into single file'
+                (done, capsule) -> done()
+            six.use
+                title: 'squirt the product in'
+                (done, capsule) -> done()
+            six.use
+                title: 'put a lid on it'
+                (done, capsule) -> done(); ### third ###
+
+            third = _notifier().middleware['Assembly Line 6']['put a lid on it']
+            third.title.should.equal 'put a lid on it'
+            third.enabled.should.equal true
+            third.fn.toString().should.match /third/
+            done()
+
+
         it 'creates a function to send a raw payload into the pipeline', (done) -> 
 
             mix = notifier().create 'Assembly Line Mix'
@@ -698,7 +722,7 @@ describe 'notifier', ->
 
 
 
-        it.only 'can use the force() to replace middleware', (done) -> 
+        it 'can use the force() to replace middleware', (done) -> 
 
             mix  = notifier().create 'Assembly Line Mix'
             deck = _notifier().middleware['Assembly Line Mix']

@@ -171,7 +171,14 @@ module.exports.notifier  = (config = {}) ->
 
                 mwBus.length = 0
                 mwBus.push type: 'sys', title: 'first', fn: first
-                mwBus.push type: 'usr', title: title, fn: list[title].fn for title of list
+
+                for title of list
+                    mwBus.push 
+                        type: 'usr'
+                        title: title
+                        enabled: list[title].enabled
+                        fn: list[title].fn 
+
                 mwBus.push type: 'sys', title: 'last', fn: last
                 middlewareCount = mwBus.length - 2
 
@@ -185,6 +192,8 @@ module.exports.notifier  = (config = {}) ->
             local.notifiers[title] = notifier = 
 
                 use: (opts, fn) -> 
+
+                    opts.enabled ?= true
 
                     throw undefinedArg( 
                         'opts.title and fn', 'use(opts, middlewareFn)'
@@ -221,6 +230,7 @@ module.exports.notifier  = (config = {}) ->
                     unless list[opts.title]?
                         list[opts.title] = 
                             title: opts.title
+                            enabled: opts.enabled
                             fn: fn
                         reload()
                         return
@@ -233,6 +243,8 @@ module.exports.notifier  = (config = {}) ->
                     #
                     # * force() can replace or delete middleware
                     #
+
+                    opts.enabled ?= true
 
                     throw undefinedArg( 
                         'opts.title and fn', 'use(opts, middlewareFn)'
@@ -249,6 +261,7 @@ module.exports.notifier  = (config = {}) ->
                     
                     list[opts.title] = 
                         title: opts.title
+                        enabled: opts.enabled
                         fn: fn
 
                     reload()
@@ -279,7 +292,7 @@ module.exports.notifier  = (config = {}) ->
 
                             middlewares = local.middleware[notifier.title]
                             mmetics     = local.middlewareMetrics[notifier.title]
-
+                            
                             title:   notifier.title
                             uuid:    notifier.uuid
                             metrics: local: nfMetrics.local
@@ -287,7 +300,8 @@ module.exports.notifier  = (config = {}) ->
                             middlewares: for middlewareTitle of middlewares
                                 
                                 title:   middlewareTitle
-                                id:    middlewareTitle
+                                id:      middlewareTitle
+                                enabled: middlewares[middlewareTitle].enabled
                                 metrics: mmetics
 
 
