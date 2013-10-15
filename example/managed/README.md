@@ -103,4 +103,9 @@
   "metrics": {}
 }
 ```
+```bash
+curl -ku username:password -H 'Content-Type: text/coffee-script' --data '{
 
+}' 'https://127.0.0.1:44444/v1/hubs/1/middlewares/warehouse/replace'
+
+```

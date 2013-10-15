@@ -14,7 +14,8 @@
     "socket.io": "~0.9.16",
     "socket.io-client": "~0.9.16",
     "node-uuid": "~1.4.1",
-    "also": "0.0.12"
+    "also": "0.0.12",
+    "coffee-script": "~1.6.3"
   },
   "devDependencies": {
     "nez": "0.0.7",

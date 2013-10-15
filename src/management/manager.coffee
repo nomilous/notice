@@ -2,6 +2,7 @@
 {missingConfig} = require '../notice/errors'
 {start}         = require '../notice/hub/listener'
 {readFileSync}  = require 'fs'
+coffee          = require 'coffee-script'
 version         = JSON.parse( readFileSync __dirname + '/../../package.json', 'utf8' ).version
 
 testable               = undefined
@@ -31,6 +32,11 @@ module.exports.manager  = (config = {}) ->
         objectNotFound: (response) -> 
 
             response.writeHead 404
+            response.end()
+
+        unsupportedMedia: (response) -> 
+
+            response.writeHead 415
             response.end()
 
 
@@ -177,7 +183,6 @@ module.exports.manager  = (config = {}) ->
                 
                     title = decodeURIComponent title
                     notifier = local.hubContext.uuids[uuid]
-                    notifier.got notifier
                     return local.objectNotFound response unless notifier.got title
 
                     notifier.force 
@@ -205,7 +210,6 @@ module.exports.manager  = (config = {}) ->
                 
                     title = decodeURIComponent title
                     notifier = local.hubContext.uuids[uuid]
-                    notifier.got notifier
                     return local.objectNotFound response unless notifier.got title
 
                     notifier.force 
@@ -218,6 +222,31 @@ module.exports.manager  = (config = {}) ->
                             return local.respond middleware, statusCode, response
 
                     objectNotFound response
+
+
+            '/v1/hubs/:uuid:/middlewares/:title:/replace':
+                description: 'replace a middleware'
+                methods: ['POST']
+                accepts: ['text/javascript', 'text/coffee-script']
+                handler: ([uuid,title], request, response, statusCode = 200) -> 
+
+                    return local.methodNotAllowed response unless request.method == 'POST'
+                    return local.unsupportedMedia response unless (
+                        request.headers['content-type'] == 'text/javascript' or
+                        request.headers['content-type'] == 'text/coffee-script'
+                    )
+
+                    title = decodeURIComponent title
+                    notifier = local.hubContext.uuids[uuid]
+                    return local.objectNotFound response unless notifier.got title
+
+                    body = ''
+                    request.on 'data', (buf) -> body += buf.toString()
+                    request.on 'end', -> 
+
+                        response.writeHead 200
+                        response.end()
+
 
 
 
@@ -252,7 +281,8 @@ module.exports.manager  = (config = {}) ->
                                 return local.routes["/v1/hubs/:uuid:/#{nested}/:title:/disable"].handler [uuid, title], request, response
                             when 'enable'
                                 return local.routes["/v1/hubs/:uuid:/#{nested}/:title:/enable"].handler [uuid, title], request, response
-
+                            when 'replace'
+                                return local.routes["/v1/hubs/:uuid:/#{nested}/:title:/replace"].handler [uuid, title], request, response
                             else objectNotFound response
 
         catch error

@@ -61,6 +61,10 @@ describe 'manage', ->
             Object.defineProperty @mockRequest, 'headers', 
                 get: => @headers
 
+            @mockRequest.on = (event, listener) => 
+                if event == 'end' then listener()
+                if event == 'data' then listener @mockRequest.body
+
             @writeHead = ->
             @write = ->
             @mockResponse = end: ->
@@ -149,6 +153,10 @@ describe 'manage', ->
                         '/v1/hubs/:uuid:/middlewares/:title:/enable':
                             description: 'enable a middleware'
                             methods: ['GET']
+                        '/v1/hubs/:uuid:/middlewares/:title:/replace':
+                            description: 'replace a middleware'
+                            methods: ['POST']
+                            accepts: ['text/javascript', 'text/coffee-script']
 
                 done()
 
@@ -317,7 +325,56 @@ describe 'manage', ->
             _manager().requestHandler @mockRequest, @mockResponse
 
 
-        context 'POST /v1/hubs/:uuid:/middlewares/:title:', ->
+        context 'POST /v1/hubs/:uuid:/middlewares/:title:/replace', -> 
+
+            it 'accepts only post', (done) -> 
+
+                @writeHead = (statusCode) ->
+                    statusCode.should.equal 405
+                    done()
+
+                @mockRequest.url = '/v1/hubs/1/middlewares/title/replace'
+                @mockRequest.method = 'GET'
+                _manager().requestHandler @mockRequest, @mockResponse
+
+
+            it 'responds 415 to if not text/javascript or text/coffee-script', (done) ->
+
+                @writeHead = (statusCode) ->
+                    statusCode.should.equal 415
+                    done()
+
+                @mockRequest.url = '/v1/hubs/1/middlewares/title/replace'
+                @mockRequest.method = 'POST'
+                _manager().requestHandler @mockRequest, @mockResponse
+
+            it 'accepts text/javascript', (done) -> 
+
+                @writeHead = (statusCode) ->
+                    statusCode.should.equal 200
+                    done()
+
+                @mockRequest.url = '/v1/hubs/1/middlewares/title/replace'
+                @mockRequest.method = 'POST'
+                @mockRequest.headers['content-type'] = 'text/javascript'
+                @mockRequest.body = ''
+                _manager().requestHandler @mockRequest, @mockResponse
+
+
+            it 'accepts text/coffee-script', (done) ->
+
+                @writeHead = (statusCode) ->
+                    statusCode.should.equal 200
+                    done()
+
+                @mockRequest.url = '/v1/hubs/1/middlewares/title/replace'
+                @mockRequest.method = 'POST'
+                @mockRequest.headers['content-type'] = 'text/coffee-script'
+                @mockRequest.body = ''
+                _manager().requestHandler @mockRequest, @mockResponse
+
+
+            it 'responds 400 on compile or eval failed'
 
             # as text/javascript or text/coffee-script 
         context 'DELETE /v1/hubs/:uuid:/middlewares/:title:', ->
