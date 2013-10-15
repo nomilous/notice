@@ -1,6 +1,7 @@
 http    = require 'http'
 https   = require 'https'
 should  = require 'should'
+{_notifier,notifier} = require '../../lib/notice/notifier'
 {manager,_manager} = require '../../lib/management/manager'
 
 
@@ -81,8 +82,12 @@ describe 'manage', ->
                     'hub name 1': uuid: 1
                     'hub name 2': uuid: 2
                 uuids:
-                    '1': serialize: (detail) => try @serialize1.apply null, arguments
-                    '2': serialize: (detail) => try @serialize2.apply null, arguments
+                    '1': 
+                        serialize: (detail) => try @serialize1.apply null, arguments
+                        got: => @got.apply null, arguments
+                        force: => @force.apply null, arguments
+                    '2': 
+                        serialize: (detail) => try @serialize2.apply null, arguments
 
         beforeEach -> 
             @writeHead = -> 
@@ -138,10 +143,10 @@ describe 'manage', ->
                         '/v1/hubs/:uuid:/middlewares/:title:':
                             description: 'get or update or delete a middleware'
                             methods: ['GET'] # ['GET', 'DELETE']
-                        'v1/hubs/:uuid:/middlewares/:title:/disable':
+                        '/v1/hubs/:uuid:/middlewares/:title:/disable':
                             description: 'disable a middleware'
                             methods: ['GET']
-                        'v1/hubs/:uuid:/middlewares/:title:/enable':
+                        '/v1/hubs/:uuid:/middlewares/:title:/enable':
                             description: 'enable a middleware'
                             methods: ['GET']
 
@@ -248,6 +253,68 @@ describe 'manage', ->
             @mockRequest.url = '/v1/hubs/1/middlewares/title'
             _manager().requestHandler @mockRequest, @mockResponse
 
+
+        it 'disables middleware with GET v1/hubs/:uuid:/middlewares/:title:/disable', (done) -> 
+
+            Notifier = notifier()
+            instance = Notifier.create 'hub name', 1
+            instance.use 
+                title: 'title'
+                (next) -> next()
+
+            @write = (body) -> 
+                JSON.parse( body ).should.eql 
+                    title: 'title'
+                    enabled: false
+                    metrics: {}
+                    
+                done()
+
+            @serialize1 = -> instance.serialize(2)
+            @got        = instance.got
+            @force      = instance.force
+
+            @mockRequest.url = '/v1/hubs/1/middlewares/title/disable'
+            _manager().requestHandler @mockRequest, @mockResponse
+
+        it 'returns 404 on no such middleware', (done) -> 
+
+            Notifier = notifier()
+            instance = Notifier.create 'hub name', 1
+            @serialize1 = -> instance.serialize(2)
+            @got        = instance.got
+
+            @writeHead = (statusCode) ->
+                statusCode.should.equal 404
+                done()
+
+            @mockRequest.url = '/v1/hubs/1/middlewares/nosuchmiddleware/disable'
+            _manager().requestHandler @mockRequest, @mockResponse
+
+
+        it 'enables middleware with  GET v1/hubs/:uuid:/middlewares/:title:/enable', (done) -> 
+
+            Notifier = notifier()
+            instance = Notifier.create 'hub name', 1
+            instance.use 
+                title: 'title'
+                enabled: false
+                (next) -> next()
+
+            @write = (body) -> 
+                JSON.parse( body ).should.eql 
+                    title: 'title'
+                    enabled: true
+                    metrics: {}
+                    
+                done()
+
+            @serialize1 = -> instance.serialize(2)
+            @got        = instance.got
+            @force      = instance.force
+
+            @mockRequest.url = '/v1/hubs/1/middlewares/title/enable'
+            _manager().requestHandler @mockRequest, @mockResponse
 
 
         context 'POST /v1/hubs/:uuid:/middlewares/:title:', ->

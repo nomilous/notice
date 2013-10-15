@@ -7,8 +7,8 @@
   "uuid": 1,
   "metrics": {
     "local": {
-      "input": 260,
-      "output": 259,
+      "input": 4,
+      "output": 3,
       "error": {
         "usr": 0,
         "sys": 0
@@ -25,27 +25,27 @@
   "middlewares": [
     {
       "title": "initialize",
-      "uuid": "initialize",
+      "enabled": true,
       "metrics": {}
     },
     {
       "title": "warehouse",
-      "uuid": "warehouse",
+      "enabled": true,
       "metrics": {}
     },
     {
       "title": "accounts",
-      "uuid": "accounts",
+      "enabled": true,
       "metrics": {}
     },
     {
       "title": "despatch",
-      "uuid": "despatch",
+      "enabled": true,
       "metrics": {}
     },
     {
-      "title": "final ize",
-      "uuid": "final ize",
+      "title": "finalize",
+      "enabled": true,
       "metrics": {}
     }
   ]
@@ -58,38 +58,49 @@
   "records": [
     {
       "title": "initialize",
-      "id": "initialize",
+      "enabled": true,
       "metrics": {}
     },
     {
       "title": "warehouse",
-      "id": "warehouse",
+      "enabled": true,
       "metrics": {}
     },
     {
       "title": "accounts",
-      "id": "accounts",
+      "enabled": true,
       "metrics": {}
     },
     {
       "title": "despatch",
-      "id": "despatch",
+      "enabled": true,
       "metrics": {}
     },
     {
-      "title": "final ize",
-      "id": "final ize",
+      "title": "finalize",
+      "enabled": true,
       "metrics": {}
     }
   ]
 }
 ```
 
-`curl -ku username:password 'https://127.0.0.1:44444/v1/hubs/1/middlewares/finalize`
+`curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/middlewares/warehouse`
 ```json
 {
-  "title": "final ize",
-  "uuid": "final ize",
+  "title": "warehouse",
+  "enabled": true,
   "metrics": {}
 }
 ```
+
+`curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/middlewares/warehouse/enable`
+`curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/middlewares/warehouse/disable`
+```json
+{
+  "title": "warehouse",
+  "enabled": false,
+  "metrics": {}
+}
+```
+

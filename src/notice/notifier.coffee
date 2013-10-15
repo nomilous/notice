@@ -204,6 +204,8 @@ module.exports.notifier  = (config = {}) ->
 
             local.notifiers[title] = notifier = 
 
+                got: (title) -> list[title]?
+
                 use: (opts, fn) -> 
 
                     opts.enabled ?= true

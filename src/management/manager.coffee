@@ -151,6 +151,9 @@ module.exports.manager  = (config = {}) ->
                 methods: ['GET'] #['GET', 'DELETE']
                 handler: ([uuid,title], request, response, statusCode = 200) -> 
 
+                    return local.methodNotAllowed response unless request.method == 'GET'
+                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
+
                     title = decodeURIComponent title
                     notifier = local.hubContext.uuids[uuid]
                     middlewares = notifier.serialize(2).middlewares
@@ -160,17 +163,61 @@ module.exports.manager  = (config = {}) ->
 
                     objectNotFound response
 
-            'v1/hubs/:uuid:/middlewares/:title:/disable':
+            '/v1/hubs/:uuid:/middlewares/:title:/disable':
                 description: 'disable a middleware'
                 methods: ['GET']
                 handler: ([uuid,title], request, response, statusCode = 200) -> 
 
-            'v1/hubs/:uuid:/middlewares/:title:/enable':
+                    return local.methodNotAllowed response unless request.method == 'GET'
+                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
+
+                    #
+                    # getting messy, need per middleware serializer, (or something)
+                    #
+                
+                    title = decodeURIComponent title
+                    notifier = local.hubContext.uuids[uuid]
+                    notifier.got notifier
+                    return local.objectNotFound response unless notifier.got title
+
+                    notifier.force 
+                        title: title
+                        enabled: false
+
+                    middlewares = notifier.serialize(2).middlewares
+                    for middleware in middlewares
+                        if middleware.title == title
+                            return local.respond middleware, statusCode, response
+
+                    objectNotFound response
+
+            '/v1/hubs/:uuid:/middlewares/:title:/enable':
                 description: 'enable a middleware'
                 methods: ['GET']
                 handler: ([uuid,title], request, response, statusCode = 200) -> 
 
+                    return local.methodNotAllowed response unless request.method == 'GET'
+                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
 
+                    #
+                    # getting messy, need per middleware serializer, (or something)
+                    #
+                
+                    title = decodeURIComponent title
+                    notifier = local.hubContext.uuids[uuid]
+                    notifier.got notifier
+                    return local.objectNotFound response unless notifier.got title
+
+                    notifier.force 
+                        title: title
+                        enabled: true
+
+                    middlewares = notifier.serialize(2).middlewares
+                    for middleware in middlewares
+                        if middleware.title == title
+                            return local.respond middleware, statusCode, response
+
+                    objectNotFound response
 
 
 
@@ -196,7 +243,17 @@ module.exports.manager  = (config = {}) ->
                     return local.routes["/v1/hubs/:uuid:/#{nested}"].handler [uuid], request, response
                 
                 if [match, nested, title] = nested.match /(.*?)\/(.*)/
-                    return local.routes["/v1/hubs/:uuid:/#{nested}/:title:"].handler [uuid, title], request, response
+                    unless title.match /\//
+                        return local.routes["/v1/hubs/:uuid:/#{nested}/:title:"].handler [uuid, title], request, response
+
+                    if [match, title, action] = title.match /(.*?)\/(.*)/
+                        switch action
+                            when 'disable'
+                                return local.routes["/v1/hubs/:uuid:/#{nested}/:title:/disable"].handler [uuid, title], request, response
+                            when 'enable'
+                                return local.routes["/v1/hubs/:uuid:/#{nested}/:title:/enable"].handler [uuid, title], request, response
+
+                            else objectNotFound response
 
         catch error
 

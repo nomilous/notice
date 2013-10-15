@@ -67,7 +67,7 @@ MessageHub.create
                 next()
 
         hub.use
-            title: 'final ize', 
+            title: 'finalize', 
             (next, casule, traversal) -> 
                 console.log 'finalize'
                 console.log()
