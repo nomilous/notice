@@ -244,6 +244,16 @@ module.exports.manager  = (config = {}) ->
                     request.on 'data', (buf) -> body += buf.toString()
                     request.on 'end', -> 
 
+                        if request.headers['content-type'] == 'text/javascript'
+
+                            try fn = eval body
+                            catch error
+                                return local.respond
+                                    error: error.toString()
+                                    400
+                                    response
+
+                        console.log FN: fn.toString()
                         response.writeHead 200
                         response.end()
 

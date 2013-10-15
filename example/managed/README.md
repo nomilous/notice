@@ -103,9 +103,14 @@
   "metrics": {}
 }
 ```
+
 ```bash
-curl -ku username:password -H 'Content-Type: text/coffee-script' --data '{
+curl -ku username:password -H 'Content-Type: text/javascript' --data '
 
-}' 'https://127.0.0.1:44444/v1/hubs/1/middlewares/warehouse/replace'
+fn = function(next, capsule, traversal) {
+    console.log(capsule.all);
+    next();
+};
 
+' 'https://127.0.0.1:44444/v1/hubs/1/middlewares/warehouse/replace'
 ```
