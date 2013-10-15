@@ -93,10 +93,7 @@ module.exports.manager  = (config = {}) ->
                     return local.objectNotFound response unless local.hubContext.uuids[uuid]
 
                     notifier = local.hubContext.uuids[uuid]
-                    local.respond 
-                        records: [notifier.serialize(2)]
-                        statusCode
-                        response
+                    local.respond notifier.serialize(2), statusCode, response
 
             '/v1/hubs/:uuid:/metrics': 
 
@@ -148,17 +145,21 @@ module.exports.manager  = (config = {}) ->
                         statusCode
                         response
 
-            '/v1/hubs/:uuid:/middlewares/:title:':
+            '/v1/hubs/:uuid:/middlewares/:uuid:':
 
                 description: 'get or update or delete a middleware'
                 methods: ['GET', 'POST', 'DELETE']
                 accepts: ['text/javascript', 'text/coffee-script']
-                handler: ([uuid], request, response, statusCode = 200) -> 
+                handler: ([uuid1,uuid2], request, response, statusCode = 200) -> 
 
-                    local.respond 
-                        todo: 1
-                        statusCode
-                        response
+                    uuid2 = decodeURIComponent uuid2
+                    notifier = local.hubContext.uuids[uuid1]
+                    middlewares = notifier.serialize(2).middlewares
+                    for middleware in middlewares
+                        if middleware.uuid == uuid2
+                            return local.respond middleware, statusCode, response
+
+                    objectNotFound response
 
 
 
@@ -176,27 +177,29 @@ module.exports.manager  = (config = {}) ->
         if path[-1..] == '/' then path = path[0..-2]
 
         try 
-            [match, uuid] = matched = path.match /v1\/hubs\/(.*)/
-            
-            unless uuid.match /\//
+            [match, uuid1] = matched = path.match /v1\/hubs\/(.*)/
+            unless uuid1.match /\//
+                return local.routes['/v1/hubs/:uuid:'].handler [uuid1], request, response
 
-                return local.routes['/v1/hubs/:uuid:'].handler [uuid], request, response
-
-            if [match, uuid, child] = uuid.match /(.*)\/(.*)/
-
-                return local.routes["/v1/hubs/:uuid:/#{child}"].handler [uuid], request, response
+            if [match, uuid1, nested] = uuid1.match /(.*?)\/(.*)/
+                unless nested.match /\//
+                    return local.routes["/v1/hubs/:uuid:/#{nested}"].handler [uuid1], request, response
                 
+                if [match, nested, uuid2] = nested.match /(.*?)\/(.*)/
+                    return local.routes["/v1/hubs/:uuid:/#{nested}/:uuid:"].handler [uuid1, uuid2], request, response
 
         catch error
 
 
         unless local.routes[path]? 
 
-            #
-            # request for undefined route, respond 404 (but with help)
-            #
+            # #
+            # # request for undefined route, respond 404 (but with help)
+            # #
+            # return local.routes['/about'].handler null, request, response, 404 
 
-            return local.routes['/about'].handler null, request, response, 404 
+            response.writeHead 404
+            return response.end()
 
         
         local.routes[path].handler null, request, response

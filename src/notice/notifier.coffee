@@ -282,6 +282,7 @@ module.exports.notifier  = (config = {}) ->
                             middlewares: for middlewareTitle of middlewares
                                 
                                 title:   middlewareTitle
+                                uuid:    middlewareTitle
                                 metrics: mmetics
 
 

@@ -105,7 +105,7 @@ describe 'manage', ->
 
 
 
-        it 'responds with /about in 404 body', (done) -> 
+        it 'responds to /about', (done) -> 
 
             @write = (body) -> 
 
@@ -135,14 +135,14 @@ describe 'manage', ->
                         '/v1/hubs/:uuid:/middlewares':
                             description: 'get only the middlewares'
                             methods: ['GET']
-                        '/v1/hubs/:uuid:/middlewares/:title:':
+                        '/v1/hubs/:uuid:/middlewares/:uuid:':
                             description: 'get or update or delete a middleware'
                             methods: ['GET', 'POST', 'DELETE']
                             accepts: ['text/javascript', 'text/coffee-script']
 
                 done()
 
-            @mockRequest.url = '/no/such/route'
+            @mockRequest.url = '/about'
             _manager().requestHandler @mockRequest, @mockResponse
 
 
@@ -186,10 +186,8 @@ describe 'manage', ->
         it 'responds to GET /v1/hubs/:uuid: with specific hub record', (done) -> 
 
             @write = (body) ->
-                JSON.parse( body ).should.eql 
-                    records: [
-                        'HUB 1 RECORD detail:2'
-                    ]
+                JSON.parse( body ).should.equal 'HUB 1 RECORD detail:2'
+
                 done()
 
             @mockRequest.url = '/v1/hubs/1'
@@ -229,7 +227,23 @@ describe 'manage', ->
             _manager().requestHandler @mockRequest, @mockResponse
 
 
-        it 'responds to GET /v1/hubs/:uuid:/middlewares/:title:'
+        it 'responds to GET /v1/hubs/:uuid:/middlewares/:title:', (done) -> 
+
+            @write = (body) -> 
+                JSON.parse( body ).should.eql 
+                    title: 'title'
+                    uuid:  'title'
+                    metrics: []
+                    
+                done()
+
+            @serialize1 = -> middlewares: [
+                title: 'title'
+                uuid:  'title'
+                metrics: []
+            ]
+            @mockRequest.url = '/v1/hubs/1/middlewares/title'
+            _manager().requestHandler @mockRequest, @mockResponse
 
 
 
