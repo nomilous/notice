@@ -32,31 +32,44 @@ MessageHub.create
 
         hub.use 
             title: 'initialize'
-            (next, capsule, traversal) -> 
-                console.log warehouse: capsule
+            (next, capsule, traversal) ->
+
+                if capsule.control?
+                    console.log capsule.control, traversal.origin.context.account
+                    return next.cancel()
+
+                return next() unless capsule.purchase?
+                console.log 'initialize'
                 next()
 
         hub.use 
             title: 'warehouse'
             (next, capsule, traversal) -> 
+
+                return next() unless capsule.purchase?
                 console.log warehouse: capsule
                 next()
 
         hub.use 
             title: 'accounts'
             (next, capsule, traversal) -> 
+
+                return next() unless capsule.purchase?
                 console.log accounts: capsule
                 next()
 
         hub.use 
             title: 'despatch'
             (next, capsule, traversal) -> 
+
+                return next() unless capsule.purchase?
                 console.log despatch: capsule
                 next()
 
         hub.use
             title: 'finalize', 
-            (next) -> 
+            (next, casule, traversal) -> 
+                console.log 'finalize'
                 console.log()
                 next()
 

@@ -10,6 +10,10 @@ Client.create
     
     title: 'Shop 123'
     uuid:  'some-unique-code'
+    context: 
+        account: 
+            trader_code: 'en-0701'
+            email:       'email@email'
     connect: 
         adaptor:            'socket.io'
         url:                'https://localhost:11111'
@@ -27,7 +31,7 @@ Client.create
             client.purchase 'thing',
 
                 item_id:  Math.floor Math.random() * 1000000
-                quantity: Math.floor Math.random() * 100
+                quantity: (Math.floor Math.random() * 100) + 1
 
                 (error, item) -> 
 

@@ -68,6 +68,8 @@ describe 'manage', ->
             Object.defineProperty @mockResponse, 'write', 
                 get: => => try @write.apply null, arguments
 
+            @serialize1 = (detail) ->
+            @serialize2 = (detail) ->
             m = manager manager: 
                 authenticate: 
                     username: 'username'
@@ -79,12 +81,14 @@ describe 'manage', ->
                     'hub name 1': uuid: 1
                     'hub name 2': uuid: 2
                 uuids:
-                    '1': serialize: (detail) -> 'HUB 1 RECORD detail:' + detail
-                    '2': serialize: (detail) -> 'HUB 2 RECORD detail:' + detail
+                    '1': serialize: (detail) => try @serialize1.apply null, arguments
+                    '2': serialize: (detail) => try @serialize2.apply null, arguments
 
         beforeEach -> 
             @writeHead = -> 
             @write = -> 
+            @serialize1 = (detail) -> 'HUB 1 RECORD detail:' + detail
+            @serialize2 = (detail) -> 'HUB 2 RECORD detail:' + detail
 
 
 
@@ -192,10 +196,42 @@ describe 'manage', ->
             _manager().requestHandler @mockRequest, @mockResponse
 
 
-        it 'responds to GET /v1/hubs/:uuid:/metrics'
-        it 'responds to GET /v1/hubs/:uuid:/errors'
-        it 'responds to GET /v1/hubs/:uuid:/middlewares'
+        it 'responds to GET /v1/hubs/:uuid:/metrics', (done) -> 
+
+            @write = (body) -> 
+                JSON.parse( body ).should.eql records: ['METRICS']
+                done()
+
+            @serialize1 = -> metrics: 'METRICS'
+            @mockRequest.url = '/v1/hubs/1/metrics'
+            _manager().requestHandler @mockRequest, @mockResponse
+
+
+        it 'responds to GET /v1/hubs/:uuid:/errors', (done) -> 
+
+            @write = (body) -> 
+                JSON.parse( body ).should.eql records: ['ERRORS']
+                done()
+
+            @serialize1 = -> errors: 'ERRORS'
+            @mockRequest.url = '/v1/hubs/1/errors'
+            _manager().requestHandler @mockRequest, @mockResponse
+
+
+        it 'responds to GET /v1/hubs/:uuid:/middlewares', (done) -> 
+
+            @write = (body) -> 
+                JSON.parse( body ).should.eql records: 'MIDDLEWARES'
+                done()
+
+            @serialize1 = -> middlewares: 'MIDDLEWARES'
+            @mockRequest.url = '/v1/hubs/1/middlewares'
+            _manager().requestHandler @mockRequest, @mockResponse
+
+
         it 'responds to GET /v1/hubs/:uuid:/middlewares/:title:'
+
+
 
         context 'POST /v1/hubs/:uuid:/middlewares/:title:', ->
 
