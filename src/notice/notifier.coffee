@@ -171,7 +171,7 @@ module.exports.notifier  = (config = {}) ->
 
                 mwBus.length = 0
                 mwBus.push type: 'sys', title: 'first', fn: first
-                mwBus.push type: 'usr', title: title, fn: list[title] for title of list
+                mwBus.push type: 'usr', title: title, fn: list[title].fn for title of list
                 mwBus.push type: 'sys', title: 'last', fn: last
                 middlewareCount = mwBus.length - 2
 
@@ -219,7 +219,9 @@ module.exports.notifier  = (config = {}) ->
                         return
 
                     unless list[opts.title]?
-                        list[opts.title] = fn
+                        list[opts.title] = 
+                            title: opts.title
+                            fn: fn
                         reload()
                         return
 
@@ -245,7 +247,10 @@ module.exports.notifier  = (config = {}) ->
                         reload()
                         return
                     
-                    list[opts.title] = fn
+                    list[opts.title] = 
+                        title: opts.title
+                        fn: fn
+
                     reload()
 
 

@@ -259,9 +259,9 @@ describe 'notifier', ->
 
             mmm = _notifier().middleware['Assembly Line 6']
 
-            mmm['arrange into single file'] (->), {}
-            mmm['squirt the product in']    (->), {}
-            mmm['put a lid on it']          done, {}
+            mmm['arrange into single file'].fn (->), {}
+            mmm['squirt the product in'].fn    (->), {}
+            mmm['put a lid on it'].fn          done, {}
 
 
         it 'creates a function to send a raw payload into the pipeline', (done) -> 
@@ -698,7 +698,7 @@ describe 'notifier', ->
 
 
 
-        it 'can use the force() to replace middleware', (done) -> 
+        it.only 'can use the force() to replace middleware', (done) -> 
 
             mix  = notifier().create 'Assembly Line Mix'
             deck = _notifier().middleware['Assembly Line Mix']
@@ -722,7 +722,7 @@ describe 'notifier', ->
                     ### replaced ### 
                     done()
 
-            deck['1. intro'].toString().should.match /replaced/
+            deck['1. intro'].fn.toString().should.match /replaced/
             done()
 
         it 'has a dark side of the force()', (done) -> 
@@ -863,6 +863,5 @@ describe 'notifier', ->
                     done()
 
             five.event().then (capsule) -> 
-
                 capsule.array.should.eql  [ 1, 'new 2', 3 ]
                 done()
