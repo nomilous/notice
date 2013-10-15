@@ -137,7 +137,13 @@ describe 'manage', ->
                             methods: ['GET']
                         '/v1/hubs/:uuid:/middlewares/:title:':
                             description: 'get or update or delete a middleware'
-                            methods: ['GET', 'DELETE']
+                            methods: ['GET'] # ['GET', 'DELETE']
+                        'v1/hubs/:uuid:/middlewares/:title:/disable':
+                            description: 'disable a middleware'
+                            methods: ['GET']
+                        'v1/hubs/:uuid:/middlewares/:title:/enable':
+                            description: 'enable a middleware'
+                            methods: ['GET']
 
                 done()
 

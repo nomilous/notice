@@ -148,7 +148,7 @@ module.exports.manager  = (config = {}) ->
             '/v1/hubs/:uuid:/middlewares/:title:':
 
                 description: 'get or update or delete a middleware'
-                methods: ['GET', 'DELETE']
+                methods: ['GET'] #['GET', 'DELETE']
                 handler: ([uuid,title], request, response, statusCode = 200) -> 
 
                     title = decodeURIComponent title
@@ -159,6 +159,17 @@ module.exports.manager  = (config = {}) ->
                             return local.respond middleware, statusCode, response
 
                     objectNotFound response
+
+            'v1/hubs/:uuid:/middlewares/:title:/disable':
+                description: 'disable a middleware'
+                methods: ['GET']
+                handler: ([uuid,title], request, response, statusCode = 200) -> 
+
+            'v1/hubs/:uuid:/middlewares/:title:/enable':
+                description: 'enable a middleware'
+                methods: ['GET']
+                handler: ([uuid,title], request, response, statusCode = 200) -> 
+
 
 
 
