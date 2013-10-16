@@ -42,3 +42,37 @@ fn = (next, capsule, {cache}) ->
   }
 }
 ```
+
+
+```bash
+#
+# OOOPS
+#
+curl -ku username:password -H 'Content-Type: text/coffee-script' --data '
+fn = (next, capsule, {cache}) ->  throw new Error "Broke Something!!"
+' 'https://127.0.0.1:44444/v1/hubs/1/middlewares/accounts/replace'
+```
+
+`curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/errors`
+```json
+{
+  "recent": [
+    {
+      "timestamp": "2013-10-16T23:56:59.912Z",
+      "error": "Error: Broke Something!!",
+      "middleware": {
+        "title": "accounts",
+        "type": "usr"
+      }
+    },
+    {
+      "timestamp": "2013-10-16T23:57:00.013Z",
+      "error": "Error: Broke Something!!",
+      "middleware": {
+        "title": "accounts",
+        "type": "usr"
+      }
+    }
+  ]
+}
+```
