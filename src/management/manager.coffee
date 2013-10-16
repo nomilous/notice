@@ -222,6 +222,7 @@ module.exports.manager  = (config = {}) ->
 
                     title = decodeURIComponent title
                     notifier = local.hubContext.uuids[uuid]
+                    return objectNotFound response unless notifier.got title
                     notifier.force title: title, enabled: false
                     middlewares = notifier.serialize(2).middlewares
                     return local.respond  middlewares[title], statusCode, response
@@ -238,6 +239,7 @@ module.exports.manager  = (config = {}) ->
 
                     title = decodeURIComponent title
                     notifier = local.hubContext.uuids[uuid]
+                    return objectNotFound response unless notifier.got title
                     notifier.force title: title, enabled: true
                     middlewares = notifier.serialize(2).middlewares
                     return local.respond  middlewares[title], statusCode, response
@@ -273,9 +275,17 @@ module.exports.manager  = (config = {}) ->
                                     400
                                     response
 
-                        console.log FN: fn.toString()
-                        response.writeHead 200
-                        response.end()
+                            unless typeof fn is 'function'
+                                return local.respond
+                                    error: ( new Error 'Requires middleware function' ).toString()
+                                    400
+                                    response
+
+                            console.log FN: fn.toString()
+                            response.writeHead 200
+                            return response.end()
+
+
 
 
 

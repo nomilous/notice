@@ -65,7 +65,7 @@ MessageHub.create
                 cache.purchases ||= 0
                 if cache.purchases == 0
                     console.log cache.purchases, 'purchases'
-                    
+
                 cache.purchases++
                 if cache.purchases % 20 == 0
                     console.log cache.purchases, 'purchases'
@@ -76,7 +76,8 @@ MessageHub.create
                 #
 
                 throw new Error 'darn' if Math.random() < 0.05
-                next.cancel() if Math.random() < 0.05
+                return next.cancel() if Math.random() < 0.05
+                next()
 
         hub.use 
             title: 'warehouse'
@@ -102,6 +103,6 @@ MessageHub.create
         hub.use
             title: 'finalize', 
             (next, casule, traversal) -> 
-                next()
+                setTimeout next, Math.random() * 10000 # fake workload lag
 
 

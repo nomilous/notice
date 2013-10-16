@@ -474,6 +474,41 @@ describe 'manage', ->
                 """
                 _manager().requestHandler @mockRequest, @mockResponse
 
+            it 'responds 400 on not a function', (done) -> 
+
+                STATUS = undefined
+                @writeHead = (statusCode) -> STATUS = statusCode
+                    
+                @write = (body) -> 
+                    STATUS.should.equal 400
+                    console.log body
+                    JSON.parse( body ).should.eql 
+                        error: 'Error: Requires middleware function'
+                    done()
+
+
+                Notifier = notifier()
+                instance = Notifier.create 'hub name', 1
+                instance.use 
+                    title: 'title'
+                    (next) -> next()
+
+                @serialize1 = -> instance.serialize(2)
+                @got        = instance.got
+                @force      = instance.force
+
+                @mockRequest.url = '/v1/hubs/1/middlewares/title/replace'
+                @mockRequest.method = 'POST'
+                @mockRequest.headers['content-type'] = 'text/javascript'
+                @mockRequest.body = """
+
+                fn = 1
+
+                """
+                _manager().requestHandler @mockRequest, @mockResponse
+
+
+
             # as text/javascript or text/coffee-script 
         context 'DELETE /v1/hubs/:uuid:/middlewares/:title:', ->
 
