@@ -459,6 +459,23 @@ describe 'notifier', ->
                 m.should.eql one: true, two: true, three: true
                 done()
 
+
+        it 'provides notifier cache into middleware as traversal.cache', (done) -> 
+
+            mix = notifier().create 'Assembly Line Mix'
+            mix.cache = value: 'hotswapped middleware have no surrounding scope'
+            mix.use 
+                title: 'one'
+                (next, capsule, traversal) -> 
+                    capsule.set = traversal.cache.value
+                    next()
+
+            mix.event (err, capsule) -> 
+
+                capsule.set.should.equal 'hotswapped middleware have no surrounding scope'
+                done()
+
+
         context 'local metrics', -> 
 
             it 'increments input and output for each traversal', (done) -> 

@@ -21,9 +21,23 @@ Client.create
         errorWait:          1000
         rejectUnauthorized: false
 
+    cache: 
+        thing: 'Cached thing initialized on config.'
+
     (error, client) -> 
 
         return process.stdout.write error.toString() if error?
+
+
+
+        client.use 
+            title: 'clientside middleware'
+            (next, capsule, traverse) -> 
+                
+                console.log CACHE: traverse.cache
+                next()
+
+
         
         setInterval (->
 

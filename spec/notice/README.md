@@ -136,6 +136,7 @@ The next function has some nested functions.
 * has `.context` containing the context of the capsule's origin as defined in `opts.context` at the remote notifiers initialization. 
 * has `.connection` with basic details about the origins connection state.
 * has `.whateverWasPutThere` still present the next time a capsule from the same origin traverses the pipeline (does not ?yet! survive a hub process restart)
+* has `.cache` which provides a permanent reference to the `opts.cache` as assigned in `Hub.create(opts)`
 
 `traversal.peers` **pending consideration**
 

@@ -19,6 +19,9 @@ MessageHub.create
 
     title: 'Purchases Processor'
     uuid:  1
+
+    cache: test: 'value'
+
     listen: 
         adaptor: 'socket.io'
         port:    11111
@@ -44,9 +47,10 @@ MessageHub.create
 
         hub.use 
             title: 'warehouse'
-            (next, capsule, traversal) -> 
+            (next, capsule, {cache}) -> 
 
                 return next() unless capsule.purchase?
+                console.log CACHE: cache
                 console.log warehouse: capsule
                 next()
 

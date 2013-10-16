@@ -56,7 +56,7 @@ module.exports.notifier  = (config = {}) ->
             last  = (next) -> next(); ### null ###
             
             middlewareCount = 0
-            local.middleware[title] = list = {}
+            local.middleware[title]        = list = {}
             local.middlewareArray[title]   = mwBus = [] 
             local.middlewareMetrics[title] = mwMetrics = {}
             local.notifierMetrics[title]   = nfMetrics = 
@@ -111,9 +111,14 @@ module.exports.notifier  = (config = {}) ->
                 # * A traversal context travels the pipeline in tandem with the capsule
                 # 
                 #     ie. (next, capsule, traversal) -> 
-                # 
+                #
+                # * cache object is preloaded into each traversal
+                #
 
-                traversal = {}
+                traversal       = {}
+                traversal.cache = notifier.cache
+                
+
                 cancelled = false
                 localMetrics.input.count++
                 localMetrics.processing.count++
