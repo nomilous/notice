@@ -78,6 +78,28 @@ describe 'client', ->
                 done()
 
 
+
+        it 'provides a client cache for userdefined usage', (done) -> 
+
+            Client = client()
+            Client.create( 'client name', connect: url: '' ).then (client) -> 
+            
+                should.exist client.cache
+                done()
+
+        it 'config can assign the initial cache object', (done) -> 
+
+            Client = client()
+            Client.create
+                title: 'client name'
+                connect: url: ''
+                cache: thing: 1
+                (err, client) -> 
+
+                    client.cache.thing.should.equal 1
+                    done()
+
+
         it 'calls connect with opts.connect', (done) -> 
 
             connector.connect = (opts) ->

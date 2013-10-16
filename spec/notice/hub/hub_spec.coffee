@@ -93,6 +93,25 @@ describe 'hub', ->
                 _hub().hubs['hub name'].should.equal hub
                 done()
 
+        it 'provides a hub cache for userdefined usage', (done) -> 
+
+            Hub = hub()
+            Hub.create( 'hub name' ).then (hub) -> 
+
+                should.exist hub.cache
+                done()
+
+        it 'config can assign the initial cache object', (done) -> 
+
+            Hub = hub()
+            Hub.create
+                title: 'hubname'
+                cache: thing: 1
+                (err, hub) -> 
+
+                    hub.cache.thing.should.equal 1
+                    done()
+
         it 'can create multiple hubs in parallel', (done) -> 
 
             Hub = hub()

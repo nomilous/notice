@@ -70,6 +70,7 @@ module.exports.hub  = (config = {}) ->
                 throw alreadyDefined 'hubUUID', opts.uuid if local.uuids[opts.uuid]?
 
                 hub = local.Notifier.create hubName, opts.uuid
+                hub.cache = opts.cache or {}
                 local.hubs[hubName]    = hub
                 local.uuids[opts.uuid] = hub
 
