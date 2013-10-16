@@ -481,7 +481,6 @@ describe 'manage', ->
                     
                 @write = (body) -> 
                     STATUS.should.equal 400
-                    console.log body
                     JSON.parse( body ).should.eql 
                         error: 'Error: Requires middleware function'
                     done()
@@ -507,6 +506,41 @@ describe 'manage', ->
                 """
                 _manager().requestHandler @mockRequest, @mockResponse
 
+
+            it 'replaces the middleware', (done) -> 
+
+                # STATUS = undefined
+                # @writeHead = (statusCode) -> STATUS = statusCode
+                    
+                # @write = (body) -> 
+                #     STATUS.should.equal 400
+                #     JSON.parse( body ).should.eql 
+                #         error: 'Error: Requires middleware function'
+                #     done()
+
+
+                Notifier = notifier()
+                instance = Notifier.create 'hub name', 1
+                instance.use 
+                    title: 'title'
+                    (next) -> next()
+
+                @serialize1 = -> instance.serialize(2)
+                @got        = instance.got
+                @force      = instance.force
+
+                @mockRequest.url = '/v1/hubs/1/middlewares/title/replace'
+                @mockRequest.method = 'POST'
+                @mockRequest.headers['content-type'] = 'text/javascript'
+                @mockRequest.body = """
+                fn = function() {  throw 'okgood'; }
+                """
+                _manager().requestHandler @mockRequest, @mockResponse
+
+                instance.event (err, result) -> 
+
+                    err.should.equal 'okgood'
+                    done()
 
 
             # as text/javascript or text/coffee-script 

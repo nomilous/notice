@@ -281,7 +281,7 @@ module.exports.manager  = (config = {}) ->
                                     400
                                     response
 
-                            console.log FN: fn.toString()
+                            notifier.force title: title, fn
                             response.writeHead 200
                             return response.end()
 
