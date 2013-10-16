@@ -333,14 +333,17 @@ module.exports.notifier  = (config = {}) ->
 
                             title:   notifier.title
                             uuid:    notifier.uuid
-                            metrics: pipeline: nfMetrics.pipeline
-                            errors:  nfMetrics.errors
+                            metrics: 
+                                pipeline: nfMetrics.pipeline
+                                capsules: 'pending metrics per capsule definition'
+                            clients: 'pending approach to deal with large numbers'
                             cache:   notifier.cache
+                            errors:  nfMetrics.errors
                             middlewares: for middlewareTitle of middlewares
                                 
                                 title:   middlewareTitle
                                 enabled: middlewares[middlewareTitle].enabled
-                                metrics: mmetics
+                                metrics: 'pending metrics per middleware'
 
 
 

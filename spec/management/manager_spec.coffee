@@ -155,11 +155,18 @@ describe 'manage', ->
                         "GET"
                       ]
                     },
-                    '/v1/hubs/:uuid:/cache': 
-
-                        description: 'get the accumulated cache content'
-                        methods: ['GET']
-
+                    "/v1/hubs/:uuid:/cache": {
+                      "description": "get the accumulated content from the traversal cache",
+                      "methods": [
+                        "GET"
+                      ]
+                    },
+                    "/v1/hubs/:uuid:/clients": {
+                      "description": "pending",
+                      "methods": [
+                        "GET"
+                      ]
+                    },
                     "/v1/hubs/:uuid:/middlewares": {
                       "description": "get only the middlewares",
                       "methods": [
@@ -285,6 +292,15 @@ describe 'manage', ->
             _manager().requestHandler @mockRequest, @mockResponse
 
 
+        it 'responds to GET /v1/hubs/:uuid:/clients', (done) -> 
+
+            @write = (body) -> 
+                JSON.parse( body ).should.eql key: 'VALUE'
+                done()
+
+            @serialize1 = -> clients: key: 'VALUE'
+            @mockRequest.url = '/v1/hubs/1/clients'
+            _manager().requestHandler @mockRequest, @mockResponse
 
 
         it 'responds to GET /v1/hubs/:uuid:/middlewares', (done) -> 

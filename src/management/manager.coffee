@@ -152,6 +152,21 @@ module.exports.manager  = (config = {}) ->
                         response
                     )
 
+            '/v1/hubs/:uuid:/clients': 
+
+                description: 'pending'
+                methods: ['GET']
+                handler: ([uuid], request, response, statusCode = 200) -> 
+
+                    return local.methodNotAllowed response unless request.method == 'GET'
+                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
+                    notifier = local.hubContext.uuids[uuid]
+                    local.respond( 
+                        notifier.serialize(2).clients
+                        statusCode
+                        response
+                    )
+
             # 
             # 
             # '/v1/hubs/:uuid:/cache/:key:': 

@@ -9,3 +9,5 @@
 #### pending
 
 * `GET|POST /v1/hubs/:uuid:/cache/:key:` fetches/resets accumulation remotely
+* `GET|POST /v1/hubs/:uuid:/clients/:uuid:/cache/:key:` pre cliet accumulation realestate 
+

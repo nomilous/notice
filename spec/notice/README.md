@@ -142,7 +142,7 @@ The next function has some nested functions.
 * has a permanent reference to the `opts.cache` as assigned in `Hub.create(opts)`
 * middlewares can populate this cache at will
 * the same cache object is passed into all middleware traversals
-* the cache content available for remote veiwing on the REST api `/v1/hubs/:uuid:/cache`
+* the cache content is available for remote veiwing on the REST api `/v1/hubs/:uuid:/cache`
 
 * 
 
