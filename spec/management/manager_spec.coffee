@@ -155,6 +155,11 @@ describe 'manage', ->
                         "GET"
                       ]
                     },
+                    '/v1/hubs/:uuid:/cache': 
+
+                        description: 'get the accumulated cache content'
+                        methods: ['GET']
+
                     "/v1/hubs/:uuid:/middlewares": {
                       "description": "get only the middlewares",
                       "methods": [
@@ -266,6 +271,20 @@ describe 'manage', ->
             @serialize1 = -> errors: 'ERRORS'
             @mockRequest.url = '/v1/hubs/1/errors'
             _manager().requestHandler @mockRequest, @mockResponse
+
+
+        it 'responds to GET /v1/hubs/:uuid:/cache', (done) -> 
+
+            @write = (body) -> 
+                console.log body
+                JSON.parse( body ).should.eql key: 'VALUE'
+                done()
+
+            @serialize1 = -> cache: key: 'VALUE'
+            @mockRequest.url = '/v1/hubs/1/cache'
+            _manager().requestHandler @mockRequest, @mockResponse
+
+
 
 
         it 'responds to GET /v1/hubs/:uuid:/middlewares', (done) -> 

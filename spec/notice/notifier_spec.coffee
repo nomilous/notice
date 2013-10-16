@@ -479,8 +479,8 @@ describe 'notifier', ->
 
             it 'at detail 1', (done) -> 
 
-                mix    = notifier().create 'Assembly Line Mix', 1
-                result = mix.serialize(1)
+                mix       = notifier().create 'Assembly Line Mix', 1
+                result    = mix.serialize(1)
 
                 result.should.eql
                     title: 'Assembly Line Mix'
@@ -500,6 +500,18 @@ describe 'notifier', ->
                                 usr: 0
                                 sys: 0
                     done()
+
+            it 'at detail 2', (done) -> 
+
+                mix    = notifier().create 'Assembly Line Mix', 1
+                mix.cache = this: 'cache is also accessable via api'
+                result = mix.serialize(2)
+                
+                result.errors.should.eql recent: []
+                result.middlewares.should.eql    []
+                result.cache.should.eql this: 'cache is also accessable via api'
+                done()
+
 
         context 'local metrics', -> 
 

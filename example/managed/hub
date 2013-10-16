@@ -20,7 +20,7 @@ MessageHub.create
     title: 'Purchases Processor'
     uuid:  1
 
-    cache: test: 'value'
+    cache: {}
 
     listen: 
         adaptor: 'socket.io'
@@ -37,11 +37,28 @@ MessageHub.create
             title: 'initialize'
             (next, capsule, traversal) ->
 
+                {cache, origin} = traversal
+
                 if capsule.control?
-                    console.log capsule.control, traversal.origin.context.account
+                    console.log capsule.control, origin.context.account
                     return next.cancel()
 
                 return next() unless capsule.purchase?
+
+                cache.purchases ||= 
+                    largest: 
+                        value: 0
+                    smallest:
+                        value: capsule.unit_price * capsule.quantity
+
+                value = capsule.unit_price * capsule.quantity
+                if value > cache.purchases.largest.value
+                    cache.purchases.largest.value = value
+
+                if value < cache.purchases.smallest.value
+                    cache.purchases.smallest.value = value
+
+
                 console.log 'initialize'
                 next()
 
@@ -50,7 +67,6 @@ MessageHub.create
             (next, capsule, {cache}) -> 
 
                 return next() unless capsule.purchase?
-                console.log CACHE: cache
                 console.log warehouse: capsule
                 next()
 

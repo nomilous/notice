@@ -136,7 +136,15 @@ The next function has some nested functions.
 * has `.context` containing the context of the capsule's origin as defined in `opts.context` at the remote notifiers initialization. 
 * has `.connection` with basic details about the origins connection state.
 * has `.whateverWasPutThere` still present the next time a capsule from the same origin traverses the pipeline (does not ?yet! survive a hub process restart)
-* has `.cache` which provides a permanent reference to the `opts.cache` as assigned in `Hub.create(opts)`
+
+`traversal.cache`
+
+* has a permanent reference to the `opts.cache` as assigned in `Hub.create(opts)`
+* middlewares can populate this cache at will
+* the same cache object is passed into all middleware traversals
+* the cache content available for remote veiwing on the REST api `/v1/hubs/:uuid:/cache`
+
+* 
 
 `traversal.peers` **pending consideration**
 
@@ -161,5 +169,10 @@ notice.event().then(
     (notfiy)  -> 
 
 )
+
+* Thows or failiures to catch in middleware result in the traversal being terminated. The offending error is called back at the emitter.
+* PENDING Errors occuring on a remote hub have the same affect back at the origin emitter.
+* A recent error history is preserved (config.error.keep:N) and available at `hub.serialize(2)`
+* Error history is also available on the REST api `/v1/hubs/:uuid:/errors`
 
 ```

@@ -334,7 +334,8 @@ module.exports.notifier  = (config = {}) ->
                             title:   notifier.title
                             uuid:    notifier.uuid
                             metrics: pipeline: nfMetrics.pipeline
-                            errors: nfMetrics.errors
+                            errors:  nfMetrics.errors
+                            cache:   notifier.cache
                             middlewares: for middlewareTitle of middlewares
                                 
                                 title:   middlewareTitle

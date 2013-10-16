@@ -45,6 +45,7 @@ Client.create
 
                 item_id:  Math.floor Math.random() * 1000000
                 quantity: (Math.floor Math.random() * 100) + 1
+                unit_price: (Math.floor Math.random() * 10000) / 100
 
                 (error, item) -> 
 

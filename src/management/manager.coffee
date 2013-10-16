@@ -137,6 +137,32 @@ module.exports.manager  = (config = {}) ->
                         statusCode
                         response
 
+            '/v1/hubs/:uuid:/cache': 
+
+                description: 'get the accumulated content from the traversal cache'
+                methods: ['GET']
+                handler: ([uuid], request, response, statusCode = 200) -> 
+
+                    return local.methodNotAllowed response unless request.method == 'GET'
+                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
+                    notifier = local.hubContext.uuids[uuid]
+                    local.respond( 
+                        notifier.serialize(2).cache
+                        statusCode
+                        response
+                    )
+
+            # 
+            # 
+            # '/v1/hubs/:uuid:/cache/:key:': 
+            # 
+            #     description: 'create or update or delete objects on the traversal cache'
+            #     methods: ['GET', POST','DELETE']
+            #     accepts: ['application/json']
+            #     handler: ([uuid], request, response, statusCode = 200) -> 
+            #
+            # 
+
             '/v1/hubs/:uuid:/middlewares': 
 
                 description: 'get only the middlewares'
