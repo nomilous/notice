@@ -65,7 +65,7 @@ module.exports.notifier  = (config = {}) ->
                 # * refers to capsule in the local middleware pipeline
                 #
 
-                local: localMetrics = 
+                pipeline: localMetrics = 
 
                     input:
                         count: 0     # capsules in
@@ -117,7 +117,7 @@ module.exports.notifier  = (config = {}) ->
 
                 traversal       = {}
                 traversal.cache = notifier.cache
-                
+
 
                 cancelled = false
                 localMetrics.input.count++
@@ -325,7 +325,7 @@ module.exports.notifier  = (config = {}) ->
                         when 1 
                             title:   notifier.title
                             uuid:    notifier.uuid
-                            metrics: local: nfMetrics.local
+                            metrics: pipeline: nfMetrics.pipeline
                         when 2
 
                             middlewares = local.middleware[notifier.title]
@@ -333,7 +333,7 @@ module.exports.notifier  = (config = {}) ->
 
                             title:   notifier.title
                             uuid:    notifier.uuid
-                            metrics: local: nfMetrics.local
+                            metrics: pipeline: nfMetrics.pipeline
                             errors: nfMetrics.errors
                             middlewares: for middlewareTitle of middlewares
                                 

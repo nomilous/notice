@@ -475,6 +475,31 @@ describe 'notifier', ->
                 capsule.set.should.equal 'hotswapped middleware have no surrounding scope'
                 done()
 
+        context 'serialize', -> 
+
+            it 'at detail 1', (done) -> 
+
+                mix    = notifier().create 'Assembly Line Mix', 1
+                result = mix.serialize(1)
+
+                result.should.eql
+                    title: 'Assembly Line Mix'
+                    uuid: 1,
+                    metrics: 
+                        pipeline: 
+                            input: 
+                                count: 0
+                            processing: 
+                                count: 0
+                            output:
+                                count: 0
+                            error: 
+                                usr: 0
+                                sys: 0
+                            cancel: 
+                                usr: 0
+                                sys: 0
+                    done()
 
         context 'local metrics', -> 
 
@@ -491,12 +516,12 @@ describe 'notifier', ->
                     # so this is tricky to test
                     # 
 
-                    DURING = JSON.parse JSON.stringify mix.serialize().metrics.local
+                    DURING = JSON.parse JSON.stringify mix.serialize().metrics.pipeline
                     next()
 
                 mix.event().then -> 
 
-                    AFTER = mix.serialize().metrics.local
+                    AFTER = mix.serialize().metrics.pipeline
 
                 setTimeout (->
 
@@ -533,12 +558,12 @@ describe 'notifier', ->
                 # so this is tricky to test
                 # 
 
-                DURING = JSON.parse JSON.stringify mix.serialize().metrics.local
+                DURING = JSON.parse JSON.stringify mix.serialize().metrics.pipeline
                 throw new Error
 
             mix.event().then (->), -> 
 
-                AFTER = mix.serialize().metrics.local
+                AFTER = mix.serialize().metrics.pipeline
 
             setTimeout (->
 
@@ -581,7 +606,7 @@ describe 'notifier', ->
                 # so this is tricky to test
                 # 
 
-                DURING = JSON.parse JSON.stringify mix.serialize().metrics.local
+                DURING = JSON.parse JSON.stringify mix.serialize().metrics.pipeline
                 next()
 
             mix.event()
@@ -589,7 +614,7 @@ describe 'notifier', ->
 
             setTimeout (->
 
-                AFTER = mix.serialize().metrics.local
+                AFTER = mix.serialize().metrics.pipeline
 
                 DURING.input.count.should.equal 1
                 DURING.processing.count.should.equal 1
@@ -620,7 +645,7 @@ describe 'notifier', ->
 
             mix.use title: 'last', last: true, (next, capsule) ->
 
-                DURING = JSON.parse JSON.stringify mix.serialize().metrics.local
+                DURING = JSON.parse JSON.stringify mix.serialize().metrics.pipeline
                 next.cancel()
 
 
@@ -633,7 +658,7 @@ describe 'notifier', ->
 
             setTimeout (->
 
-                AFTER = mix.serialize().metrics.local
+                AFTER = mix.serialize().metrics.pipeline
 
                 DURING.input.count.should.equal 1
                 DURING.processing.count.should.equal 1
@@ -669,7 +694,7 @@ describe 'notifier', ->
 
             mix.use title: '1. intro', (next, capsule) ->
                 
-                DURING = JSON.parse JSON.stringify mix.serialize().metrics.local
+                DURING = JSON.parse JSON.stringify mix.serialize().metrics.pipeline
                 next.cancel()
 
             mix.event()
@@ -677,7 +702,7 @@ describe 'notifier', ->
 
             setTimeout (->
 
-                AFTER = mix.serialize().metrics.local
+                AFTER = mix.serialize().metrics.pipeline
 
                 DURING.input.count.should.equal 1
                 DURING.processing.count.should.equal 1

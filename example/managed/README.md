@@ -6,15 +6,22 @@
   "title": "Purchases Processor",
   "uuid": 1,
   "metrics": {
-    "local": {
-      "input": 4,
-      "output": 3,
+    "pipeline": {
+      "input": {
+        "count": 11
+      },
+      "processing": {
+        "count": 0
+      },
+      "output": {
+        "count": 8
+      },
       "error": {
         "usr": 0,
         "sys": 0
       },
       "cancel": {
-        "usr": 1,
+        "usr": 3,
         "sys": 0
       }
     }
