@@ -262,29 +262,38 @@ module.exports.manager  = (config = {}) ->
                     notifier = local.hubContext.uuids[uuid]
                     return local.objectNotFound response unless notifier.got title
 
+                    apply = (fn) -> 
+                        unless typeof fn is 'function'
+                            return local.respond
+                                error: ( new Error 'Requires middleware function' ).toString()
+                                400
+                                response
+
+                        notifier.force title: title, fn
+                        response.writeHead 200
+                        return response.end()
+
+
                     body = ''
                     request.on 'data', (buf) -> body += buf.toString()
                     request.on 'end', -> 
 
-                        if request.headers['content-type'] == 'text/javascript'
-
-                            try fn = eval body
+                        if request.headers['content-type'] == 'text/coffee-script'
+                            try body = coffee.compile body, bare: true
                             catch error
                                 return local.respond
                                     error: error.toString()
                                     400
                                     response
 
-                            unless typeof fn is 'function'
-                                return local.respond
-                                    error: ( new Error 'Requires middleware function' ).toString()
-                                    400
-                                    response
+                        try fn = eval body
+                        catch error
+                            return local.respond
+                                error: error.toString()
+                                400
+                                response
 
-                            notifier.force title: title, fn
-                            response.writeHead 200
-                            return response.end()
-
+                        return apply fn
 
 
 

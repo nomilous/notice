@@ -509,16 +509,6 @@ describe 'manage', ->
 
             it 'replaces the middleware', (done) -> 
 
-                # STATUS = undefined
-                # @writeHead = (statusCode) -> STATUS = statusCode
-                    
-                # @write = (body) -> 
-                #     STATUS.should.equal 400
-                #     JSON.parse( body ).should.eql 
-                #         error: 'Error: Requires middleware function'
-                #     done()
-
-
                 Notifier = notifier()
                 instance = Notifier.create 'hub name', 1
                 instance.use 
@@ -537,10 +527,46 @@ describe 'manage', ->
                 """
                 _manager().requestHandler @mockRequest, @mockResponse
 
-                instance.event (err, result) -> 
+                instance.event (err, capsule) -> 
 
                     err.should.equal 'okgood'
                     done()
+
+            it 'compiles as coffeescript according to content-type', (done) -> 
+
+                Notifier = notifier()
+                instance = Notifier.create 'hub name', 1
+                instance.cache = done: done
+                instance.use 
+                    title: 'title'
+                    (next) -> next()
+
+                @serialize1 = -> instance.serialize(2)
+                @got        = instance.got
+                @force      = instance.force
+
+                @mockRequest.url = '/v1/hubs/1/middlewares/title/replace'
+                @mockRequest.method = 'POST'
+                @mockRequest.headers['content-type'] = 'text/coffee-script'
+                @mockRequest.body = """
+
+                fn = (next, capsule, {cache}) -> 
+                    
+                    capsule.set
+                    
+                        done: false
+                        watched: (change) -> cache.done() if change.to 
+
+                    next()
+                """
+                _manager().requestHandler @mockRequest, @mockResponse
+
+                instance.event (err, capsule) -> 
+
+                    
+                    capsule.done = true
+                    #done()
+
 
 
             # as text/javascript or text/coffee-script 
