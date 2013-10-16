@@ -58,10 +58,7 @@ hub = NetworkAlertRouter.create( ...
 
 **pending consideration**
 
-## * Will need to be able to replace more than one at a time (transaction,, **all in one turn**)
-## * Transaction may need to include deletion and resequencing.
-## * And possibly roll back.
-* or first middleware can queue for upgrade duration
+* first middleware can queue for upgrade duration
 
 ### Starting a Hub Instance
 
