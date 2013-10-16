@@ -264,7 +264,7 @@ describe 'notifier', ->
             mmm['put a lid on it'].fn          done, {}
 
 
-        it 'stores middlewares in a hash with title, enabled, fn', (done) -> 
+        it 'stores middlewares in a hash with enabled, metrics and fn', (done) -> 
 
             #
             # half way to changing to an array (maybe)
@@ -282,8 +282,8 @@ describe 'notifier', ->
                 (done, capsule) -> done(); ### third ###
 
             third = _notifier().middleware['Assembly Line 6']['put a lid on it']
-            third.title.should.equal 'put a lid on it'
             third.enabled.should.equal true
+            should.exist third.metrics
             third.fn.toString().should.match /third/
             done()
 
@@ -506,7 +506,7 @@ describe 'notifier', ->
                 mix    = notifier().create 'Assembly Line Mix', 1
                 mix.cache = this: 'cache is also accessable via api'
                 result = mix.serialize(2)
-                
+
                 result.errors.should.eql recent: []
                 result.middlewares.should.eql    []
                 result.cache.should.eql this: 'cache is also accessable via api'

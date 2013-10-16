@@ -261,7 +261,7 @@ describe 'manage', ->
         it 'responds to GET /v1/hubs/:uuid:/metrics', (done) -> 
 
             @write = (body) -> 
-                JSON.parse( body ).should.eql records: ['METRICS']
+                JSON.parse( body ).should.eql 'METRICS'
                 done()
 
             @serialize1 = -> metrics: 'METRICS'
@@ -272,7 +272,7 @@ describe 'manage', ->
         it 'responds to GET /v1/hubs/:uuid:/errors', (done) -> 
 
             @write = (body) -> 
-                JSON.parse( body ).should.eql records: ['ERRORS']
+                JSON.parse( body ).should.eql 'ERRORS'
                 done()
 
             @serialize1 = -> errors: 'ERRORS'
@@ -283,7 +283,6 @@ describe 'manage', ->
         it 'responds to GET /v1/hubs/:uuid:/cache', (done) -> 
 
             @write = (body) -> 
-                console.log body
                 JSON.parse( body ).should.eql key: 'VALUE'
                 done()
 
@@ -306,7 +305,7 @@ describe 'manage', ->
         it 'responds to GET /v1/hubs/:uuid:/middlewares', (done) -> 
 
             @write = (body) -> 
-                JSON.parse( body ).should.eql records: 'MIDDLEWARES'
+                JSON.parse( body ).should.eql 'MIDDLEWARES'
                 done()
 
             @serialize1 = -> middlewares: 'MIDDLEWARES'
@@ -317,16 +316,18 @@ describe 'manage', ->
         it 'responds to GET /v1/hubs/:uuid:/middlewares/:title:', (done) -> 
 
             @write = (body) -> 
+                #console.log body
                 JSON.parse( body ).should.eql 
-                    title: 'title'
+                    enabled: true
                     metrics: []
                     
                 done()
 
-            @serialize1 = -> middlewares: [
-                title: 'title'
-                metrics: []
-            ]
+            @serialize1 = -> middlewares: 
+                title: 
+                    enabled: true
+                    metrics: []
+            
             @mockRequest.url = '/v1/hubs/1/middlewares/title'
             _manager().requestHandler @mockRequest, @mockResponse
 
@@ -341,9 +342,8 @@ describe 'manage', ->
 
             @write = (body) -> 
                 JSON.parse( body ).should.eql 
-                    title: 'title'
                     enabled: false
-                    metrics: {}
+                    metrics: pending: 'metrics per middleware'
                     
                 done()
 
@@ -380,9 +380,8 @@ describe 'manage', ->
 
             @write = (body) -> 
                 JSON.parse( body ).should.eql 
-                    title: 'title'
                     enabled: true
-                    metrics: {}
+                    metrics: pending: 'metrics per middleware'
                     
                 done()
 

@@ -219,8 +219,6 @@ module.exports.notifier  = (config = {}) ->
 
             local.notifiers[title] = notifier = 
 
-                got: (title) -> list[title]?
-
                 use: (opts, fn) -> 
 
                     opts.enabled ?= true
@@ -259,8 +257,8 @@ module.exports.notifier  = (config = {}) ->
 
                     unless list[opts.title]?
                         list[opts.title] = 
-                            title: opts.title
                             enabled: opts.enabled
+                            metrics: pending: 'metrics per middleware'
                             fn: fn
                         reload()
                         return
@@ -298,8 +296,8 @@ module.exports.notifier  = (config = {}) ->
                     opts.enabled ?= true
                     
                     list[opts.title] = 
-                        title: opts.title
                         enabled: opts.enabled
+                        metrics: pending: 'metrics per middleware'
                         fn: fn
 
                     reload()
@@ -339,13 +337,7 @@ module.exports.notifier  = (config = {}) ->
                             clients: 'pending approach to deal with large numbers'
                             cache:   notifier.cache
                             errors:  nfMetrics.errors
-                            middlewares: for middlewareTitle of middlewares
-                                
-                                title:   middlewareTitle
-                                enabled: middlewares[middlewareTitle].enabled
-                                metrics: 'pending metrics per middleware'
-
-
+                            middlewares: list
 
 
             #

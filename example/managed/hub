@@ -58,16 +58,21 @@ MessageHub.create
                 if value < cache.purchases.smallest.value
                     cache.purchases.smallest.value = value
 
+                #
+                # sprinkle in some errors and cancellations
+                # and a random lag to cause an inprocess accumulation
+                #
 
-                console.log 'initialize'
-                next()
+                throw new Error 'darn' if Math.random() < 0.05
+                next.cancel() if Math.random() < 0.05
+                setTimeout next, Math.floor Math.random() * 10000
 
         hub.use 
             title: 'warehouse'
             (next, capsule, {cache}) -> 
 
                 return next() unless capsule.purchase?
-                console.log warehouse: capsule
+                console.log WAREHOUSE: capsule
                 next()
 
         hub.use 
@@ -75,7 +80,7 @@ MessageHub.create
             (next, capsule, traversal) -> 
 
                 return next() unless capsule.purchase?
-                console.log accounts: capsule
+                console.log ACCOUNTS: capsule
                 next()
 
         hub.use 
@@ -83,7 +88,7 @@ MessageHub.create
             (next, capsule, traversal) -> 
 
                 return next() unless capsule.purchase?
-                console.log despatch: capsule
+                console.log DESPATCH: capsule
                 next()
 
         hub.use

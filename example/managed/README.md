@@ -8,118 +8,88 @@
   "metrics": {
     "pipeline": {
       "input": {
-        "count": 210
+        "count": 16
       },
       "processing": {
-        "count": 0
+        "count": 4
       },
       "output": {
-        "count": 209
+        "count": 9
       },
       "error": {
-        "usr": 0,
+        "usr": 1,
         "sys": 0
       },
       "cancel": {
-        "usr": 1,
+        "usr": 2,
         "sys": 0
+      }
+    },
+    "capsules": "pending metrics per capsule definition"
+  },
+  "clients": "pending approach to deal with large numbers",
+  "cache": {
+    "purchases": {
+      "largest": {
+        "value": 6392.160000000001
+      },
+      "smallest": {
+        "value": 86.22
       }
     }
   },
   "errors": {
-    "recent": []
+    "recent": [
+      {
+        "timestamp": "2013-10-16T22:13:00.937Z",
+        "error": "Error: darn",
+        "middleware": {
+          "title": "initialize",
+          "type": "usr"
+        }
+      }
+    ]
   },
-  "cache": {
-    "purchases": {
-      "largest": {
-        "value": 9819
-      },
-      "smallest": {
-        "value": 22.42
+  "middlewares": {
+    "initialize": {
+      "enabled": true,
+      "metrics": {
+        "pending": "metrics per middleware"
+      }
+    },
+    "warehouse": {
+      "enabled": true,
+      "metrics": {
+        "pending": "metrics per middleware"
+      }
+    },
+    "accounts": {
+      "enabled": true,
+      "metrics": {
+        "pending": "metrics per middleware"
+      }
+    },
+    "despatch": {
+      "enabled": true,
+      "metrics": {
+        "pending": "metrics per middleware"
+      }
+    },
+    "finalize": {
+      "enabled": true,
+      "metrics": {
+        "pending": "metrics per middleware"
       }
     }
-  },
-  "middlewares": [
-    {
-      "title": "initialize",
-      "enabled": true,
-      "metrics": {}
-    },
-    {
-      "title": "warehouse",
-      "enabled": true,
-      "metrics": {}
-    },
-    {
-      "title": "accounts",
-      "enabled": true,
-      "metrics": {}
-    },
-    {
-      "title": "despatch",
-      "enabled": true,
-      "metrics": {}
-    },
-    {
-      "title": "finalize",
-      "enabled": true,
-      "metrics": {}
-    }
-  ]
+  }
 }
 ```
 
 `curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/middlewares`
-```json
-{
-  "records": [
-    {
-      "title": "initialize",
-      "enabled": true,
-      "metrics": {}
-    },
-    {
-      "title": "warehouse",
-      "enabled": true,
-      "metrics": {}
-    },
-    {
-      "title": "accounts",
-      "enabled": true,
-      "metrics": {}
-    },
-    {
-      "title": "despatch",
-      "enabled": true,
-      "metrics": {}
-    },
-    {
-      "title": "finalize",
-      "enabled": true,
-      "metrics": {}
-    }
-  ]
-}
-```
-
 `curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/middlewares/warehouse`
-```json
-{
-  "title": "warehouse",
-  "enabled": true,
-  "metrics": {}
-}
-```
-
 `curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/middlewares/warehouse/enable`
 `curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/middlewares/warehouse/disable`
-```json
-{
-  "title": "warehouse",
-  "enabled": false,
-  "metrics": {}
-}
-```
+* inprocess capsules only run through middlware that was enabled at the time thy entered the pipeline
 
 ```bash
 curl -ku username:password -H 'Content-Type: text/javascript' --data '

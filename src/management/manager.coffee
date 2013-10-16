@@ -111,10 +111,11 @@ module.exports.manager  = (config = {}) ->
                     return local.objectNotFound response unless local.hubContext.uuids[uuid]
 
                     notifier = local.hubContext.uuids[uuid]
-                    local.respond 
-                        records: [notifier.serialize(2).metrics]
+                    local.respond(
+                        notifier.serialize(2).metrics
                         statusCode
                         response
+                    )
 
             '/v1/hubs/:uuid:/errors': 
 
@@ -132,10 +133,11 @@ module.exports.manager  = (config = {}) ->
                     #   but it's likely that more items will be added to the errors branch
                     #
 
-                    local.respond 
-                        records: [notifier.serialize(2).errors]
+                    local.respond(
+                        notifier.serialize(2).errors
                         statusCode
                         response
+                    )
 
             '/v1/hubs/:uuid:/cache': 
 
@@ -187,10 +189,12 @@ module.exports.manager  = (config = {}) ->
                     return local.methodNotAllowed response unless request.method == 'GET'
                     return local.objectNotFound response unless local.hubContext.uuids[uuid]
                     notifier = local.hubContext.uuids[uuid]
-                    local.respond 
-                        records: notifier.serialize(2).middlewares
+                    local.respond(
+                        notifier.serialize(2).middlewares
                         statusCode
                         response
+                    )
+
 
             '/v1/hubs/:uuid:/middlewares/:title:':
 
@@ -204,11 +208,9 @@ module.exports.manager  = (config = {}) ->
                     title = decodeURIComponent title
                     notifier = local.hubContext.uuids[uuid]
                     middlewares = notifier.serialize(2).middlewares
-                    for middleware in middlewares
-                        if middleware.title == title
-                            return local.respond middleware, statusCode, response
-
+                    try return local.respond middlewares[title], statusCode, response
                     objectNotFound response
+
 
             '/v1/hubs/:uuid:/middlewares/:title:/disable':
                 description: 'disable a middleware'
@@ -218,24 +220,13 @@ module.exports.manager  = (config = {}) ->
                     return local.methodNotAllowed response unless request.method == 'GET'
                     return local.objectNotFound response unless local.hubContext.uuids[uuid]
 
-                    #
-                    # getting messy, need per middleware serializer, (or something)
-                    #
-                
                     title = decodeURIComponent title
                     notifier = local.hubContext.uuids[uuid]
-                    return local.objectNotFound response unless notifier.got title
-
-                    notifier.force 
-                        title: title
-                        enabled: false
-
+                    notifier.force title: title, enabled: false
                     middlewares = notifier.serialize(2).middlewares
-                    for middleware in middlewares
-                        if middleware.title == title
-                            return local.respond middleware, statusCode, response
-
+                    return local.respond  middlewares[title], statusCode, response
                     objectNotFound response
+
 
             '/v1/hubs/:uuid:/middlewares/:title:/enable':
                 description: 'enable a middleware'
@@ -245,23 +236,11 @@ module.exports.manager  = (config = {}) ->
                     return local.methodNotAllowed response unless request.method == 'GET'
                     return local.objectNotFound response unless local.hubContext.uuids[uuid]
 
-                    #
-                    # getting messy, need per middleware serializer, (or something)
-                    #
-                
                     title = decodeURIComponent title
                     notifier = local.hubContext.uuids[uuid]
-                    return local.objectNotFound response unless notifier.got title
-
-                    notifier.force 
-                        title: title
-                        enabled: true
-
+                    notifier.force title: title, enabled: true
                     middlewares = notifier.serialize(2).middlewares
-                    for middleware in middlewares
-                        if middleware.title == title
-                            return local.respond middleware, statusCode, response
-
+                    return local.respond  middlewares[title], statusCode, response
                     objectNotFound response
 
 
