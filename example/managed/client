@@ -24,8 +24,7 @@ Client.create
     (error, client) -> 
 
         return process.stdout.write error.toString() if error?
-        console.log client
-
+        
         setInterval (->
 
             client.purchase 'thing',

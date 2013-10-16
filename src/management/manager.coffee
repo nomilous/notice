@@ -259,8 +259,6 @@ module.exports.manager  = (config = {}) ->
 
 
 
-
-
     port         = listen.port
     address      = if listen.hostname? then listen.hostname else '127.0.0.1'
     opts         = {}
@@ -270,48 +268,29 @@ module.exports.manager  = (config = {}) ->
     {server, transport} = start opts, local.requestHandler = authenticated (request, response) ->
 
         path = request.url
+
+        if path == '/about' or path == '/'
+            return local.routes["/about"].handler [], request, response
+            
         if path[-1..] == '/' then path = path[0..-2]
 
-        try 
-            [match, uuid] = matched = path.match /v1\/hubs\/(.*)/
-            unless uuid.match /\//
-                return local.routes['/v1/hubs/:uuid:'].handler [uuid], request, response
+        try      
+            [match, version, base, uuid, nested, title, action] = path.match /(.*)\/(.*)\/(.*)\/(.*)\/(.*)\/(.*)/
+            return local.routes["#{version}/#{base}/:uuid:/#{nested}/:title:/#{action}"].handler [uuid, title], request, response
+        try
+            [match, version, base, uuid, nested, title] = path.match /(.*)\/(.*)\/(.*)\/(.*)\/(.*)/
+            return local.routes["#{version}/#{base}/:uuid:/#{nested}/:title:"].handler [uuid, title], request, response
+        try
+            [match, version, base, uuid, nested] = path.match /(.*)\/(.*)\/(.*)\/(.*)/
+            return local.routes["#{version}/#{base}/:uuid:/#{nested}"].handler [uuid], request, response
+        try
+            [match, version, base, uuid] = path.match /(.*)\/(.*)\/(.*)/
+            return local.routes["#{version}/#{base}/:uuid:"].handler [uuid], request, response
+        try
+            [match, version, base] = path.match /(.*)\/(.*)/
+            return local.routes["#{version}/#{base}"].handler [], request, response
 
-            if [match, uuid, nested] = uuid.match /(.*?)\/(.*)/
-                unless nested.match /\//
-                    return local.routes["/v1/hubs/:uuid:/#{nested}"].handler [uuid], request, response
-                
-                if [match, nested, title] = nested.match /(.*?)\/(.*)/
-                    unless title.match /\//
-                        return local.routes["/v1/hubs/:uuid:/#{nested}/:title:"].handler [uuid, title], request, response
-
-                    if [match, title, action] = title.match /(.*?)\/(.*)/
-                        switch action
-                            when 'disable'
-                                return local.routes["/v1/hubs/:uuid:/#{nested}/:title:/disable"].handler [uuid, title], request, response
-                            when 'enable'
-                                return local.routes["/v1/hubs/:uuid:/#{nested}/:title:/enable"].handler [uuid, title], request, response
-                            when 'replace'
-                                return local.routes["/v1/hubs/:uuid:/#{nested}/:title:/replace"].handler [uuid, title], request, response
-                            else objectNotFound response
-
-        catch error
-
-
-        unless local.routes[path]? 
-
-            # #
-            # # request for undefined route, respond 404 (but with help)
-            # #
-            # return local.routes['/about'].handler null, request, response, 404 
-
-            response.writeHead 404
-            return response.end()
-
-        
-        local.routes[path].handler null, request, response
-            
-
+        return local.objectNotFound response
 
     server.listen port, address, -> 
         {address, port} = server.address()
