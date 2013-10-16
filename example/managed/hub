@@ -20,7 +20,24 @@ MessageHub.create
     title: 'Purchases Processor'
     uuid:  1
 
-    cache: {}
+    cache: 
+
+        #
+        # hotswapped middleware has only a local scope
+        # --------------------------------------------
+        # 
+        # * this cache in all middleware calls to alleviate that problem
+        # * also, it can be retreived via the REST api 
+        # 
+        #         GET /v1/hubs/:uuid:/cache
+        # 
+        # * [PENDING], it can be modified via the REST api
+        # 
+        #         POST /v1/hubs/:uuid:/cache/:key:
+        #         DELETE /v1/hubs/:uuid:/cache/:key:
+        # 
+
+        purchases: 0
 
     listen: 
         adaptor: 'socket.io'
@@ -45,18 +62,13 @@ MessageHub.create
 
                 return next() unless capsule.purchase?
 
-                cache.purchases ||= 
-                    largest: 
-                        value: 0
-                    smallest:
-                        value: capsule.unit_price * capsule.quantity
-
-                value = capsule.unit_price * capsule.quantity
-                if value > cache.purchases.largest.value
-                    cache.purchases.largest.value = value
-
-                if value < cache.purchases.smallest.value
-                    cache.purchases.smallest.value = value
+                cache.purchases ||= 0
+                if cache.purchases == 0
+                    console.log cache.purchases, 'purchases'
+                    
+                cache.purchases++
+                if cache.purchases % 20 == 0
+                    console.log cache.purchases, 'purchases'
 
                 #
                 # sprinkle in some errors and cancellations
@@ -65,14 +77,12 @@ MessageHub.create
 
                 throw new Error 'darn' if Math.random() < 0.05
                 next.cancel() if Math.random() < 0.05
-                setTimeout next, Math.floor Math.random() * 10000
 
         hub.use 
             title: 'warehouse'
             (next, capsule, {cache}) -> 
 
                 return next() unless capsule.purchase?
-                console.log WAREHOUSE: capsule
                 next()
 
         hub.use 
@@ -80,7 +90,6 @@ MessageHub.create
             (next, capsule, traversal) -> 
 
                 return next() unless capsule.purchase?
-                console.log ACCOUNTS: capsule
                 next()
 
         hub.use 
@@ -88,14 +97,11 @@ MessageHub.create
             (next, capsule, traversal) -> 
 
                 return next() unless capsule.purchase?
-                console.log DESPATCH: capsule
                 next()
 
         hub.use
             title: 'finalize', 
             (next, casule, traversal) -> 
-                console.log 'finalize'
-                console.log()
                 next()
 
 

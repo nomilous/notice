@@ -34,7 +34,7 @@ Client.create
             title: 'clientside middleware'
             (next, capsule, traverse) -> 
                 
-                console.log CACHE: traverse.cache
+                #console.log CACHE: traverse.cache
                 next()
 
 
@@ -49,6 +49,6 @@ Client.create
 
                 (error, item) -> 
 
-                    console.log item
+                    # console.log item
 
-        ), 1000
+        ), 100
