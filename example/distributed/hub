@@ -121,7 +121,7 @@ MessageHub.create 'hub 1 name', {
 
         throw new Error 'darn' if Math.random() < 0.05
         next.cancel() if Math.random() < 0.05
-        next()
+        setTimeout next, Math.floor Math.random() * 10000 # random lag to accumulate into processing
 
 
 

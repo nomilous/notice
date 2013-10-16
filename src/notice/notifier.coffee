@@ -67,8 +67,12 @@ module.exports.notifier  = (config = {}) ->
 
                 local: localMetrics = 
 
-                    input:    0     # capsules in
-                    output:   0     # capsules out (transmitted)
+                    input:
+                        count: 0     # capsules in
+                    processing:
+                        count: 0     # capsules buzy
+                    output:   
+                        count: 0     # capsules out (transmitted)
                     error:
                         usr: 0      # exception in user   middleware
                         sys: 0      # exception in system middleware
@@ -111,7 +115,8 @@ module.exports.notifier  = (config = {}) ->
 
                 traversal = {}
                 cancelled = false
-                localMetrics.input++
+                localMetrics.input.count++
+                localMetrics.processing.count++
 
                 functions = for middleware in mwBus
 
@@ -129,6 +134,7 @@ module.exports.notifier  = (config = {}) ->
                             next.reject = (error)  -> 
 
                                 keepErrors title, type, error
+                                localMetrics.processing.count--
                                 localMetrics.error.usr++ if type == 'usr'
                                 localMetrics.error.sys++ if type == 'sys'
                                 process.nextTick -> reject error
@@ -143,6 +149,7 @@ module.exports.notifier  = (config = {}) ->
                                 #
 
                                 cancelled = true
+                                localMetrics.processing.count--
                                 localMetrics.cancel.usr++ if type == 'usr'
                                 localMetrics.cancel.sys++ if type == 'sys'
                                 process.nextTick -> 
@@ -154,12 +161,15 @@ module.exports.notifier  = (config = {}) ->
 
                             try 
                                 fn next, capsule, traversal
-                                localMetrics.output++ if title == 'last' and not cancelled
+                                if title == 'last' and not cancelled
+                                    localMetrics.output.count++ 
+                                    localMetrics.processing.count--
 
                             catch error
                                 keepErrors title, type, error
                                 localMetrics.error.usr++ if type == 'usr'
                                 localMetrics.error.sys++ if type == 'sys'
+                                localMetrics.processing.count--
                                 reject error
 
                 return pipeline functions

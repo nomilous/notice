@@ -483,25 +483,27 @@ describe 'notifier', ->
 
                 setTimeout (->
 
-                    DURING.input     .should.equal 1
-                    DURING.output    .should.equal 0
-                    DURING.error .usr.should.equal 0
-                    DURING.error .sys.should.equal 0
+                    DURING.input.count.should.equal 1
+                    DURING.processing.count.should.equal 1
+                    DURING.output.count.should.equal 0
+                    DURING.error.usr.should.equal 0
+                    DURING.error.sys.should.equal 0
                     DURING.cancel.usr.should.equal 0
                     DURING.cancel.sys.should.equal 0
 
-                    AFTER .input     .should.equal 1
-                    AFTER .output    .should.equal 1
-                    AFTER .error .usr.should.equal 0
-                    AFTER .error .sys.should.equal 0
-                    AFTER .cancel.usr.should.equal 0
-                    AFTER .cancel.sys.should.equal 0
+                    AFTER.input.count.should.equal 1
+                    AFTER.processing.count.should.equal 0
+                    AFTER.output.count.should.equal 1
+                    AFTER.error.usr.should.equal 0
+                    AFTER.error.sys.should.equal 0
+                    AFTER.cancel.usr.should.equal 0
+                    AFTER.cancel.sys.should.equal 0
 
                     done()
 
                 ), 100
 
-        it 'increments usr.reject instead of output if rejected by user middleware', (done) -> 
+        it 'increments usr.error instead of output if rejected by user middleware', (done) -> 
 
             DURING = undefined
             AFTER  = undefined
@@ -523,25 +525,27 @@ describe 'notifier', ->
 
             setTimeout (->
 
-                DURING.input     .should.equal 1
-                DURING.output    .should.equal 0
-                DURING.error .usr.should.equal 0
-                DURING.error .sys.should.equal 0
+                DURING.input.count.should.equal 1
+                DURING.processing.count.should.equal 1
+                DURING.output.count.should.equal 0
+                DURING.error.usr.should.equal 0
+                DURING.error.sys.should.equal 0
                 DURING.cancel.usr.should.equal 0
                 DURING.cancel.sys.should.equal 0
 
-                AFTER .input     .should.equal 1
-                AFTER .output    .should.equal 0
-                AFTER .error .usr.should.equal 1
-                AFTER .error .sys.should.equal 0
-                AFTER .cancel.usr.should.equal 0
-                AFTER .cancel.sys.should.equal 0
+                AFTER.input.count.should.equal 1
+                AFTER.processing.count.should.equal 0
+                AFTER.output.count.should.equal 0
+                AFTER.error.usr.should.equal 1
+                AFTER.error.sys.should.equal 0
+                AFTER.cancel.usr.should.equal 0
+                AFTER.cancel.sys.should.equal 0
 
                 done()
 
             ), 100
 
-        it 'increments sys.reject instead of output if rejected by system middleware', (done) -> 
+        it 'increments sys.error instead of output if rejected by system middleware', (done) -> 
 
             DURING = undefined
             AFTER  = undefined
@@ -570,19 +574,21 @@ describe 'notifier', ->
 
                 AFTER = mix.serialize().metrics.local
 
-                DURING.input     .should.equal 1
-                DURING.output    .should.equal 0
-                DURING.error .usr.should.equal 0
-                DURING.error .sys.should.equal 0
+                DURING.input.count.should.equal 1
+                DURING.processing.count.should.equal 1
+                DURING.output.count.should.equal 0
+                DURING.error.usr.should.equal 0
+                DURING.error.sys.should.equal 0
                 DURING.cancel.usr.should.equal 0
                 DURING.cancel.sys.should.equal 0
 
-                AFTER .input     .should.equal 1
-                AFTER .output    .should.equal 0
-                AFTER .error .usr.should.equal 0
-                AFTER .error .sys.should.equal 1
-                AFTER .cancel.usr.should.equal 0
-                AFTER .cancel.sys.should.equal 0
+                AFTER.input.count.should.equal 1
+                AFTER.processing.count.should.equal 0
+                AFTER.output.count.should.equal 0
+                AFTER.error.usr.should.equal 0
+                AFTER.error.sys.should.equal 1
+                AFTER.cancel.usr.should.equal 0
+                AFTER.cancel.sys.should.equal 0
 
                 done()
 
@@ -612,21 +618,21 @@ describe 'notifier', ->
 
                 AFTER = mix.serialize().metrics.local
 
-                DURING.input     .should.equal 1
-                DURING.output    .should.equal 0
-                DURING.error .usr.should.equal 0
-                DURING.error .sys.should.equal 0
+                DURING.input.count.should.equal 1
+                DURING.processing.count.should.equal 1
+                DURING.output.count.should.equal 0
+                DURING.error.usr.should.equal 0
+                DURING.error.sys.should.equal 0
                 DURING.cancel.usr.should.equal 0
                 DURING.cancel.sys.should.equal 0
 
-                # console.log AFTER
-
-                AFTER .input     .should.equal 1
-                AFTER .output    .should.equal 0
-                AFTER .error .usr.should.equal 0
-                AFTER .error .sys.should.equal 0
-                AFTER .cancel.usr.should.equal 0
-                AFTER .cancel.sys.should.equal 1
+                AFTER.input.count.should.equal 1
+                AFTER.processing.count.should.equal 0
+                AFTER.output.count.should.equal 0
+                AFTER.error.usr.should.equal 0
+                AFTER.error.sys.should.equal 0
+                AFTER.cancel.usr.should.equal 0
+                AFTER.cancel.sys.should.equal 1
 
                 done()
 
@@ -656,21 +662,21 @@ describe 'notifier', ->
 
                 AFTER = mix.serialize().metrics.local
 
-                DURING.input     .should.equal 1
-                DURING.output    .should.equal 0
-                DURING.error .usr.should.equal 0
-                DURING.error .sys.should.equal 0
+                DURING.input.count.should.equal 1
+                DURING.processing.count.should.equal 1
+                DURING.output.count.should.equal 0
+                DURING.error.usr.should.equal 0
+                DURING.error.sys.should.equal 0
                 DURING.cancel.usr.should.equal 0
                 DURING.cancel.sys.should.equal 0
 
-                # console.log AFTER
-
-                AFTER .input     .should.equal 1
-                AFTER .output    .should.equal 0
-                AFTER .error .usr.should.equal 0
-                AFTER .error .sys.should.equal 0
-                AFTER .cancel.usr.should.equal 1
-                AFTER .cancel.sys.should.equal 0
+                AFTER.input.count.should.equal 1
+                AFTER.processing.count.should.equal 0
+                AFTER.output.count.should.equal 0
+                AFTER.error.usr.should.equal 0
+                AFTER.error.sys.should.equal 0
+                AFTER.cancel.usr.should.equal 1
+                AFTER.cancel.sys.should.equal 0
 
                 done()
 
