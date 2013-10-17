@@ -33,6 +33,8 @@ fn = (next, capsule, {cache}) ->
 ' 'https://127.0.0.1:44444/v1/hubs/1/middlewares/accounts/replace'
 
 ```
+`curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/cache/total/sales`
+`curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/cache/total`
 `curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/cache`
 ```json
 {
