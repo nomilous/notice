@@ -94,6 +94,7 @@ describe 'manage', ->
                         serialize: (detail) => try @serialize2.apply null, arguments
 
         beforeEach -> 
+            @mockRequest.method = 'GET'
             @writeHead = -> 
             @write = -> 
             @serialize1 = (detail) -> 'HUB 1 RECORD detail:' + detail
@@ -164,7 +165,8 @@ describe 'manage', ->
                     "/v1/hubs/:uuid:/cache/**/*": {
                       "description": 'get nested subkey from the traversal cache',
                       "methods": [
-                        "GET"
+                        "GET",
+                        #"POST"
                       ]
                     },
                     "/v1/hubs/:uuid:/clients": {
@@ -304,6 +306,27 @@ describe 'manage', ->
 
             @serialize1 = -> cache: nested: deeper: 'VALUE'
             @mockRequest.url = '/v1/hubs/1/cache/nested/deeper'
+            _manager().requestHandler @mockRequest, @mockResponse
+
+        xit 'responds to POST /v1/hubs/:uuid:/cache/**/* by replacing the specified key in the hash', (done) -> 
+
+            @writeHead = (statusCode) -> 
+                console.log statusCode
+                done()
+
+            @write = (body) -> 
+                body.should.equal '"VALUE"'
+                #done()
+
+            @serialize1 = -> cache: nested: deeper: 'VALUE'
+
+            @mockRequest.url = '/v1/hubs/1/cache/nested/deeper'
+            @mockRequest.method = 'POST'
+            @mockRequest.body = """
+
+            ### pending
+
+            """
             _manager().requestHandler @mockRequest, @mockResponse
 
 

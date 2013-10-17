@@ -157,7 +157,7 @@ module.exports.manager  = (config = {}) ->
             '/v1/hubs/:uuid:/cache/**/*': 
 
                 description: 'get nested subkey from the traversal cache'
-                methods: ['GET'] # 'POST', 'DELETE']
+                methods: ['GET'] #, 'POST'] #, 'DELETE']
                 handler: ([uuid, deeper], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
