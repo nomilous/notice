@@ -161,6 +161,12 @@ describe 'manage', ->
                         "GET"
                       ]
                     },
+                    "/v1/hubs/:uuid:/cache/**/*": {
+                      "description": 'get nested subkey from the traversal cache',
+                      "methods": [
+                        "GET"
+                      ]
+                    },
                     "/v1/hubs/:uuid:/clients": {
                       "description": "pending",
                       "methods": [
@@ -279,7 +285,6 @@ describe 'manage', ->
             @mockRequest.url = '/v1/hubs/1/errors'
             _manager().requestHandler @mockRequest, @mockResponse
 
-
         it 'responds to GET /v1/hubs/:uuid:/cache', (done) -> 
 
             @write = (body) -> 
@@ -288,6 +293,17 @@ describe 'manage', ->
 
             @serialize1 = -> cache: key: 'VALUE'
             @mockRequest.url = '/v1/hubs/1/cache'
+            _manager().requestHandler @mockRequest, @mockResponse
+
+
+        it 'responds to GET /v1/hubs/:uuid:/cache/**/* to arbitrary depth', (done) -> 
+
+            @write = (body) -> 
+                body.should.equal '"VALUE"'
+                done()
+
+            @serialize1 = -> cache: nested: deeper: 'VALUE'
+            @mockRequest.url = '/v1/hubs/1/cache/nested/deeper'
             _manager().requestHandler @mockRequest, @mockResponse
 
 

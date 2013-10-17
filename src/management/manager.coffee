@@ -154,6 +154,27 @@ module.exports.manager  = (config = {}) ->
                         response
                     )
 
+            '/v1/hubs/:uuid:/cache/**/*': 
+
+                description: 'get nested subkey from the traversal cache'
+                methods: ['GET'] # 'POST', 'DELETE']
+                handler: ([uuid, deeper], request, response, statusCode = 200) -> 
+
+                    return local.methodNotAllowed response unless request.method == 'GET'
+                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
+                    notifier = local.hubContext.uuids[uuid]
+                    cache = notifier.serialize(2).cache
+
+                    deeper.split('/').map (key) -> 
+                        key = decodeURIComponent key
+                        cache = cache[key]
+
+                    local.respond( 
+                        cache
+                        statusCode
+                        response
+                    )
+
             '/v1/hubs/:uuid:/clients': 
 
                 description: 'pending'
@@ -321,6 +342,9 @@ module.exports.manager  = (config = {}) ->
             return local.routes["#{version}/#{base}/:uuid:/#{nested}/:title:"].handler [uuid, title], request, response
         try
             [match, version, base, uuid, nested] = path.match /(.*)\/(.*)\/(.*)\/(.*)/
+            try if [match, uuid, deeper] = path.match /v1\/hubs\/(.*)\/cache\/(.*)/
+                return local.routes["/v1/hubs/:uuid:/cache/**/*"].handler [uuid, deeper], request, response
+
             return local.routes["#{version}/#{base}/:uuid:/#{nested}"].handler [uuid], request, response
         try
             [match, version, base, uuid] = path.match /(.*)\/(.*)\/(.*)/
