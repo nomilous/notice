@@ -2,7 +2,7 @@ TODO_LINK
 
 `npm install notice` 0.0.11 [license](./license)
 
-**stable**(ish) - api changes [will still occur](./spec/notice/hub#the-capsule-subconfig)
+**unstable**(ish) - api changes [will still occur](./spec/notice/hub#the-capsule-subconfig)
 
 notice
 ======
@@ -20,10 +20,10 @@ A communicator.
 
 ### Quick Faqts
 
-* **all examples use coffee-script**
+* all examples use coffee-script
 * coffee-script is zen-garden
 * `cake dev` watches & compiles & tests
-* directory.browse( [`./spec`](./spec) ).should.equal `clarity`
+* docs @ [`./spec/notice`](./spec/notice)
 
 ### Also, Important
 
