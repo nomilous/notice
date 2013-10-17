@@ -63,8 +63,7 @@ module.exports.manager  = (config = {}) ->
                     local.respond
                         module:  'notice'
                         version: version
-                        # TODO_LINK
-                        doc: 'https://github.com/nomilous/notice/tree/develop/spec/management'
+                        doc: 'https://github.com/nomilous/notice/tree/master/spec/management'
                         endpoints: local.routes
 
                         statusCode

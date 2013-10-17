@@ -124,7 +124,7 @@ describe 'manage', ->
                 JSON.parse( body ).should.eql {
                   "module": "notice",
                   "version": "/no/such",
-                  "doc": "https://github.com/nomilous/notice/tree/develop/spec/management",
+                  "doc": "https://github.com/nomilous/notice/tree/master/spec/management",
                   "endpoints": {
                     "/about": {
                       "description": "show this",

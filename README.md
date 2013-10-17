@@ -1,5 +1,3 @@
-TODO_LINK
-
 `npm install notice` 0.0.11 [license](./license)
 
 **unstable**(ish) - api changes [will still occur](./spec/notice/hub#the-capsule-subconfig)
@@ -13,7 +11,7 @@ A communicator.
 ### The Guiding Epiphanies
 
 * Middleware can be hot-swapped.
-* Middleware is perfect for **rou[t](https://twitter.com/)ing** information streams.
+* Middleware is perfect for routing information streams.
 * Their flow-control and sequencial subscribe-ability describes a dynamic assembly line.
 * An assembly (or disassembly) line can abstractify object storage and retreival.
 
