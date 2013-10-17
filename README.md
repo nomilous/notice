@@ -25,3 +25,7 @@ A communicator.
 * `cake dev` watches & compiles & tests
 * directory.browse( [`./spec`](./spec) ).should.equal `clarity`
 
+### Also, Important
+
+* Objects traversing a middleware pipeline can overtake each other. 
+

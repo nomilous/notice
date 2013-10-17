@@ -26,8 +26,8 @@ MessageHub.create
         # hotswapped middleware has only a local scope
         # --------------------------------------------
         # 
-        # * this cache in all middleware calls to alleviate that problem
-        # * also, it can be retreived via the REST api 
+        # * this cache, in all middleware, alleviates that problem
+        # * also, it can be retreived via the REST api
         # 
         #         GET /v1/hubs/:uuid:/cache
         # 
@@ -72,7 +72,6 @@ MessageHub.create
 
                 #
                 # sprinkle in some errors and cancellations
-                # and a random lag to cause an inprocess accumulation
                 #
 
                 throw new Error 'darn' if Math.random() < 0.05
@@ -103,6 +102,11 @@ MessageHub.create
         hub.use
             title: 'finalize', 
             (next, casule, traversal) -> 
-                setTimeout next, Math.random() * 10000 # fake workload lag
+
+                #
+                # random lag to cause an inprocess accumulation
+                # 
+
+                setTimeout next, Math.random() * 10000 
 
 
