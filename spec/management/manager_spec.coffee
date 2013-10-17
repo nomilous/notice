@@ -532,11 +532,11 @@ describe 'manage', ->
                     err.should.equal 'okgood'
                     done()
 
-            it 'compiles as coffeescript according to content-type', (done) -> 
+            it 'compiles as coffeescript according to content-type', (testDone) -> 
 
                 Notifier = notifier()
                 instance = Notifier.create 'hub name', 1
-                instance.cache = done: done
+                instance.cache = TESTDONE: testDone
                 instance.use 
                     title: 'title'
                     (next) -> next()
@@ -553,9 +553,9 @@ describe 'manage', ->
                 fn = (next, capsule, {cache}) -> 
                     
                     capsule.set
-                    
-                        done: false
-                        watched: (change) -> cache.done() if change.to 
+
+                        Done: false
+                        watched: (change) -> cache.TESTDONE() if change.to 
 
                     next()
                 """
@@ -564,8 +564,8 @@ describe 'manage', ->
                 instance.event (err, capsule) -> 
 
                     
-                    capsule.done = true
-                    #done()
+                    capsule.Done = true
+                    
 
 
 
