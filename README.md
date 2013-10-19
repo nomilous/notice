@@ -36,6 +36,7 @@ A communicator. Also for other stuff.
 
 ### Guidelines for Contribution
 
+* welcome
 * coffee-script is zen-garden
 * `cake dev` watches & compiles & tests (has holes re: running all tests)
 * i have never used that pull request thingy, you may need to bare with me
