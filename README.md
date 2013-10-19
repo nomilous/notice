@@ -49,9 +49,10 @@ A communicator. Also for other stuff.
 ### Also
 
 * i am a notoriously infrequent inbox perambulator
-* the precice direction that this codebase is going depends on many still very
+* the precise direction that this codebase is going depends on many still very
 * abstract ideas
 * **it will follow the thread of inspiration above any particular plan**
 * planning improves, inspiration invents
 * venn diagrams show overlaps
-* a glorious coincidence presents the moon and the sun as almost precicely identical in relative size
+* a glorious coincidence presents the moon and the sun as almost precisely identical in relative size
+* it will only remain so for another 500 million years
