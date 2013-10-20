@@ -83,6 +83,7 @@ MessageHub.create
 
         hub.use 
             title: 'warehouse'
+            description: 'optional description, nice for UIs tho'
             (next, capsule, {cache}) -> 
 
                 return next() unless capsule.purchase?
@@ -90,6 +91,7 @@ MessageHub.create
 
         hub.use 
             title: 'accounts'
+            description: 'optional description, nice for UIs tho'
             (next, capsule, traversal) -> 
 
                 return next() unless capsule.purchase?
@@ -97,6 +99,7 @@ MessageHub.create
 
         hub.use 
             title: 'despatch'
+            description: 'optional description, nice for UIs tho'
             (next, capsule, traversal) -> 
 
                 return next() unless capsule.purchase?
@@ -104,6 +107,7 @@ MessageHub.create
 
         hub.use
             title: 'finalize', 
+            description: 'optional description, nice for UIs tho'
             (next, casule, traversal) -> 
 
                 #

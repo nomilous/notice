@@ -32,6 +32,7 @@ Client.create
 
         client.use 
             title: 'clientside middleware'
+            description: 'optional description, nice for UIs tho'
             (next, capsule, traverse) -> 
                 
                 #console.log CACHE: traverse.cache

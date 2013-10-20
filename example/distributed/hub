@@ -45,6 +45,7 @@ MessageHub.create 'hub 1 name', {
         #
 
         title: 'middleware 1'
+        description: 'optional description, nice for UIs tho'
         (next, capsule, traversal) -> 
 
             # if capsule._type == 'control'
