@@ -205,6 +205,9 @@ module.exports.manager  = (config = {}) ->
 
                     deeper.split('/').map (key) -> 
                         key = decodeURIComponent key
+
+                        console.log '\n', notable: tools[key], '\n'
+
                         tools = tools[key]
 
                     local.respond( 
