@@ -19,6 +19,31 @@ module.exports.manager  = (config = {}) ->
         throw missingConfig 'config.manager.listen.port', 'manager'
 
 
+    recurse = (object, accum = {}) -> 
+
+        for key of object
+
+            nested = object[key]
+            continue if nested instanceof Array
+            if typeof nested is 'function' and nested.$$notable?
+
+                #
+                # assign content of $$notable as the hash ""value""
+                # for the function, causing it to be listed by the
+                # JSON serializer, but with the empty {} as assigned
+                # to $$notable functions
+                #
+
+                accum[key] = nested.$$notable
+                continue
+
+            continue unless typeof nested is 'object'
+            accum[key] = nested
+            recurse object[key], accum[key]
+
+        return accum
+
+
     recursed = (type, resultHandler) -> ([uuid], request, response, statusCode = 200) -> 
 
         return local.methodNotAllowed response unless request.method == 'GET'
@@ -26,7 +51,7 @@ module.exports.manager  = (config = {}) ->
         notifier = local.hubContext.uuids[uuid]
 
         resultHandler(
-            notifier.serialize(2)[type]
+            recurse notifier.serialize(2)[type]
             request
             response
             statusCode
