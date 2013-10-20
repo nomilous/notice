@@ -179,7 +179,7 @@ describe 'client', ->
                     @client.use
                         title: 'middleware to setup test'
                         (next, capsule) -> 
-                            capsule.set
+                            capsule.$$set
                                 routingCode: 'x'
                                 protected: true
                                 hidden: true

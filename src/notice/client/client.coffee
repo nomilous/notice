@@ -163,7 +163,7 @@ module.exports.client  = (config = {}) ->
                     assign[property] = payload[property]
                     assign.hidden    = true if hidden[property]
                     assign.protected = true if tected[property]
-                    capsule.set assign
+                    capsule.$$set assign
 
                 client.$$raw capsule
 

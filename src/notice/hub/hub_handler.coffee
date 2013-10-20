@@ -131,7 +131,7 @@ module.exports.handler  = (config = {}) ->
                             assign[property] = payload[property]
                             assign.hidden    = true if hidden[property]
                             assign.protected = true if tected[property]
-                            capsule.set assign
+                            capsule.$$set assign
 
                         capsule._socket_id = id
 

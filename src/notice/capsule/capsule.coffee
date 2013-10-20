@@ -48,7 +48,7 @@ module.exports.capsule  = (config = {}) ->
             testable = @  # latest instance available for testing
 
 
-        set: (opts) -> 
+        $$set: (opts) -> 
 
             local = {}
             break for key of opts

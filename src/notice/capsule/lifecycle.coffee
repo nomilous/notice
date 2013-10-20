@@ -14,7 +14,7 @@ module.exports.lifecycle  = (type, config = {}) ->
         create: deferred ({resolve, reject}, properties = {}) -> 
 
             cap = new local.Capsule
-            cap.set 
+            cap.$$set 
                 $$type: type
                 protected: true
                 hidden: true
@@ -28,7 +28,7 @@ module.exports.lifecycle  = (type, config = {}) ->
                 assign[key]      = properties[key]
                 assign.protected = true
                 assign.hidden    = true if local.config.nondescript 
-                cap.set assign
+                cap.$$set assign
 
             try if local.config.before
 

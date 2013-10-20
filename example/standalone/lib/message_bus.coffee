@@ -17,7 +17,7 @@ MessageBus2 = notice
                 # create a watched property on the 'update' capsule
                 #
 
-                capsule.set
+                capsule.$$set
                     state: 'pending'
                     watched: (property, change, object) -> 
                         console.log 'changed property:', property, change

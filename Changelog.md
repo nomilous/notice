@@ -2,7 +2,7 @@
 
 #### 0.0.12
 
-minimize possible capsule control properties colliding with storage system result callbacks
+minimize possible capsule control properties and functions colliding with storage system result callbacks or possible desired property names.
 
 * notice.control() becomes notice.$$control(), control capsule payload similarly changed
     * to filter control capsules from the pipe `return next.cancel() if capsule.$$control?`
@@ -12,6 +12,7 @@ minimize possible capsule control properties colliding with storage system resul
 * capsule._type becomes capsule.$$type
 * capsule._uuid becomes capsule.$$uuid
 * capsule.all becomes capsule.$$all
+* capsule.set() becmomes capsule.$$set()
 
 fix bump encountered when syncing database records into an elasticsearch cluster
 
