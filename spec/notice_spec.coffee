@@ -18,7 +18,7 @@ describe 'standalone default notifier', ->
         send = notice.create 'origin name'
         
         send.use title: 'testing 1', (next, capsule) -> 
-            capsule._type.should.equal 'event'
+            capsule.$$type.should.equal 'event'
             capsule.modified = true
             next()
         
@@ -68,7 +68,7 @@ describe 'standalone configured notifier', ->
 
         instance.capsuleTypeName( 'capsuleTypeValue' ).then (m) -> 
         
-            m._type.should.equal 'capsuleTypeName'
+            m.$$type.should.equal 'capsuleTypeName'
             m.should.eql 
                 capsuleTypeName: 'capsuleTypeValue'
                 sequence: 0

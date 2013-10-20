@@ -108,7 +108,7 @@ module.exports.client  = (config = {}) ->
 
                     control = 
                         type:      capsule.$$type
-                        uuid:      capsule._uuid
+                        uuid:      capsule.$$uuid
                         protected: capsule.$$protected
                         hidden:    capsule.$$hidden
 
@@ -125,7 +125,7 @@ module.exports.client  = (config = {}) ->
                     #   from the hub
                     #
 
-                    transit[capsule._uuid] = next: next
+                    transit[capsule.$$uuid] = next: next
 
                     # 
                     # * Send notification of the transmission to the promise notifier

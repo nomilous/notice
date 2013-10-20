@@ -22,7 +22,7 @@ TelevisionRemote = notice.client # a factory
 #### The `capsule` subconfig
 
 * Capsules are created asynchronously.
-* Each **capsule is assigned a `capsule._uuid` when it is created**. 
+* Each **capsule is assigned a `capsule.$$uuid` when it is created**. 
 * The uuid will be available to all local and remote middleware functions that receive this capsule as it traverses the system.
 * The uuid is hidden from serializers and protected from changes once created.
 * The creation sequence passes the capsule through a before hook (if defined).
@@ -43,7 +43,7 @@ module.exports.TelevisionRemote = notice.client
                 # onto the middleware pipeline
                 # 
 
-                play._uuid = 'my own uuid'
+                play.$$uuid = 'my own uuid'
                 done()
         ...
 

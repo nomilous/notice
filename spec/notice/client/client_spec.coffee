@@ -139,7 +139,7 @@ describe 'client', ->
                     capsule:
                         event: 
                             before: (done, capsule) -> 
-                                capsule._uuid = 'testable'
+                                capsule.$$uuid = 'testable'
                                 done()
                 socket = 
                     on: (event, handler) => 
@@ -208,7 +208,7 @@ describe 'client', ->
 
                 @EMITTED = {}
                 @client.event 'test', => 
-                    # console.log @EMITTED.capsule.control
+                    #console.log @EMITTED.capsule.control
 
                     @EMITTED.capsule.control.should.eql 
                         type: 'event'
@@ -226,7 +226,7 @@ describe 'client', ->
 
                 @EMITTED = {}
                 @client.event 'test event 1', => 
-                    #console.log @EMITTED.capsule.payload
+                    console.log @EMITTED.capsule.payload
 
                     @EMITTED.capsule.payload.should.eql
 

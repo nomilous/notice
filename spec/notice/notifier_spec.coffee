@@ -99,7 +99,7 @@ describe 'notifier', ->
                             #
 
                             capsule.id        = 'new database record id'
-                            # or capsule._uuid = 'if you want it the same'
+                            # or capsule.$$uuid = 'if you want it the same'
                             capsule.createdAt = Date.now() 
                             done()
 

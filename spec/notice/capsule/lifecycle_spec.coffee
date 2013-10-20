@@ -131,11 +131,11 @@ describe 'lifecycle', ->
             ls = lifecycle 'event', 
                 capsule: 
                     event: before: (done, capsule) -> 
-                        capsule._uuid = 1
+                        capsule.$$uuid = 1
                         done()
 
             ls.create().then (capsule) -> 
-                capsule._uuid.should.equal 1
+                capsule.$$uuid.should.equal 1
                 done()
 
         it 'does not assign uuid if the emitter did', (done) -> 
@@ -144,8 +144,8 @@ describe 'lifecycle', ->
                 capsule: 
                     event: {}
 
-            ls.create( _uuid: 1 ).then (capsule) -> 
-                capsule._uuid.should.equal 1
+            ls.create( $$uuid: 1 ).then (capsule) -> 
+                capsule.$$uuid.should.equal 1
                 done()
 
 
@@ -157,7 +157,7 @@ describe 'lifecycle', ->
 
             ls.create().then (capsule) -> 
 
-                should.exist capsule._uuid
+                should.exist capsule.$$uuid
                 done()
 
         it 'assigns uuid if there is no hook', (done) -> 
@@ -168,7 +168,7 @@ describe 'lifecycle', ->
 
             ls.create().then (capsule) -> 
 
-                should.exist capsule._uuid
+                should.exist capsule.$$uuid
                 done()
 
 

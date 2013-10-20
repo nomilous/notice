@@ -24,7 +24,7 @@ module.exports.capsule  = (config = {}) ->
             Object.defineProperty @, '$$protected', 
                 enumerable: false
 
-            Object.defineProperty @, '_uuid', 
+            Object.defineProperty @, '$$uuid', 
                 enumarable: false
                 get: -> uuid
                 set: (value) -> uuid = value unless uuid?

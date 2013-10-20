@@ -32,7 +32,7 @@ module.exports.lifecycle  = (type, config = {}) ->
             try if local.config.before
 
                 done = -> 
-                    cap._uuid = v1() unless cap._uuid?
+                    cap.$$uuid = v1() unless cap.$$uuid?
                     resolve cap
 
                 try 
@@ -41,5 +41,5 @@ module.exports.lifecycle  = (type, config = {}) ->
                     return reject error
 
 
-            cap._uuid = v1() unless cap._uuid?
+            cap.$$uuid = v1() unless cap._uuid?
             return resolve cap

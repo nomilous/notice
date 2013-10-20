@@ -7,9 +7,9 @@ describe 'Capsule', ->
 
         Capsule  = capsule()
         instance = new Capsule uuid: 'assigned'
-        instance._uuid.should.equal 'assigned'
-        instance._uuid = 'erg2q3'
-        instance._uuid.should.equal 'assigned'
+        instance.$$uuid.should.equal 'assigned'
+        instance.$$uuid = 'erg2q3'
+        instance.$$uuid.should.equal 'assigned'
         done()
 
     it 'can set the uuid after creation (only once)', (done) -> 
@@ -17,9 +17,9 @@ describe 'Capsule', ->
         Capsule  = capsule()
         instance = new Capsule
         should.not.exist instance._uuid
-        instance._uuid = 'UUID'
-        instance._uuid = 'assign another uuid'
-        instance._uuid.should.equal 'UUID'
+        instance.$$uuid = 'UUID'
+        instance.$$uuid = 'assign another uuid'
+        instance.$$uuid.should.equal 'UUID'
         done()
         
 

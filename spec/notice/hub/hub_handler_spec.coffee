@@ -263,7 +263,7 @@ describe 'handler', ->
                     protectedKey: 'pValue'
             )
 
-            @capsule._uuid       .should.equal 'UUID'
+            @capsule.$$uuid       .should.equal 'UUID'
             @capsule.key         .should.equal 'value'
             @capsule.hiddenKey   .should.equal 'hValue' 
             @capsule.protectedKey = 'kfdlkmsdfdsfqoknojk'

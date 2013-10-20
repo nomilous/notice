@@ -18,7 +18,7 @@ theConnectedRemote.volume 'up', amount: 3, (err, capsule) ->
     # or err
     #
 
-    #console.log capsule._uuid
+    #console.log capsule.$$uuid
     console.log capsule
 
     #
@@ -45,7 +45,7 @@ theConnectedRemote.volume 'up', amount: 3, (err, capsule) ->
 
 theConnectedRemote.volume( 'up', amount: 3 ).then(
 
-    (capsule) -> console.log 'Hub acknowledged', capsule._uuid
+    (capsule) -> console.log 'Hub acknowledged', capsule.$$uuid
     (error)   -> console.log error
     (notify)  -> console.log 'Notify', notify 
 
