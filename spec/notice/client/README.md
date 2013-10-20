@@ -28,6 +28,29 @@ TelevisionRemote = notice.client # a factory
 * The creation sequence passes the capsule through a before hook (if defined).
 * The hook receives the capsule **after property assignment** but **before uuid assignment**.
 
+#### The `nondescript` capsule
+
+```coffee
+
+StorageBus = notice.hub
+    
+    capsule:
+        user_account:
+            nondescript: true
+        add_role: {}
+
+#
+# will hide the capsule.user_account property but not the capsule.add_role property
+# 
+
+stogage_client.user_account 'this invisible', {theuser: 'object'}, (err, capsule) ->
+stogage_client.add_role 'admin', {theuser: 'object'}, (err, capsule) ->
+
+```
+
+
+* Capsules configured to be nondescript hide the typeValue from serailizers
+
 
 ```coffee
 
