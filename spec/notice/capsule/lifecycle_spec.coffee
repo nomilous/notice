@@ -88,7 +88,7 @@ describe 'lifecycle', ->
                 capsule: 
                     event: 
                         before: (dun, capsule) -> 
-                            capsule._type.should.equal 'event'
+                            capsule.$$type.should.equal 'event'
                             done()
 
             ls.create()

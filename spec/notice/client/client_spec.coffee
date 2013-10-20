@@ -214,11 +214,11 @@ describe 'client', ->
                         type: 'event'
                         uuid: 'testable' 
                         protected: 
-                            _type: 1
+                            $$type: 1
                             event: 1
                             routingCode: 1
                         hidden: 
-                            _type: 1
+                            $$type: 1
                             routingCode: 1
                     done()
 
@@ -230,7 +230,7 @@ describe 'client', ->
 
                     @EMITTED.capsule.payload.should.eql
 
-                        _type: 'event'
+                        $$type: 'event'
                         event: 'test event 1'
                         routingCode: 'x'
                         
@@ -249,7 +249,7 @@ describe 'client', ->
                         # console.log @EMITTED.capsule.payload
                         @EMITTED.capsule.payload.should.eql
 
-                            _type: 'event'
+                            $$type: 'event'
                             event: 'test event 2'
                             routingCode: 'x'
                             more: 'stuff'

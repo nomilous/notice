@@ -15,7 +15,7 @@ module.exports.lifecycle  = (type, config = {}) ->
 
             cap = new local.Capsule
             cap.set 
-                _type: type
+                $$type: type
                 protected: true
                 hidden: true
 

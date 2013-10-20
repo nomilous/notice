@@ -28,7 +28,7 @@ theConnectedRemote.volume 'up', amount: 3, (err, capsule) ->
     console.log capsule.all 
 
     #
-    # => { _type: 'volume', volume: 'up', amount: 3 }
+    # => { $$type: 'volume', volume: 'up', amount: 3 }
     # 
 
 ```
@@ -50,7 +50,7 @@ theConnectedRemote.volume( 'up', amount: 3 ).then(
     (notify)  -> console.log 'Notify', notify 
 
         # 
-        # => Notify { _type: 'control', control: 'transmitted', capsule: ...
+        # => Notify { $$type: 'control', $$control: 'transmitted', capsule: ...
         # => Hub acknowledged 75fa0370-31ce-11e3-8fda-879806fe07a4
         # 
 

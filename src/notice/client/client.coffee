@@ -107,7 +107,7 @@ module.exports.client  = (config = {}) ->
                     # 
 
                     control = 
-                        type:      capsule._type
+                        type:      capsule.$$type
                         uuid:      capsule._uuid
                         protected: capsule.$$protected
                         hidden:    capsule.$$hidden
@@ -137,9 +137,9 @@ module.exports.client  = (config = {}) ->
                     # 
 
                     process.nextTick -> next.notify
-                        _type:   'control'
-                        control: 'transmitted'
-                        capsule: capsule
+                        $$type:    'control'
+                        $$control: 'transmitted'
+                        capsule:   capsule
 
 
             socket.on 'capsule', (header, control, payload) -> 
