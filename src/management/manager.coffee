@@ -19,10 +19,14 @@ module.exports.manager  = (config = {}) ->
         throw missingConfig 'config.manager.listen.port', 'manager'
 
 
-    recurse = (object, accum = {}) -> 
+    recurse = (object, pathArray, accum = {}) -> 
+
+        next = pathArray.shift()
 
         for key of object
 
+            if pathArray? then continue unless key is next
+            console.log KEY: key
             nested = object[key]
             continue if nested instanceof Array
             if typeof nested is 'function' and nested.$$notable?
@@ -39,19 +43,19 @@ module.exports.manager  = (config = {}) ->
 
             continue unless typeof nested is 'object'
             accum[key] = nested
-            recurse object[key], accum[key]
+            recurse object[key], pathArray, accum[key]
 
         return accum
 
 
-    recursed = (type, resultHandler) -> ([uuid], request, response, statusCode = 200) -> 
+    recurses = (type, resultHandler) -> ([uuid, deeper], request, response, statusCode = 200) -> 
 
         return local.methodNotAllowed response unless request.method == 'GET'
         return local.objectNotFound response unless local.hubContext.uuids[uuid]
         notifier = local.hubContext.uuids[uuid]
 
         resultHandler(
-            recurse notifier.serialize(2)[type]
+            recurse notifier.serialize(2)[type], deeper.split '/'
             request
             response
             statusCode
@@ -193,16 +197,6 @@ module.exports.manager  = (config = {}) ->
                         response
                     )
 
-
-            '/v1/hubs/:uuid:/tools': 
-
-                description: 'get output from a serailization of the tools tree'
-                methods: ['GET']
-                handler: recursed 'tools', (result, request, response, statusCode = 200) -> 
-
-                    local.respond result, statusCode, response
-
-
             '/v1/hubs/:uuid:/cache/**/*': 
 
                 description: 'get nested subkey from the cache tree'
@@ -224,31 +218,45 @@ module.exports.manager  = (config = {}) ->
                         response
                     )
 
+
+            '/v1/hubs/:uuid:/tools': 
+
+                description: 'get output from a serailization of the tools tree'
+                methods: ['GET']
+                handler: recurses 'tools', (result, request, response, statusCode = 200) -> 
+
+                    local.respond result, statusCode, response
+
+
             '/v1/hubs/:uuid:/tools/**/*': 
 
                 description: 'get nested subkey from the tools key'
                 methods: ['GET'] #, 'POST'] # post tool config into the tools tree
                                             # possibly even as simple as it sounds
                                             # not thingking about it now
-                handler: ([uuid, deeper], request, response, statusCode = 200) -> 
+                handler: recurses 'tools', (result, request, response, statusCode = 200) -> 
 
-                    return local.methodNotAllowed response unless request.method == 'GET'
-                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
-                    notifier = local.hubContext.uuids[uuid]
-                    tools = notifier.serialize(2).tools
+                    local.respond result, statusCode, response
 
-                    deeper.split('/').map (key) -> 
-                        key = decodeURIComponent key
+                # handler: ([uuid, deeper], request, response, statusCode = 200) -> 
 
-                        console.log '\n', notable: tools[key], '\n'
+                #     return local.methodNotAllowed response unless request.method == 'GET'
+                #     return local.objectNotFound response unless local.hubContext.uuids[uuid]
+                #     notifier = local.hubContext.uuids[uuid]
+                #     tools = notifier.serialize(2).tools
 
-                        tools = tools[key]
+                #     deeper.split('/').map (key) -> 
+                #         key = decodeURIComponent key
 
-                    local.respond( 
-                        tools
-                        statusCode
-                        response
-                    )
+                #         console.log '\n', notable: tools[key], '\n'
+
+                #         tools = tools[key]
+
+                #     local.respond( 
+                #         tools
+                #         statusCode
+                #         response
+                #     )
 
             '/v1/hubs/:uuid:/clients': 
 
