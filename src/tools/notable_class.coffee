@@ -30,10 +30,7 @@ module.exports = class NotableTool
 
                     setTimeout (->
 
-                        callback null, 
-
-                            property1: 'value1'
-                            property2: '1value'
+                        callback null, Infinity
 
                     ), 3000
 
@@ -63,4 +60,10 @@ module.exports = class NotableTool
     #     setTimeout (-> 
     #         callback null, resulting: 'thing'
     #     ), 1000
+
+
+Infinity = 
+
+    endlessly: more: 'stuff'
+    with: another: new NotableTool 'inside it'
 
