@@ -13,3 +13,7 @@ minimize possible capsule control properties colliding with storage system resul
 * capsule._uuid becomes capsule.$$uuid
 * capsule.all becomes capsule.$$all
 
+fix bump encountered when syncing database records into an elasticsearch cluster
+
+* added config.capsule.type_def.nondescript for special cases requiring capsule.type_def 'value' to not be enumerated at serialization 
+
