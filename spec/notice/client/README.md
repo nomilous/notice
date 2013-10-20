@@ -32,7 +32,7 @@ TelevisionRemote = notice.client # a factory
 
 ```coffee
 
-StorageBus = notice.hub
+StorageBusClient = notice.client
     
     capsule:
         user_account:
