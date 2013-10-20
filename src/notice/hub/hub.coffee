@@ -102,6 +102,7 @@ module.exports.hub  = (config = {}) ->
                 # 
                 
                 hub.listening = address
+                hub.listening.adaptor = 'socket.io'
                 resolve hub
                 if typeof callback == 'function' then callback null, hub
 

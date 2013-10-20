@@ -1,6 +1,7 @@
 {notifier} = require './notice/notifier'
 {client}   = require './notice/client'
 {hub}      = require './notice/hub'
+tools      = require './tools'
 
 #
 # standalone
@@ -31,3 +32,9 @@ module.exports.listen  = hub().create
 
 module.exports.client  = client
 module.exports.hub     = hub
+
+#
+# Notables
+#
+
+module.exports.tools  = tools
