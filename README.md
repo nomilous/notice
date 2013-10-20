@@ -1,4 +1,4 @@
-`npm install notice` 0.0.12 [license](./license)
+`npm install notice` 0.0.12 [license](./license) [`top commit`](https://github.com/nomilous/notice/commit/941d4c19e0230556222b8ba02982a5a0f6ade2da)
 
 **unstable**(ish) - api changes [will still occur](./spec/notice/hub#the-capsule-subconfig)
 
