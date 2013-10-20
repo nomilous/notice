@@ -109,8 +109,8 @@ module.exports.client  = (config = {}) ->
                     control = 
                         type:      capsule._type
                         uuid:      capsule._uuid
-                        protected: capsule._protected
-                        hidden:    capsule._hidden
+                        protected: capsule.$$protected
+                        hidden:    capsule.$$hidden
 
                     socket.emit 'capsule', header, control, capsule.all
                     

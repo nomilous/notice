@@ -23,7 +23,7 @@ describe 'Capsule', ->
         done()
         
 
-    xcontext 'set()', -> 
+    context 'set()', -> 
 
         it 'sets a property', (done) -> 
 
@@ -103,7 +103,7 @@ describe 'Capsule', ->
                     property: 'original'
                     protected: true
 
-                instance._protected.should.eql property: 1
+                instance.$$protected.should.eql property: 1
                 done()
 
 
@@ -146,7 +146,7 @@ describe 'Capsule', ->
 
                 Capsule = capsule()
                 instance = new Capsule
-                instance._hidden.should.eql {}
+                instance.$$hidden.should.eql {}
                 done()
 
             it 'adds to the list when a property is set hidden', (done) -> 
@@ -157,7 +157,7 @@ describe 'Capsule', ->
                     property: 'value'
                     hidden: true
 
-                instance._hidden.should.eql property: 1
+                instance.$$hidden.should.eql property: 1
                 done()
 
             it 'removes from the list if a property is unhidden', (done) -> 
@@ -168,13 +168,13 @@ describe 'Capsule', ->
                     property: 'value'
                     hidden: true
 
-                instance._hidden.should.eql property: 1
+                instance.$$hidden.should.eql property: 1
                 instance.should.eql {}
                 instance.set
                     property: 'new value'
                     hidden: false
 
-                instance._hidden.should.eql {}
+                instance.$$hidden.should.eql {}
                 instance.should.eql property: 'new value'
                 done()
 

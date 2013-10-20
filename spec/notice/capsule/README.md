@@ -113,7 +113,7 @@ notifier.use
     title: 'nosey middleware'
     (next, capsule) -> 
 
-        console.log key, capsule[key] for key of capsule._hidden
+        console.log key, capsule[key] for key of capsule.$$hidden
         next()
 
 ```

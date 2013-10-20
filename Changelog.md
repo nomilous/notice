@@ -6,3 +6,4 @@
     * to filter control capsules from the pipe `return next.cancel() if capsule.$$control?`
 * notice.raw() becomes notice.$$raw(), for consistancy
     * remains hidden, permanence uncertain
+* capsule.hidden and capsule.protected list properties become $$hidden and $$protected

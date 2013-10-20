@@ -16,12 +16,12 @@ module.exports.capsule  = (config = {}) ->
 
             uuid = params.uuid
 
-            @_hidden = {}
-            Object.defineProperty @, '_hidden', 
+            @$$hidden = {}
+            Object.defineProperty @, '$$hidden', 
                 enumerable: false
 
-            @_protected = {}
-            Object.defineProperty @, '_protected', 
+            @$$protected = {}
+            Object.defineProperty @, '$$protected', 
                 enumerable: false
 
             Object.defineProperty @, '_uuid', 
@@ -35,7 +35,7 @@ module.exports.capsule  = (config = {}) ->
                 get: => 
                     allProperties = {}
                     allProperties[key] = @[key] for key in (
-                        for key of @_hidden
+                        for key of @$$hidden
                             continue if typeof @[key] is 'function'
                             key 
                     ).concat( 
@@ -79,13 +79,13 @@ module.exports.capsule  = (config = {}) ->
             @[key] = opts[key]
 
             if opts.hidden? 
-                if opts.hidden then @_hidden[key] = 1
-                else delete @_hidden[key]
+                if opts.hidden then @$$hidden[key] = 1
+                else delete @$$hidden[key]
                 Object.defineProperty @, key, 
                     enumerable: not opts.hidden
 
             if opts.protected?
-                if opts.protected then @_protected[key] = 1
+                if opts.protected then @$$protected[key] = 1
                 Object.defineProperty @, key, 
                     writable: not opts.protected
 
