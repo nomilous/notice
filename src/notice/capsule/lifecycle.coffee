@@ -27,6 +27,7 @@ module.exports.lifecycle  = (type, config = {}) ->
                 assign = {}
                 assign[key]      = properties[key]
                 assign.protected = true
+                assign.hidden    = true if local.config.nondescript 
                 cap.set assign
 
             try if local.config.before

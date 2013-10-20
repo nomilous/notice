@@ -126,6 +126,20 @@ describe 'lifecycle', ->
 
                 done()
 
+        it 'hides the typeValue if nondescript', (done) -> 
+
+            ls = lifecycle 'event', 
+                capsule: 
+                    event: 
+                        nondescript: true
+
+            ls.create( event: 'this is invisible' ).then (capsule) -> 
+
+                capsule.should.eql {}
+                capsule.event.should.equal 'this is invisible'
+                done()
+
+
         it 'does not assign a uuid if the hook did', (done) -> 
 
             ls = lifecycle 'event', 
