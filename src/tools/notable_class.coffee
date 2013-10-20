@@ -1,4 +1,4 @@
-module.exports = class NotableTool
+module.exports = class NotableClass
 
     #
     # api tool with notability (class example)
@@ -65,5 +65,5 @@ module.exports = class NotableTool
 Infinity = 
 
     endlessly: more: 'stuff'
-    with: another: new NotableTool 'inside it'
+    with: another: new NotableClass 'inside it'
 

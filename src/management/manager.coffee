@@ -19,6 +19,21 @@ module.exports.manager  = (config = {}) ->
         throw missingConfig 'config.manager.listen.port', 'manager'
 
 
+    recursed = (type, resultHandler) -> ([uuid], request, response, statusCode = 200) -> 
+
+        return local.methodNotAllowed response unless request.method == 'GET'
+        return local.objectNotFound response unless local.hubContext.uuids[uuid]
+        notifier = local.hubContext.uuids[uuid]
+
+        resultHandler(
+            notifier.serialize(2)[type]
+            request
+            response
+            statusCode
+        )
+
+
+
     testable = local = 
 
         hubContext: undefined
@@ -158,16 +173,10 @@ module.exports.manager  = (config = {}) ->
 
                 description: 'get output from a serailization of the tools tree'
                 methods: ['GET']
-                handler: ([uuid], request, response, statusCode = 200) -> 
+                handler: recursed 'tools', (result, request, response, statusCode = 200) -> 
 
-                    return local.methodNotAllowed response unless request.method == 'GET'
-                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
-                    notifier = local.hubContext.uuids[uuid]
-                    local.respond( 
-                        notifier.serialize(2).tools
-                        statusCode
-                        response
-                    )
+                    local.respond result, statusCode, response
+
 
             '/v1/hubs/:uuid:/cache/**/*': 
 
