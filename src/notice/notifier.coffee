@@ -22,10 +22,10 @@ module.exports.notifier  = (config = {}) ->
 
 
     #
-    # for builtin control capsules
+    # for builtin $$control capsules
     #
 
-    config.capsule.control = {}
+    config.capsule.$$control = {}
 
     testable = local = 
 

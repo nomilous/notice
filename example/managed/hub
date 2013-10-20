@@ -4,8 +4,11 @@ notice = require '../../lib/notice'
 
 MessageHub = notice.hub
     
+    
     error:
         keep: 2
+
+
     manager: 
         listen: 
             port: 44444

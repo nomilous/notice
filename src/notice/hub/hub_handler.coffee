@@ -65,7 +65,7 @@ module.exports.handler  = (config = {}) ->
                         # * TODO: ensure this does not go to the client
                         # 
 
-                        hubNotifier.control 'suspend', 
+                        hubNotifier.$$control 'suspend', 
                             _socket_id: id
 
 
@@ -252,7 +252,7 @@ module.exports.handler  = (config = {}) ->
                     # * TODO: ensure this does not go to the client
                     # 
 
-                    hubNotifier.control startOrResume, 
+                    hubNotifier.$$control startOrResume, 
                         _socket_id: id
                     
                     hubContext.name2id[originTitle] = id

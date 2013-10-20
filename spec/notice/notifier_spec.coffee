@@ -47,7 +47,7 @@ describe 'notifier', ->
             Notifier = notifier capsule: userDefinedMessage: {}
             instance = Notifier.create 'title'
             instance.userDefinedMessage.should.be.an.instanceof Function
-            instance.control.should.be.an.instanceof Function
+            instance.$$control.should.be.an.instanceof Function
             done()
 
 

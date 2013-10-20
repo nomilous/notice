@@ -113,7 +113,7 @@ describe 'handler', ->
             instance = Handler.create(
                 hubName = 'hubName'
                 hubNotifier = 
-                    control: -> 
+                    $$control: -> 
                     use: ->
                 hubContext  = 
                     clients: {}
@@ -153,7 +153,7 @@ describe 'handler', ->
                 
                 hubName      = 'hubname'
                 @hubNotifier = 
-                    control: -> 
+                    $$control: -> 
                     use: ->
                 @hubContext  = 
                     clients: 
@@ -197,7 +197,7 @@ describe 'handler', ->
 
                 hubName      = 'hubname'
                 @hubNotifier = 
-                    control: -> 
+                    $$control: -> 
                     raw: (@capsule) => 
                     use: ->
 
@@ -301,7 +301,7 @@ describe 'handler', ->
 
                 hubName      = 'hubname'
                 @hubNotifier = 
-                    control: -> 
+                    $$control: -> 
                     use: ->
                 @hubContext  = 
                     clients: {}
@@ -438,7 +438,7 @@ describe 'handler', ->
 
                 hubName      = 'hubname'
                 @hubNotifier = 
-                    control: ->
+                    $$control: ->
                     use: ->
                 @hubContext  = 
                     clients: {}
