@@ -66,8 +66,16 @@ StorageBusClient = notice.client
 
 stogage_client.user_account 'this invisible', {theuser: 'object'}, (err, capsule) ->
     
-    stogage_client.add_role 'admin', capsule, (err, capsule) ->
+    stogage_client.add_role 'admin', capsule, (err, capsule) -> 
 
+        #
+        # TODO: the precise behaviours when creating a capsule using another
+        #       as input are not fully ironed out.
+        # 
+        #       * capsule.$$type may might not have become the new type
+        #       * capsule.user_account should not exist in the second 
+        #         because of the nondescript flag
+        #
 ```
 
 
