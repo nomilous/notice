@@ -112,7 +112,7 @@ module.exports.client  = (config = {}) ->
                         protected: capsule.$$protected
                         hidden:    capsule.$$hidden
 
-                    socket.emit 'capsule', header, control, capsule.all
+                    socket.emit 'capsule', header, control, capsule.$$all
                     
                     #
                     # TODO: transit collection needs limits set, it is conceivable

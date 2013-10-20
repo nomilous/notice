@@ -30,7 +30,7 @@ module.exports.capsule  = (config = {}) ->
                 set: (value) -> uuid = value unless uuid?
 
 
-            Object.defineProperty @, 'all', 
+            Object.defineProperty @, '$$all', 
                 enumerable: false
                 get: => 
                     allProperties = {}

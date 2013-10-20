@@ -226,7 +226,7 @@ describe 'client', ->
 
                 @EMITTED = {}
                 @client.event 'test event 1', => 
-                    console.log @EMITTED.capsule.payload
+                    # console.log @EMITTED.capsule.payload
 
                     @EMITTED.capsule.payload.should.eql
 

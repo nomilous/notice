@@ -48,7 +48,7 @@ describe 'Capsule', ->
                     property: 'value'
                     readonly: 'protected value'
 
-                instance.all.should.eql 
+                instance.$$all.should.eql 
                     property: 'value'
                     secret:   'hiden value'
                     readonly: 'protected value'

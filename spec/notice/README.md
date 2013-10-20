@@ -25,7 +25,7 @@ theConnectedRemote.volume 'up', amount: 3, (err, capsule) ->
     # => { volume: 'up', amount: 3 }
     # 
 
-    console.log capsule.all 
+    console.log capsule.$$all 
 
     #
     # => { $$type: 'volume', volume: 'up', amount: 3 }

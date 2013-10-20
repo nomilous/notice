@@ -11,4 +11,5 @@ minimize possible capsule control properties colliding with storage system resul
 * capsule.hidden and capsule.protected list properties become $$hidden and $$protected
 * capsule._type becomes capsule.$$type
 * capsule._uuid becomes capsule.$$uuid
+* capsule.all becomes capsule.$$all
 
