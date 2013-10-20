@@ -308,6 +308,19 @@ module.exports.notifier  = (config = {}) ->
 
                     reload()
 
+                    #
+                    # ##ideas
+                    # 
+                    # * the middleware, contained in a capsule
+                    #      * provides a change watcher
+                    #      * uuid
+                    # * switching middleware, instruction via the pipeline in addition to the api
+                    # * middleware packs (a contiguous, identifiable set)
+                    #      * hub runs a pack
+                    #      * can switch betweeen packs
+                    #           * nice for preloading an ugrade pending ideal switch moment
+                    # 
+
 
 
 
