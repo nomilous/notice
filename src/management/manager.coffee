@@ -3,7 +3,7 @@
 {start}         = require '../notice/hub/listener'
 {readFileSync}  = require 'fs'
 coffee          = require 'coffee-script'
-version         = JSON.parse( readFileSync __dirname + '/../../package.json', 'utf8' ).version
+Version         = JSON.parse( readFileSync __dirname + '/../../package.json', 'utf8' ).version
 
 testable               = undefined
 module.exports._manager = -> testable
@@ -62,7 +62,7 @@ module.exports.manager  = (config = {}) ->
                     return local.methodNotAllowed response unless request.method == 'GET'
                     local.respond
                         module:  'notice'
-                        version: version
+                        version: Version
                         doc: 'https://github.com/nomilous/notice/tree/master/spec/management'
                         endpoints: local.routes
 
@@ -171,7 +171,7 @@ module.exports.manager  = (config = {}) ->
 
             '/v1/hubs/:uuid:/cache/**/*': 
 
-                description: 'get nested subkey from the traversal cache'
+                description: 'get nested subkey from the cache tree'
                 methods: ['GET'] #, 'POST'] #, 'DELETE']
                 handler: ([uuid, deeper], request, response, statusCode = 200) -> 
 
@@ -186,6 +186,29 @@ module.exports.manager  = (config = {}) ->
 
                     local.respond( 
                         cache
+                        statusCode
+                        response
+                    )
+
+            '/v1/hubs/:uuid:/tools/**/*': 
+
+                description: 'get nested subkey from the tools key'
+                methods: ['GET'] #, 'POST'] # post tool config into the tools tree
+                                            # possibly even as simple as it sounds
+                                            # not thingking about it now
+                handler: ([uuid, deeper], request, response, statusCode = 200) -> 
+
+                    return local.methodNotAllowed response unless request.method == 'GET'
+                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
+                    notifier = local.hubContext.uuids[uuid]
+                    tools = notifier.serialize(2).tools
+
+                    deeper.split('/').map (key) -> 
+                        key = decodeURIComponent key
+                        tools = tools[key]
+
+                    local.respond( 
+                        tools
                         statusCode
                         response
                     )
@@ -357,8 +380,12 @@ module.exports.manager  = (config = {}) ->
             return local.routes["#{version}/#{base}/:uuid:/#{nested}/:title:"].handler [uuid, title], request, response
         try
             [match, version, base, uuid, nested] = path.match /(.*)\/(.*)\/(.*)\/(.*)/
+            
             try if [match, uuid, deeper] = path.match /v1\/hubs\/(.*)\/cache\/(.*)/
                 return local.routes["/v1/hubs/:uuid:/cache/**/*"].handler [uuid, deeper], request, response
+            
+            try if [match, uuid, deeper] = path.match /v1\/hubs\/(.*)\/tools\/(.*)/
+                return local.routes["/v1/hubs/:uuid:/tools/**/*"].handler [uuid, deeper], request, response
 
             return local.routes["#{version}/#{base}/:uuid:/#{nested}"].handler [uuid], request, response
         try

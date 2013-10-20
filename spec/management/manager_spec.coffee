@@ -123,7 +123,7 @@ describe 'manage', ->
 
                 JSON.parse( body ).should.eql {
                   "module": "notice",
-                  "version": "/no/such",
+                  "version": "0.0.12",
                   "doc": "https://github.com/nomilous/notice/tree/master/spec/management",
                   "endpoints": {
                     "/about": {
@@ -169,7 +169,13 @@ describe 'manage', ->
                       ]
                     },
                     "/v1/hubs/:uuid:/cache/**/*": {
-                      "description": "get nested subkey from the traversal cache",
+                      "description": "get nested subkey from the cache tree",
+                      "methods": [
+                        "GET"
+                      ]
+                    },
+                    "/v1/hubs/:uuid:/tools/**/*": {
+                      "description": "get nested subkey from the tools key",
                       "methods": [
                         "GET"
                       ]
@@ -344,6 +350,17 @@ describe 'manage', ->
 
             @serializeHub1 = -> tools: key: 'VALUEEE'
             @mockRequest.url = '/v1/hubs/1/tools'
+            _manager().requestHandler @mockRequest, @mockResponse
+
+
+        it 'responds to GET /v1/hubs/:uuid:/tools/**/*', (done) ->
+
+            @write = (body) -> 
+                JSON.parse( body ).should.eql 'VALUEEE'
+                done()
+
+            @serializeHub1 = -> tools: nested: deeper: 'VALUEEE'
+            @mockRequest.url = '/v1/hubs/1/tools/nested/deeper'
             _manager().requestHandler @mockRequest, @mockResponse
 
 
