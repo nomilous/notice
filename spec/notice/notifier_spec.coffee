@@ -249,6 +249,13 @@ describe 'notifier', ->
             six = notifier().create 'Assembly Line 6'
             six.use 
                 title: 'arrange into single file'
+                description: """
+                Note. If it starts vibrating something crazy it means there's
+                      some that are wedged in the funnel track.
+
+                      Unwedging is a matter of extreem urgency!
+                      A boat-hook has been provived.
+                """
                 (done, capsule) -> done()
             six.use
                 title: 'squirt the product in'
@@ -258,7 +265,7 @@ describe 'notifier', ->
                 (done, capsule) -> done()
 
             mmm = _notifier().middleware['Assembly Line 6']
-
+            mmm['arrange into single file'].description.should.match /vibrating something crazy/
             mmm['arrange into single file'].fn (->), {}
             mmm['squirt the product in'].fn    (->), {}
             mmm['put a lid on it'].fn          done, {}
@@ -331,6 +338,32 @@ describe 'notifier', ->
                 six.event (err, capsule) -> 
                     capsule.should.eql one: 1
                     done()
+
+        it 'preserves description and enabledness when using force()', (done) -> 
+
+            six = notifier().create 'Assembly Line 6'
+            six.use 
+                title: 'one'
+                description: 'description'
+                enabled: true
+                (next, capsule) -> 
+                    capsule.one = 1
+                    next()
+
+            middleware = _notifier().middleware['Assembly Line 6']['one']
+            middleware.description.should.equal 'description'
+            
+            six.force
+                title: 'one'
+                (next, capsule) -> 
+                    ### new ###
+                    next()
+
+            middleware.fn.toString().should.match /new/
+            middleware.enabled.should.equal true
+            middleware.description.should.equal 'description'
+
+            done()
 
 
         it 'creates a function to send a raw payload into the pipeline', (done) -> 

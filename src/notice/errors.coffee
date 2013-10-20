@@ -1,6 +1,7 @@
 #
 # TODO: errno for implementation exit codes
-#
+# TODO: more context into error outputs, eg, which .thing, and what was .propery at the time
+# 
 
 module.exports.terminal = (error, reject, callback) -> 
     
@@ -28,6 +29,10 @@ module.exports.undefinedArg = (arg, functionSignature) ->
 module.exports.alreadyDefined = (thingType, thingName) -> 
     
     return error = new Error "notice: #{thingType} '#{thingName}' is already defined"
+
+module.exports.invalidAction = (action, reason) -> 
+
+    return error = new Error "notice: invalid use of #{action} '#{reason}'"
 
 module.exports.disconnected = (originName) -> 
     

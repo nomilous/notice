@@ -1,6 +1,6 @@
 {pipeline, deferred} = require 'also'
 {lifecycle}    = require './capsule/lifecycle'
-{undefinedArg} = require './errors'
+{undefinedArg, invalidAction} = require './errors'
 {v1}           = require 'node-uuid'
 
 testable                 = undefined
@@ -259,8 +259,9 @@ module.exports.notifier  = (config = {}) ->
 
                     unless list[opts.title]?
                         list[opts.title] = 
+                            description: opts.description
                             enabled: opts.enabled
-                            metrics: pending: 'metrics per middleware'
+                            metrics: {}
                             fn: fn
                         reload()
                         return
@@ -271,18 +272,12 @@ module.exports.notifier  = (config = {}) ->
                 force: (opts, fn) ->
 
                     #
-                    # * force() can replace or delete middleware
+                    # * force() can modify or delete middleware
                     #
 
                     throw undefinedArg( 
-                        'opts.title and fn', 'use(opts, middlewareFn)'
-                    ) unless ( 
-                        opts? and opts.title? and 
-                        ( fn? and typeof fn == 'function' ) or
-                        ( opts.delete? and opts.delete is true ) or 
-                        ( opts.enabled? and typeof opts.enabled is 'boolean' )
-
-                    )
+                        'opts.title', 'use(opts, middlewareFn)'
+                    ) unless opts? and opts.title?
 
                     if opts.delete and list[opts.title]?
                         delete list[opts.title]
@@ -295,12 +290,21 @@ module.exports.notifier  = (config = {}) ->
                         reload()
                         return
 
-                    opts.enabled ?= true
-                    
-                    list[opts.title] = 
-                        enabled: opts.enabled
-                        metrics: pending: 'metrics per middleware'
-                        fn: fn
+                    existing = list[opts.title]
+
+                    throw invalidAction(
+                        'force(opts, middlewareFn)', 'cannot insert new middleware'
+                    ) unless existing?
+
+                    existing.description = opts.description if opts.description?
+                    existing.enabled     = opts.enabled if opts.enabled?
+                    existing.fn          = fn
+                    # beware opts.delete if thoughts of looping occur here
+
+                    #
+                    # TODO: what to de with existing metrics on replaceing middleware
+                    #       but first, there need to be metrics... 
+                    #
 
                     reload()
 

@@ -380,9 +380,10 @@ describe 'manage', ->
                 (next) -> next()
 
             @write = (body) -> 
+                #console.log body
                 JSON.parse( body ).should.eql 
                     enabled: false
-                    metrics: pending: 'metrics per middleware'
+                    metrics: {}
                     
                 done()
 
@@ -420,7 +421,7 @@ describe 'manage', ->
             @write = (body) -> 
                 JSON.parse( body ).should.eql 
                     enabled: true
-                    metrics: pending: 'metrics per middleware'
+                    metrics: {}
                     
                 done()
 

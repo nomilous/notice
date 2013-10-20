@@ -17,3 +17,10 @@ fix bump encountered when syncing database records into an elasticsearch cluster
 
 * added config.capsule.type_def.nondescript for special cases requiring capsule.type_def 'value' to not be enumerated at serialization 
 
+middleware description 
+
+* added opts.description support to notice.use() and notice.force() middleware registrars
+    * registrars continue to ignore all but description, enabled
+    * metrics remains an untouchable empty hash pending introspector
+
+

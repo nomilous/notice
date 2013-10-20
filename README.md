@@ -7,7 +7,6 @@
 * `opts.tools.*` passed into middleware `traverse.tools.*` in lieu of post hotswapped scope
 * `hubs/:uuid:/tools/*` available via API (expects tools to expose any useful properties / metrics for serialization, eg. dinkum stats)
 * boomerang capsule (emitter callback/resolve only after full remote hub traversal, throw/reject the same, boomerang is the default, emitters not expecting a result from the remote hub should specify on capsule definition, said emitters receive the callback on hub ack)
-* middleware description
 
 
 notice
