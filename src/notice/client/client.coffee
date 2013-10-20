@@ -70,6 +70,7 @@ module.exports.client  = (config = {}) ->
             client.connection.state   = 'pending'
             client.connection.stateAt = Date.now()
             client.cache = opts.cache or {}
+            client.tools = opts.tools or {}
             already = false 
 
             #

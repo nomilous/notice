@@ -71,6 +71,7 @@ module.exports.hub  = (config = {}) ->
 
                 hub = local.Notifier.create hubName, opts.uuid
                 hub.cache = opts.cache or {}
+                hub.tools = opts.tools or {}
                 local.hubs[hubName]    = hub
                 local.uuids[opts.uuid] = hub
 

@@ -360,8 +360,8 @@ module.exports.notifier  = (config = {}) ->
                             uuid:    notifier.uuid
                             metrics: 
                                 pipeline: nfMetrics.pipeline
-                                capsules: 'pending metrics per capsule definition'
-                            clients: 'pending approach to deal with large numbers'
+                                #capsules: 'pending metrics per capsule definition'
+                            #clients: 'pending approach to deal with large numbers'
                             cache:   notifier.cache
                             tools:   notifier.tools
                             errors:  nfMetrics.errors

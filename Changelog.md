@@ -24,4 +24,8 @@ middleware description
     * registrars continue to ignore all but description, enabled
     * metrics remains an untouchable empty hash pending introspector
 
+tools
+
+* nested tools hash into notifier searialization
+* available at traversal.tools.* and api hubs/:uuid:/tools/**/*
 
