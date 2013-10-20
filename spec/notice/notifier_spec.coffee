@@ -496,7 +496,7 @@ describe 'notifier', ->
         it 'provides notifier cache into middleware as traversal.cache', (done) -> 
 
             mix = notifier().create 'Assembly Line Mix'
-            mix.cache = value: 'hotswapped middleware have no surrounding scope'
+            mix.cache = value: 'hotswapped middleware have no surrounding scope...'
             mix.use 
                 title: 'one'
                 (next, capsule, traversal) -> 
@@ -505,8 +505,23 @@ describe 'notifier', ->
 
             mix.event (err, capsule) -> 
 
-                capsule.set.should.equal 'hotswapped middleware have no surrounding scope'
+                capsule.set.should.equal 'hotswapped middleware have no surrounding scope...'
                 done()
+
+        it 'provides notifier tools into middleware as traversal.tools', (done) -> 
+
+            mix = notifier().create 'Assembly Line Mix'
+            mix.tools = value: 'hotswapped middleware have no surrounding scope...'
+            mix.use 
+                title: 'one'
+                (next, capsule, traversal) -> 
+                    capsule.value = traversal.tools.value
+                    next()
+
+            mix.event (err, capsule) -> 
+                capsule.value.should.equal 'hotswapped middleware have no surrounding scope...'
+                done()
+
 
         context 'serialize', -> 
 

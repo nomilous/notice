@@ -117,6 +117,7 @@ module.exports.notifier  = (config = {}) ->
 
                 traversal       = {}
                 traversal.cache = notifier.cache
+                traversal.tools = notifier.tools
 
 
                 cancelled = false
@@ -362,6 +363,7 @@ module.exports.notifier  = (config = {}) ->
                                 capsules: 'pending metrics per capsule definition'
                             clients: 'pending approach to deal with large numbers'
                             cache:   notifier.cache
+                            tools:   notifier.tools
                             errors:  nfMetrics.errors
                             middlewares: list
 
