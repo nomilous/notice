@@ -345,7 +345,7 @@ describe 'notifier', ->
                     done()
 
 
-            mix.raw 'VALUE'
+            mix.$$raw 'VALUE'
 
         #DUPLICATE
         it 'rejects the middleware traversal (promise) on throw', (done) -> 

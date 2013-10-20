@@ -135,7 +135,7 @@ module.exports.handler  = (config = {}) ->
 
                         capsule._socket_id = id
 
-                        hubNotifier.raw capsule
+                        hubNotifier.$$raw capsule
 
 
                 handshake: (socket) -> 

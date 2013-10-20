@@ -24,7 +24,7 @@ describe 'handler', ->
 
             hubName     = 'hubname'
             hubNotifier = 
-                raw: ->
+                $$raw: ->
                 use: ->
 
         )
@@ -44,7 +44,7 @@ describe 'handler', ->
 
                 hubName     = 'hubname'
                 hubNotifier = 
-                    raw: ->
+                    $$raw: ->
                     use: (opts, fn) ->
 
                         if opts.title == 'inbound socket interface'
@@ -64,7 +64,7 @@ describe 'handler', ->
                 instance = HandlerClass.create(
                     hubName     = 'hubname'
                     hubNotifier = 
-                        raw: ->
+                        $$raw: ->
                         use: (opts, fn) => if opts.first then @inbound = fn
 
                     @hubContext  = 
@@ -198,7 +198,7 @@ describe 'handler', ->
                 hubName      = 'hubname'
                 @hubNotifier = 
                     $$control: -> 
-                    raw: (@capsule) => 
+                    $$raw: (@capsule) => 
                     use: ->
 
                 @hubContext  = 

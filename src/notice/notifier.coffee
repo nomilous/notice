@@ -354,7 +354,7 @@ module.exports.notifier  = (config = {}) ->
             #   capsualizes it appropriately.
             #
 
-            Object.defineProperty notifier, 'raw', 
+            Object.defineProperty notifier, '$$raw', 
                 #enumerated: false
                 get: -> (payload) -> traverse payload
 

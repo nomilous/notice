@@ -165,7 +165,7 @@ module.exports.client  = (config = {}) ->
                     assign.protected = true if tected[property]
                     capsule.set assign
 
-                client.raw capsule
+                client.$$raw capsule
 
             #
             # TODO: no ack or nak ever arrives, entries remain in transit 
