@@ -56,3 +56,9 @@ A communicator. Also for other stuff.
 * venn diagrams show overlaps
 * a glorious coincidence presents the moon and the sun as almost precisely identical in relative size
 * it will only remain so for another 500 million years
+
+### Also, Important, Unresolved Testing Caveat
+
+* Using [when](https://github.com/cujojs/when) for promises. But it's wrapped through [also](https://github.com/nomilous/also) because `when` is a keyword in coffee-script.
+* I mention this because `when` breaks [mocha](https://github.com/visionmedia/mocha)'s cacacity to catch failing Assertions, making tests timeout instead of failing coherently. You'll find commented console.logs in places where this has annoyed me already.
+* I confess to having spent ZERO effort on actually understanding/resolving this issue.
