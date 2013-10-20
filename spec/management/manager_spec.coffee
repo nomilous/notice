@@ -73,8 +73,8 @@ describe 'manage', ->
             Object.defineProperty @mockResponse, 'write', 
                 get: => => try @write.apply null, arguments
 
-            @serialize1 = (detail) ->
-            @serialize2 = (detail) ->
+            @serializeHub1 = (detail) ->
+            @serializeHub2 = (detail) ->
             m = manager manager: 
                 authenticate: 
                     username: 'username'
@@ -87,18 +87,18 @@ describe 'manage', ->
                     'hub name 2': uuid: 2
                 uuids:
                     '1': 
-                        serialize: (detail) => try @serialize1.apply null, arguments
+                        serialize: (detail) => try @serializeHub1.apply null, arguments
                         got: => @got.apply null, arguments
                         force: => @force.apply null, arguments
                     '2': 
-                        serialize: (detail) => try @serialize2.apply null, arguments
+                        serialize: (detail) => try @serializeHub2.apply null, arguments
 
         beforeEach -> 
             @mockRequest.method = 'GET'
             @writeHead = -> 
             @write = -> 
-            @serialize1 = (detail) -> 'HUB 1 RECORD detail:' + detail
-            @serialize2 = (detail) -> 'HUB 2 RECORD detail:' + detail
+            @serializeHub1 = (detail) -> 'HUB 1 RECORD detail:' + detail
+            @serializeHub2 = (detail) -> 'HUB 2 RECORD detail:' + detail
 
 
 
@@ -119,7 +119,7 @@ describe 'manage', ->
 
             @write = (body) -> 
 
-                #console.log body
+                # console.log body
 
                 JSON.parse( body ).should.eql {
                   "module": "notice",
@@ -157,16 +157,21 @@ describe 'manage', ->
                       ]
                     },
                     "/v1/hubs/:uuid:/cache": {
-                      "description": "get the accumulated content from the traversal cache",
+                      "description": "get output from a serailization of the traversal",
+                      "methods": [
+                        "GET"
+                      ]
+                    },
+                    "/v1/hubs/:uuid:/tools": {
+                      "description": "get output from a serailization of the tools tree",
                       "methods": [
                         "GET"
                       ]
                     },
                     "/v1/hubs/:uuid:/cache/**/*": {
-                      "description": 'get nested subkey from the traversal cache',
+                      "description": "get nested subkey from the traversal cache",
                       "methods": [
-                        "GET",
-                        #"POST"
+                        "GET"
                       ]
                     },
                     "/v1/hubs/:uuid:/clients": {
@@ -211,6 +216,7 @@ describe 'manage', ->
                     }
                   }
                 }
+
 
                 done()
 
@@ -272,7 +278,7 @@ describe 'manage', ->
                 JSON.parse( body ).should.eql 'METRICS'
                 done()
 
-            @serialize1 = -> metrics: 'METRICS'
+            @serializeHub1 = -> metrics: 'METRICS'
             @mockRequest.url = '/v1/hubs/1/metrics'
             _manager().requestHandler @mockRequest, @mockResponse
 
@@ -283,7 +289,7 @@ describe 'manage', ->
                 JSON.parse( body ).should.eql 'ERRORS'
                 done()
 
-            @serialize1 = -> errors: 'ERRORS'
+            @serializeHub1 = -> errors: 'ERRORS'
             @mockRequest.url = '/v1/hubs/1/errors'
             _manager().requestHandler @mockRequest, @mockResponse
 
@@ -293,7 +299,7 @@ describe 'manage', ->
                 JSON.parse( body ).should.eql key: 'VALUE'
                 done()
 
-            @serialize1 = -> cache: key: 'VALUE'
+            @serializeHub1 = -> cache: key: 'VALUE'
             @mockRequest.url = '/v1/hubs/1/cache'
             _manager().requestHandler @mockRequest, @mockResponse
 
@@ -304,7 +310,7 @@ describe 'manage', ->
                 body.should.equal '"VALUE"'
                 done()
 
-            @serialize1 = -> cache: nested: deeper: 'VALUE'
+            @serializeHub1 = -> cache: nested: deeper: 'VALUE'
             @mockRequest.url = '/v1/hubs/1/cache/nested/deeper'
             _manager().requestHandler @mockRequest, @mockResponse
 
@@ -318,7 +324,7 @@ describe 'manage', ->
                 body.should.equal '"VALUE"'
                 #done()
 
-            @serialize1 = -> cache: nested: deeper: 'VALUE'
+            @serializeHub1 = -> cache: nested: deeper: 'VALUE'
 
             @mockRequest.url = '/v1/hubs/1/cache/nested/deeper'
             @mockRequest.method = 'POST'
@@ -330,13 +336,26 @@ describe 'manage', ->
             _manager().requestHandler @mockRequest, @mockResponse
 
 
+        it 'responds to GET /v1/hubs/:uuid:/tools', (done) ->
+
+            @write = (body) -> 
+                JSON.parse( body ).should.eql key: 'VALUEEE'
+                done()
+
+            @serializeHub1 = -> tools: key: 'VALUEEE'
+            @mockRequest.url = '/v1/hubs/1/tools'
+            _manager().requestHandler @mockRequest, @mockResponse
+
+
+
+
         it 'responds to GET /v1/hubs/:uuid:/clients', (done) -> 
 
             @write = (body) -> 
                 JSON.parse( body ).should.eql key: 'VALUE'
                 done()
 
-            @serialize1 = -> clients: key: 'VALUE'
+            @serializeHub1 = -> clients: key: 'VALUE'
             @mockRequest.url = '/v1/hubs/1/clients'
             _manager().requestHandler @mockRequest, @mockResponse
 
@@ -347,7 +366,7 @@ describe 'manage', ->
                 JSON.parse( body ).should.eql 'MIDDLEWARES'
                 done()
 
-            @serialize1 = -> middlewares: 'MIDDLEWARES'
+            @serializeHub1 = -> middlewares: 'MIDDLEWARES'
             @mockRequest.url = '/v1/hubs/1/middlewares'
             _manager().requestHandler @mockRequest, @mockResponse
 
@@ -362,7 +381,7 @@ describe 'manage', ->
                     
                 done()
 
-            @serialize1 = -> middlewares: 
+            @serializeHub1 = -> middlewares: 
                 title: 
                     enabled: true
                     metrics: []
@@ -387,7 +406,7 @@ describe 'manage', ->
                     
                 done()
 
-            @serialize1 = -> instance.serialize(2)
+            @serializeHub1 = -> instance.serialize(2)
             @got        = instance.got
             @force      = instance.force
 
@@ -398,7 +417,7 @@ describe 'manage', ->
 
             Notifier = notifier()
             instance = Notifier.create 'hub name', 1
-            @serialize1 = -> instance.serialize(2)
+            @serializeHub1 = -> instance.serialize(2)
             @got        = instance.got
 
             @writeHead = (statusCode) ->
@@ -425,7 +444,7 @@ describe 'manage', ->
                     
                 done()
 
-            @serialize1 = -> instance.serialize(2)
+            @serializeHub1 = -> instance.serialize(2)
             @got        = instance.got
             @force      = instance.force
 
@@ -500,7 +519,7 @@ describe 'manage', ->
                     title: 'title'
                     (next) -> next()
 
-                @serialize1 = -> instance.serialize(2)
+                @serializeHub1 = -> instance.serialize(2)
                 @got        = instance.got
                 @force      = instance.force
 
@@ -532,7 +551,7 @@ describe 'manage', ->
                     title: 'title'
                     (next) -> next()
 
-                @serialize1 = -> instance.serialize(2)
+                @serializeHub1 = -> instance.serialize(2)
                 @got        = instance.got
                 @force      = instance.force
 
@@ -555,7 +574,7 @@ describe 'manage', ->
                     title: 'title'
                     (next) -> next()
 
-                @serialize1 = -> instance.serialize(2)
+                @serializeHub1 = -> instance.serialize(2)
                 @got        = instance.got
                 @force      = instance.force
 
@@ -581,7 +600,7 @@ describe 'manage', ->
                     title: 'title'
                     (next) -> next()
 
-                @serialize1 = -> instance.serialize(2)
+                @serializeHub1 = -> instance.serialize(2)
                 @got        = instance.got
                 @force      = instance.force
 

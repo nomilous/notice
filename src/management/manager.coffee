@@ -140,7 +140,7 @@ module.exports.manager  = (config = {}) ->
 
             '/v1/hubs/:uuid:/cache': 
 
-                description: 'get the accumulated content from the traversal cache'
+                description: 'get output from a serailization of the traversal'
                 methods: ['GET']
                 handler: ([uuid], request, response, statusCode = 200) -> 
 
@@ -149,6 +149,22 @@ module.exports.manager  = (config = {}) ->
                     notifier = local.hubContext.uuids[uuid]
                     local.respond( 
                         notifier.serialize(2).cache
+                        statusCode
+                        response
+                    )
+
+
+            '/v1/hubs/:uuid:/tools': 
+
+                description: 'get output from a serailization of the tools tree'
+                methods: ['GET']
+                handler: ([uuid], request, response, statusCode = 200) -> 
+
+                    return local.methodNotAllowed response unless request.method == 'GET'
+                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
+                    notifier = local.hubContext.uuids[uuid]
+                    local.respond( 
+                        notifier.serialize(2).tools
                         statusCode
                         response
                     )
