@@ -21,14 +21,17 @@ module.exports.manager  = (config = {}) ->
 
     recurse = (object, pathArray, accum = {}) -> 
 
-        next = pathArray.shift()
+
+        if pathArray? 
+            return accum unless next = pathArray.shift()
+
 
         for key of object
-
-            if pathArray? then continue unless key is next
-            console.log KEY: key
+            if next? then continue unless key is next
             nested = object[key]
             continue if nested instanceof Array
+
+
             if typeof nested is 'function' and nested.$$notable?
 
                 #
@@ -38,12 +41,26 @@ module.exports.manager  = (config = {}) ->
                 # to $$notable functions
                 #
 
-                accum[key] = nested.$$notable
-                continue
+                if pathArray
+                    accum = nested
+                    continue
 
+                else
+                    accum[key] = nested.$$notable
+                    continue
+
+            #
             continue unless typeof nested is 'object'
-            accum[key] = nested
-            recurse object[key], pathArray, accum[key]
+            #
+            #console.log nested
+            #
+
+            if pathArray?
+                accum = recurse nested, pathArray, accum
+
+            else 
+                accum[key] = {}
+                recurse nested, null, accum[key]
 
         return accum
 
@@ -54,8 +71,19 @@ module.exports.manager  = (config = {}) ->
         return local.objectNotFound response unless local.hubContext.uuids[uuid]
         notifier = local.hubContext.uuids[uuid]
 
+        if deeper?
+
+            fn = recurse notifier.serialize(2)[type], deeper.split '/'
+            if typeof fn is 'function'
+                return fn().then (result) -> 
+                    resultHandler result, request, response, statusCode
+
+        else
+
+            result = recurse notifier.serialize(2)[type]
+
         resultHandler(
-            recurse notifier.serialize(2)[type], deeper.split '/'
+            result
             request
             response
             statusCode
