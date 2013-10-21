@@ -1,6 +1,7 @@
 {authenticator} = require './authenticator'
 {missingConfig} = require '../notice/errors'
 {start}         = require '../notice/hub/listener'
+{recursor}      = require './recursor'
 {readFileSync}  = require 'fs'
 coffee          = require 'coffee-script'
 Version         = JSON.parse( readFileSync __dirname + '/../../package.json', 'utf8' ).version
@@ -17,80 +18,6 @@ module.exports.manager  = (config = {}) ->
 
     unless typeof listen.port is 'number'
         throw missingConfig 'config.manager.listen.port', 'manager'
-
-
-    recurse = (object, pathArray, accum = {}) -> 
-
-        if pathArray? 
-            return accum unless next = pathArray.shift()
-
-        for key of object
-            if next? then continue unless key is next
-            nested = object[key]
-            continue if nested instanceof Array
-
-            if typeof nested is 'function' and nested.$$notice?
-
-                #
-                # assign content of $$notable as the hash ""value""
-                # for the function, causing it to be listed by the
-                # JSON serializer, but with the empty {} as assigned
-                # to $$notable functions
-                #
-
-                if pathArray
-                    accum = nested
-                    continue
-
-                else
-                    accum[key] = nested.$$notice
-                    continue
-
-            #
-            continue unless typeof nested is 'object'
-            #
-            #console.log nested
-            #
-
-            if pathArray?
-                accum = recurse nested, pathArray, accum
-
-            else 
-                accum[key] = {}
-                recurse nested, null, accum[key]
-
-        return accum
-
-
-    recurses = (type, resultHandler) -> ([uuid, deeper], request, response, statusCode = 200) -> 
-
-        return local.methodNotAllowed response unless request.method == 'GET'
-        return local.objectNotFound response unless local.hubContext.uuids[uuid]
-        notifier = local.hubContext.uuids[uuid]
-
-        if deeper?
-            
-            fn = recurse notifier.serialize(2)[type], deeper.split '/'
-            if typeof fn is 'function'
-                return fn {}, (error, result) ->
-                    if error? then return resultHandler 
-                        error: error.toString()
-                        request
-                        response
-                        500
-                    resultHandler result, request, response, statusCode
-
-        else
-            result = recurse notifier.serialize(2)[type]
-
-        resultHandler(
-            result
-            request
-            response
-            statusCode
-        )
-
-
 
     testable = local = 
 
@@ -124,7 +51,7 @@ module.exports.manager  = (config = {}) ->
             response.end()
 
 
-        routes: 
+    local.routes =
 
             '/about': 
 
@@ -252,40 +179,14 @@ module.exports.manager  = (config = {}) ->
 
                 description: 'get output from a serailization of the tools tree'
                 methods: ['GET']
-                handler: recurses 'tools', (result, request, response, statusCode = 200) -> 
-
-                    local.respond result, statusCode, response
-
+                handler: recursor local, 'tools'
 
             '/v1/hubs/:uuid:/tools/**/*': 
 
                 description: 'get nested subkey from the tools key'
-                methods: ['GET'] #, 'POST'] # post tool config into the tools tree
-                                            # possibly even as simple as it sounds
-                                            # not thingking about it now
-                handler: recurses 'tools', (result, request, response, statusCode = 200) -> 
+                methods: ['GET'] 
+                handler: recursor local, 'tools' 
 
-                    local.respond result, statusCode, response
-
-                # handler: ([uuid, deeper], request, response, statusCode = 200) -> 
-
-                #     return local.methodNotAllowed response unless request.method == 'GET'
-                #     return local.objectNotFound response unless local.hubContext.uuids[uuid]
-                #     notifier = local.hubContext.uuids[uuid]
-                #     tools = notifier.serialize(2).tools
-
-                #     deeper.split('/').map (key) -> 
-                #         key = decodeURIComponent key
-
-                #         console.log '\n', notable: tools[key], '\n'
-
-                #         tools = tools[key]
-
-                #     local.respond( 
-                #         tools
-                #         statusCode
-                #         response
-                #     )
 
             '/v1/hubs/:uuid:/clients': 
 
