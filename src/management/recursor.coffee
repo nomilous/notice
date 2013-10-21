@@ -5,6 +5,7 @@ module.exports.recursor  = (local, type) ->
     testable = ([uuid, deeper], request, response, statusCode = 200) -> 
 
         return local.methodNotAllowed response unless request.method == 'GET'
+        return local.objectNotFound response unless local.hubContext.uuids[uuid]
 
 
 

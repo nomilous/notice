@@ -10,3 +10,11 @@ describe 'recursor', ->
 
         instance [], method: 'POST'
 
+
+    it 'responds object not found id no hub at uuid', (done) -> 
+
+        instance = recursor
+            objectNotFound: -> done()
+            hubContext: uuids: {}
+
+        instance ['UUID'], method: 'GET'
