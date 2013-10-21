@@ -86,7 +86,15 @@ recurse = (request, object, path, result, callback) ->
                     return object[key] {opts: '##undecided1'}, (error, nested) -> 
 
                         result[key] = nested
-                        request.$$callback null, request.$$root if typeof request.$$callback is 'function' # and path.length == 0
+
+                        #
+                        # stopping at one jump... (some impendiments on the nesteds)
+                        # recurse request, object[key], path, result[key]
+                        # 
+
+                        request.$$callback null, request.$$root if typeof request.$$callback is 'function' and path.length == 0
+                        
+
 
     #
     # flat case termination, no async lazyload
