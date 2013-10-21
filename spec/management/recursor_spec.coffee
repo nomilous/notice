@@ -56,7 +56,10 @@ describe 'recursor', ->
                 uuids: 
                     UUID: 
                         serialize: (level) -> 
-                            type: test: 'value'
+                            type: 
+                                test: 'value'
+                                deeper: 
+                                    and: 'this'
 
             'type'
 
@@ -69,6 +72,41 @@ describe 'recursor', ->
             end: ->
 
                 STATUS.should.equal 200
-                JSON.parse( RESULT ).should.eql test: 'value'
+                JSON.parse( RESULT ).should.eql 
+                    test: 'value'
+                    deeper:             
+                        and: 'this'
                 done()
+
+
+    it 'includes any functions marked with $$notice', (done) -> 
+
+        fn = (opts, callback) -> 
+        fn.$$notice = {}
+
+        instance = recursor
+            hubContext: 
+                uuids: 
+                    UUID: 
+                        serialize: (level) -> 
+                            type: 
+                                test: 'value'
+                                fn: fn
+                                regularFn: ->
+
+            'type'
+
+        instance ['UUID'], { method: 'GET' }, 
+            end: ->
+            writeHead: ->
+            write: (result) -> 
+
+                JSON.parse( result ).should.eql
+
+                    test: 'value'
+                    fn: {}
+
+                done()
+
+
 
