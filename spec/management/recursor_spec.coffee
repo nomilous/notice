@@ -117,4 +117,42 @@ describe 'recursor', ->
                 done()
 
 
+    it '((for now)) it listifies arrays', (done) -> 
+
+        fn = (opts, callback) -> 
+        fn.$$notice = {}
+
+        instance = recursor
+            hubContext: 
+                uuids: 
+                    UUID: 
+                        serialize: (level) -> 
+                            type: 
+                                test: ['one','two','three']
+                                more:
+                                    here: [4,5,6]
+
+            'type'
+
+        instance ['UUID'], { method: 'GET' }, 
+            end: ->
+            writeHead: ->
+            write: (result) -> 
+
+                JSON.parse( result ).should.eql
+
+                    test:
+                        '0': 'one'
+                        '1': 'two'
+                        '2': 'three'
+                    more:
+                        here:
+                            '0': 4
+                            '1': 5
+                            '2': 6
+
+                done()
+
+
+
 
