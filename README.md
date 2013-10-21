@@ -4,6 +4,10 @@
 
 #### TODO 0.0.12
 
+* configured ticks (configured) emit at interval into pipeline
+* hub health emitted at configurable interval (memory usage, etc.)
+* `hub.use title: '...', match: /regex/`, (next, ...) ->`
+* rename metrics to stats
 * boomerang capsule (emitter callback/resolve only after full remote hub traversal, throw/reject the same, boomerang is the default, emitters not expecting a result from the remote hub should specify on capsule definition, said emitters receive the callback on hub ack)
 
 
