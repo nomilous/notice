@@ -9,14 +9,32 @@ module.exports.recursor  = (local, type) ->
 
         notifier    = local.hubContext.uuids[uuid]
         searialized = notifier.serialize(2)
-        return local.objectNotFound response unless searialized[type]?
-        
-        result = JSON.stringify searialized[type]
 
-        response.writeHead statusCode
-        response.write result
-        response.end()
+        return local.objectNotFound response unless searialized[type]?
+        object = searialized[type]
+
+        recurse object, [], (error, result) ->
         
+            response.writeHead statusCode
+            response.write result
+            response.end()
+
+
+recurse = (object, path, callback) -> 
+
+    callback null, JSON.stringify object, null, 2
+
+
+
+
+
+
+
+
+
+
+
+
         #local.respond result, statusCode, response
 
 

@@ -69,6 +69,6 @@ describe 'recursor', ->
             end: ->
 
                 STATUS.should.equal 200
-                RESULT.should.equal '{"test":"value"}'
+                JSON.parse( RESULT ).should.eql test: 'value'
                 done()
 
