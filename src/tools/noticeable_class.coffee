@@ -16,17 +16,19 @@ module.exports = class NoticeableClass
             # 
             # and the whole internet is just one asyncronous rung uptree
             # 
-
-            console.log 'loading...': opts
             
             setTimeout (->
 
                 callback null, Infinity
 
-            ), 3000
+            ), 400
 
 
         @apiFunction.$$notice = {}
+
+        @apiFunction2 = (opts, callback) -> callback null, this: 1
+        @apiFunction2.$$notice = {}
+
 
 
 Infinity = 

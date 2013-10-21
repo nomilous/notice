@@ -200,6 +200,32 @@ describe 'recursor', ->
                 JSON.parse( result ).should.eql here: 'too'
                 done()
 
+    it 'supports more than sidebyside 1 function on "deeper" path', (done) -> 
+
+        fn = (opts, callback) -> callback null, AND: MORE: tree: here: 'too'
+        fn.$$notice = {}
+
+        instance = recursor
+            hubContext: 
+                uuids: 
+                    UUID: 
+                        serialize: (level) -> 
+                            type: 
+                                test: 
+                                    deeper1: fn
+                                    deeper2: fn
+
+
+            'type'
+
+        instance ['UUID','test/deeper2/AND/MORE/tree'], { method: 'GET' }, 
+            end: ->
+            writeHead: ->
+            write: (result) -> 
+
+                JSON.parse( result ).should.eql here: 'too'
+                done()
+
 
 
 

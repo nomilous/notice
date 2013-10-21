@@ -83,7 +83,7 @@ recurse = (request, object, path, result, callback) ->
                     #
 
                     request.$$walking = true
-                    object[key] {opts: '##undecided1'}, (error, nested) -> 
+                    return object[key] {opts: '##undecided1'}, (error, nested) -> 
 
                         result[key] = nested
                         request.$$callback null, request.$$root if typeof request.$$callback is 'function' # and path.length == 0
