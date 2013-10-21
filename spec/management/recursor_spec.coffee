@@ -93,6 +93,10 @@ describe 'recursor', ->
                                 test: 'value'
                                 fn: fn
                                 regularFn: ->
+                                deeper:
+                                    and:
+                                        deeper: 
+                                            fn: fn
 
             'type'
 
@@ -105,6 +109,10 @@ describe 'recursor', ->
 
                     test: 'value'
                     fn: {}
+                    deeper:
+                        and:
+                            deeper: 
+                                fn: {}
 
                 done()
 
