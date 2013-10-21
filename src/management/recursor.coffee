@@ -7,6 +7,17 @@ module.exports.recursor  = (local, type) ->
         return local.methodNotAllowed response unless request.method == 'GET'
         return local.objectNotFound response unless local.hubContext.uuids[uuid]
 
+        notifier    = local.hubContext.uuids[uuid]
+        searialized = notifier.serialize(2)
+        return local.objectNotFound response unless searialized[type]?
+        
+        result = JSON.stringify searialized[type]
+
+        response.writeHead statusCode
+        response.write result
+        response.end()
+        
+        #local.respond result, statusCode, response
 
 
 # module.exports.recurse = recurse = (object, pathArray, accum = {}) -> 
