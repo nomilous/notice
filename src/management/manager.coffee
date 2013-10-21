@@ -21,18 +21,15 @@ module.exports.manager  = (config = {}) ->
 
     recurse = (object, pathArray, accum = {}) -> 
 
-
         if pathArray? 
             return accum unless next = pathArray.shift()
-
 
         for key of object
             if next? then continue unless key is next
             nested = object[key]
             continue if nested instanceof Array
 
-
-            if typeof nested is 'function' and nested.$$notable?
+            if typeof nested is 'function' and nested.$$notice?
 
                 #
                 # assign content of $$notable as the hash ""value""
@@ -46,7 +43,7 @@ module.exports.manager  = (config = {}) ->
                     continue
 
                 else
-                    accum[key] = nested.$$notable
+                    accum[key] = nested.$$notice
                     continue
 
             #
@@ -72,14 +69,18 @@ module.exports.manager  = (config = {}) ->
         notifier = local.hubContext.uuids[uuid]
 
         if deeper?
-
+            
             fn = recurse notifier.serialize(2)[type], deeper.split '/'
             if typeof fn is 'function'
-                return fn().then (result) -> 
+                return fn {}, (error, result) ->
+                    if error? then return resultHandler 
+                        error: error.toString()
+                        request
+                        response
+                        500
                     resultHandler result, request, response, statusCode
 
         else
-
             result = recurse notifier.serialize(2)[type]
 
         resultHandler(

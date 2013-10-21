@@ -1,8 +1,8 @@
-module.exports = class NotableClass
+module.exports = class NoticeableClass
 
     #
-    # api tool with notability (class example)
-    # ----------------------------------------
+    # api tool with noticeability (class example)
+    # -------------------------------------------
     # 
 
     constructor: ->
@@ -43,7 +43,7 @@ module.exports = class NotableClass
                 #   informs the API of the $$notable entity.
                 # 
 
-                exported.$$notable = {}
+                exported.$$notice = {}
                 return exported
 
 
@@ -65,5 +65,5 @@ module.exports = class NotableClass
 Infinity = 
 
     endlessly: more: 'stuff'
-    with: another: new NotableClass 'inside it'
+    with: another: new NoticeableClass 'inside it'
 
