@@ -7,7 +7,8 @@ module.exports = class NoticeableClass
 
     constructor: ->
 
-        @exposedProperty = 'value'
+        @exposedProperty = 
+            deeper: and: deeper: 'value'
 
         Object.defineProperty @, 'apiExposedFunction',
             enumerable: true

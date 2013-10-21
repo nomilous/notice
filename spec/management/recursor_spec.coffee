@@ -130,7 +130,7 @@ describe 'recursor', ->
                             type: 
                                 test: ['one','two','three']
                                 more:
-                                    here: [4,5,6]
+                                    here: [4, five:5, 6]
 
             'type'
 
@@ -148,11 +148,31 @@ describe 'recursor', ->
                     more:
                         here:
                             '0': 4
-                            '1': 5
+                            '1': five: 5
                             '2': 6
 
                 done()
 
 
+    it 'recurses only along the path (if provided) and returns the thing at the end', (done) -> 
+
+        instance = recursor
+            hubContext: 
+                uuids: 
+                    UUID: 
+                        serialize: (level) -> 
+                            type: 
+                                test: ['one','two','three']
+                                more:
+                                    here: [4,five: 5,6]
+            'type'
+
+        instance ['UUID','more/here/1'], { method: 'GET' }, 
+            end: ->
+            writeHead: ->
+            write: (result) -> 
+
+                JSON.parse( result ).should.eql five: 5
+                done()
 
 
