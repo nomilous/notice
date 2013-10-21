@@ -7,60 +7,22 @@ module.exports = class NoticeableClass
 
     constructor: ->
 
-        @exposedProperty = 
-            deeper: and: deeper: 'value'
+        @exposedProperty = deeper: and: deeper: 'value'
 
-        Object.defineProperty @, 'apiExposedFunction',
-            enumerable: true
-            get: -> 
+        @apiExposedFunction = (opts, callback) -> 
 
-                #
-                # this is a property that returns a function
-                # ------------------------------------------
-                # 
-                # * ideally i would have rather used the commented
-                #   function at the foot of this file, but i couldn't
-                #   make it enumerate.
-                # 
-
-                exported = (opts, callback) -> 
-
-                    #
-                    # * the customary asynchronous callee
-                    #
-
-                    setTimeout (->
-
-                        callback null, Infinity
-
-                    ), 3000
-
-                #
-                # the returned function is  declared as $$notable
-                # -----------------------------------------------
-                #
-                # * hash is a placeholder for future configables
-                # * for now, the presense of the nested property
-                #   informs the API of the $$notable entity.
-                # 
-
-                exported.$$notice = {}
-                return exported
+            #
+            # opts? ##undecided
+            # 
+            # and the whole internet is just one asyncronous rung uptree
+            # 
+            
+            setTimeout (->
+                callback null, Infinity
+            ), 3000
 
 
-            set: (value) -> -> -> -> """
-
-                has not been thought about to any depth yet,
-                other than a vague sense,
-                of wanting to PUT POST in
-
-            """
-
-
-    # exposedFunction: (opts, callback) -> 
-    #     setTimeout (-> 
-    #         callback null, resulting: 'thing'
-    #     ), 1000
+        @apiExposedFunction.$$notice = {}
 
 
 Infinity = 

@@ -73,7 +73,10 @@ describe 'authenticator', ->
         authenticate = authenticator 
             manager: 
                 authenticate: (username, password, callback) -> 
-                    callback null, false
+                    callback null, null
+                                    #
+                                    # object present means authentic
+                                    #
 
         @writeHead = (statusCode, headers) -> 
             statusCode.should.equal 401

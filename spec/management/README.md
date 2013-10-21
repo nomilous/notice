@@ -38,11 +38,12 @@ NetworkAlertRouter = notice.hub
 
             #
             # perform upstream authentication
-            # callback true if authetic
+            # NB: callback null if not authetic
+            # (anthenticatedEntity will likely come in handly later) ##undecided1
             # error is ignored, it just reposts the 401
             # 
 
-            callback null, true
+            callback null, username: username
 
 
 hub = NetworkAlertRouter.create( ...

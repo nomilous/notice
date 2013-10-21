@@ -64,7 +64,24 @@ recurse = (request, object, path, result, callback) ->
                 # only list functions with nested $$notice property
                 #
 
-                result[key] = {} if object[key].$$notice?
+                if object[key].$$notice?
+
+                    unless next?
+                        result[key] = {} 
+                        continue
+
+                    #
+                    # run the function if the 'deeper' path was provided 
+                    # ie. lazyloadable has been activated by direct call
+                    #
+
+                    object[key] {opts: '##undecided1'}, (error, nested) -> 
+
+                        result[key] = nested
+
+
+
+                
 
 
     callback null, result if typeof callback is 'function'

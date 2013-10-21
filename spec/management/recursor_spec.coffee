@@ -154,7 +154,7 @@ describe 'recursor', ->
                 done()
 
 
-    it 'recurses only along the path (if provided) and returns the thing at the end', (done) -> 
+    it 'recurses only along the "deeper" path (if provided) and returns the thing at the end', (done) -> 
 
         instance = recursor
             hubContext: 
@@ -174,5 +174,32 @@ describe 'recursor', ->
 
                 JSON.parse( result ).should.eql five: 5
                 done()
+
+
+    it 'calls the exposed function on "deeper" path, appending the tree', (done) -> 
+
+        fn = (opts, callback) -> callback null, AND: MORE: tree: here: 'too'
+        fn.$$notice = {}
+
+        instance = recursor
+            hubContext: 
+                uuids: 
+                    UUID: 
+                        serialize: (level) -> 
+                            type: 
+                                test: 
+                                    deeper: fn
+
+            'type'
+
+        instance ['UUID','test/deeper/AND/MORE/tree'], { method: 'GET' }, 
+            end: ->
+            writeHead: ->
+            write: (result) -> 
+
+                JSON.parse( result ).should.eql here: 'too'
+                done()
+
+
 
 

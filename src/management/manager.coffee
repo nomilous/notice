@@ -340,6 +340,22 @@ module.exports.manager  = (config = {}) ->
 
     {server, transport} = start opts, local.requestHandler = authenticated (request, response) ->
 
+        #
+        # ##undecided1
+        # 
+        # * this in not yet reading the inbound data buffer
+        # * nice thing aboud pup sub is more than one pub can be subbing
+        # * $$notice api function could be provided with the request's EventEmitter
+        #       * complexity arises on the question around who makes the response
+        #       * which is what makes the connect stack such a masterstroke, 
+        #       * makes that a question of sequence, 
+        #       * early bird gets the wormhole,
+        #       * and closes it.
+        #  
+        # * and the path
+        # * and the headers
+        #  
+
         path = request.url
 
         if path == '/about' or path == '/'

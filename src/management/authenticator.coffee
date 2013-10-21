@@ -61,16 +61,22 @@ module.exports.authenticator = (config = {}) ->
             # * use configured upstream authentication function
             #
 
-            return authentic username, password, (error, isAuthentic) -> 
+            return authentic username, password, (error, authenticEntity) -> 
+
+                                                            #
+                                                            # ##undecided1 
+                                                            # 
+                                                            # * authentic entity into $$notice api function
+                                                            #
 
                 #
                 # TODO: error properly?
                 # 
-                # * it re-requests auth on error or not isAuthentic
+                # * it re-requests auth on error or no authenticEntity
                 # * otherwise call onward to the requestHandler
                 # 
 
-                return requestHandler request, response if isAuthentic is true
+                return requestHandler request, response if authenticEntity?
                 requestAuth response
 
         #
