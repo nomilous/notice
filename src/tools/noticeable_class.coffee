@@ -7,22 +7,26 @@ module.exports = class NoticeableClass
 
     constructor: ->
 
-        @exposedProperty = deeper: and: deeper: 'value'
+        @apiProperty = deeper: and: deeper: 'value'
 
-        @apiExposedFunction = (opts, callback) -> 
+        @apiFunction = (opts, callback) -> 
 
             #
             # opts? ##undecided
             # 
             # and the whole internet is just one asyncronous rung uptree
             # 
+
+            console.log 'loading...': opts
             
             setTimeout (->
+
                 callback null, Infinity
+
             ), 3000
 
 
-        @apiExposedFunction.$$notice = {}
+        @apiFunction.$$notice = {}
 
 
 Infinity = 
