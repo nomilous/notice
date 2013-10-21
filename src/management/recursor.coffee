@@ -15,7 +15,7 @@ module.exports.recursor  = (local, type) ->
         path   = try deeper.split '/'
 
         recurse request, object, path, {}, (error, result) ->
-        
+
             response.writeHead statusCode
 
             if deeper? 
@@ -32,6 +32,9 @@ module.exports.recursor  = (local, type) ->
 
 
 recurse = (request, object, path, result, callback) -> 
+
+    request.$$root     ||= result  # keep original root for termination case beyond async call
+    request.$$callback ||= callback
 
     try next = path.shift()
     for key of object
@@ -52,7 +55,7 @@ recurse = (request, object, path, result, callback) ->
             when 'object'
                 
                 result[key] = {}
-                recurse request, object[key], path, result[key]
+                recurse request, object[key], path, result[key]  # huh?? , callback
 
             when 'number', 'string'
 
@@ -61,8 +64,10 @@ recurse = (request, object, path, result, callback) ->
             when 'function'
 
                 #
-                # only list functions with nested $$notice property
-                #
+                # * only list functions with nested $$notice property
+                # * these come up in the api tree as {}
+                # * indestinguishable from properties (for now)
+                # 
 
                 if object[key].$$notice?
 
@@ -72,17 +77,20 @@ recurse = (request, object, path, result, callback) ->
 
                     #
                     # run the function if the 'deeper' path was provided 
-                    # ie. lazyloadable has been activated by direct call
+                    # 
+                    # ie. lazyloadable has been activated by directly 
+                    #     calling a path through a $$notice function
                     #
 
+                    request.$$walking = true
                     object[key] {opts: '##undecided1'}, (error, nested) -> 
 
                         result[key] = nested
+                        request.$$callback null, request.$$root if typeof request.$$callback is 'function' # and path.length == 0
 
-
-
-                
-
-
-    callback null, result if typeof callback is 'function'
+    #
+    # flat case termination, no async lazyload
+    #
+    
+    callback null, result if not request.$$walking? and typeof callback is 'function'
 
