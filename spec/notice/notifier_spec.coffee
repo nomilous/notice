@@ -50,6 +50,13 @@ describe 'notifier', ->
             instance.$$control.should.be.an.instanceof Function
             done()
 
+        it 'creates a builtin tick capsule emitter', (done) -> 
+
+            Notifier = notifier()
+            instance = Notifier.create 'title', 'uuid'
+            instance.$$tick.should.be.an.instanceof Function
+            done()
+
 
     context 'create()', -> 
 
