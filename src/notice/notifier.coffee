@@ -40,7 +40,6 @@ module.exports.notifier  = (config = {}) ->
         middleware:        {}
         middlewareArray:   {}
         middlewareMetrics: {}
-        
 
         create: (title, uuid = v1()) ->
 

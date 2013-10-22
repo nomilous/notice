@@ -2,6 +2,7 @@ PROTOCOL_VERSION = 1
 
 {hostname} = require 'os'
 {deferred} = require 'also'
+{ticks}    = require '../../management/ticks'
 notifier   = require '../notifier'
 Connector  = require './connector'
 {
@@ -35,6 +36,7 @@ module.exports.client  = (config = {}) ->
     testable = local = 
 
         Notifier: notifier.notifier config
+        ticks:    ticks config
         clients:  {}
 
         create: deferred ({reject, resolve, notify}, title, opts = {}, callback) -> 
@@ -71,6 +73,7 @@ module.exports.client  = (config = {}) ->
             client.connection.stateAt = Date.now()
             client.cache = opts.cache or {}
             client.tools = opts.tools or {}
+            local.ticks.register opts, client
             already = false 
 
             #
@@ -92,6 +95,8 @@ module.exports.client  = (config = {}) ->
                 title: 'outbound socket interface'
                 last:  true
                 (next, capsule) -> 
+
+                    return if capsule.$$tick?
 
                     ### grep PROTOCOL1 encode ###
 
