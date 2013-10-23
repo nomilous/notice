@@ -56,3 +56,18 @@ describe 'middleware', ->
         instance.update @middleware
         _middleware().bottomSlot.should.equal 101
         done()
+
+
+    it 'reloads after update', (done) -> 
+
+        instance = middleware()
+        _middleware().reload = done
+        instance.update @middleware
+
+
+    context 'reload', ->
+
+        
+
+
+

@@ -10,9 +10,7 @@ module.exports.middleware = (config = {}) ->
 
         bottomSlot: 0
 
-        nextSlot: -> 
-
-            ++local.bottomSlot
+        nextSlot: -> ++local.bottomSlot
 
         update: ({slot, title, description, enabled, fn}) -> 
 
@@ -30,6 +28,15 @@ module.exports.middleware = (config = {}) ->
             if slot > local.bottomSlot then local.bottomSlot = slot + 1
 
             local.slots[slot] = arguments[0]
+
+            local.reload()
+
+        reload: -> 
+
+            #
+            # TODO: * pend reload till signal 
+            # TODO: * emit $$ready 'pack_id'
+            #
 
     api = 
 
