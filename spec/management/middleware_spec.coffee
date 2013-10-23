@@ -38,7 +38,7 @@ describe 'middleware', ->
         done()
 
 
-    it 'refreshes bottomSlot', (done) -> 
+    it 'refreshes bottomSlot on auto assign slot', (done) -> 
 
         instance = middleware()
         _middleware().bottomSlot = 100
@@ -48,4 +48,11 @@ describe 'middleware', ->
         done()
 
 
+    it 'refreshes bottomSlot on specified slot', (done) -> 
 
+        instance = middleware()
+        _middleware().bottomSlot = 50
+        @middleware.slot = 100
+        instance.update @middleware
+        _middleware().bottomSlot.should.equal 101
+        done()

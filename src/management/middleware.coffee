@@ -27,6 +27,8 @@ module.exports.middleware = (config = {}) ->
             unless typeof fn is 'function'
                 throw argumentException 'fn', 'notice.use(opts, fn)', 'as function'
 
+            if slot > local.bottomSlot then local.bottomSlot = slot + 1
+
             local.slots[slot] = arguments[0]
 
     api = 
