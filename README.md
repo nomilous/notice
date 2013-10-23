@@ -4,7 +4,7 @@
 
 #### TODO 0.0.12
 
-* middleware accessable at slot number in api
+* middleware accessable at slot number in api ( 1/2 fix notifier specs, update api /hubs/:uuid:/middlewares/:slot:/ )
 * boomerang capsule (emitter callback/resolve only after full remote hub traversal, throw/reject the same, boomerang is the default, emitters not expecting a result from the remote hub should specify on capsule definition, said emitters receive the callback on hub ack)
 
 

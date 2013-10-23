@@ -473,13 +473,12 @@ describe 'notifier', ->
             ), 100
 
 
-        it.only 'passes capsule through all middleware if they call next', (done) -> 
+        it 'passes capsule through all middleware if they call next', (done) -> 
 
             mix  = notifier().create 'Assembly Line Mix'
 
             mix.use 
                 title: '1. intro'
-                slot: 't'
                 (done, capsule) ->
                     capsule.one = true
                     done()
@@ -495,7 +494,9 @@ describe 'notifier', ->
                     capsule.three = true
                     done()
 
-            mix.event().then (m) -> 
+            mix.event (e, c) ->
+                console.log ERROR: e
+                console.log CAPSULE: c
 
                 m.should.eql one: true, two: true, three: true
                 done()

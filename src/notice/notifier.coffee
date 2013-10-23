@@ -59,18 +59,7 @@ module.exports.notifier  = (config = {}) ->
             ) if local.middleware[title]?
 
 
-            #
-            # first and last middleware reserved for hub and client
-            #
-
-            first = (next) -> next(); ### null ###
-            last  = (next) -> next(); ### null ###
-
-
-            
-            middlewareCount = 0
             local.middleware[title]        = collection = middleware config
-            local.middlewareArray[title]   = mwBus = [] 
             local.notifierMetrics[title]   = nfMetrics = 
 
                 #
@@ -136,7 +125,7 @@ module.exports.notifier  = (config = {}) ->
                 localMetrics.input.count++
                 localMetrics.processing.count++
 
-                functions = for mware in mwBus
+                functions = for mware in collection.running()
 
                     do (mware) -> 
 
@@ -189,51 +178,14 @@ module.exports.notifier  = (config = {}) ->
                                 localMetrics.error.sys++ if type == 'sys'
                                 localMetrics.processing.count--
                                 reject error
+                                
 
                 return pipeline functions
 
 
-            #
-            # the set of middleware has been modified
-            # ---------------------------------------
-            #
-
-            reload = -> 
-
-                mwBus.length = 0
-
-                mwBus.push 
-                    type: 'sys'
-                    title: 'first'
-                    enabled: true
-                    fn: first
-
-                for title of list
-                    mwBus.push 
-                        type: 'usr'
-                        title: title
-                        enabled: list[title].enabled
-                        fn: list[title].fn 
-
-                mwBus.push 
-                    type: 'sys'
-                    title: 'last'
-                    enabled: true
-                    fn: last
-
-                middlewareCount = mwBus.length - 2
-
-            #
-            # * first load
-            #
-
-            console.log reload: 1
-            #reload()
-
-
             local.notifiers[title] = notifier = 
 
-                got: (title) -> list[title]?
+                # got: (title) -> list[title]?
 
                 use: (opts, fn) -> 
 
@@ -255,21 +207,8 @@ module.exports.notifier  = (config = {}) ->
                     # * first and last can only be set once 
                     #
 
-                    if opts.last?
-                        if typeof last is 'function' and not last.toString().match /null/
-                            process.stderr.write "notice: last middleware cannot be reset! Not even using the force()\n"
-                            return 
-                        last = fn
-                        reload()
-                        return
-
-                    if opts.first?
-                        if typeof first is 'function' and not first.toString().match /null/
-                            process.stderr.write "notice: first middleware cannot be reset! Not even using the force()\n"
-                            return 
-                        first = fn
-                        reload()
-                        return
+                    return collection.last  fn if opts.last?
+                    return collection.first fn if opts.first?
 
                     collection.update
 
@@ -278,76 +217,6 @@ module.exports.notifier  = (config = {}) ->
                         description: opts.description
                         enabled:     opts.enabled
                         fn:          fn
-                    
-                    console.log reload: 2
-                    #reload()
-
-
-                    #process.stderr.write "notice: middleware '#{opts.title}' already exists, use the force()\n"
-
-
-                # force: (opts, fn) ->
-
-                #     #
-                #     # * force() can modify or delete middleware
-                #     #
-
-                #     throw undefinedArg( 
-                #         'opts.title', 'use(opts, middlewareFn)'
-                #     ) unless opts? and opts.title?
-
-                #     if opts.delete and list[opts.title]?
-                #         delete list[opts.title]
-                #         reload()
-                #         return
-
-                #     if opts.enabled? 
-                #         list[opts.title].enabled = opts.enabled
-                #         if opts.fn? then list[opts.title].fn = opts.fn
-                #         reload()
-                #         return
-
-                #     existing = list[opts.title]
-
-                #     throw invalidAction(
-                #         'force(opts, middlewareFn)', 'cannot insert new middleware'
-                #     ) unless existing?
-
-                #     existing.description = opts.description if opts.description?
-                #     existing.enabled     = opts.enabled if opts.enabled?
-                #     existing.fn          = fn
-                #     # beware opts.delete if thoughts of looping occur here
-
-                #     #
-                #     # TODO: what to de with existing metrics on replaceing middleware
-                #     #       but first, there need to be metrics... 
-                #     #
-
-                #     reload()
-
-                    #
-                    # ##ideas
-                    # 
-                    # * the middleware, contained in a capsule
-                    #      * provides a change watcher
-                    #      * uuid
-                    # * switching middleware, instruction via the pipeline in addition to the api
-                    # * middleware packs (a contiguous, identifiable set)
-                    #      * hub runs a pack
-                    #      * can switch betweeen packs
-                    #           * nice for preloading an ugrade pending ideal switch moment
-                    #           * switch back if it blows up
-                    #  
-                    #      == suggests sluce ==
-                    #               
-                    #              * a 'first' middleware that queues when activated
-                    #              * and can open the floodgate carefully
-                    #              * to only release a trickle onto the newly upgraded bus
-                    #              * to determine if a rollback (and return to the DrawingBoard) is necessary
-                    # 
-
-
-
 
             
             Object.defineProperty notifier, 'uuid', 

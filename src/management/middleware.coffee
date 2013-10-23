@@ -107,3 +107,29 @@ module.exports.middleware = (config = {}) ->
         last:    local.last
 
 
+
+
+                    #
+                    # ##ideas
+                    # 
+                    # * the middleware, contained in a capsule
+                    #      * provides a change watcher
+                    #      * uuid
+                    # * switching middleware, instruction via the pipeline in addition to the api
+                    # * middleware packs (a contiguous, identifiable set)
+                    #      * hub runs a pack
+                    #      * can switch betweeen packs
+                    #           * nice for preloading an ugrade pending ideal switch moment
+                    #           * switch back if it blows up
+                    #  
+                    #      == suggests sluce ==
+                    #               
+                    #              * a 'first' middleware that queues when activated
+                    #              * and can open the floodgate carefully
+                    #              * to only release a trickle onto the newly upgraded bus
+                    #              * to determine if a rollback (and return to the DrawingBoard) is necessary
+                    # 
+
+
+
+
