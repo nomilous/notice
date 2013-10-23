@@ -3,6 +3,7 @@ should      = require 'should'
 {hub, _hub, listener} = require '../../../lib/notice/hub'
 {_Handler, _handler}  = require '../../../lib/notice/hub/hub_handler'
 {_manager}    = require '../../../lib/management/manager'
+{_ticker} = require '../../../lib/management/ticker'
 {_notifier} = require '../../../lib/notice/notifier'
 
 
@@ -10,7 +11,7 @@ describe 'hub', ->
 
     beforeEach -> 
         listener.listen = (opts, callback) -> 
-            callback()
+            callback null, 'ADDRESS_HASH'
             on: ->
 
 
@@ -172,6 +173,19 @@ describe 'hub', ->
 
                 hub.listening.should.equal 'ADDRESS'
                 done()
+
+
+        context 'ticks', ->
+
+            it 'hub.create creates a ticker', (done) -> 
+
+                
+                Hub = hub()
+                Hub.create 'hub1', {}, (err, hub) -> 
+
+                should.exist _ticker().timers.hub1
+                done()
+
 
 
 

@@ -3,7 +3,7 @@ listener    = require './listener'
 {handler}   = require './hub_handler'
 {notifier}  = require '../notifier'
 {manager}   = require '../../management/manager'
-# {ticks}     = require '../../management/ticks'
+{ticker}    = require '../../management/ticker'
 {v1}        = require 'node-uuid'
 
 {
@@ -43,6 +43,7 @@ module.exports.hub  = (config = {}) ->
 
         Notifier: notifier config
         Handler:  handler  config
+        tickers:  ticker config
 
         hubs:    {}
         clients: {}
@@ -75,6 +76,7 @@ module.exports.hub  = (config = {}) ->
                 hub.tools = opts.tools or {}
                 local.hubs[hubName]    = hub
                 local.uuids[opts.uuid] = hub
+                local.tickers.register hub, opts
 
             catch error
 

@@ -36,7 +36,7 @@ module.exports.client  = (config = {}) ->
     testable = local = 
 
         Notifier: notifier.notifier config
-        ticker:    ticker config
+        tickers:    ticker config
         clients:  {}
 
         create: deferred ({reject, resolve, notify}, title, opts = {}, callback) -> 
@@ -73,7 +73,7 @@ module.exports.client  = (config = {}) ->
             client.connection.stateAt = Date.now()
             client.cache = opts.cache or {}
             client.tools = opts.tools or {}
-            local.ticker.register client, opts
+            local.tickers.register client, opts
             already = false 
 
             #
