@@ -51,10 +51,10 @@ describe 'ticker', ->
         done()
 
 
-    it 'call notifier.$$tick with the code', (done) -> 
+    it 'calls notifier.$$tick with the code', (done) -> 
 
         instance = ticker()
-        instance.register @notifier, 
+        instance.register @notifier,
             ticks:
                 CODE1: 
                     interval: 100
@@ -68,4 +68,22 @@ describe 'ticker', ->
                 CODES[7..9].should.eql ['CODE1', 'CODE1', 'CODE1']
                 seq.should.equal 0
                 done()
+
+
+    it 'accepts tick defs from super config', (done) -> 
+
+        instance = ticker ticks: global: interval: 10000
+        instance.register @notifier
+        _ticker().timers.NOTIFIER.global.timer._idleTimeout.should.equal 10000
+        done()
+
+
+    it 'tick defs from opts override', (done) -> 
+
+        instance = ticker ticks: global: interval: 10000
+        instance.register @notifier, ticks: global: interval: 1000
+        _ticker().timers.NOTIFIER.global.timer._idleTimeout.should.equal 1000
+        done()
+
+
 

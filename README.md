@@ -4,7 +4,6 @@
 
 #### TODO 0.0.12
 
-* ticks in factory config - opts override
 * middleware accessable at slot number in api
 * boomerang capsule (emitter callback/resolve only after full remote hub traversal, throw/reject the same, boomerang is the default, emitters not expecting a result from the remote hub should specify on capsule definition, said emitters receive the callback on hub ack)
 
