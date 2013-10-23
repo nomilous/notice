@@ -297,7 +297,6 @@ describe 'notifier', ->
 
             third = _notifier().middleware['Assembly Line 6']['put a lid on it']
             third.enabled.should.equal true
-            should.exist third.metrics
             third.fn.toString().should.match /third/
             done()
 
@@ -540,7 +539,7 @@ describe 'notifier', ->
                 result.should.eql
                     title: 'Assembly Line Mix'
                     uuid: 1,
-                    metrics: 
+                    stats: 
                         pipeline: 
                             input: 
                                 count: 0
@@ -583,12 +582,12 @@ describe 'notifier', ->
                     # so this is tricky to test
                     # 
 
-                    DURING = JSON.parse JSON.stringify mix.serialize().metrics.pipeline
+                    DURING = JSON.parse JSON.stringify mix.serialize().stats.pipeline
                     next()
 
                 mix.event().then -> 
 
-                    AFTER = mix.serialize().metrics.pipeline
+                    AFTER = mix.serialize().stats.pipeline
 
                 setTimeout (->
 
@@ -625,12 +624,12 @@ describe 'notifier', ->
                 # so this is tricky to test
                 # 
 
-                DURING = JSON.parse JSON.stringify mix.serialize().metrics.pipeline
+                DURING = JSON.parse JSON.stringify mix.serialize().stats.pipeline
                 throw new Error
 
             mix.event().then (->), -> 
 
-                AFTER = mix.serialize().metrics.pipeline
+                AFTER = mix.serialize().stats.pipeline
 
             setTimeout (->
 
@@ -673,7 +672,7 @@ describe 'notifier', ->
                 # so this is tricky to test
                 # 
 
-                DURING = JSON.parse JSON.stringify mix.serialize().metrics.pipeline
+                DURING = JSON.parse JSON.stringify mix.serialize().stats.pipeline
                 next()
 
             mix.event()
@@ -681,7 +680,7 @@ describe 'notifier', ->
 
             setTimeout (->
 
-                AFTER = mix.serialize().metrics.pipeline
+                AFTER = mix.serialize().stats.pipeline
 
                 DURING.input.count.should.equal 1
                 DURING.processing.count.should.equal 1
@@ -712,7 +711,7 @@ describe 'notifier', ->
 
             mix.use title: 'last', last: true, (next, capsule) ->
 
-                DURING = JSON.parse JSON.stringify mix.serialize().metrics.pipeline
+                DURING = JSON.parse JSON.stringify mix.serialize().stats.pipeline
                 next.cancel()
 
 
@@ -725,7 +724,7 @@ describe 'notifier', ->
 
             setTimeout (->
 
-                AFTER = mix.serialize().metrics.pipeline
+                AFTER = mix.serialize().stats.pipeline
 
                 DURING.input.count.should.equal 1
                 DURING.processing.count.should.equal 1
@@ -761,7 +760,7 @@ describe 'notifier', ->
 
             mix.use title: '1. intro', (next, capsule) ->
                 
-                DURING = JSON.parse JSON.stringify mix.serialize().metrics.pipeline
+                DURING = JSON.parse JSON.stringify mix.serialize().stats.pipeline
                 next.cancel()
 
             mix.event()
@@ -769,7 +768,7 @@ describe 'notifier', ->
 
             setTimeout (->
 
-                AFTER = mix.serialize().metrics.pipeline
+                AFTER = mix.serialize().stats.pipeline
 
                 DURING.input.count.should.equal 1
                 DURING.processing.count.should.equal 1

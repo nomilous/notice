@@ -29,3 +29,6 @@ tools
 * nested tools hash into notifier searialization
 * available at traversal.tools.* and api hubs/:uuid:/tools/**/*
 
+stats
+
+* renamed metrics to stats in api

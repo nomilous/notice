@@ -144,8 +144,8 @@ describe 'manage', ->
                         "GET"
                       ]
                     },
-                    "/v1/hubs/:uuid:/metrics": {
-                      "description": "get only the metrics",
+                    "/v1/hubs/:uuid:/stats": {
+                      "description": "get only the hub stats",
                       "methods": [
                         "GET"
                       ]
@@ -162,14 +162,14 @@ describe 'manage', ->
                         "GET"
                       ]
                     },
-                    "/v1/hubs/:uuid:/tools": {
-                      "description": "get output from a serailization of the tools tree",
+                    "/v1/hubs/:uuid:/cache/**/*": {
+                      "description": "get nested subkey from the cache tree",
                       "methods": [
                         "GET"
                       ]
                     },
-                    "/v1/hubs/:uuid:/cache/**/*": {
-                      "description": "get nested subkey from the cache tree",
+                    "/v1/hubs/:uuid:/tools": {
+                      "description": "get output from a serailization of the tools tree",
                       "methods": [
                         "GET"
                       ]
@@ -217,7 +217,7 @@ describe 'manage', ->
                       ],
                       "accepts": [
                         "text/javascript",
-                        "text/coffee-script"
+                        "text/coffeescript"
                       ]
                     }
                   }
@@ -278,14 +278,14 @@ describe 'manage', ->
             _manager().requestHandler @mockRequest, @mockResponse
 
 
-        it 'responds to GET /v1/hubs/:uuid:/metrics', (done) -> 
+        it 'responds to GET /v1/hubs/:uuid:/stats', (done) -> 
 
             @write = (body) -> 
-                JSON.parse( body ).should.eql 'METRICS'
+                JSON.parse( body ).should.eql 'STATS'
                 done()
 
-            @serializeHub1 = -> metrics: 'METRICS'
-            @mockRequest.url = '/v1/hubs/1/metrics'
+            @serializeHub1 = -> stats: 'STATS'
+            @mockRequest.url = '/v1/hubs/1/stats'
             _manager().requestHandler @mockRequest, @mockResponse
 
 
@@ -482,7 +482,7 @@ describe 'manage', ->
                 _manager().requestHandler @mockRequest, @mockResponse
 
 
-            it 'responds 415 to if not text/javascript or text/coffee-script', (done) ->
+            it 'responds 415 to if not text/javascript or text/coffeescript', (done) ->
 
                 @writeHead = (statusCode) ->
                     statusCode.should.equal 415
@@ -513,7 +513,7 @@ describe 'manage', ->
 
                 @mockRequest.url = '/v1/hubs/1/middlewares/title/replace'
                 @mockRequest.method = 'POST'
-                @mockRequest.headers['content-type'] = 'text/coffee-script'
+                @mockRequest.headers['content-type'] = 'text/coffeescript'
                 @mockRequest.body = ''
                 _manager().requestHandler @mockRequest, @mockResponse
 
@@ -623,12 +623,12 @@ describe 'manage', ->
 
                 @mockRequest.url = '/v1/hubs/1/middlewares/title/replace'
                 @mockRequest.method = 'POST'
-                @mockRequest.headers['content-type'] = 'text/coffee-script'
+                @mockRequest.headers['content-type'] = 'text/coffeescript'
                 @mockRequest.body = """
 
                 fn = (next, capsule, {cache}) -> 
                     
-                    capsule.set
+                    capsule.$$set
 
                         Done: false
                         watched: (change) -> cache.TESTDONE() if change.to 
@@ -639,7 +639,7 @@ describe 'manage', ->
 
                 instance.event (err, capsule) -> 
 
-                    
+                    #console.log err
                     capsule.Done = true
                     
 

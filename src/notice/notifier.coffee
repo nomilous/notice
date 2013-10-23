@@ -46,7 +46,6 @@ module.exports.notifier  = (config = {}) ->
         notifierMetrics:   {}
         middleware:        {}
         middlewareArray:   {}
-        middlewareMetrics: {}
 
         create: (title, uuid = v1()) ->
 
@@ -69,7 +68,6 @@ module.exports.notifier  = (config = {}) ->
             middlewareCount = 0
             local.middleware[title]        = list = {}
             local.middlewareArray[title]   = mwBus = [] 
-            local.middlewareMetrics[title] = mwMetrics = {}
             local.notifierMetrics[title]   = nfMetrics = 
 
                 #
@@ -273,7 +271,6 @@ module.exports.notifier  = (config = {}) ->
                         list[opts.title] = 
                             description: opts.description
                             enabled: opts.enabled
-                            metrics: {}
                             fn: fn
                         reload()
                         return
@@ -361,18 +358,15 @@ module.exports.notifier  = (config = {}) ->
                         when 1 
                             title:   notifier.title
                             uuid:    notifier.uuid
-                            metrics: pipeline: nfMetrics.pipeline
+                            stats:   pipeline: nfMetrics.pipeline
                         when 2
 
                             middlewares = local.middleware[notifier.title]
-                            mmetics     = local.middlewareMetrics[notifier.title]
 
                             title:   notifier.title
                             uuid:    notifier.uuid
-                            metrics: 
+                            stats: 
                                 pipeline: nfMetrics.pipeline
-                                #capsules: 'pending metrics per capsule definition'
-                            #clients: 'pending approach to deal with large numbers'
                             cache:   notifier.cache
                             tools:   notifier.tools
                             errors:  nfMetrics.errors

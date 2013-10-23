@@ -100,9 +100,9 @@ module.exports.manager  = (config = {}) ->
                     notifier = local.hubContext.uuids[uuid]
                     local.respond notifier.serialize(2), statusCode, response
 
-            '/v1/hubs/:uuid:/metrics': 
+            '/v1/hubs/:uuid:/stats': 
 
-                description: 'get only the metrics'
+                description: 'get only the hub stats'
                 methods: ['GET']
                 handler: ([uuid], request, response, statusCode = 200) -> 
 
@@ -111,7 +111,7 @@ module.exports.manager  = (config = {}) ->
 
                     notifier = local.hubContext.uuids[uuid]
                     local.respond(
-                        notifier.serialize(2).metrics
+                        notifier.serialize(2).stats
                         statusCode
                         response
                     )
@@ -283,13 +283,13 @@ module.exports.manager  = (config = {}) ->
             '/v1/hubs/:uuid:/middlewares/:title:/replace':
                 description: 'replace a middleware'
                 methods: ['POST']
-                accepts: ['text/javascript', 'text/coffee-script']
+                accepts: ['text/javascript', 'text/coffeescript']
                 handler: ([uuid,title], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'POST'
                     return local.unsupportedMedia response unless (
                         request.headers['content-type'] == 'text/javascript' or
-                        request.headers['content-type'] == 'text/coffee-script'
+                        request.headers['content-type'] == 'text/coffeescript'
                     )
 
                     title = decodeURIComponent title
@@ -312,7 +312,7 @@ module.exports.manager  = (config = {}) ->
                     request.on 'data', (buf) -> body += buf.toString()
                     request.on 'end', -> 
 
-                        if request.headers['content-type'] == 'text/coffee-script'
+                        if request.headers['content-type'] == 'text/coffeescript'
                             try body = coffee.compile body, bare: true
                             catch error
                                 return local.respond
