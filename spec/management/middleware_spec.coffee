@@ -38,4 +38,14 @@ describe 'middleware', ->
         done()
 
 
+    it 'refreshes bottomSlot', (done) -> 
+
+        instance = middleware()
+        _middleware().bottomSlot = 100
+        delete @middleware.slot
+        instance.update @middleware
+        _middleware().bottomSlot.should.equal 101
+        done()
+
+
 

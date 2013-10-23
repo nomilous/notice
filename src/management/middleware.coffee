@@ -8,10 +8,11 @@ module.exports.middleware = (config = {}) ->
 
         slots: {}
 
+        bottomSlot: 0
+
         nextSlot: -> 
 
-            console.log next: 1
-            1
+            ++local.bottomSlot
 
         update: ({slot, title, description, enabled, fn}) -> 
 
