@@ -67,13 +67,36 @@ describe 'middleware', ->
 
     context 'reload', -> 
 
-        it 'switchs between active array', ->
+        it 'switches between active array', ->
 
             instance = middleware()
             _middleware().active.should.equal 'array1'
             instance.update @middleware
             _middleware().active.should.equal 'array2'
 
+
+        it 'loads middlewares sorted by slot into the next active array', (done) ->
+
+            instance = middleware()
+            slots = _middleware().slots
+
+            slots[5]  = 'FIVE'
+            slots[1]  = 'ONE'
+            slots[99] = 'NINE'
+
+            #
+            # TODO: list with numbers as keys auto sorts...  (ALWAYS?)
+            #
+
+            slots.should.eql { '1': 'ONE', '5': 'FIVE', '99': 'NINE' }
+
+            _middleware().runningArray().should.eql []
+            _middleware().active.should.equal 'array1'
+            _middleware().reload()
+            _middleware().active.should.equal 'array2'
+            _middleware().runningArray().should.eql ['ONE', 'FIVE', 'NINE']
+
+            done()
 
 
     context 'runningArray()', -> 

@@ -43,11 +43,19 @@ module.exports.middleware = (config = {}) ->
 
             next = if local.active == 'array1' then 'array2' else 'array1'
 
-            
+            #
+            # sort = []
+            # sort[slot] for slot of local.slots
+            # console.log sort: sort
+            #
+            # TODO: list with numbers as keys auto sorts...  (ALWAYS?)
+            #
 
-
+            array = local[next]
+            array.length = 0
+            array.push local.slots[num] for num of local.slots
             local.active = next
-            
+
 
         runningArray: -> local[local.active]
 
