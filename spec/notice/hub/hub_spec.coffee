@@ -23,12 +23,6 @@ describe 'hub', ->
             Hub.create.should.be.an.instanceof Function
             done()
 
-        it 'throws when attempting to assign reserved capsule types', (done) -> 
-
-            try Hub = hub capsule: handshake: {}
-            catch error
-                error.should.match /is a reserved capsule type/
-                done()
 
         it 'starts a manager if configured and shares it on the definition config', (done) -> 
 

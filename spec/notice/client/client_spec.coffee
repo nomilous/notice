@@ -34,13 +34,6 @@ describe 'client', ->
             done()
 
 
-        it 'throws when attempting to assign reserved capsule types', (done) -> 
-
-            try Client = client capsule: connect: {}
-            catch error
-                error.should.match /is a reserved capsule type/
-                done()
-
     context 'create()', -> 
 
         it 'requires title', (done) -> 

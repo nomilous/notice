@@ -19,12 +19,6 @@ testable               = undefined
 module.exports._client = -> testable
 module.exports.client  = (config = {}) ->
 
-    for type of config.capsule
-
-        throw reservedCapsule type if type.match(
-            /^connect$|^handshake$|^accept$|^reject$|^disconnect$|^resume$|^capsule$|^nak$|^ack$|^error$/
-        )
-
     #
     # TODO: this bypasses config of the capsule supercope, 
     #       not doing so becomes necessary later.

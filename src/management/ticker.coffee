@@ -18,13 +18,14 @@ module.exports.ticker  = (config = {}) ->
 
                     tick = opts.ticks[key]
                     tick.interval ?= 1000
+                    tick.seq = 0
 
                     timers[key] = 
 
                         interval: tick.interval
                         timer: setInterval ( ->
 
-                            notifier.$$tick key
+                            notifier.$$tick key, seq: tick.seq++
 
                         ), tick.interval
 

@@ -18,18 +18,6 @@ testable            = undefined
 module.exports._hub = -> testable
 module.exports.hub  = (config = {}) ->
 
-    for type of config.capsule
-
-        throw reservedCapsule type if type.match(
-            /^connect$|^handshake$|^accept$|^reject$|^disconnect$|^resume$|^capsule$|^nak$|^ack$|^error$/
-        )
-
-    if config.client? then for type in config.client.capsule
-
-        throw reservedCapsule type if type.match(
-            /^connect$|^handshake$|^accept$|^reject$|^disconnect$|^resume$|^capsule$|^nak$|^ack$|^error$/
-        )
-
     #
     # * manager is shared on the config object
     # 
@@ -76,6 +64,11 @@ module.exports.hub  = (config = {}) ->
                 local.hubs[hubName]    = hub
                 local.uuids[opts.uuid] = hub
                 local.tickers.register hub, opts
+
+
+                seq = 0
+                setInterval (-> hub.$$health seq: seq++ ), 60000
+
 
             catch error
 

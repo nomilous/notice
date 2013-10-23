@@ -62,17 +62,10 @@ describe 'ticker', ->
                     interval: 1050
 
         CODES = []
-        @tick = (code) -> 
+        @tick = (code, {seq}) -> 
             if code == 'CODE1' then CODES.push code 
             if code == 'CODE2' 
                 CODES[7..9].should.eql ['CODE1', 'CODE1', 'CODE1']
+                seq.should.equal 0
                 done()
-
-
-
-
-
-
-
-
 

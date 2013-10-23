@@ -1,7 +1,9 @@
 {pipeline, deferred} = require 'also'
-{lifecycle}    = require './capsule/lifecycle'
+{lifecycle}          = require './capsule/lifecycle'
+{health}             = require '../management/health'
+{v1}                 = require 'node-uuid'
+
 {undefinedArg, invalidAction} = require './errors'
-{v1}           = require 'node-uuid'
 
 testable                 = undefined
 module.exports._notifier = -> testable
@@ -27,10 +29,15 @@ module.exports.notifier  = (config = {}) ->
     # 
     # * $$control - internal events 
     # * $$tick    - configureable ticker
+    # * $$health  - periodic process health stats
     #
 
     config.capsule.$$control = {}
     config.capsule.$$tick    = {}
+    config.capsule.$$health  = 
+        before: (done, capsule) -> 
+            health capsule, -> done()
+
 
     testable = local = 
 
