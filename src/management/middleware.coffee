@@ -53,7 +53,10 @@ module.exports.middleware = (config = {}) ->
 
             array = local[next]
             array.length = 0
-            array.push local.slots[num] for num of local.slots
+            for num of local.slots
+                mware = local.slots[num]
+                continue unless mware.enabled is true
+                array.push mware
             local.active = next
 
 
