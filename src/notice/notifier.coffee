@@ -1,6 +1,7 @@
 {pipeline, deferred} = require 'also'
 {lifecycle}          = require './capsule/lifecycle'
 {health}             = require '../management/health'
+{middleware}         = require '../management/middleware'
 {v1}                 = require 'node-uuid'
 
 {undefinedArg, invalidAction} = require './errors'
@@ -64,9 +65,11 @@ module.exports.notifier  = (config = {}) ->
 
             first = (next) -> next(); ### null ###
             last  = (next) -> next(); ### null ###
+
+
             
             middlewareCount = 0
-            local.middleware[title]        = list = {}
+            local.middleware[title]        = list = middleware config
             local.middlewareArray[title]   = mwBus = [] 
             local.notifierMetrics[title]   = nfMetrics = 
 
@@ -133,15 +136,15 @@ module.exports.notifier  = (config = {}) ->
                 localMetrics.input.count++
                 localMetrics.processing.count++
 
-                functions = for middleware in mwBus
+                functions = for mware in mwBus
 
-                    do (middleware) -> 
+                    do (mware) -> 
 
-                        return (->) unless middleware.enabled
+                        return (->) unless mware.enabled
                         deferred (action) -> 
 
                             {resolve, reject, notify} = action
-                            {type, title, fn} = middleware
+                            {type, title, fn} = mware
 
                             next = -> process.nextTick -> resolve capsule
                             next.notify = (update) -> process.nextTick -> notify update
