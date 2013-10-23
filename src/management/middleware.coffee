@@ -13,19 +13,20 @@ module.exports.middleware = (config = {}) ->
             console.log next: 1
             1
 
-        update: ({slot, title, description, enabled, fn}, callback) -> 
+        update: ({slot, title, description, enabled, fn}) -> 
 
             slot ?= local.nextSlot()
 
-            throw argumentException( 
+            unless typeof slot is 'number'
+                throw argumentException 'opts.slot', 'notice.use(opts, fn)', 'as number'
 
-                #'mware.slot', 'middleware.update(mware)', 'as number'
-                'opts.slot', 'notice.use(opts, fn)', 'as number'
+            unless title? and fn?
+                throw argumentException 'opts.title and fn', 'notice.use(opts, fn)'
 
-            ) unless typeof slot is 'number'
+            unless typeof fn is 'function'
+                throw argumentException 'fn', 'notice.use(opts, fn)', 'as function'
 
-            console.log UPDATE: slot
-
+            local.slots[slot] = arguments[0]
 
     api = 
 

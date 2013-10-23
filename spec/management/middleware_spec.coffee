@@ -3,14 +3,39 @@ should = require 'should'
 
 describe 'middleware', -> 
 
+    beforeEach ->
+
+        @middleware = 
+
+            slot: 1
+            title: 'Title'
+            description: 'Description'
+            enabled: true
+            fn: ->
+
+
     it 'is a middleware collection', -> 
+
 
     it 'defines update', -> 
 
         middleware().update.should.be.an.instanceof Function
 
+
     it 'assigns next slot if not specified', (done) -> 
 
         instance = middleware()
         _middleware().nextSlot = -> done(); 1
-        instance.update {}
+        delete @middleware.slot
+        instance.update @middleware
+
+
+    it 'inserts middleware into slots', (done) -> 
+
+        instance = middleware()
+        instance.update @middleware
+        _middleware().slots[1].should.equal @middleware
+        done()
+
+
+
