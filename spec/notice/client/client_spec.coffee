@@ -1,5 +1,6 @@
 should            = require 'should'
 {_client, client, connector} = require '../../../lib/notice/client'
+{_ticker} = require '../../../lib/management/ticker'
 {_notifier}       = require '../../../lib/notice/notifier'
 {hostname}        = require 'os'
 uuid              = require 'node-uuid' 
@@ -129,6 +130,20 @@ describe 'client', ->
                 state:  'pending'
                 stateAt: 1
             done()
+
+
+        context 'ticks', ->
+
+            it 'client.create creates a ticker', (done) -> 
+
+                Date.now = -> 1
+                connector.connect = (opts) -> on: -> 
+                Client = client()
+                Client.create 'TITLE', @opts, ->
+
+                should.exist _ticker().timers.TITLE
+                done()
+
 
 
         context 'transmission onto socket', -> 

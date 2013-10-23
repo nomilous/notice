@@ -4,6 +4,7 @@
 
 #### TODO 0.0.12
 
+* socket events $$
 * configured ticks (configured) emit at interval into pipeline
 * hub health emitted at configurable interval (memory usage, etc.)
 * `hub.use title: '...', match: /regex/`, (next, ...) ->`
