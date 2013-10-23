@@ -19,13 +19,20 @@ module.exports.middleware = (config = {}) ->
             slot ?= local.nextSlot()
 
             unless typeof slot is 'number'
-                throw argumentException 'opts.slot', 'notice.use(opts, fn)', 'as number'
+                throw argumentException 'opts.slot', 'notice.use(opts, fn)', 'as whole number'
+
+            unless Math.floor(slot) == slot
+                throw argumentException 'opts.slot', 'notice.use(opts, fn)', 'as whole number'
 
             unless title? and fn?
                 throw argumentException 'opts.title and fn', 'notice.use(opts, fn)'
 
+
+
             unless typeof fn is 'function'
                 throw argumentException 'fn', 'notice.use(opts, fn)', 'as function'
+
+
 
             if slot > local.bottomSlot then local.bottomSlot = slot + 1
 
@@ -43,17 +50,13 @@ module.exports.middleware = (config = {}) ->
 
             next = if local.active == 'array1' then 'array2' else 'array1'
 
-            #
-            # sort = []
-            # sort[slot] for slot of local.slots
-            # console.log sort: sort
-            #
-            # TODO: list with numbers as keys auto sorts...  (ALWAYS?)
-            #
+            sort = []
+            sort[parseInt slot] = slot for slot of local.slots
 
             array = local[next]
             array.length = 0
-            for num of local.slots
+            for num in sort
+                continue unless num
                 mware = local.slots[num]
                 continue unless mware.enabled is true
                 array.push mware

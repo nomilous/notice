@@ -25,7 +25,7 @@ module.exports.undefinedArg = (arg, functionSignature) ->
     
     return error = new Error "notice: requires arg #{arg}"
 
-module.exports.argumentException = -> (arg, functionSignature, expectation) -> 
+module.exports.argumentException = (arg, functionSignature, expectation) -> 
 
     return error = new Error "notice: expected #{functionSignature} with #{arg} #{expectation}"
 

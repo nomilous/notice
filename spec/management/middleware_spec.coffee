@@ -34,6 +34,7 @@ describe 'middleware', ->
 
         instance = middleware()
         instance.update @middleware
+
         _middleware().slots[1].should.equal @middleware
         done()
 
@@ -83,12 +84,6 @@ describe 'middleware', ->
             slots[5]  = { enabled: true, title: 'FIVE'     }
             slots[1]  = { enabled: true, title: 'ONE'      }
             slots[99] = { enabled: true, title: 'NINENINE' }
-
-            #
-            # TODO: list with numbers as keys auto sorts...  (ALWAYS?)
-            #
-
-            # slots.should.eql { '1': 'ONE', '5': 'FIVE', '99': 'NINENINE' }
 
             _middleware().runningArray().should.eql []
             _middleware().active.should.equal 'array1'
