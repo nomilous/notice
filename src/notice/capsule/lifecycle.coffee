@@ -30,6 +30,14 @@ module.exports.lifecycle  = (type, config = {}) ->
                 assign.hidden    = true if local.config.nondescript 
                 cap.$$set assign
 
+            unless cap[type]?
+
+                assign = {}
+                assign[type] = true
+                assign.protected = true
+                assign.hidden    = true
+                cap.$$set assign
+
             try if local.config.before
 
                 done = -> 

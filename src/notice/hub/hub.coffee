@@ -48,7 +48,6 @@ module.exports.hub  = (config = {}) ->
         hubs:    {}
         clients: {}
         name2id: {} # same client on multiple hubs? later...
-
         uuids:   {} # taken list for hubs
         
         #

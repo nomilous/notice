@@ -93,7 +93,6 @@ describe 'lifecycle', ->
 
             ls.create()
 
-
         it 'assigns capsule properties before the hook', (done) -> 
 
             ls = lifecycle 'event', 
@@ -106,6 +105,18 @@ describe 'lifecycle', ->
 
 
             ls.create key: 'value'
+
+
+        it 'assigns the typevalue as true if unspecified', (done) -> 
+
+            ls = lifecycle 'event', 
+                capsule: 
+                    event: {}
+
+             ls.create( ).then (capsule) -> 
+
+                capsule.event.should.equal true
+                done()
 
 
         it 'protects the typeValue', (done) -> 
