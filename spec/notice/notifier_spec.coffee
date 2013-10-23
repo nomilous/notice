@@ -473,15 +473,17 @@ describe 'notifier', ->
             ), 100
 
 
-        it 'passes capsule through all middleware if they call next', (done) -> 
+        it.only 'passes capsule through all middleware if they call next', (done) -> 
 
             mix  = notifier().create 'Assembly Line Mix'
 
             mix.use 
                 title: '1. intro'
+                slot: 't'
                 (done, capsule) ->
                     capsule.one = true
                     done()
+
             mix.use 
                 title: '2. one the sun'
                 (done, capsule) -> 

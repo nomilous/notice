@@ -69,7 +69,7 @@ module.exports.notifier  = (config = {}) ->
 
             
             middlewareCount = 0
-            local.middleware[title]        = list = middleware config
+            local.middleware[title]        = collection = middleware config
             local.middlewareArray[title]   = mwBus = [] 
             local.notifierMetrics[title]   = nfMetrics = 
 
@@ -227,7 +227,8 @@ module.exports.notifier  = (config = {}) ->
             # * first load
             #
 
-            reload()
+            console.log reload: 1
+            #reload()
 
 
             local.notifiers[title] = notifier = 
@@ -270,55 +271,59 @@ module.exports.notifier  = (config = {}) ->
                         reload()
                         return
 
-                    unless list[opts.title]?
-                        list[opts.title] = 
-                            description: opts.description
-                            enabled: opts.enabled
-                            fn: fn
-                        reload()
-                        return
+                    collection.update
 
-                    process.stderr.write "notice: middleware '#{opts.title}' already exists, use the force()\n"
+                        slot:        opts.slot
+                        title:       opts.title
+                        description: opts.description
+                        enabled:     opts.enabled
+                        fn:          fn
+                    
+                    console.log reload: 2
+                    #reload()
 
 
-                force: (opts, fn) ->
+                    #process.stderr.write "notice: middleware '#{opts.title}' already exists, use the force()\n"
 
-                    #
-                    # * force() can modify or delete middleware
-                    #
 
-                    throw undefinedArg( 
-                        'opts.title', 'use(opts, middlewareFn)'
-                    ) unless opts? and opts.title?
+                # force: (opts, fn) ->
 
-                    if opts.delete and list[opts.title]?
-                        delete list[opts.title]
-                        reload()
-                        return
+                #     #
+                #     # * force() can modify or delete middleware
+                #     #
 
-                    if opts.enabled? 
-                        list[opts.title].enabled = opts.enabled
-                        if opts.fn? then list[opts.title].fn = opts.fn
-                        reload()
-                        return
+                #     throw undefinedArg( 
+                #         'opts.title', 'use(opts, middlewareFn)'
+                #     ) unless opts? and opts.title?
 
-                    existing = list[opts.title]
+                #     if opts.delete and list[opts.title]?
+                #         delete list[opts.title]
+                #         reload()
+                #         return
 
-                    throw invalidAction(
-                        'force(opts, middlewareFn)', 'cannot insert new middleware'
-                    ) unless existing?
+                #     if opts.enabled? 
+                #         list[opts.title].enabled = opts.enabled
+                #         if opts.fn? then list[opts.title].fn = opts.fn
+                #         reload()
+                #         return
 
-                    existing.description = opts.description if opts.description?
-                    existing.enabled     = opts.enabled if opts.enabled?
-                    existing.fn          = fn
-                    # beware opts.delete if thoughts of looping occur here
+                #     existing = list[opts.title]
 
-                    #
-                    # TODO: what to de with existing metrics on replaceing middleware
-                    #       but first, there need to be metrics... 
-                    #
+                #     throw invalidAction(
+                #         'force(opts, middlewareFn)', 'cannot insert new middleware'
+                #     ) unless existing?
 
-                    reload()
+                #     existing.description = opts.description if opts.description?
+                #     existing.enabled     = opts.enabled if opts.enabled?
+                #     existing.fn          = fn
+                #     # beware opts.delete if thoughts of looping occur here
+
+                #     #
+                #     # TODO: what to de with existing metrics on replaceing middleware
+                #     #       but first, there need to be metrics... 
+                #     #
+
+                #     reload()
 
                     #
                     # ##ideas
