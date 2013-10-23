@@ -17,7 +17,7 @@ describe 'middleware', ->
     it 'is a middleware collection', -> 
 
 
-    it 'defines update', -> 
+    it 'defines update to update middleware', -> 
 
         middleware().update.should.be.an.instanceof Function
 
@@ -65,9 +65,23 @@ describe 'middleware', ->
         instance.update @middleware
 
 
-    context 'reload', ->
+    context 'reload', -> 
+
+        it 'switchs between active array', ->
+
+            instance = middleware()
+            _middleware().active.should.equal 'array1'
+            instance.update @middleware
+            _middleware().active.should.equal 'array2'
+
+
+
+    context 'runningArray()', -> 
+
+        it 'returns the active array', -> 
+
+            instance = middleware()
+            _middleware().active = 'array2'
+            instance.runningArray().should.equal _middleware().array2
 
         
-
-
-

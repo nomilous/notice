@@ -7,8 +7,10 @@ module.exports.middleware = (config = {}) ->
     testable = local = 
 
         slots: {}
-
         bottomSlot: 0
+        array1: []
+        array2: []
+        active: 'array1'
 
         nextSlot: -> ++local.bottomSlot
 
@@ -31,6 +33,7 @@ module.exports.middleware = (config = {}) ->
 
             local.reload()
 
+
         reload: -> 
 
             #
@@ -38,8 +41,19 @@ module.exports.middleware = (config = {}) ->
             # TODO: * emit $$ready 'pack_id'
             #
 
+            next = if local.active == 'array1' then 'array2' else 'array1'
+
+            
+
+
+            local.active = next
+            
+
+        runningArray: -> local[local.active]
+
     api = 
 
         update: local.update
+        runningArray: local.runningArray
 
 
