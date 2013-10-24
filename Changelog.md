@@ -32,3 +32,9 @@ tools
 stats
 
 * renamed metrics to stats in api
+
+middleware
+
+* middleware can be inserted at other than slot 1 (to intentionally leave gaps in the sequence, for emergencies)
+* middleware listed in api `V1/hubs/:uuid:/middlewares`
+* middleware accessable at slot number in api `V1/hubs/:uuid:/middlewares/:slot:`

@@ -65,3 +65,20 @@ hub = NetworkAlertRouter.create( ...
 
 **pending consideration**
 
+
+
+
+
+### todo document fragments
+
+`curl -u user: :20002/v1/hubs/1/middlewares/1`
+```json 
+{
+  "slot": 1,
+  "title": "initializer",
+  "description": "First middleware is usefull for filtering builtin control capsules.",
+  "type": "usr",
+  "enabled": true
+}
+```
+
