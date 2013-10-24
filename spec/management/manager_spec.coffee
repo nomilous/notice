@@ -1,6 +1,7 @@
 http       = require 'http'
 https      = require 'https'
 should     = require 'should'
+request    = require 'request'
 {parallel} = require 'also'
 {Client}   = require 'dinkum'
 # {_notifier,notifier} = require '../../lib/notice/notifier'
@@ -80,13 +81,26 @@ describe 'manage', ->
                     hub1 = hubs[0]
                     hub2 = hubs[1]
 
-                    client = Client.create
-                        transport: 'http'
-                        port: 40404
-                        authenticator:
-                            module: 'basic_auth'
-                            username: 'user'
-                            password: 'pass'
+                    # client = Client.create
+                    #     transport: 'http'
+                    #     port: 40404
+                    #     authenticator:
+                    #         module: 'basic_auth'
+                    #         username: 'user'
+                    #         password: 'pass'
+
+                    client = 
+                        get: ({path}, callback) -> 
+                            request.get 'http://localhost:40404' + path,
+                                auth:
+                                    user: 'user'
+                                    pass: 'pass'
+                                    immediately: true
+                                (err, {statusCode}, body) -> 
+                                    
+                                    callback err, 
+                                        statusCode: statusCode
+                                        body: try JSON.parse body
 
                     done()
 
@@ -101,138 +115,141 @@ describe 'manage', ->
             should.exist client
 
 
-        it 'responds with 404 incase of no route', (done) -> 
+        it.only 'responds with 404 incase of no route', (done) -> 
 
-            client.get 
-                path: '/no/route' 
+            client.get
+                path: '/no/route'
+                (err, {statusCode}) -> 
 
-            .then ({statusCode}) -> 
-                statusCode.should.equal 404
-                done()
+                    statusCode.should.equal 404
+                    done()
 
 
         it 'responds to /about', (done) -> 
 
             client.get 
-                path: '/about' 
+                path: '/about'
+                (err, {statusCode, body}) -> 
 
-            .then ({statusCode, body}) -> 
+                    statusCode.should.equal 200
+                    body.should.eql 
 
-                statusCode.should.equal 200
+                        module: 'notice'
+                        version: '0.0.12'
+                        doc: 'https://github.com/nomilous/notice/tree/master/spec/management'
+                        endpoints: 
 
-                body.should.eql {
+                            "/about":
+                                description: "show this"
+                                methods: [ "GET" ]
 
-                  "module": "notice",
-                  "version": "0.0.12",
-                  "doc": "https://github.com/nomilous/notice/tree/master/spec/management",
-                  "endpoints": {
-                    "/about": {
-                      "description": "show this",
-                      "methods": [
-                        "GET"
-                      ]
-                    },
-                    "/v1/hubs": {
-                      "description": "list present hubs",
-                      "methods": [
-                        "GET"
-                      ]
-                    },
-                    "/v1/hubs/:uuid:": {
-                      "description": "get a hub",
-                      "methods": [
-                        "GET"
-                      ]
-                    },
-                    "/v1/hubs/:uuid:/stats": {
-                      "description": "get only the hub stats",
-                      "methods": [
-                        "GET"
-                      ]
-                    },
-                    "/v1/hubs/:uuid:/errors": {
-                      "description": "get only the recent errors",
-                      "methods": [
-                        "GET"
-                      ]
-                    },
-                    "/v1/hubs/:uuid:/cache": {
-                      "description": "get output from a serailization of the traversal",
-                      "methods": [
-                        "GET"
-                      ]
-                    },
-                    "/v1/hubs/:uuid:/cache/**/*": {
-                      "description": "get nested subkey from the cache tree",
-                      "methods": [
-                        "GET"
-                      ]
-                    },
-                    "/v1/hubs/:uuid:/tools": {
-                      "description": "get output from a serailization of the tools tree",
-                      "methods": [
-                        "GET"
-                      ]
-                    },
-                    "/v1/hubs/:uuid:/tools/**/*": {
-                      "description": "get nested subkey from the tools key",
-                      "methods": [
-                        "GET"
-                      ]
-                    },
-                    "/v1/hubs/:uuid:/clients": {
-                      "description": "pending",
-                      "methods": [
-                        "GET"
-                      ]
-                    },
-                    "/v1/hubs/:uuid:/middlewares": {
-                      "description": "get only the middlewares",
-                      "methods": [
-                        "GET"
-                      ]
-                    },
-                    "/v1/hubs/:uuid:/middlewares/:title:": {
-                      "description": "get or update or delete a middleware",
-                      "methods": [
-                        "GET"
-                      ]
-                    },
-                    "/v1/hubs/:uuid:/middlewares/:title:/disable": {
-                      "description": "disable a middleware",
-                      "methods": [
-                        "GET"
-                      ]
-                    },
-                    "/v1/hubs/:uuid:/middlewares/:title:/enable": {
-                      "description": "enable a middleware",
-                      "methods": [
-                        "GET"
-                      ]
-                    },
-                    "/v1/hubs/:uuid:/middlewares/:title:/replace": {
-                      "description": "replace a middleware",
-                      "methods": [
-                        "POST"
-                      ],
-                      "accepts": [
-                        "text/javascript",
-                        "text/coffeescript"
-                      ]
-                    }
-                  }
-                }
-                done()
+                            "/v1/hubs":
+                                description: "list present hubs"
+                                methods: [ "GET" ]
+                            
+                            "/v1/hubs/:uuid:":
+                                description: "get a hub"
+                                methods: [ "GET" ]
+                            
+                            "/v1/hubs/:uuid:/stats":
+                                description: "get only the hub stats"
+                                methods: [ "GET" ]
+                            
+                            "/v1/hubs/:uuid:/errors": 
+                                description: "get only the recent errors"
+                                methods: [ "GET" ]
+                            
+                            "/v1/hubs/:uuid:/cache":
+                                description: "get output from a serailization of the traversal"
+                                methods: [ "GET" ]
+                            
+                            "/v1/hubs/:uuid:/cache/**/*":
+                                description: "get nested subkey from the cache tree"
+                                methods: [ "GET" ]
+
+                            "/v1/hubs/:uuid:/tools":
+                                description: "get output from a serailization of the tools tree"
+                                methods: [ "GET" ]
+
+                            "/v1/hubs/:uuid:/tools/**/*":
+                                description: "get nested subkey from the tools key"
+                                methods: [ "GET" ]
+
+                            "/v1/hubs/:uuid:/clients":
+                                description: "pending"
+                                methods: [ "GET" ]
+
+                            "/v1/hubs/:uuid:/middlewares":
+                                description: "get only the middlewares"
+                                methods: [ "GET" ]
+                            
+                            "/v1/hubs/:uuid:/middlewares/:title:":
+                                description: "get or update or delete a middleware"
+                                methods: [ "GET" ]
+
+                            "/v1/hubs/:uuid:/middlewares/:title:/disable":
+                                description: "disable a middleware"
+                                methods: [ "GET" ]
+
+                            "/v1/hubs/:uuid:/middlewares/:title:/enable":
+                                description: "enable a middleware"
+                                methods: [ "GET" ]
+
+                            "/v1/hubs/:uuid:/middlewares/:title:/replace":
+                                description: "replace a middleware"
+                                methods: [ "POST" ]
+                                accepts: [ "text/javascript", "text/coffeescript" ]
+
+                    done()  
+                
 
 
         it 'responds to GET /v1/hubs with an array of records for each hub', (done) -> 
 
             client.get 
                 path: '/v1/hubs' 
+                (err, {statusCode, body}) -> 
 
-            .then ({statusCode, body}) -> 
+                    statusCode.should.equal 200
+                    body.should.eql 
 
-                console.log JSON.stringify arguments, null, 2
+                        '1': 
+                            title: 'Hub One'
+                            uuid: 1
+                            stats: 
+                                pipeline:
+                                    input: 
+                                        count: 0
+                                    processing:
+                                        count: 0
+                                    output:
+                                        count: 0
+                                    error: 
+                                        usr: 0
+                                        sys: 0
+                                    cancel:
+                                        usr: 0
+                                        sys: 0
+
+                        '2':
+                            title: 'Hub Two'
+                            uuid: 2
+                            stats: 
+                                pipeline:
+                                    input: 
+                                        count: 0
+                                    processing:
+                                        count: 0
+                                    output:
+                                        count: 0
+                                    error: 
+                                        usr: 0
+                                        sys: 0
+                                    cancel:
+                                        usr: 0
+                                        sys: 0
+
+                    done()
 
 
 

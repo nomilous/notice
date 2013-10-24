@@ -244,7 +244,6 @@ module.exports.notifier  = (config = {}) ->
                 value: (detail = 1) -> 
                     switch detail
                         when 1 
-                            console.log moo:1
                             title:   notifier.title
                             uuid:    notifier.uuid
                             stats:   pipeline: nfMetrics.pipeline
