@@ -499,7 +499,7 @@ describe 'manage', ->
                         done()
 
 
-            it 'enables middleware with  GET v1/hubs/:uuid:/middlewares/:title:/enable', (done) -> 
+            it 'enables middleware with  GET v1/hubs/:uuid:/middlewares/:slot:/enable', (done) -> 
 
                 hub2.use
 
