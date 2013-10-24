@@ -1,6 +1,7 @@
-http    = require 'http'
-https   = require 'https'
-should  = require 'should'
+http       = require 'http'
+https      = require 'https'
+should     = require 'should'
+{parallel} = require 'also'
 # {_notifier,notifier} = require '../../lib/notice/notifier'
 {hub,_hub}         = require '../../lib/notice/hub/hub'
 {manager,_manager} = require '../../lib/management/manager'
@@ -53,6 +54,36 @@ describe 'manage', ->
                 key:  'key'
 
     context 'routes', -> 
+
+        hub1 = undefined
+        hub2 = undefined
+
+        before (done) -> 
+
+            Hub = hub()
+
+            parallel([
+                
+                -> Hub.create title: 'Hub One', uuid: 1
+                -> Hub.create title: 'Hub Two', uuid: 2
+
+            ]).then(
+                # ([@hub1, @hub2]) => done()
+                (hubs) -> 
+                    hub1 = hubs[0]
+                    hub2 = hubs[1]
+                    done()
+                (error) -> console.log SPEC_ERROR: error, filename: __filename
+            )
+
+
+        it 'has two hubs to test against', -> 
+
+            # should.exist @hub1
+            # should.exist @hub2
+            should.exist hub1
+            should.exist hub2
+
 
 
         # before -> 
