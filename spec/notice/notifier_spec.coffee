@@ -112,23 +112,31 @@ describe 'notifier', ->
 
 
             instance = Notifier.create 'title'
+
+            # console.log instance
             instance.pheeew
 
                 defcon:  1
                 change: -4
 
-            .then (newCapsule) -> 
+            .then( 
+                (newCapsule) -> 
+                    #console.log newCapsule
+                    newCapsule.should.eql 
 
-                #console.log newCapsule
-                newCapsule.should.eql 
+                        id:        'new database record id'
+                        createdAt: 'wrist watch'
+                        defcon:     1
+                        change:     -4
 
-                    id:        'new database record id'
-                    createdAt: 'wrist watch'
-                    defcon:     1
-                    change:     -4
+                    #console.log newCapsule.sourceHost
+                    done()
 
-                #console.log newCapsule.sourceHost
-                done()
+                (error) -> 
+
+                    console.log SPEC_ERROR_1: error
+                    done()
+            )
 
 
         it 'assigns the capsule typeValue from string or number', (done) -> 

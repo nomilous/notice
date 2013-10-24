@@ -10,7 +10,7 @@ module.exports.middleware = (config = {}) ->
         bottomSlot: 0
         array1: []
         array2: []
-        active: 'array1'
+        active: 'array2'
 
         firstMiddleware: (next) -> next(); ### PENDING ### 
         lastMiddleware:  (next) -> next(); ### PENDING ### 
@@ -80,7 +80,8 @@ module.exports.middleware = (config = {}) ->
 
             array.push 
                 title: 'first'
-                type:  'sys'
+                type: 'sys'
+                enabled: true
                 fn: local.firstMiddleware
 
             for num in sort
@@ -92,12 +93,21 @@ module.exports.middleware = (config = {}) ->
             array.push 
                 title: 'last'
                 type:  'sys'
+                enabled: true
                 fn: local.lastMiddleware
 
             local.active = next
 
 
         running: -> local[local.active]
+
+
+    #
+    # * first load necessary to populate the initial active array
+    #
+
+    local.reload()
+
 
     api = 
 
