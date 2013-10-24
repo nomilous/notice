@@ -352,6 +352,7 @@ src/notice/notifier.coffee-                                                     
 
 ### ideas...
 
+```
 src/management/middleware.coffee:                    # ##ideas
 src/management/middleware.coffee-                    # 
 src/management/middleware.coffee-                    # * the middleware, contained in a capsule
@@ -372,6 +373,6 @@ src/management/middleware.coffee-                    #              * to only re
 src/management/middleware.coffee-                    #              * to determine if a rollback (and return to the DrawingBoard) is necessary
 src/management/middleware.coffee-                    # 
 src/management/middleware.coffee-
-
+```
 
 
