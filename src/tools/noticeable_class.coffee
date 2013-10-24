@@ -7,7 +7,7 @@ module.exports = class NoticeableClass
 
     constructor: ->
 
-        @apiProperty = deeper: and: deeper: 'value'
+        @apiProperty = deeper: 'value'
 
         @apiFunction = (opts, callback) -> 
 
@@ -19,15 +19,13 @@ module.exports = class NoticeableClass
             
             setTimeout (->
 
-                callback null, Infinity
+                callback null, async: jump: in: 'path'
 
             ), 400
 
 
         @apiFunction.$$notice = {}
 
-        @apiFunction2 = (opts, callback) -> callback null, this: 1
-        @apiFunction2.$$notice = {}
 
         @array = [
 

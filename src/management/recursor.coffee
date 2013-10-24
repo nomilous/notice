@@ -5,12 +5,13 @@ module.exports.recursor  = (local, type) ->
     testable = ([uuid, deeper], request, response, statusCode = 200) -> 
 
         return local.methodNotAllowed response unless request.method == 'GET'
-        return local.objectNotFound response unless local.hubContext.uuids[uuid]
+        return local.objectNotFound response unless local.hubContext.hubs[uuid]
 
-        notifier    = local.hubContext.uuids[uuid]
+        notifier    = local.hubContext.hubs[uuid]
         searialized = notifier.serialize(2)
 
         return local.objectNotFound response unless searialized[type]?
+
         object = searialized[type]
         path   = try deeper.split '/'
 
@@ -92,7 +93,7 @@ recurse = (request, object, path, result, callback) ->
                         # recurse request, object[key], path, result[key]
                         # 
 
-                        request.$$callback null, request.$$root if typeof request.$$callback is 'function' and path.length == 0
+                        request.$$callback null, request.$$root if typeof request.$$callback is 'function' # and path.length == 0
                         
 
 

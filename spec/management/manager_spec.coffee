@@ -3,10 +3,10 @@ https      = require 'https'
 should     = require 'should'
 request    = require 'request'
 {parallel} = require 'also'
-# {Client}   = require 'dinkum'
 # {_notifier,notifier} = require '../../lib/notice/notifier'
 {hub,_hub}         = require '../../lib/notice/hub/hub'
 {manager,_manager} = require '../../lib/management/manager'
+{NoticeableClass}  = require '../../lib/tools'
 
 
 
@@ -74,21 +74,20 @@ describe 'manage', ->
 
             parallel([
                 
-                -> Hub.create title: 'Hub One', uuid: 1
+                -> Hub.create 
+                        title: 'Hub One'
+                        uuid: 1
+                        tools: 
+                            toolName: new NoticeableClass
+
+                            
+
                 -> Hub.create title: 'Hub Two', uuid: 2
 
             ]).then(
                 (hubs) -> 
                     hub1 = hubs[0]
                     hub2 = hubs[1]
-
-                    # client = Client.create
-                    #     transport: 'http'
-                    #     port: 40404
-                    #     authenticator:
-                    #         module: 'basic_auth'
-                    #         username: 'user'
-                    #         password: 'pass'
 
                     client = 
                         get: ({path}, callback) -> 
@@ -253,7 +252,7 @@ describe 'manage', ->
                     done()
 
 
-        context '/v1/hubs/:uuid:', -> 
+        context '/v1/hubs/:uuid:/', -> 
 
             it 'respods 404 to no such', (done) -> 
 
@@ -272,7 +271,7 @@ describe 'manage', ->
                     (err, {statusCode, body}) ->
 
                         body.cache.should.eql {}
-                        body.tools.should.eql {}
+                        should.exist body.tools.toolName
                         body.errors.should.eql recent: []
                         body.middlewares.should.eql {}
                         done()
@@ -325,7 +324,6 @@ describe 'manage', ->
 
                 hub1.event().then -> 
 
-
                     client.get
                         path: '/v1/hubs/1'
                         (err, {statusCode, body}) ->
@@ -359,22 +357,56 @@ describe 'manage', ->
                             done()
 
 
-        xit 'responds to POST /v1/hubs/:uuid:/cache/**/* by replacing the specified key in the hash', (done) -> 
+            xit 'responds to POST /v1/hubs/:uuid:/cache/**/* by replacing the specified key in the hash', (done) -> 
 
 
 
-        # it 'responds to GET /v1/hubs/:uuid:/tools', (done) ->
 
-        #     @write = (body) -> 
-        #         JSON.parse( body ).should.eql key: 'VALUEEE'
-        #         done()
+            it './tools', (done) ->
 
-        #     @serializeHub1 = -> tools: key: 'VALUEEE'
-        #     @mockRequest.url = '/v1/hubs/1/tools'
-        #     _manager().requestHandler @mockRequest, @mockResponse
+                client.get 
+                    path: '/v1/hubs/1/tools'
+                    (err, {statusCode, body}) ->
+
+                        should.exist body.toolName
+                        done()
 
 
-        # it 'responds to GET /v1/hubs/:uuid:/tools/**/*', (done) ->
+            context './tools/**/*', ->
+
+                it 'responds with the tool searialization', (done) ->
+
+                    client.get 
+                        path: '/v1/hubs/1/tools/toolName'
+                        (err, {statusCode, body}) ->
+
+                            body.should.eql 
+
+                                apiProperty: 
+                                    deeper: 'value'
+                                apiFunction: {}
+                                array: 
+                                    '0': 'this'
+                                    '1': 'is'
+                                    '2': 'listified'
+
+                            done()
+
+
+                it 'walks into the tool/apiFunction async result', (done) -> 
+
+                    client.get 
+                        path: '/v1/hubs/1/tools/toolName/apiFunction/async/'
+                        (err, {statusCode, body}) ->
+
+                            body.should.eql jump: in: 'path'
+                            done()
+
+
+
+
+
+
 
         #     @write = (body) -> 
         #         JSON.parse( body ).should.eql 'VALUEEE'

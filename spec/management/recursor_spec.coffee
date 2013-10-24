@@ -15,7 +15,7 @@ describe 'recursor', ->
 
         instance = recursor
             objectNotFound: -> done()
-            hubContext: uuids: {}
+            hubContext: hubs: {}
 
         instance ['UUID'], { method: 'GET' }
 
@@ -24,7 +24,7 @@ describe 'recursor', ->
 
         instance = recursor
             hubContext: 
-                uuids: 
+                hubs: 
                     UUID: 
                         serialize: (level) -> 
                             level.should.equal 2
@@ -39,7 +39,7 @@ describe 'recursor', ->
         instance = recursor
             objectNotFound: -> done()
             hubContext: 
-                uuids: 
+                hubs: 
                     UUID: 
                         serialize: (level) -> 
                             notType: test: 'value'
@@ -53,7 +53,7 @@ describe 'recursor', ->
 
         instance = recursor
             hubContext: 
-                uuids: 
+                hubs: 
                     UUID: 
                         serialize: (level) -> 
                             type: 
@@ -86,7 +86,7 @@ describe 'recursor', ->
 
         instance = recursor
             hubContext: 
-                uuids: 
+                hubs: 
                     UUID: 
                         serialize: (level) -> 
                             type: 
@@ -124,7 +124,7 @@ describe 'recursor', ->
 
         instance = recursor
             hubContext: 
-                uuids: 
+                hubs: 
                     UUID: 
                         serialize: (level) -> 
                             type: 
@@ -158,7 +158,7 @@ describe 'recursor', ->
 
         instance = recursor
             hubContext: 
-                uuids: 
+                hubs: 
                     UUID: 
                         serialize: (level) -> 
                             type: 
@@ -178,12 +178,15 @@ describe 'recursor', ->
 
     it 'calls the exposed function on "deeper" path, appending the tree', (done) -> 
 
-        fn = (opts, callback) -> callback null, AND: MORE: tree: here: 'too'
+        fn = (opts, callback) -> 
+            #console.log huh: 1
+            callback null, AND: MORE: tree: here: 'too'
+
         fn.$$notice = {}
 
         instance = recursor
             hubContext: 
-                uuids: 
+                hubs: 
                     UUID: 
                         serialize: (level) -> 
                             type: 
@@ -207,7 +210,7 @@ describe 'recursor', ->
 
         instance = recursor
             hubContext: 
-                uuids: 
+                hubs: 
                     UUID: 
                         serialize: (level) -> 
                             type: 
