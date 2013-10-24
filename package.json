@@ -22,7 +22,8 @@
     "should": "~1.2.2",
     "hound": "~1.0.4",
     "coffee-script": "~1.6.3",
-    "mocha": "~1.12.1"
+    "mocha": "~1.12.1",
+    "dinkum": "0.0.3"
   },
   "repository": "git@github.com:nomilous/notice.git"
 }

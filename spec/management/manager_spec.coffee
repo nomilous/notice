@@ -2,6 +2,7 @@ http       = require 'http'
 https      = require 'https'
 should     = require 'should'
 {parallel} = require 'also'
+{Client}   = require 'dinkum'
 # {_notifier,notifier} = require '../../lib/notice/notifier'
 {hub,_hub}         = require '../../lib/notice/hub/hub'
 {manager,_manager} = require '../../lib/management/manager'
@@ -57,10 +58,17 @@ describe 'manage', ->
 
         hub1 = undefined
         hub2 = undefined
+        client = undefined
 
         before (done) -> 
 
-            Hub = hub()
+            Hub = hub
+
+                manager:
+                    listen: port: 40404
+                    authenticate: 
+                        username: 'user'
+                        password: 'pass'
 
             parallel([
                 
@@ -68,24 +76,44 @@ describe 'manage', ->
                 -> Hub.create title: 'Hub Two', uuid: 2
 
             ]).then(
-                # ([@hub1, @hub2]) => done()
                 (hubs) -> 
                     hub1 = hubs[0]
                     hub2 = hubs[1]
+
+                    client = Client.create
+                        transport: 'http'
+                        port: 40404
+                        authenticator:
+                            module: 'basic_auth'
+                            username: 'user'
+                            password: 'pass'
+
                     done()
+
                 (error) -> console.log SPEC_ERROR: error, filename: __filename
             )
 
 
-        it 'has two hubs to test against', -> 
+        it 'has two hubs and a client to test with', -> 
 
-            # should.exist @hub1
-            # should.exist @hub2
             should.exist hub1
             should.exist hub2
+            should.exist client
 
 
+        it 'responds with 404 incase of no route', (done) -> 
 
+            client.get 
+
+                path: '/no/route' 
+
+            .then ({statusCode}) -> 
+
+                statusCode.should.equal 404
+                done()
+
+
+            
         # before -> 
 
         #     @headers = authorization: 'Basic ' + new Buffer('username:password', 'utf8').toString 'base64'
