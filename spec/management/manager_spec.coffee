@@ -3,10 +3,11 @@ https      = require 'https'
 should     = require 'should'
 request    = require 'request'
 {parallel} = require 'also'
-{Client}   = require 'dinkum'
+# {Client}   = require 'dinkum'
 # {_notifier,notifier} = require '../../lib/notice/notifier'
 {hub,_hub}         = require '../../lib/notice/hub/hub'
 {manager,_manager} = require '../../lib/management/manager'
+
 
 
 describe 'manage', ->
@@ -115,7 +116,7 @@ describe 'manage', ->
             should.exist client
 
 
-        it.only 'responds with 404 incase of no route', (done) -> 
+        it 'responds with 404 incase of no route', (done) -> 
 
             client.get
                 path: '/no/route'
@@ -160,7 +161,7 @@ describe 'manage', ->
                                 methods: [ "GET" ]
                             
                             "/v1/hubs/:uuid:/cache":
-                                description: "get output from a serailization of the traversal"
+                                description: "get output from a serailization of the traversal cache"
                                 methods: [ "GET" ]
                             
                             "/v1/hubs/:uuid:/cache/**/*":
@@ -204,7 +205,7 @@ describe 'manage', ->
                 
 
 
-        it 'responds to GET /v1/hubs with an array of records for each hub', (done) -> 
+        it 'responds to GET /v1/hubs with a list of records for each hub', (done) -> 
 
             client.get 
                 path: '/v1/hubs' 
@@ -252,154 +253,114 @@ describe 'manage', ->
                     done()
 
 
+        context '/v1/hubs/:uuid:', -> 
+
+            it 'respods 404 to no such', (done) -> 
+
+                client.get 
+                    path: '/v1/hubs/9'
+                    (err, {statusCode}) ->
+
+                        statusCode.should.equal 404
+                        done() 
 
 
-        # before -> 
+            it 'responds with specific hub record', (done) -> 
 
-        #     @headers = authorization: 'Basic ' + new Buffer('username:password', 'utf8').toString 'base64'
-        #     @mockRequest = method: 'GET'
-        #     Object.defineProperty @mockRequest, 'headers', 
-        #         get: => @headers
+                client.get 
+                    path: '/v1/hubs/1'
+                    (err, {statusCode, body}) ->
 
-        #     @mockRequest.on = (event, listener) => 
-        #         if event == 'end' then listener()
-        #         if event == 'data' then listener @mockRequest.body
+                        body.cache.should.eql {}
+                        body.tools.should.eql {}
+                        body.errors.should.eql recent: []
+                        body.middlewares.should.eql {}
+                        done()
 
-        #     @writeHead = ->
-        #     @write = ->
-        #     @mockResponse = end: ->
-        #     Object.defineProperty @mockResponse, 'writeHead', 
-        #         get: => => try @writeHead.apply null, arguments
-        #     Object.defineProperty @mockResponse, 'write', 
-        #         get: => => try @write.apply null, arguments
+            it 'lists middlewares', (done) -> 
 
-        #     @serializeHub1 = (detail) ->
-        #     @serializeHub2 = (detail) ->
-        #     m = manager manager: 
-        #         authenticate: 
-        #             username: 'username'
-        #             password: 'password'
-        #         listen: port: 3210
+                hub1.use 
+                    title: 'Middleware Title'
+                    (next) -> next()
 
-        #     m.register 
-        #         hubs: 
-        #             '1': 
-        #                 serialize: (detail) => try @serializeHub1.apply null, arguments
-        #                 #got: => @got.apply null, arguments
-        #                 #force: => @force.apply null, arguments
-        #             '2': 
-        #                 uuid: 2
-        #                 serialize: (detail) => try @serializeHub2.apply null, arguments
+                client.get 
+                    path: '/v1/hubs/1'
+                    (err, {statusCode, body}) ->
 
-        # beforeEach -> 
-        #     @mockRequest.method = 'GET'
-        #     @writeHead = -> 
-        #     @write = -> 
-        #     @serializeHub1 = (detail) -> 'HUB 1 RECORD detail:' + detail
-        #     @serializeHub2 = (detail) -> 'HUB 2 RECORD detail:' + detail
+                        should.exist body.middlewares[1]
+                        done()
 
 
+            it './stats', (done) -> 
 
-        # it.only 'responds to GET /v1/hubs with an array of records for each hub', (done) -> 
+                client.get 
+                    path: '/v1/hubs/1/stats'
+                    (err, {statusCode, body}) ->
 
-        #     @write = (body) ->
-        #         console.log body
-        #         JSON.parse( body ).should.eql 
-        #             records: [
-        #                 'HUB 1 RECORD detail:1'
-        #                 'HUB 2 RECORD detail:1'
-        #             ]
-        #         done()
+                        should.exist body.pipeline
+                        done()
 
 
-        #     @mockRequest.url = '/v1/hubs'
-        #     _manager().requestHandler @mockRequest, @mockResponse
+            it './errors', (done) -> 
+
+                client.get 
+                    path: '/v1/hubs/1/errors'
+                    (err, {statusCode, body}) ->
+
+                        should.exist body.recent
+                        done()
 
 
-        # it 'respods 404 to no such /v1/hubs/:uuid:', (done) -> 
 
-        #     @writeHead = (statusCode) ->
-        #         statusCode.should.equal 404
-        #         done()
+            it './cache', (done) -> 
 
+                hub1.use 
+                    slot: 1
+                    title: 'add to cache'
+                    (next, capsule, {cache}) -> 
 
-        #     @mockRequest.url = '/v1/hubs/3'
-        #     _manager().requestHandler @mockRequest, @mockResponse
-
-
-        # it 'responds to GET /v1/hubs/:uuid: with specific hub record', (done) -> 
-
-        #     @write = (body) ->
-        #         JSON.parse( body ).should.equal 'HUB 1 RECORD detail:2'
-
-        #         done()
-
-        #     @mockRequest.url = '/v1/hubs/1'
-        #     _manager().requestHandler @mockRequest, @mockResponse
+                        cache.key = 'VALUE'
+                        next()
 
 
-        # it 'responds to GET /v1/hubs/:uuid:/stats', (done) -> 
-
-        #     @write = (body) -> 
-        #         JSON.parse( body ).should.eql 'STATS'
-        #         done()
-
-        #     @serializeHub1 = -> stats: 'STATS'
-        #     @mockRequest.url = '/v1/hubs/1/stats'
-        #     _manager().requestHandler @mockRequest, @mockResponse
+                hub1.event().then -> 
 
 
-        # it 'responds to GET /v1/hubs/:uuid:/errors', (done) -> 
+                    client.get
+                        path: '/v1/hubs/1'
+                        (err, {statusCode, body}) ->
 
-        #     @write = (body) -> 
-        #         JSON.parse( body ).should.eql 'ERRORS'
-        #         done()
+                    client.get 
+                        path: '/v1/hubs/1/cache'
+                        (err, {statusCode, body}) ->
 
-        #     @serializeHub1 = -> errors: 'ERRORS'
-        #     @mockRequest.url = '/v1/hubs/1/errors'
-        #     _manager().requestHandler @mockRequest, @mockResponse
-
-        # it 'responds to GET /v1/hubs/:uuid:/cache', (done) -> 
-
-        #     @write = (body) -> 
-        #         JSON.parse( body ).should.eql key: 'VALUE'
-        #         done()
-
-        #     @serializeHub1 = -> cache: key: 'VALUE'
-        #     @mockRequest.url = '/v1/hubs/1/cache'
-        #     _manager().requestHandler @mockRequest, @mockResponse
+                            body.key.should.equal 'VALUE'
+                            delete hub1.cache.key
+                            done()   
 
 
-        # it 'responds to GET /v1/hubs/:uuid:/cache/**/* to arbitrary depth', (done) -> 
+            it './cache/**/*', (done) -> 
 
-        #     @write = (body) -> 
-        #         body.should.equal '"VALUE"'
-        #         done()
+                hub1.use 
+                    slot: 1
+                    title: 'add hash to cache for drilling'
+                    (next, capsule, {cache}) -> 
 
-        #     @serializeHub1 = -> cache: nested: deeper: 'VALUE'
-        #     @mockRequest.url = '/v1/hubs/1/cache/nested/deeper'
-        #     _manager().requestHandler @mockRequest, @mockResponse
+                        cache.key2 = nest: some: stuff: here: 'VALUE'
+                        next()
 
-        # xit 'responds to POST /v1/hubs/:uuid:/cache/**/* by replacing the specified key in the hash', (done) -> 
 
-        #     @writeHead = (statusCode) -> 
-        #         console.log statusCode
-        #         done()
+                hub1.event().then -> 
+                    client.get 
+                        path: '/v1/hubs/1/cache/key2/nest/some/stuff'
+                        (err, {statusCode, body}) ->
 
-        #     @write = (body) -> 
-        #         body.should.equal '"VALUE"'
-        #         #done()
+                            body.here.should.equal 'VALUE'
+                            done()
 
-        #     @serializeHub1 = -> cache: nested: deeper: 'VALUE'
 
-        #     @mockRequest.url = '/v1/hubs/1/cache/nested/deeper'
-        #     @mockRequest.method = 'POST'
-        #     @mockRequest.body = """
+        xit 'responds to POST /v1/hubs/:uuid:/cache/**/* by replacing the specified key in the hash', (done) -> 
 
-        #     ### pending
-
-        #     """
-        #     _manager().requestHandler @mockRequest, @mockResponse
 
 
         # it 'responds to GET /v1/hubs/:uuid:/tools', (done) ->

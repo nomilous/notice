@@ -98,9 +98,9 @@ module.exports.manager  = (config = {}) ->
                 handler: ([uuid], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
-                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
+                    return local.objectNotFound response unless local.hubContext.hubs[uuid]
 
-                    notifier = local.hubContext.uuids[uuid]
+                    notifier = local.hubContext.hubs[uuid]
                     local.respond notifier.serialize(2), statusCode, response
 
             '/v1/hubs/:uuid:/stats': 
@@ -110,9 +110,9 @@ module.exports.manager  = (config = {}) ->
                 handler: ([uuid], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
-                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
+                    return local.objectNotFound response unless local.hubContext.hubs[uuid]
 
-                    notifier = local.hubContext.uuids[uuid]
+                    notifier = local.hubContext.hubs[uuid]
                     local.respond(
                         notifier.serialize(2).stats
                         statusCode
@@ -126,9 +126,9 @@ module.exports.manager  = (config = {}) ->
                 handler: ([uuid], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
-                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
+                    return local.objectNotFound response unless local.hubContext.hubs[uuid]
                     
-                    notifier = local.hubContext.uuids[uuid]
+                    notifier = local.hubContext.hubs[uuid]
                     
                     #
                     # * responds with the recent array inside the records array which is a bit messy
@@ -143,13 +143,13 @@ module.exports.manager  = (config = {}) ->
 
             '/v1/hubs/:uuid:/cache': 
 
-                description: 'get output from a serailization of the traversal'
+                description: 'get output from a serailization of the traversal cache'
                 methods: ['GET']
                 handler: ([uuid], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
-                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
-                    notifier = local.hubContext.uuids[uuid]
+                    return local.objectNotFound response unless local.hubContext.hubs[uuid]
+                    notifier = local.hubContext.hubs[uuid]
                     local.respond( 
                         notifier.serialize(2).cache
                         statusCode
@@ -163,8 +163,8 @@ module.exports.manager  = (config = {}) ->
                 handler: ([uuid, deeper], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
-                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
-                    notifier = local.hubContext.uuids[uuid]
+                    return local.objectNotFound response unless local.hubContext.hubs[uuid]
+                    notifier = local.hubContext.hubs[uuid]
                     cache = notifier.serialize(2).cache
 
                     deeper.split('/').map (key) -> 
