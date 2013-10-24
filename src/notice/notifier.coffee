@@ -135,7 +135,18 @@ module.exports.notifier  = (config = {}) ->
                             {resolve, reject, notify} = action
                             {type, title, fn} = mware
 
+                                                #
+                                                # TODO: how many traversals per second does it
+                                                #       take to wedge the scheduler...??
+                                                # 
+                                                #       and what does a wedged scheduler look like
+                                                #       from the outside (here)
+                                                # 
+                                                #       do the nextTicks just not happen? (silently?)
+                                                # 
+                                                # 1
                             next = -> process.nextTick -> resolve capsule
+                                                        # 2
                             next.notify = (update) -> process.nextTick -> notify update
                             
                             next.reject = (error)  -> 
@@ -144,6 +155,7 @@ module.exports.notifier  = (config = {}) ->
                                 localMetrics.processing.count--
                                 localMetrics.error.usr++ if type == 'usr'
                                 localMetrics.error.sys++ if type == 'sys'
+                                            # 3 
                                 process.nextTick -> reject error
                             
                             next.cancel = -> 
@@ -159,6 +171,7 @@ module.exports.notifier  = (config = {}) ->
                                 localMetrics.processing.count--
                                 localMetrics.cancel.usr++ if type == 'usr'
                                 localMetrics.cancel.sys++ if type == 'sys'
+                                            # 4
                                 process.nextTick -> 
                                     notify 
                                         _type:     'control'
@@ -178,7 +191,7 @@ module.exports.notifier  = (config = {}) ->
                                 localMetrics.error.sys++ if type == 'sys'
                                 localMetrics.processing.count--
                                 reject error
-                                
+
 
                 return pipeline functions
 
@@ -247,7 +260,7 @@ module.exports.notifier  = (config = {}) ->
                             cache:   notifier.cache
                             tools:   notifier.tools
                             errors:  nfMetrics.errors
-                            middlewares: list
+                            middlewares: collection.running()
 
 
             #
