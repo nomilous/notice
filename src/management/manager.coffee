@@ -198,24 +198,14 @@ module.exports.manager  = (config = {}) ->
                 handler: ([uuid], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
-                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
-                    notifier = local.hubContext.uuids[uuid]
+                    return local.objectNotFound response unless local.hubContext.hubs[uuid]
+                    notifier = local.hubContext.hubs[uuid]
                     local.respond( 
-                        notifier.serialize(2).clients
+                        'PENDING'
                         statusCode
                         response
                     )
 
-            # 
-            # 
-            # '/v1/hubs/:uuid:/cache/:key:': 
-            # 
-            #     description: 'create or update or delete objects on the traversal cache'
-            #     methods: ['GET', POST','DELETE']
-            #     accepts: ['application/json']
-            #     handler: ([uuid], request, response, statusCode = 200) -> 
-            #
-            # 
 
             '/v1/hubs/:uuid:/middlewares': 
 
@@ -224,8 +214,8 @@ module.exports.manager  = (config = {}) ->
                 handler: ([uuid], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
-                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
-                    notifier = local.hubContext.uuids[uuid]
+                    return local.objectNotFound response unless local.hubContext.hubs[uuid]
+                    notifier = local.hubContext.hubs[uuid]
                     local.respond(
                         notifier.serialize(2).middlewares
                         statusCode

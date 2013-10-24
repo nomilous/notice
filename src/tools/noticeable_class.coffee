@@ -12,9 +12,14 @@ module.exports = class NoticeableClass
         @apiFunction = (opts, callback) -> 
 
             #
-            # opts? ##undecided
+            # TODO: opts? ##undecided
+            # TODO: opts.method (from the http method)
+            # TODO: opts.body (event emitter or predecoded per opts)
+            #  
             # 
             # and the whole internet is just one asyncronous rung uptree
+            # 
+            # 
             # 
             
             setTimeout (->

@@ -404,41 +404,42 @@ describe 'manage', ->
 
 
 
+                it './clients', (done) -> 
+
+                    client.get 
+                        path: '/v1/hubs/1/clients'
+                        (err, {statusCode, body}) ->
+
+                            body.should.equal 'PENDING'
+                            done()
 
 
+                it './middlewares', (done) -> 
+
+                    hub2.use
+
+                        title: 'Middleware Title'
+                        description: 'It helps'
+                        (next) -> next()
+
+                    hub2.use
+                    
+                        title: 'Another'
+                        (next) -> next()
 
 
-        #     @write = (body) -> 
-        #         JSON.parse( body ).should.eql 'VALUEEE'
-        #         done()
+                    client.get 
+                        path: '/v1/hubs/2/middlewares'
+                        (err, {statusCode, body}) ->
 
-        #     @serializeHub1 = -> tools: nested: deeper: 'VALUEEE'
-        #     @mockRequest.url = '/v1/hubs/1/tools/nested/deeper'
-        #     _manager().requestHandler @mockRequest, @mockResponse
+                            body[1].slot.should.equal 1
+                            body[1].title.should.equal 'Middleware Title'
+                            body[1].type.should.equal 'usr'
+                            body[1].enabled.should.equal true
 
+                            should.exist body[2]
+                            done()
 
-
-
-        # it 'responds to GET /v1/hubs/:uuid:/clients', (done) -> 
-
-        #     @write = (body) -> 
-        #         JSON.parse( body ).should.eql key: 'VALUE'
-        #         done()
-
-        #     @serializeHub1 = -> clients: key: 'VALUE'
-        #     @mockRequest.url = '/v1/hubs/1/clients'
-        #     _manager().requestHandler @mockRequest, @mockResponse
-
-
-        # it 'responds to GET /v1/hubs/:uuid:/middlewares', (done) -> 
-
-        #     @write = (body) -> 
-        #         JSON.parse( body ).should.eql 'MIDDLEWARES'
-        #         done()
-
-        #     @serializeHub1 = -> middlewares: 'MIDDLEWARES'
-        #     @mockRequest.url = '/v1/hubs/1/middlewares'
-        #     _manager().requestHandler @mockRequest, @mockResponse
 
 
         # it 'responds to GET /v1/hubs/:uuid:/middlewares/:title:', (done) -> 
