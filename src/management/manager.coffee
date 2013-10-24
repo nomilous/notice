@@ -223,104 +223,99 @@ module.exports.manager  = (config = {}) ->
                     )
 
 
-            '/v1/hubs/:uuid:/middlewares/:title:':
+            '/v1/hubs/:uuid:/middlewares/:slot:':
 
                 description: 'get or update or delete a middleware'
                 methods: ['GET'] #['GET', 'DELETE']
-                handler: ([uuid,title], request, response, statusCode = 200) -> 
+                handler: ([uuid,slot], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
-                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
+                    return local.objectNotFound response unless local.hubContext.hubs[uuid]
 
-                    title = decodeURIComponent title
-                    notifier = local.hubContext.uuids[uuid]
+                    notifier = local.hubContext.hubs[uuid]
                     middlewares = notifier.serialize(2).middlewares
-                    try return local.respond middlewares[title], statusCode, response
+                    try return local.respond middlewares[slot], statusCode, response
                     objectNotFound response
 
 
-            '/v1/hubs/:uuid:/middlewares/:title:/disable':
+            '/v1/hubs/:uuid:/middlewares/:slot:/disable':
                 description: 'disable a middleware'
                 methods: ['GET']
-                handler: ([uuid,title], request, response, statusCode = 200) -> 
+                handler: ([uuid,slot], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
-                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
+                    return local.objectNotFound response unless local.hubContext.hubs[uuid]
 
-                    title = decodeURIComponent title
-                    notifier = local.hubContext.uuids[uuid]
-                    return objectNotFound response unless notifier.got title
-                    notifier.force title: title, enabled: false
+                    notifier = local.hubContext.hubs[uuid]
+                    notifier.use slot: slot, enabled: false, update: true
                     middlewares = notifier.serialize(2).middlewares
-                    return local.respond  middlewares[title], statusCode, response
+                    return local.respond  middlewares[slot], statusCode, response
                     objectNotFound response
 
 
-            '/v1/hubs/:uuid:/middlewares/:title:/enable':
+            '/v1/hubs/:uuid:/middlewares/:slot:/enable':
                 description: 'enable a middleware'
                 methods: ['GET']
-                handler: ([uuid,title], request, response, statusCode = 200) -> 
+                handler: ([uuid,slot], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
-                    return local.objectNotFound response unless local.hubContext.uuids[uuid]
+                    return local.objectNotFound response unless local.hubContext.hubs[uuid]
 
-                    title = decodeURIComponent title
-                    notifier = local.hubContext.uuids[uuid]
-                    return objectNotFound response unless notifier.got title
-                    notifier.force title: title, enabled: true
+                    notifier = local.hubContext.hubs[uuid]
+                    notifier.use slot: slot, enabled: true, update: true
                     middlewares = notifier.serialize(2).middlewares
-                    return local.respond  middlewares[title], statusCode, response
+                    return local.respond  middlewares[slot], statusCode, response
                     objectNotFound response
 
 
-            '/v1/hubs/:uuid:/middlewares/:title:/replace':
-                description: 'replace a middleware'
-                methods: ['POST']
-                accepts: ['text/javascript', 'text/coffeescript']
-                handler: ([uuid,title], request, response, statusCode = 200) -> 
+            # '/v1/hubs/:uuid:/middlewares/:title:/replace':
+            #     description: 'replace a middleware'
+            #     methods: ['POST']
+            #     accepts: ['text/javascript', 'text/coffeescript']
+            #     handler: ([uuid,title], request, response, statusCode = 200) -> 
 
-                    return local.methodNotAllowed response unless request.method == 'POST'
-                    return local.unsupportedMedia response unless (
-                        request.headers['content-type'] == 'text/javascript' or
-                        request.headers['content-type'] == 'text/coffeescript'
-                    )
+            #         return local.methodNotAllowed response unless request.method == 'POST'
+            #         return local.unsupportedMedia response unless (
+            #             request.headers['content-type'] == 'text/javascript' or
+            #             request.headers['content-type'] == 'text/coffeescript'
+            #         )
 
-                    title = decodeURIComponent title
-                    notifier = local.hubContext.uuids[uuid]
-                    return local.objectNotFound response unless notifier.got title
+            #         title = decodeURIComponent title
+            #         notifier = local.hubContext.uuids[uuid]
+            #         return local.objectNotFound response unless notifier.got title
 
-                    apply = (fn) -> 
-                        unless typeof fn is 'function'
-                            return local.respond
-                                error: ( new Error 'Requires middleware function' ).toString()
-                                400
-                                response
+            #         apply = (fn) -> 
+            #             unless typeof fn is 'function'
+            #                 return local.respond
+            #                     error: ( new Error 'Requires middleware function' ).toString()
+            #                     400
+            #                     response
 
-                        notifier.force title: title, fn
-                        response.writeHead 200
-                        return response.end()
+            #             notifier.force title: title, fn
+            #             response.writeHead 200
+            #             return response.end()
 
 
-                    body = ''
-                    request.on 'data', (buf) -> body += buf.toString()
-                    request.on 'end', -> 
+            #         body = ''
+            #         request.on 'data', (buf) -> body += buf.toString()
+            #         request.on 'end', -> 
 
-                        if request.headers['content-type'] == 'text/coffeescript'
-                            try body = coffee.compile body, bare: true
-                            catch error
-                                return local.respond
-                                    error: error.toString()
-                                    400
-                                    response
+            #             if request.headers['content-type'] == 'text/coffeescript'
+            #                 try body = coffee.compile body, bare: true
+            #                 catch error
+            #                     return local.respond
+            #                         error: error.toString()
+            #                         400
+            #                         response
 
-                        try fn = eval body
-                        catch error
-                            return local.respond
-                                error: error.toString()
-                                400
-                                response
+            #             try fn = eval body
+            #             catch error
+            #                 return local.respond
+            #                     error: error.toString()
+            #                     400
+            #                     response
 
-                        return apply fn
+            #             return apply fn
 
 
 
@@ -357,11 +352,11 @@ module.exports.manager  = (config = {}) ->
         if path[-1..] == '/' then path = path[0..-2]
 
         try      
-            [match, version, base, uuid, nested, title, action] = path.match /(.*)\/(.*)\/(.*)\/(.*)\/(.*)\/(.*)/
-            return local.routes["#{version}/#{base}/:uuid:/#{nested}/:title:/#{action}"].handler [uuid, title], request, response
+            [match, version, base, uuid, nested, slot, action] = path.match /(.*)\/(.*)\/(.*)\/(.*)\/(.*)\/(.*)/
+            return local.routes["#{version}/#{base}/:uuid:/#{nested}/:slot:/#{action}"].handler [uuid, slot], request, response
         try
-            [match, version, base, uuid, nested, title] = path.match /(.*)\/(.*)\/(.*)\/(.*)\/(.*)/
-            return local.routes["#{version}/#{base}/:uuid:/#{nested}/:title:"].handler [uuid, title], request, response
+            [match, version, base, uuid, nested, slot] = path.match /(.*)\/(.*)\/(.*)\/(.*)\/(.*)/
+            return local.routes["#{version}/#{base}/:uuid:/#{nested}/:slot:"].handler [uuid, slot], request, response
         try
             [match, version, base, uuid, nested] = path.match /(.*)\/(.*)\/(.*)\/(.*)/
             

@@ -29,6 +29,10 @@ module.exports.argumentException = (arg, functionSignature, expectation) ->
 
     return error = new Error "notice: expected #{functionSignature} with #{arg} #{expectation}"
 
+module.exports.undefinedException = (arg, functionSignature, expectation) -> 
+
+    return error = new Error "notice: expected #{functionSignature} with #{arg} #{expectation}"
+
 
 module.exports.alreadyDefined = (thingType, thingName) -> 
     

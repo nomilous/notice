@@ -1,4 +1,4 @@
-{argumentException} = require '../notice/errors'
+{argumentException, undefinedException} = require '../notice/errors'
 
 testable = undefined
 module.exports._middleware = -> testable
@@ -30,7 +30,7 @@ module.exports.middleware = (config = {}) ->
 
         nextSlot: -> ++local.bottomSlot
 
-        update: ({slot, title, description, enabled, fn}) -> 
+        create: ({slot, title, description, enabled, fn}) -> 
 
             slot ?= local.nextSlot()
 
@@ -60,6 +60,23 @@ module.exports.middleware = (config = {}) ->
                 enabled: enabled
                 fn: fn
 
+            local.reload()
+
+        update:  ({slot, title, description, enabled, fn}) -> 
+
+            try slot = parseInt slot
+
+            unless typeof slot is 'number'
+                throw argumentException 'opts.slot', 'notice.use(opts, fn)', 'as whole number'
+
+            unless local.slots[slot]? 
+                throw undefinedException 'opts.slot', 'notice.use(opts, fn)', 'to refer to already existing slot'
+
+            existing = local.slots[slot]
+            existing.title = title or existing.title
+            existing.description = description or existing.description
+            existing.enabled = if enabled? then enabled else existing.enabled
+            existing.fn = fn or existing.fn
             local.reload()
 
 
@@ -113,6 +130,7 @@ module.exports.middleware = (config = {}) ->
 
     api = 
 
+        create:  local.create
         update:  local.update
         running: local.running
         list:    local.list

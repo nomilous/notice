@@ -17,8 +17,6 @@ module.exports.recursor  = (local, type) ->
 
         recurse request, object, path, {}, (error, result) ->
 
-            response.writeHead statusCode
-
             if deeper? 
 
                 #
@@ -28,7 +26,14 @@ module.exports.recursor  = (local, type) ->
 
                 deeper.split('/').map (key) -> result = result[key]
 
-            response.write JSON.stringify result, null, 2
+
+            body = JSON.stringify result, null, 2
+            
+            response.writeHead statusCode,
+                'Content-Type': 'application/json'
+                'Content-Length': body.length
+
+            response.write body
             response.end()
 
 

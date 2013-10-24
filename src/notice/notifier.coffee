@@ -196,9 +196,9 @@ module.exports.notifier  = (config = {}) ->
 
             local.notifiers[title] = notifier = 
 
-                # got: (title) -> list[title]?
-
                 use: (opts, fn) -> 
+
+                    return collection.update opts if opts.update is true
 
                     opts.enabled ?= true
 
@@ -221,7 +221,7 @@ module.exports.notifier  = (config = {}) ->
                     return collection.last  fn if opts.last?
                     return collection.first fn if opts.first?
 
-                    collection.update
+                    collection.create
 
                         slot:        opts.slot
                         title:       opts.title

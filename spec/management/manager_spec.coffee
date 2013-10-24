@@ -183,22 +183,22 @@ describe 'manage', ->
                                 description: "get only the middlewares"
                                 methods: [ "GET" ]
                             
-                            "/v1/hubs/:uuid:/middlewares/:title:":
+                            "/v1/hubs/:uuid:/middlewares/:slot:":
                                 description: "get or update or delete a middleware"
                                 methods: [ "GET" ]
 
-                            "/v1/hubs/:uuid:/middlewares/:title:/disable":
+                            "/v1/hubs/:uuid:/middlewares/:slot:/disable":
                                 description: "disable a middleware"
                                 methods: [ "GET" ]
 
-                            "/v1/hubs/:uuid:/middlewares/:title:/enable":
+                            "/v1/hubs/:uuid:/middlewares/:slot:/enable":
                                 description: "enable a middleware"
                                 methods: [ "GET" ]
 
-                            "/v1/hubs/:uuid:/middlewares/:title:/replace":
-                                description: "replace a middleware"
-                                methods: [ "POST" ]
-                                accepts: [ "text/javascript", "text/coffeescript" ]
+                            # "/v1/hubs/:uuid:/middlewares/:title:/replace":
+                            #     description: "replace a middleware"
+                            #     methods: [ "POST" ]
+                            #     accepts: [ "text/javascript", "text/coffeescript" ]
 
                     done()  
                 
@@ -441,86 +441,85 @@ describe 'manage', ->
                             done()
 
 
+        context '/v1/hubs/:uuid:/middlewares/:slot:', ->
 
-        # it 'responds to GET /v1/hubs/:uuid:/middlewares/:title:', (done) -> 
+            it 'gets specific middleware details', (done) -> 
 
-        #     @write = (body) -> 
-        #         #console.log body
-        #         JSON.parse( body ).should.eql 
-        #             enabled: true
-        #             metrics: []
-                    
-        #         done()
+                hub2.use
 
-        #     @serializeHub1 = -> middlewares: 
-        #         title: 
-        #             enabled: true
-        #             metrics: []
-            
-        #     @mockRequest.url = '/v1/hubs/1/middlewares/title'
-        #     _manager().requestHandler @mockRequest, @mockResponse
+                    slot: 1
+                    title: 'Middleware Title 1'
+                    description: 'It helps'
+                    (next) -> next()
 
+                client.get 
+                    path: '/v1/hubs/2/middlewares/1'
+                    (err, {statusCode, body}) ->
 
-        # it 'disables middleware with GET v1/hubs/:uuid:/middlewares/:title:/disable', (done) -> 
-
-        #     Notifier = notifier()
-        #     instance = Notifier.create 'hub name', 1
-        #     instance.use 
-        #         title: 'title'
-        #         (next) -> next()
-
-        #     @write = (body) -> 
-        #         #console.log body
-        #         JSON.parse( body ).should.eql 
-        #             enabled: false
-        #             metrics: {}
-                    
-        #         done()
-
-        #     @serializeHub1 = -> instance.serialize(2)
-        #     @got        = instance.got
-        #     @force      = instance.force
-
-        #     @mockRequest.url = '/v1/hubs/1/middlewares/title/disable'
-        #     _manager().requestHandler @mockRequest, @mockResponse
-
-        # it 'returns 404 on no such middleware', (done) -> 
-
-        #     Notifier = notifier()
-        #     instance = Notifier.create 'hub name', 1
-        #     @serializeHub1 = -> instance.serialize(2)
-        #     @got        = instance.got
-
-        #     @writeHead = (statusCode) ->
-        #         statusCode.should.equal 404
-        #         done()
-
-        #     @mockRequest.url = '/v1/hubs/1/middlewares/nosuchmiddleware/disable'
-        #     _manager().requestHandler @mockRequest, @mockResponse
+                        body.title.should.equal 'Middleware Title 1'
+                        done()
 
 
-        # it 'enables middleware with  GET v1/hubs/:uuid:/middlewares/:title:/enable', (done) -> 
+            it '404s', (done) ->
 
-        #     Notifier = notifier()
-        #     instance = Notifier.create 'hub name', 1
-        #     instance.use 
-        #         title: 'title'
-        #         enabled: false
-        #         (next) -> next()
+                client.get 
+                    path: '/v1/hubs/2/middlewares/333'
+                    (err, {statusCode, body}) ->
 
-        #     @write = (body) -> 
-        #         JSON.parse( body ).should.eql 
-        #             enabled: true
-        #             metrics: {}
-                    
-        #         done()
+                        statusCode.should.equal 404
+                        done()
 
-        #     @serializeHub1 = -> instance.serialize(2)
-        #     @got        = instance.got
-        #     @force      = instance.force
 
-        #     @mockRequest.url = '/v1/hubs/1/middlewares/title/enable'
-        #     _manager().requestHandler @mockRequest, @mockResponse
+
+            it 'disables middleware with GET /v1/hubs/:uuid:/middlewares/:slot:/disable', (done) -> 
+
+                hub2.use
+
+                    slot: 1
+                    title: 'Middleware Title 1'
+                    description: 'It helps'
+                    (next) -> next()
+
+                client.get 
+
+                    path: '/v1/hubs/2/middlewares/1/disable'
+                    (err, {statusCode, body}) ->
+
+                        body.enabled.should.equal false
+                        done()
+
+            it 'returns 404 on no such middleware', (done) -> 
+
+                client.get 
+
+                    path: '/v1/hubs/2/middlewares/44/disable'
+                    (err, {statusCode, body}) ->
+
+                        statusCode.should.equal 404
+                        done()
+
+
+            it 'enables middleware with  GET v1/hubs/:uuid:/middlewares/:title:/enable', (done) -> 
+
+                hub2.use
+
+                    slot: 1
+                    enabled: false
+                    title: 'Middleware Title 1'
+                    description: 'It helps'
+                    (next) -> next()
+
+                client.get 
+
+                    path: '/v1/hubs/2/middlewares/1/enable'
+                    (err, {statusCode, body}) ->
+
+                        body.enabled.should.equal true
+                        done()
+
+
+
+
 
 
         # context 'POST /v1/hubs/:uuid:/middlewares/:title:/replace', -> 
@@ -703,14 +702,14 @@ describe 'manage', ->
         # context 'DELETE /v1/hubs/:uuid:/middlewares/:title:', ->
 
 
-        # context 'POST /vi/hubs/:uuid:/configure', -> 
+        context 'POST /vi/hubs/:uuid:/configure', -> 
 
-        #     it 'modifies introspection level'
-        #     it 'and possibly other things'
+            it 'modifies introspection level'
+            it 'and possibly other things'
 
-        # context 'GET /v1/hubs/:uuid:/reset', -> 
+        context 'GET /v1/hubs/:uuid:/reset', -> 
 
-        #     it 'zeroes all metric counters'
+            it 'zeroes all metric counters'
 
 
 
