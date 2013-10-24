@@ -16,6 +16,14 @@ NetworkAlertRouter = notice.hub
     error:
         keep: 10  # oldest first
 
+        #
+        # TODO: 
+        # 
+        # proceed: true  (capsule keeps going despite errors)
+        # notify:  true  (error notified back to the emitter promise.notify)
+        # append:  true  (error appended into casule, bus.uuid, mware.title and .description included)
+        # 
+
     #
     # introspector:
     #     level: 0  # none

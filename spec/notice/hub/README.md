@@ -13,6 +13,12 @@ Television = notice.hub # a factory
         capsule: 
             start: {}
 
+    #
+    # TODO: 
+    # 
+    # parallel: true  (middleware is run in parallel)
+    # 
+
     # #
     # # hubside capsule definition
     # # 
