@@ -268,115 +268,20 @@ describe 'notifier', ->
                 Note. If it starts vibrating something crazy it means there's
                       some that are wedged in the funnel track.
 
-                      Unwedging is a matter of extreem urgency!
+                      Please unwedge as a matter of extreem urgency!
                       A boat-hook has been provived.
                 """
-                (done, capsule) -> done()
+                (next, capsule) -> next()
+
             six.use
                 title: 'squirt the product in'
-                (done, capsule) -> done()
+                (next, capsule) -> next()
             six.use
                 title: 'put a lid on it'
-                (done, capsule) -> done()
+                (next, capsule) -> next()
 
-            mmm = _notifier().middleware['Assembly Line 6']
-            mmm['arrange into single file'].description.should.match /vibrating something crazy/
-            mmm['arrange into single file'].fn (->), {}
-            mmm['squirt the product in'].fn    (->), {}
-            mmm['put a lid on it'].fn          done, {}
-
-
-        it 'stores middlewares in a hash with enabled, metrics and fn', (done) -> 
-
-            #
-            # half way to changing to an array (maybe)
-            #
-
-            six = notifier().create 'Assembly Line 6'
-            six.use 
-                title: 'arrange into single file'
-                (done, capsule) -> done()
-            six.use
-                title: 'squirt the product in'
-                (done, capsule) -> done()
-            six.use
-                title: 'put a lid on it'
-                (done, capsule) -> done(); ### third ###
-
-            third = _notifier().middleware['Assembly Line 6']['put a lid on it']
-            third.enabled.should.equal true
-            third.fn.toString().should.match /third/
-            done()
-
-        it 'only runs enabled middleware', (done) -> 
-
-            six = notifier().create 'Assembly Line 6'
-            six.use 
-                title: 'one'
-                (done, capsule) -> 
-                    capsule.one = 1
-                    done()
-            six.use
-                title: 'two'
-                enabled: false
-                (done, capsule) -> 
-                    capsule.two = 2
-                    done()
-            six.use
-                title: 'three'
-                (done, capsule) -> 
-                    capsule.three = 3
-                    done()
-
-            six.event (err, capsule) -> 
-
-                capsule.should.eql 
-                    one:   1
-                    three: 3
-                done()
-
-        it 'can toggle enabled using force', (done) -> 
-
-            six = notifier().create 'Assembly Line 6'
-            six.use 
-                title: 'one'
-                enabled: false
-                (done, capsule) -> 
-                    capsule.one = 1
-                    done()
-
-            six.event (err, capsule) -> 
-
-                capsule.should.eql {}
-                six.force title: 'one', enabled: true
-                six.event (err, capsule) -> 
-                    capsule.should.eql one: 1
-                    done()
-
-        it 'preserves description and enabledness when using force()', (done) -> 
-
-            six = notifier().create 'Assembly Line 6'
-            six.use 
-                title: 'one'
-                description: 'description'
-                enabled: true
-                (next, capsule) -> 
-                    capsule.one = 1
-                    next()
-
-            middleware = _notifier().middleware['Assembly Line 6']['one']
-            middleware.description.should.equal 'description'
-            
-            six.force
-                title: 'one'
-                (next, capsule) -> 
-                    ### new ###
-                    next()
-
-            middleware.fn.toString().should.match /new/
-            middleware.enabled.should.equal true
-            middleware.description.should.equal 'description'
-
+            mwareFn = _notifier().middleware['Assembly Line 6'].running()[1]
+            mwareFn.title.should.equal 'arrange into single file'
             done()
 
 
@@ -502,9 +407,7 @@ describe 'notifier', ->
                     capsule.three = true
                     done()
 
-            mix.event (e, c) ->
-                console.log ERROR: e
-                console.log CAPSULE: c
+            mix.event (e, m) ->
 
                 m.should.eql one: true, two: true, three: true
                 done()
@@ -570,10 +473,21 @@ describe 'notifier', ->
 
                 mix    = notifier().create 'Assembly Line Mix', 1
                 mix.cache = this: 'cache is also accessable via api'
-                result = mix.serialize(2)
+                
+                mix.use 
+                    title: 'Title'
+                    (next) -> next()
 
+                mix.use
+                    slot: 7
+                    title: 'Title'
+                    (next) -> next()
+                
+                result = mix.serialize(2)
                 result.errors.should.eql recent: []
-                result.middlewares.should.eql    []
+                should.exist result.middlewares[1]
+                should.not.exist result.middlewares[6]
+                should.exist result.middlewares[7]
                 result.cache.should.eql this: 'cache is also accessable via api'
                 done()
 
@@ -891,54 +805,6 @@ describe 'notifier', ->
                 done()
 
 
-
-        it 'can use the force() to replace middleware', (done) -> 
-
-            mix  = notifier().create 'Assembly Line Mix'
-            deck = _notifier().middleware['Assembly Line Mix']
-
-            mix.use 
-                title: '1. intro'
-                (done, capsule) -> done()
-            mix.use 
-                title: '2. one the sun'
-                (done, capsule) -> done()
-            mix.use 
-                title: '3. noon moon'
-                (done, capsule) -> done()
-            mix.use
-                title: '4. byte orbit'
-                (done, capsule) -> done()
-            
-            mix.force 
-                title: '1. intro', 
-                (done, capsule) -> 
-                    ### replaced ### 
-                    done()
-
-            deck['1. intro'].fn.toString().should.match /replaced/
-            done()
-
-        it 'has a dark side of the force()', (done) -> 
-
-            mix  = notifier().create 'Assembly Line Mix'
-            deck = _notifier().middleware['Assembly Line Mix']
-
-            mix.use 
-                title: '1. intro'
-                (done, capsule) -> done()
-            mix.use 
-                title: '2. one the sun'
-                (done, capsule) -> done()
-
-            mix.force
-                title: '1. intro'
-                delete: true
-
-            should.not.exist deck['1. intro']
-            done()
-
-
         it 'can register a last middleware', (done) -> 
 
             stix = notifier().create 'Happy Ending'
@@ -1029,33 +895,4 @@ describe 'notifier', ->
              stix.event (err, res) -> 
                 res.array.should.eql [ 'zero', 'one' ]
                 done()
-                
 
-        it 'sequence is preserved when replacing middleware', (done) -> 
-
-            {sequence, deferred} = require 'also'
-            five = notifier().create 'Assembly Line 5'
-            five.use 
-                title: 'one'
-                (done, capsule) -> 
-                    capsule.array = [1]
-                    done()
-            five.use 
-                title: 'REPLACE ME'
-                (done, capsule) -> 
-                    capsule.array.push 2
-                    done()
-            five.use 
-                title: 'three'
-                (done, capsule) -> 
-                    capsule.array.push 3
-                    done()
-            five.force 
-                title: 'REPLACE ME'
-                (done, capsule) -> 
-                    capsule.array.push 'new 2'
-                    done()
-
-            five.event().then (capsule) -> 
-                capsule.array.should.eql  [ 1, 'new 2', 3 ]
-                done()

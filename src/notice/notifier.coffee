@@ -46,7 +46,6 @@ module.exports.notifier  = (config = {}) ->
         notifiers:         {}
         notifierMetrics:   {}
         middleware:        {}
-        middlewareArray:   {}
 
         create: (title, uuid = v1()) ->
 
@@ -129,7 +128,6 @@ module.exports.notifier  = (config = {}) ->
 
                     do (mware) -> 
 
-                        return (->) unless mware.enabled
                         deferred (action) -> 
 
                             {resolve, reject, notify} = action
@@ -260,7 +258,7 @@ module.exports.notifier  = (config = {}) ->
                             cache:   notifier.cache
                             tools:   notifier.tools
                             errors:  nfMetrics.errors
-                            middlewares: collection.running()
+                            middlewares: collection.list()
 
 
             #

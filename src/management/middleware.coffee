@@ -101,6 +101,8 @@ module.exports.middleware = (config = {}) ->
 
         running: -> local[local.active]
 
+        list: -> local.slots
+
 
     #
     # * first load necessary to populate the initial active array
@@ -113,6 +115,7 @@ module.exports.middleware = (config = {}) ->
 
         update:  local.update
         running: local.running
+        list:    local.list
         first:   local.first
         last:    local.last
 
