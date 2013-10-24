@@ -34,13 +34,10 @@ module.exports.hub  = (config = {}) ->
         tickers:  ticker config
 
         hubs:    {}
+        names:   {}
         clients: {}
-        name2id: {} # same client on multiple hubs? later...
-        uuids:   {} # taken list for hubs
-        
-        #
-        # TODO: hub has uplink configured from superscope (factory config)
-        #
+        # name2id: {} # same client on multiple hubs? later...
+        # uuids:   {} # taken list for hubs
 
         create: deferred ({reject, resolve, notify}, hubName, opts = {}, callback) ->
 
@@ -54,15 +51,18 @@ module.exports.hub  = (config = {}) ->
                     opts = hubName
                     hubName = hubName.title
 
-                throw undefinedArg 'hubName' unless typeof hubName is 'string'
-                throw alreadyDefined 'hubName', hubName if local.hubs[hubName]?
-                throw alreadyDefined 'hubUUID', opts.uuid if local.uuids[opts.uuid]?
+                uuid = opts.uuid
 
-                hub = local.Notifier.create hubName, opts.uuid
+                throw undefinedArg 'hubName' unless typeof hubName is 'string'
+                throw alreadyDefined 'hubName', hubName if local.names[hubName]?
+                throw alreadyDefined 'hubUUID', uuid if local.hubs[uuid]?
+
+                
+                hub  = local.Notifier.create hubName, uuid
                 hub.cache = opts.cache or {}
                 hub.tools = opts.tools or {}
-                local.hubs[hubName]    = hub
-                local.uuids[opts.uuid] = hub
+                local.hubs[uuid]   = hub
+                #local.uuids[opts.uuid] = hub
                 local.tickers.register hub, opts
 
 

@@ -50,8 +50,8 @@ describe 'hub', ->
         it 'falls back to opts.title if no hubName', (done) -> 
 
             Hub = hub()
-            Hub.create title: 'Title'
-            should.exist _hub().hubs.Title
+            Hub.create title: 'Title', uuid: 1
+            should.exist _hub().hubs[1]
             done()
 
         it 'generates a uuid for the notifier', (done) -> 
@@ -59,7 +59,7 @@ describe 'hub', ->
             Hub = hub()
             Hub.create title: 'Title'
 
-            should.exist _hub().hubs.Title.uuid
+            should.exist uuid for uuid of _hub().hubs
             done()
 
 
@@ -67,25 +67,25 @@ describe 'hub', ->
 
             Hub = hub()
             Hub.create title: 'Title', uuid: 1
-            _hub().hubs.Title.uuid.should.equal 1
+            _hub().hubs[1].uuid.should.equal 1
             done()
 
 
         it 'calls back with a hub instance', (done) -> 
 
             Hub = hub()
-            Hub.create 'hub name', {}, (error, hub) -> 
+            Hub.create 'hub name', uuid: 1, (error, hub) -> 
 
-                _hub().hubs['hub name'].should.equal hub
+                _hub().hubs[1].should.equal hub
                 done()
 
         it 'resolves with the new hub as notifier instance', (done) -> 
 
             Hub = hub()
-            Hub.create( 'hub name' ).then (hub) -> 
+            Hub.create( 'hub name', uuid: 1).then (hub) -> 
 
                 hub.should.equal _notifier().notifiers['hub name']
-                _hub().hubs['hub name'].should.equal hub
+                _hub().hubs[1].should.equal hub
                 done()
 
         it 'provides a hub cache for userdefined usage', (done) -> 
@@ -111,15 +111,15 @@ describe 'hub', ->
 
             Hub = hub()
             parallel([
-                -> Hub.create 'hub1'
-                -> Hub.create 'hub2'
-                -> Hub.create 'hub3'
+                -> Hub.create 'hub1', uuid: 1
+                -> Hub.create 'hub2', uuid: 2
+                -> Hub.create 'hub3', uuid: 3
             ])
             .then ([hub1, hub2, hub3]) ->
                 
-                _hub().hubs['hub1'].should.equal hub1
-                _hub().hubs['hub2'].should.equal hub2
-                _hub().hubs['hub3'].should.equal hub3
+                _hub().hubs[1].should.equal hub1
+                _hub().hubs[2].should.equal hub2
+                _hub().hubs[3].should.equal hub3
                 done()
 
         it 'errors on create with duplicate name', (done) -> 
@@ -272,5 +272,5 @@ describe 'hub', ->
                             done()
 
 
-            it 'reaps the client reference after configurable period'
+            it 'reaps the client reference after configurable period' 
 
