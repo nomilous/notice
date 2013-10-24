@@ -78,13 +78,16 @@ module.exports.manager  = (config = {}) ->
                 handler: (matched, request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
-                    data = records: []
-                    for hubname of local.hubContext.hubs
-                        uuid = local.hubContext.hubs[hubname].uuid
-                        notifier  = local.hubContext.uuids[uuid]
-                        data.records.push notifier.serialize(1)
-
-                    local.respond data,
+                    
+                    result = {}
+                    hubs   = local.hubContext.hubs
+                    result[uuid] = hubs[uuid].serialize(1) for uuid of hubs
+                    # result[uuid] = hubs[uuid] for uuid of hubs
+                    # 
+                    # nice!
+                    #
+                    
+                    local.respond result,
                         statusCode
                         response
 

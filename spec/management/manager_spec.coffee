@@ -225,6 +225,16 @@ describe 'manage', ->
                 done()
 
 
+        it 'responds to GET /v1/hubs with an array of records for each hub', (done) -> 
+
+            client.get 
+                path: '/v1/hubs' 
+
+            .then ({statusCode, body}) -> 
+
+                console.log JSON.stringify arguments, null, 2
+
+
 
 
         # before -> 

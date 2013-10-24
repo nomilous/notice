@@ -35,7 +35,7 @@ NetworkAlertRouter = notice.hub
     manager:
         listen: 
             # hostname: 'localhost'
-            port: 11011
+            port: 20002
             key:  '/path/to/key'
             cert: '/path/to/cert'
 
@@ -66,6 +66,51 @@ hub = NetworkAlertRouter.create( ...
 
 ### Hub Introspection and Middleware Performance Metrics
 
+
+`curl -u user: :20002/v1/hubs`
+```json 
+{
+  "1": {
+    "title": "Message Bus Title",
+    "uuid": 1,
+    "stats": {
+      "pipeline": {
+        "input": {
+          "count": 36
+        },
+        "processing": {
+          "count": 0
+        },
+        "output": {
+          "count": 36
+        },
+        "error": {
+          "usr": 0,
+          "sys": 0
+        },
+        "cancel": {
+          "usr": 0,
+          "sys": 0
+        }
+      }
+    }
+  }
+}
+```
+
+
+`curl -u user: :20002/v1/hubs/1/middlewares/1`
+```json 
+{
+  "slot": 1,
+  "title": "initializer",
+  "description": "First middleware is usefull for filtering builtin control capsules.",
+  "type": "usr",
+  "enabled": true
+}
+```
+
+
 **pending consideration**
 
 ### Hotswapping Middleware
@@ -83,15 +128,4 @@ hub = NetworkAlertRouter.create( ...
 
 
 ### todo document fragments
-
-`curl -u user: :20002/v1/hubs/1/middlewares/1`
-```json 
-{
-  "slot": 1,
-  "title": "initializer",
-  "description": "First middleware is usefull for filtering builtin control capsules.",
-  "type": "usr",
-  "enabled": true
-}
-```
 
