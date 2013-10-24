@@ -104,16 +104,129 @@ describe 'manage', ->
         it 'responds with 404 incase of no route', (done) -> 
 
             client.get 
-
                 path: '/no/route' 
 
             .then ({statusCode}) -> 
-
                 statusCode.should.equal 404
                 done()
 
 
-            
+        it 'responds to /about', (done) -> 
+
+            client.get 
+                path: '/about' 
+
+            .then ({statusCode, body}) -> 
+
+                statusCode.should.equal 200
+
+                body.should.eql {
+
+                  "module": "notice",
+                  "version": "0.0.12",
+                  "doc": "https://github.com/nomilous/notice/tree/master/spec/management",
+                  "endpoints": {
+                    "/about": {
+                      "description": "show this",
+                      "methods": [
+                        "GET"
+                      ]
+                    },
+                    "/v1/hubs": {
+                      "description": "list present hubs",
+                      "methods": [
+                        "GET"
+                      ]
+                    },
+                    "/v1/hubs/:uuid:": {
+                      "description": "get a hub",
+                      "methods": [
+                        "GET"
+                      ]
+                    },
+                    "/v1/hubs/:uuid:/stats": {
+                      "description": "get only the hub stats",
+                      "methods": [
+                        "GET"
+                      ]
+                    },
+                    "/v1/hubs/:uuid:/errors": {
+                      "description": "get only the recent errors",
+                      "methods": [
+                        "GET"
+                      ]
+                    },
+                    "/v1/hubs/:uuid:/cache": {
+                      "description": "get output from a serailization of the traversal",
+                      "methods": [
+                        "GET"
+                      ]
+                    },
+                    "/v1/hubs/:uuid:/cache/**/*": {
+                      "description": "get nested subkey from the cache tree",
+                      "methods": [
+                        "GET"
+                      ]
+                    },
+                    "/v1/hubs/:uuid:/tools": {
+                      "description": "get output from a serailization of the tools tree",
+                      "methods": [
+                        "GET"
+                      ]
+                    },
+                    "/v1/hubs/:uuid:/tools/**/*": {
+                      "description": "get nested subkey from the tools key",
+                      "methods": [
+                        "GET"
+                      ]
+                    },
+                    "/v1/hubs/:uuid:/clients": {
+                      "description": "pending",
+                      "methods": [
+                        "GET"
+                      ]
+                    },
+                    "/v1/hubs/:uuid:/middlewares": {
+                      "description": "get only the middlewares",
+                      "methods": [
+                        "GET"
+                      ]
+                    },
+                    "/v1/hubs/:uuid:/middlewares/:title:": {
+                      "description": "get or update or delete a middleware",
+                      "methods": [
+                        "GET"
+                      ]
+                    },
+                    "/v1/hubs/:uuid:/middlewares/:title:/disable": {
+                      "description": "disable a middleware",
+                      "methods": [
+                        "GET"
+                      ]
+                    },
+                    "/v1/hubs/:uuid:/middlewares/:title:/enable": {
+                      "description": "enable a middleware",
+                      "methods": [
+                        "GET"
+                      ]
+                    },
+                    "/v1/hubs/:uuid:/middlewares/:title:/replace": {
+                      "description": "replace a middleware",
+                      "methods": [
+                        "POST"
+                      ],
+                      "accepts": [
+                        "text/javascript",
+                        "text/coffeescript"
+                      ]
+                    }
+                  }
+                }
+                done()
+
+
+
+
         # before -> 
 
         #     @headers = authorization: 'Basic ' + new Buffer('username:password', 'utf8').toString 'base64'
@@ -158,145 +271,6 @@ describe 'manage', ->
         #     @serializeHub1 = (detail) -> 'HUB 1 RECORD detail:' + detail
         #     @serializeHub2 = (detail) -> 'HUB 2 RECORD detail:' + detail
 
-
-
-        # it 'responds with 404 incase of no route', (done) -> 
-
-
-        #     @mockRequest.url = '/no/such/route'
-        #     @writeHead = (statusCode) ->
-        #         statusCode.should.equal 404
-        #         done()
-
-        #     _manager().requestHandler @mockRequest, @mockResponse
-
-
-
-
-        # it 'responds to /about', (done) -> 
-
-        #     @write = (body) -> 
-
-        #         # console.log body
-
-        #         JSON.parse( body ).should.eql {
-        #           "module": "notice",
-        #           "version": "0.0.12",
-        #           "doc": "https://github.com/nomilous/notice/tree/master/spec/management",
-        #           "endpoints": {
-        #             "/about": {
-        #               "description": "show this",
-        #               "methods": [
-        #                 "GET"
-        #               ]
-        #             },
-        #             "/v1/hubs": {
-        #               "description": "list present hubs",
-        #               "methods": [
-        #                 "GET"
-        #               ]
-        #             },
-        #             "/v1/hubs/:uuid:": {
-        #               "description": "get a hub",
-        #               "methods": [
-        #                 "GET"
-        #               ]
-        #             },
-        #             "/v1/hubs/:uuid:/stats": {
-        #               "description": "get only the hub stats",
-        #               "methods": [
-        #                 "GET"
-        #               ]
-        #             },
-        #             "/v1/hubs/:uuid:/errors": {
-        #               "description": "get only the recent errors",
-        #               "methods": [
-        #                 "GET"
-        #               ]
-        #             },
-        #             "/v1/hubs/:uuid:/cache": {
-        #               "description": "get output from a serailization of the traversal",
-        #               "methods": [
-        #                 "GET"
-        #               ]
-        #             },
-        #             "/v1/hubs/:uuid:/cache/**/*": {
-        #               "description": "get nested subkey from the cache tree",
-        #               "methods": [
-        #                 "GET"
-        #               ]
-        #             },
-        #             "/v1/hubs/:uuid:/tools": {
-        #               "description": "get output from a serailization of the tools tree",
-        #               "methods": [
-        #                 "GET"
-        #               ]
-        #             },
-        #             "/v1/hubs/:uuid:/tools/**/*": {
-        #               "description": "get nested subkey from the tools key",
-        #               "methods": [
-        #                 "GET"
-        #               ]
-        #             },
-        #             "/v1/hubs/:uuid:/clients": {
-        #               "description": "pending",
-        #               "methods": [
-        #                 "GET"
-        #               ]
-        #             },
-        #             "/v1/hubs/:uuid:/middlewares": {
-        #               "description": "get only the middlewares",
-        #               "methods": [
-        #                 "GET"
-        #               ]
-        #             },
-        #             "/v1/hubs/:uuid:/middlewares/:title:": {
-        #               "description": "get or update or delete a middleware",
-        #               "methods": [
-        #                 "GET"
-        #               ]
-        #             },
-        #             "/v1/hubs/:uuid:/middlewares/:title:/disable": {
-        #               "description": "disable a middleware",
-        #               "methods": [
-        #                 "GET"
-        #               ]
-        #             },
-        #             "/v1/hubs/:uuid:/middlewares/:title:/enable": {
-        #               "description": "enable a middleware",
-        #               "methods": [
-        #                 "GET"
-        #               ]
-        #             },
-        #             "/v1/hubs/:uuid:/middlewares/:title:/replace": {
-        #               "description": "replace a middleware",
-        #               "methods": [
-        #                 "POST"
-        #               ],
-        #               "accepts": [
-        #                 "text/javascript",
-        #                 "text/coffeescript"
-        #               ]
-        #             }
-        #           }
-        #         }
-
-
-        #         done()
-
-        #     @mockRequest.url = '/about'
-        #     _manager().requestHandler @mockRequest, @mockResponse
-
-
-        # it 'responds to GET /about with 200', (done) -> 
-
-        #     @writeHead = (statusCode) ->
-        #         statusCode.should.equal 200
-        #         done()
-
-
-        #     @mockRequest.url = '/about'
-        #     _manager().requestHandler @mockRequest, @mockResponse
 
 
         # it.only 'responds to GET /v1/hubs with an array of records for each hub', (done) -> 
