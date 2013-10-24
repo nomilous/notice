@@ -12,14 +12,17 @@ NetworkAlertRouter = notice.hub
 
     ... # other config
 
-    # 
-    # error:
-    #     keep: 10 # oldest first
-    #
+    
+    error:
+        keep: 10  # oldest first
 
-    introspector:
-        level: 0  # none
-        level: 1  # not none
+    #
+    # introspector:
+    #     level: 0  # none
+    #     level: 1  # not none
+    # 
+    # introspection stats by capsule/middleware not yet implemented
+    # 
 
     manager:
         listen: 
