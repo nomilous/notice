@@ -19,5 +19,5 @@
 * planning improves, inspiration invents
 * venn diagrams show overlaps
 * a glorious coincidence presents the moon and the sun as almost precisely identical in relative size
-* it will only remain so for another 500 million years
+* `it 'will only remain so for another 500 million years', (done) ->`
 * the tests are not so beautifully organised into context groups. 
