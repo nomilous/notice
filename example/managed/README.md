@@ -22,7 +22,7 @@
 # update accounts middleware to accumulate total sales
 #
 
-curl -ku username:password -H 'Content-Type: text/coffee-script' --data '
+curl -ku username:password -H 'Content-Type: text/coffeescript' --data '
 
 fn = (next, capsule, {cache}) -> 
 
@@ -50,7 +50,7 @@ fn = (next, capsule, {cache}) ->
 #
 # OOOPS
 #
-curl -ku username:password -H 'Content-Type: text/coffee-script' --data '
+curl -ku username:password -H 'Content-Type: text/coffeescript' --data '
 fn = (next, capsule, {cache}) ->  throw new Error "Broke Something!!"
 ' 'https://127.0.0.1:44444/v1/hubs/1/middlewares/accounts/replace'
 ```

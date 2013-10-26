@@ -51,20 +51,26 @@ module.exports.manager  = (config = {}) ->
             response.end()
 
 
-        middleware: (action, hub, slot, body, response, statusCode) ->
+        middleware: (action, hub, slot, contentType, body, response, statusCode) ->
 
             local[ action + 'Middleware'] hub, slot, {}
 
+            return local.unsupportedMedia response unless (
+                contentType == 'text/javascript' or
+                contentType == 'text/coffeescript'
+            )
 
-            # curl -XPUT -u user: :20002/v1/hubs/1/middlewares/10 -d '...'
+
+            # curl -u user: -H 'Content-Type: text/coffeescript' :20002/v1/hubs/1/middlewares/10 -d '...'
 
             console.log
                 SLOT: slot
+                CONTENT: contentType
                 BODY: body
 
 
 
-            # local.respond {}, 200, response
+            local.respond {ok: 'good'}, 200, response
 
 
 
@@ -257,14 +263,13 @@ module.exports.manager  = (config = {}) ->
 
                 description: 'get only the middlewares'
                 methods: ['GET', 'POST']
-                handler: ([hubuuid,nothing,authenticEntity], {method, body}, response, statusCode = 200) -> 
-
-                    console.log moo: 1
+                accepts: ['text/javascript', 'text/coffeescript']
+                handler: ([hubuuid,nothing,authenticEntity], {method, headers, body}, response, statusCode = 200) -> 
 
                     if method == 'POST'
                         return local.objectNotFound response unless local.hubContext.hubs[hubuuid]
                         notifier = local.hubContext.hubs[hubuuid]
-                        return local.middleware 'insert', notifier, null, body, response, statusCode
+                        return local.middleware 'insert', notifier, null, headers['content-type'], body, response, statusCode
 
                     return local.methodNotAllowed response unless method == 'GET'
                     return local.objectNotFound response unless local.hubContext.hubs[hubuuid]
@@ -280,12 +285,13 @@ module.exports.manager  = (config = {}) ->
 
                 description: 'get or update or delete a middleware'
                 methods: ['GET', 'PUT', 'POST'] # , 'DELETE']
-                handler: ([hubuuid,slot,authenticEntity], {method, body}, response, statusCode = 200) -> 
+                accepts: ['text/javascript', 'text/coffeescript']
+                handler: ([hubuuid,slot,authenticEntity], {method, headers, body}, response, statusCode = 200) -> 
 
                     if method == 'POST' or method == 'PUT'
                         return local.objectNotFound response unless local.hubContext.hubs[hubuuid]
                         notifier = local.hubContext.hubs[hubuuid]
-                        return local.middleware 'upsert', notifier, slot, body, response, statusCode
+                        return local.middleware 'upsert', notifier, slot, headers['content-type'], body, response, statusCode
 
                     return local.methodNotAllowed response unless method == 'GET'
                     return local.objectNotFound response unless local.hubContext.hubs[hubuuid]

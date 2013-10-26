@@ -72,13 +72,19 @@ describe 'manage', ipso (should, http, https) ->
         it 'inserts middleware', (done) -> 
 
             _manager().insertMiddleware = -> done()
-            _manager().middleware 'insert'
+            _manager().middleware 'insert', 'hub', null, 'conent-type', 'body', 
+                writeHead: ->
+                write: ->
+                end: ->
 
 
         it 'upserts middleware', (done) -> 
 
             _manager().upsertMiddleware = -> done()
-            _manager().middleware 'upsert'
+            _manager().middleware 'upsert', 'hub', null, 'conent-type', 'body', 
+                writeHead: ->
+                write: ->
+                end: ->
 
 
 
@@ -207,10 +213,12 @@ describe 'manage', ipso (should, http, https) ->
                         "/v1/hubs/:uuid:/middlewares":
                             description: "get only the middlewares"
                             methods: [ "GET", 'POST' ]
+                            accepts: ['text/javascript', 'text/coffeescript']
                         
                         "/v1/hubs/:uuid:/middlewares/:slot:":
                             description: "get or update or delete a middleware"
                             methods: [ "GET", 'PUT', 'POST']
+                            accepts: ['text/javascript', 'text/coffeescript']
 
                         "/v1/hubs/:uuid:/middlewares/:slot:/disable":
                             description: "disable a middleware"
@@ -562,8 +570,30 @@ describe 'manage', ipso (should, http, https) ->
                     done()
 
 
-            context 'PUT', ->
+            context '415s on unacceptable content-type', -> 
 
+                it 'at insert', ipso (done) -> 
+
+                    client.post 
+                        path: '/v1/hubs/2/middlewares'
+                        'application/json': day: 'tah'
+
+                    .then ({statusCode}) -> 
+                        statusCode.should.equal 415
+                        done()
+
+                it 'at upsert', ipso (done) -> 
+
+                    client.post 
+                        path: '/v1/hubs/2/middlewares/21'
+                        'application/json': dah: 'tah'
+
+                    .then ({statusCode}) -> 
+                        statusCode.should.equal 415
+                        done()
+
+
+            context 'PUT', -> 
 
             context 'POST', ->
 
@@ -587,16 +617,6 @@ describe 'manage', ipso (should, http, https) ->
         #         @mockRequest.method = 'GET'
         #         _manager().requestHandler @mockRequest, @mockResponse
 
-
-        #     it 'responds 415 to if not text/javascript or text/coffeescript', (done) ->
-
-        #         @writeHead = (statusCode) ->
-        #             statusCode.should.equal 415
-        #             done()
-
-        #         @mockRequest.url = '/v1/hubs/1/middlewares/title/replace'
-        #         @mockRequest.method = 'POST'
-        #         _manager().requestHandler @mockRequest, @mockResponse
 
         #     xit 'accepts text/javascript', (done) -> 
 
