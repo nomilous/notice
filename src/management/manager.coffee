@@ -222,7 +222,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
             # 
             # * create or update middleware at particular slot
             # * ##undecided2 - persistance plugin(ability)
-            # * slot agrument in body is illegal
+            # * 400 if slot in body does not match :slot:
             # * respond 200 on updated
             # * respond 201 on created
             # 

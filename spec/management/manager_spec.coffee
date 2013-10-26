@@ -925,6 +925,7 @@ describe 'manage', ipso (should, http, https) ->
                             should.not.exist latest.palindromic
                             facto()
 
+                    it 'cannot set type'
 
                     it 'works!', ipso (facto) -> 
 
@@ -960,15 +961,9 @@ describe 'manage', ipso (should, http, https) ->
                             facto todo: """
                                 invent nifty way to get the test (`capsule.should.eql`)
                                 to not break the promise chain...
-                                
-                                this could have chained the metric verification as
-                                a second api call
-                                
-                                perhaps: 
-                                
-                                `facto.test capsule.should.eql ...`
-                                
-                                to return the promise necessary to carry the chain
+
+                                perhaps: `facto.test capsule.should.eql ...` returns the promise necessary 
+                                          to carry the chain
                             """
 
 
@@ -979,10 +974,11 @@ describe 'manage', ipso (should, http, https) ->
 
                     it 'puts middlware into the specified slot'
                     it 'responds 200 with the middleware record'
-                    it 'errors if slot number is in body'
+                    it 'errors if slot number does not match :slot:'
                     it 'errors if missing title and fn on PUT'
                     it 'modifies just the POSTed subrecords (key) on POST'
                     it 'accepts title, description, enabled and fn in body'
+                    it 'cannot modify type'
                     it 'ignores all other properties (for now)'
                     it 'works!'
 
@@ -991,7 +987,7 @@ describe 'manage', ipso (should, http, https) ->
 
 
 
-        context 'POST /vi/hubs/:uuid:/configure', -> 
+        context 'POST /hubs/:uuid:/configure', -> 
 
             it 'modifies introspection level'
             it 'and possibly other things'
