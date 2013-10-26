@@ -134,6 +134,13 @@ module.exports.notifier  = (config = {}) ->
                 # 
                 # * to enable capsule to ""jump"" into a parallel hub's pipeline
                 # * a possible vector to enable phrase tree as hub star without specific client uplinks
+                #       * bear in mind - it's a stop gap pending freedom from the limitation of 
+                #                        one uplink per process, all the wrk to implement alternative
+                #                        to the socket.io client can hopefully be done later
+                #       * bear in mind - socket.io is vital, or at least, the websocket capacity is vital
+                #                        (the viewport is the most important leaf type on the whole tree)
+                #                        (infact,  viewports are the flowers)
+                # 
                 # 
                 # traversal.hubs = allLocalHubs() # or something
 
