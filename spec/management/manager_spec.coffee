@@ -934,7 +934,6 @@ describe 'manage', ipso (should, http, https) ->
                                 title: 'it works'
                                 fn: (next, capsule) -> 
 
-                                    console.log 'XXXX'
                                     capsule.it = 'WORKS!'
                                     next()
 
