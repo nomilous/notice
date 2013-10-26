@@ -806,7 +806,7 @@ describe 'manage', ipso (should, http, https) ->
                             path: '/v1/hubs/2/middlewares'
                             'text/coffeescript': """
 
-                            title: 'noon moon'
+                            title: 'two the moon'
                             slot:  23
                             fn: -> 
 
@@ -827,7 +827,28 @@ describe 'manage', ipso (should, http, https) ->
 
 
 
-                    it 'errors if missing title and fn'
+                    it 'errors if missing title and fn', ipso (facto) -> 
+
+                        client.post
+
+                            path: '/v1/hubs/2/middlewares'
+                            'text/coffeescript': """
+
+                            title: 'two the moon'
+                            
+                            """
+
+                        .then ({statusCode, body}) -> 
+
+                            statusCode.should.equal 400
+                            should.exist body.error
+                            facto todo: 'api error distinctions'
+                                    #
+                                    # missing mech for 'which test' context
+                                    #
+
+                            
+
                     it 'errors if title already exists on hub'
                     it 'accepts also description and enabled'
                     it 'ignores all other properties (for now)'

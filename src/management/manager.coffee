@@ -83,7 +83,9 @@ coffeescript
 curl -u user: -H 'Content-Type: text/coffeescript' :20002/v1/hubs/1/middlewares -d '
 
 title: "title"
-fn: (next) -> next()
+fn: (next, capsule) -> 
+    console.log capsule.$$all()
+    next()
 
 '
 
@@ -192,7 +194,13 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
                 middleware.fn
 
             catch error
-                console.log error
+
+                #
+                # TODO: this displays the error from hub.use (perhaps confuzing)
+                #       create distinction mechanism for restAPI / libAPI
+                #
+                
+                return callback error
             
 
             list = hub.serialize(2).middlewares
