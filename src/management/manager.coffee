@@ -53,8 +53,6 @@ module.exports.manager  = (config = {}) ->
 
         middleware: (action, hub, slot, contentType, body, response, statusCode) ->
 
-            local[ action + 'Middleware'] hub, slot, {}
-
             return local.unsupportedMedia response unless (
                 contentType == 'text/javascript' or
                 contentType == 'text/coffeescript'
@@ -68,39 +66,55 @@ module.exports.manager  = (config = {}) ->
                 CONTENT: contentType
                 BODY: body
 
+            #
+            # register the middleware onto the hub's bus
+            # ------------------------------------------
+            # 
+
+            local[ action + 'Middleware'] hub, slot, {}, (err, result) ->
+
+                # 
+                # * asynchronous enables persisting middleware registrations
+                # * pleasant all round if posted middleware is still present
+                #   after a hub restart!
+                # * BUT...
+                #     * `hub.use(...)` equivalent is not able to do the same
+                #     * or at least, not in the same ""direction""...
+                #
+            
+                local.respond {ok: 'good'}, 200, response
 
 
-            local.respond {ok: 'good'}, 200, response
 
-
-
-        insertMiddleware: (hub, slot, middleware) -> 
+        insertMiddleware: (hub, slot, middleware, callback) -> 
 
             # 
             # POST /v1/hubs/:uuid:/middlewares
             # --------------------------------
             # 
             # * inserts a new midleware at the back of the bus
+            # * ##undecided2 - persistance plugin(ability)
             # * slot argument in body is illegal
             # * PUT is illegal
             # 
 
-            
+            callback()
 
 
-        upsertMiddleware: (hub, slot, middleware) -> 
+        upsertMiddleware: (hub, slot, middleware, callback) -> 
 
             #
             # POST or PUT /v1/hubs/:uuid:/middlewares/:slot:
             # ----------------------------------------------
             # 
             # * create or update middleware at particular slot
+            # * ##undecided2 - persistance plugin(ability)
             # * slot agrument in body is illegal
             # * respond 200 on updated
             # * respond 201 on created
             # 
 
-
+            callback()
 
 
     local.routes =

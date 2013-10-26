@@ -4,6 +4,28 @@ testable = undefined
 module.exports._middleware = -> testable
 module.exports.middleware = (config = {}) ->
 
+    #
+    # ##undecided2:: This collection will ideally be persistable
+    # ----------------------------------------------------------
+    # 
+    # * by way of a plugin perhaps
+    # * the ins and outs of precicely where and how the plugin 
+    #   persists the middleware is not yet clear
+    # * idea:
+    #      * new middleware traverses the bus, by capsule, allowing
+    #        middlewares to persis themselves
+    #      * (um...) wierdly möbius tho:
+    # 
+    #           
+    #           möbius trip |noun| ~ A monster appears on the path ahead...
+    #           
+    #           Do you:
+    #           
+    #           a) Climb into your Bag of Holding.
+    #           b) Turn your Bag of Holding inside out and swallow it
+    #           
+    #
+
     testable = local = 
 
         slots: {}

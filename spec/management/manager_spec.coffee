@@ -72,7 +72,7 @@ describe 'manage', ipso (should, http, https) ->
         it 'inserts middleware', (done) -> 
 
             _manager().insertMiddleware = -> done()
-            _manager().middleware 'insert', 'hub', null, 'conent-type', 'body', 
+            _manager().middleware 'insert', 'hub', null, 'text/javascript', 'body', 
                 writeHead: ->
                 write: ->
                 end: ->
@@ -81,7 +81,7 @@ describe 'manage', ipso (should, http, https) ->
         it 'upserts middleware', (done) -> 
 
             _manager().upsertMiddleware = -> done()
-            _manager().middleware 'upsert', 'hub', null, 'conent-type', 'body', 
+            _manager().middleware 'upsert', 'hub', null, 'text/coffeescript', 'body', 
                 writeHead: ->
                 write: ->
                 end: ->
