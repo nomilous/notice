@@ -51,6 +51,42 @@ module.exports.manager  = (config = {}) ->
             response.end()
 
 
+        middleware: (action, hubuuid, slot, request, response, statusCode) ->
+
+            local[ action + 'Middleware'] uuid, slot, request, response, statusCode
+
+
+        insertMiddleware: (hubuuid, slot, middleware, response, statusCode) -> 
+
+            # 
+            # POST /v1/hubs/:uuid:/middlewares
+            # --------------------------------
+            # 
+            # * inserts a new midleware at the back of the bus
+            # * slot argument in body is illegal
+            # * PUT is illegal
+            # 
+
+            local.respond insert: 'new', 200, response
+
+
+        upsertMiddleware: (hubuuid, slot, middleware, response, statusCode) -> 
+
+            #
+            # POST or PUT /v1/hubs/:uuid:/middlewares/:slot:
+            # ----------------------------------------------
+            # 
+            # * create or update middleware at particular slot
+            # * slot agrument in body is illegal
+            # * respond 200 on updated
+            # * respond 201 on created
+            # 
+
+            console.log update: slot
+            local.respond update: slot, 200, response
+
+
+
     local.routes =
 
             '/about': 
@@ -210,12 +246,15 @@ module.exports.manager  = (config = {}) ->
             '/v1/hubs/:uuid:/middlewares': 
 
                 description: 'get only the middlewares'
-                methods: ['GET']
-                handler: ([uuid], request, response, statusCode = 200) -> 
+                methods: ['GET', 'POST']
+                handler: ([hubuuid], request, response, statusCode = 200) -> 
+
+                    if request.method == 'POST'
+                        return local.middleware 'insert', hubuuid, null, request, response, statusCode
 
                     return local.methodNotAllowed response unless request.method == 'GET'
-                    return local.objectNotFound response unless local.hubContext.hubs[uuid]
-                    notifier = local.hubContext.hubs[uuid]
+                    return local.objectNotFound response unless local.hubContext.hubs[hubuuid]
+                    notifier = local.hubContext.hubs[hubuuid]
                     local.respond(
                         notifier.serialize(2).middlewares
                         statusCode
@@ -226,13 +265,16 @@ module.exports.manager  = (config = {}) ->
             '/v1/hubs/:uuid:/middlewares/:slot:':
 
                 description: 'get or update or delete a middleware'
-                methods: ['GET'] #['GET', 'DELETE']
-                handler: ([uuid,slot], request, response, statusCode = 200) -> 
+                methods: ['GET', 'PUT', 'POST'] # , 'DELETE']
+                handler: ([hubuuid,slot], request, response, statusCode = 200) -> 
+
+                    if request.method == 'POST' or request.method == 'PUT'
+                        return local.middleware 'upsert', hubuuid, slot, request, response, statusCode
 
                     return local.methodNotAllowed response unless request.method == 'GET'
-                    return local.objectNotFound response unless local.hubContext.hubs[uuid]
+                    return local.objectNotFound response unless local.hubContext.hubs[hubuuid]
 
-                    notifier = local.hubContext.hubs[uuid]
+                    notifier = local.hubContext.hubs[hubuuid]
                     middlewares = notifier.serialize(2).middlewares
                     try return local.respond middlewares[slot], statusCode, response
                     objectNotFound response

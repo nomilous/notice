@@ -176,11 +176,11 @@ describe 'manage', ipso (should, http, https) ->
 
                         "/v1/hubs/:uuid:/middlewares":
                             description: "get only the middlewares"
-                            methods: [ "GET" ]
+                            methods: [ "GET", 'POST' ]
                         
                         "/v1/hubs/:uuid:/middlewares/:slot:":
                             description: "get or update or delete a middleware"
-                            methods: [ "GET" ]
+                            methods: [ "GET", 'PUT', 'POST']
 
                         "/v1/hubs/:uuid:/middlewares/:slot:/disable":
                             description: "disable a middleware"
@@ -530,6 +530,15 @@ describe 'manage', ipso (should, http, https) ->
 
                     body.enabled.should.equal true
                     done()
+
+
+            context 'PUT', ->
+
+
+            context 'POST', ->
+
+
+            #context 'DELETE'
 
 
 
