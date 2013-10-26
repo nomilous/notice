@@ -937,12 +937,26 @@ describe 'manage', ipso (should, http, https) ->
                                     capsule.it = 'WORKS!'
                                     next()
 
-                        .then ({statusCode, body}) -> 
+                        .then ({statusCode, body}) -> hub3.event( ok: ' good!' )
+                        .then (capsule) -> 
 
-                            hub3.event().then (capsule) -> 
+                            hub3.serialize(1).stats.should.eql
 
-                                capsule.should.eql it: 'WORKS!'
-                                facto()
+                                pipeline:
+
+                                    input:      count: 1
+                                    processing: count: 0
+                                    output:     count: 1
+                                    error:      usr: 0, sys: 0
+                                    cancel:     usr: 0, sys: 0
+
+                            capsule.should.eql
+
+                                ok: ' good!'
+                                it: 'WORKS!'
+
+                            facto()
+
 
 
 
