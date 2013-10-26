@@ -162,6 +162,12 @@ describe 'manage', ipso (should, http, https) ->
                                     opts.headers ||= {}
                                     opts.headers['content-type'] = 'text/coffeescript'
 
+                            'text/javascript':
+                                encode: (opts) -> 
+                                    opts.body = opts['text/javascript']
+                                    opts.headers ||= {}
+                                    opts.headers['content-type'] = 'text/javascript'
+
 
                         transport: 'http'
                         port: 40404
@@ -633,7 +639,7 @@ describe 'manage', ipso (should, http, https) ->
                         done()
 
 
-            context '400s on compile problems', (done) -> 
+            context '400 on compile problems', (done) -> 
 
                 it 'at insert', ipso (done) -> 
 
@@ -658,10 +664,55 @@ describe 'manage', ipso (should, http, https) ->
 
                         done()
 
+            context '400 on eval problems', (done) -> 
 
-            context 'PUT', -> 
+                it 'at insert', (done) ->
 
-            context 'POST', ->
+                    client.post 
+
+                        path: '/v1/hubs/2/middlewares/10'
+                        'text/javascript': """
+
+                            { 
+                                "val" : i 
+                            }
+
+                        """
+
+                    .then ({statusCode, body}) -> 
+
+                        statusCode.should.equal 400
+                        body.should.eql
+                            error:
+                                type: 'ReferenceError'
+                                message: 'i is not defined'
+                        done()
+
+
+            context 'insert', -> 
+
+                context 'PUT /v1/hubs/:uuid:/middlewares', -> 
+
+                    it 'puts middlware into next free slot'
+                    it 'responds 200 with the middleware record'
+                    it 'errors if slot number is in body'
+                    it 'errors if missing title and fn'
+                    it 'accepts also description and enabled'
+                    it 'ignores all other properties (for now)'
+                    it 'works!'
+
+            context 'upsert', -> 
+
+                context 'PUT or POST /v1/hubs/:uuid:/middlewares/:slot:', -> 
+
+                    it 'puts middlware into the specified slot'
+                    it 'responds 200 with the middleware record'
+                    it 'errors if slot number is in body'
+                    it 'errors if missing title and fn on PUT'
+                    it 'modifies just the POSTed subrecords (key) on POST'
+                    it 'accepts title, description, enabled and fn in body'
+                    it 'ignores all other properties (for now)'
+                    it 'works!'
 
 
             #context 'DELETE'

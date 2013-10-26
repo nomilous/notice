@@ -24,6 +24,10 @@ module.exports.manager  = (config = {}) ->
         hubContext: undefined
         register: (hubContext) -> local.hubContext = hubContext
 
+        #
+        # TODO: include something on the body in all nonsuccess error cases
+        #
+
         methodNotAllowed: (response) -> 
 
             response.writeHead 405
@@ -64,26 +68,55 @@ module.exports.manager  = (config = {}) ->
             )
 
 
-            # curl -u user: -H 'Content-Type: text/coffeescript' :20002/v1/hubs/1/middlewares/10 -d '->'
+            ### 
 
-            try mware = 
+coffeescript
+============
+
+curl -u user: -H 'Content-Type: text/coffeescript' :20002/v1/hubs/1/middlewares/10 -d '
+
+title: "title"
+fn: (next) -> next()
+
+'
+
+javascript
+==========
+
+curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10 -d '
+
+{ 
+    title: "title",
+    fn: function(next) {
+        next();
+    }
+}
+
+'
+            
+            ###
+
+            try js = 
                 if contentType == 'text/coffeescript' then coffee.compile body, bare: true
                 else body
 
             catch error 
-
+                errorType = try error.constructor.name
                 return local.badRequest response, error: 
-                    type: error.constructor.name
+                    type: errorType || 'Error'
                     message: error.message
-                    location: error.location 
+                    location: error.location
+
+            
+            try eval "var mware=#{ js }"
+            catch error
+                errorType = try error.constructor.name
+                return local.badRequest response, error: 
+                    type: errorType || 'Error'
+                    message: error.message
 
 
-            console.log
-                SLOT: slot
-                CONTENT: contentType
-                BODY: body
-                MWARE: mware
-
+            console.log MIDDLEWARE: mware
 
 
             #
