@@ -1,6 +1,7 @@
 ipso       = require 'ipso'
 {Client}   = require 'dinkum'
 {parallel} = require 'also'
+coffee     = require 'coffee-script'
 # {_notifier,notifier} = require '../../lib/notice/notifier'
 {hub,_hub}         = require '../../lib/notice/hub/hub'
 {manager,_manager} = require '../../lib/management/manager'
@@ -12,10 +13,12 @@ describe 'manage', ipso (should, http, https) ->
     beforeEach -> 
         @createHttp = http.createServer
         @createHttps = https.createServer
+        @compile = coffee.compile
 
     afterEach -> 
         http.createServer = @createHttp
         https.createServer = @createHttps
+        coffee.compile = @compile
 
 
     it 'throws on missing config.manage.listen', (done) -> 
@@ -58,6 +61,8 @@ describe 'manage', ipso (should, http, https) ->
 
         beforeEach (done) -> 
 
+            @hub = {}
+
             http.createServer = -> listen: -> done()
             Manager = manager
                 manager:
@@ -67,12 +72,34 @@ describe 'manage', ipso (should, http, https) ->
 
             Manager.register 
 
-                hubs: {}
+                hubs: UUID: @hub
+
+
+
+        it 'compiles text/coffee-script without enclosing', (done) -> 
+
+            #
+            # TODO: litcoffee too, ...a whole nother kettle of beans (to blend in interesting ways)
+            #
+
+            coffee.compile = (body, opts) -> 
+
+                body.should.equal 'BODY'
+                opts.bare.should.equal true
+                done()
+                throw 'go no further'
+
+            try _manager().middleware 'insert', @hub, null, 'text/coffeescript', 'BODY', 
+                writeHead: ->
+                write: ->
+                end: ->
+
+
 
         it 'inserts middleware', (done) -> 
 
             _manager().insertMiddleware = -> done()
-            _manager().middleware 'insert', 'hub', null, 'text/javascript', 'body', 
+            _manager().middleware 'insert', @hub, null, 'text/javascript', 'body', 
                 writeHead: ->
                 write: ->
                 end: ->
@@ -81,12 +108,10 @@ describe 'manage', ipso (should, http, https) ->
         it 'upserts middleware', (done) -> 
 
             _manager().upsertMiddleware = -> done()
-            _manager().middleware 'upsert', 'hub', null, 'text/coffeescript', 'body', 
+            _manager().middleware 'upsert', @hub, null, 'text/coffeescript', 'body', 
                 writeHead: ->
                 write: ->
                 end: ->
-
-
 
 
     context 'routes', -> 

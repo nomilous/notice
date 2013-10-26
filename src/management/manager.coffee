@@ -59,12 +59,24 @@ module.exports.manager  = (config = {}) ->
             )
 
 
-            # curl -u user: -H 'Content-Type: text/coffeescript' :20002/v1/hubs/1/middlewares/10 -d '...'
+            # curl -u user: -H 'Content-Type: text/coffeescript' :20002/v1/hubs/1/middlewares/10 -d '->'
+
+            mware = if contentType == 'text/coffeescript' 
+
+                coffee.compile body, bare: true
+
+            else body
+
+
+
 
             console.log
                 SLOT: slot
                 CONTENT: contentType
                 BODY: body
+                MWARE: mware
+
+
 
             #
             # register the middleware onto the hub's bus
