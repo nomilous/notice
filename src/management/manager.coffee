@@ -51,12 +51,24 @@ module.exports.manager  = (config = {}) ->
             response.end()
 
 
-        middleware: (action, hub, slot, request, response, statusCode) ->
+        middleware: (action, hub, slot, body, response, statusCode) ->
 
-            local[ action + 'Middleware'] hub, slot, request, response, statusCode
+            local[ action + 'Middleware'] hub, slot, {}
 
 
-        insertMiddleware: (hub, slot, middleware, response, statusCode) -> 
+            # curl -XPUT -u user: :20002/v1/hubs/1/middlewares/10 -d '...'
+
+            console.log
+                SLOT: slot
+                BODY: body
+
+
+
+            # local.respond {}, 200, response
+
+
+
+        insertMiddleware: (hub, slot, middleware) -> 
 
             # 
             # POST /v1/hubs/:uuid:/middlewares
@@ -67,10 +79,10 @@ module.exports.manager  = (config = {}) ->
             # * PUT is illegal
             # 
 
-            local.respond insert: 'new', 200, response
+            
 
 
-        upsertMiddleware: (hub, slot, middleware, response, statusCode) -> 
+        upsertMiddleware: (hub, slot, middleware) -> 
 
             #
             # POST or PUT /v1/hubs/:uuid:/middlewares/:slot:
@@ -82,8 +94,6 @@ module.exports.manager  = (config = {}) ->
             # * respond 201 on created
             # 
 
-            console.log update: slot
-            local.respond update: slot, 200, response
 
 
 
@@ -247,14 +257,16 @@ module.exports.manager  = (config = {}) ->
 
                 description: 'get only the middlewares'
                 methods: ['GET', 'POST']
-                handler: ([hubuuid], request, response, statusCode = 200) -> 
+                handler: ([hubuuid,nothing,authenticEntity], {method, body}, response, statusCode = 200) -> 
 
-                    if request.method == 'POST'
+                    console.log moo: 1
+
+                    if method == 'POST'
                         return local.objectNotFound response unless local.hubContext.hubs[hubuuid]
                         notifier = local.hubContext.hubs[hubuuid]
-                        return local.middleware 'insert', notifier, null, request, response, statusCode
+                        return local.middleware 'insert', notifier, null, body, response, statusCode
 
-                    return local.methodNotAllowed response unless request.method == 'GET'
+                    return local.methodNotAllowed response unless method == 'GET'
                     return local.objectNotFound response unless local.hubContext.hubs[hubuuid]
                     notifier = local.hubContext.hubs[hubuuid]
                     local.respond(
@@ -268,14 +280,14 @@ module.exports.manager  = (config = {}) ->
 
                 description: 'get or update or delete a middleware'
                 methods: ['GET', 'PUT', 'POST'] # , 'DELETE']
-                handler: ([hubuuid,slot], request, response, statusCode = 200) -> 
+                handler: ([hubuuid,slot,authenticEntity], {method, body}, response, statusCode = 200) -> 
 
-                    if request.method == 'POST' or request.method == 'PUT'
+                    if method == 'POST' or method == 'PUT'
                         return local.objectNotFound response unless local.hubContext.hubs[hubuuid]
                         notifier = local.hubContext.hubs[hubuuid]
-                        return local.middleware 'upsert', notifier, slot, request, response, statusCode
+                        return local.middleware 'upsert', notifier, slot, body, response, statusCode
 
-                    return local.methodNotAllowed response unless request.method == 'GET'
+                    return local.methodNotAllowed response unless method == 'GET'
                     return local.objectNotFound response unless local.hubContext.hubs[hubuuid]
 
                     notifier = local.hubContext.hubs[hubuuid]
@@ -287,7 +299,7 @@ module.exports.manager  = (config = {}) ->
             '/v1/hubs/:uuid:/middlewares/:slot:/disable':
                 description: 'disable a middleware'
                 methods: ['GET']
-                handler: ([uuid,slot], request, response, statusCode = 200) -> 
+                handler: ([uuid,slot,authenticEntity], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
                     return local.objectNotFound response unless local.hubContext.hubs[uuid]
@@ -302,7 +314,7 @@ module.exports.manager  = (config = {}) ->
             '/v1/hubs/:uuid:/middlewares/:slot:/enable':
                 description: 'enable a middleware'
                 methods: ['GET']
-                handler: ([uuid,slot], request, response, statusCode = 200) -> 
+                handler: ([uuid,slot,authenticEntity], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
                     return local.objectNotFound response unless local.hubContext.hubs[uuid]
@@ -372,55 +384,88 @@ module.exports.manager  = (config = {}) ->
     opts.key     = listen.key
     opts.cert    = listen.cert
 
-    {server, transport} = start opts, local.requestHandler = authenticated (request, response) ->
+    {server, transport} = start opts, local.requestHandler = authenticated (authenticEntity, request, response) ->
 
         #
         # ##undecided1
         # 
-        # * this in not yet reading the inbound data buffer
-        # * nice thing aboud pup sub is more than one pub can be subbing
-        # * $$notice api function could be provided with the request's EventEmitter
-        #       * complexity arises on the question around who makes the response
-        #       * which is what makes the connect stack such a masterstroke, 
-        #       * makes that a question of sequence, 
-        #       * early bird gets the wormhole,
-        #       * and closes it.
-        #  
-        # * and the path
-        # * and the headers
-        #  
+        ##
+        ## * keep in mind (for later) the posibility of an inbound request body containing a stream 
+        ##   of notable size, and the posibility that a $$notice api plugin might ALSO prefer:
+        ##      * to receive it in chunks
+        ##      * that this decoder did not also decode it
+        ## 
+        ## * for now, this decodes the entire inbound stream into memory, with an assumption 
+        ##   that it is a small piece of text content (in a utf8 buffer).
+        ##
+        ######
+            ##
 
-        path = request.url
-
-        if path == '/about' or path == '/'
-            return local.routes["/about"].handler [], request, response
+        body  = ''
+        error = false
+        request.on 'error', -> 
             
-        if path[-1..] == '/' then path = path[0..-2]
+            error = true
 
-        try      
-            [match, version, base, uuid, nested, slot, action] = path.match /(.*)\/(.*)\/(.*)\/(.*)\/(.*)\/(.*)/
-            return local.routes["#{version}/#{base}/:uuid:/#{nested}/:slot:/#{action}"].handler [uuid, slot], request, response
-        try
-            [match, version, base, uuid, nested, slot] = path.match /(.*)\/(.*)\/(.*)\/(.*)\/(.*)/
-            return local.routes["#{version}/#{base}/:uuid:/#{nested}/:slot:"].handler [uuid, slot], request, response
-        try
-            [match, version, base, uuid, nested] = path.match /(.*)\/(.*)\/(.*)\/(.*)/
-            
-            try if [match, uuid, deeper] = path.match /v1\/hubs\/(.*)\/cache\/(.*)/
-                return local.routes["/v1/hubs/:uuid:/cache/**/*"].handler [uuid, deeper], request, response
-            
-            try if [match, uuid, deeper] = path.match /v1\/hubs\/(.*)\/tools\/(.*)/
-                return local.routes["/v1/hubs/:uuid:/tools/**/*"].handler [uuid, deeper], request, response
 
-            return local.routes["#{version}/#{base}/:uuid:/#{nested}"].handler [uuid], request, response
-        try
-            [match, version, base, uuid] = path.match /(.*)\/(.*)\/(.*)/
-            return local.routes["#{version}/#{base}/:uuid:"].handler [uuid], request, response
-        try
-            [match, version, base] = path.match /(.*)\/(.*)/
-            return local.routes["#{version}/#{base}"].handler [], request, response
+        #
+        # TODO: What does node http server do when an inbound stream stops midway
+        #       without 'error' or 'end'. Or 'is that possible'. These running 
+        #       handlers will accumulate in those cases.
+        #
 
-        return local.objectNotFound response
+        request.on 'data', (data) -> body += data.toString()
+        request.on 'end', -> 
+
+            return if error
+            ##
+            ##
+            # * nice thing aboud pub sub is more than one pub can be subbing
+            # * $$notice api function could be provided with the request's EventEmitter
+            #       * complexity arises on the question around who makes the response
+            #       * which is what makes the connect stack such a masterstroke, 
+            #       * makes that a question of sequence, 
+            #       * early bird gets the wormhole,
+            #       * and closes it.
+            # * ?ways? for a $$notice apiFunction to inform this decoder not to load
+            #          an inbound stream into memory
+            #
+            # * and the path
+            # * and the headers
+            #  
+
+            request.body = body
+            path = request.url
+
+            if path == '/about' or path == '/'
+                return local.routes["/about"].handler [], request, response
+                
+            if path[-1..] == '/' then path = path[0..-2]
+
+            try      
+                [match, version, base, uuid, nested, slot, action] = path.match /(.*)\/(.*)\/(.*)\/(.*)\/(.*)\/(.*)/
+                return local.routes["#{version}/#{base}/:uuid:/#{nested}/:slot:/#{action}"].handler [uuid, slot, authenticEntity], request, response
+            try
+                [match, version, base, uuid, nested, slot] = path.match /(.*)\/(.*)\/(.*)\/(.*)\/(.*)/
+                return local.routes["#{version}/#{base}/:uuid:/#{nested}/:slot:"].handler [uuid, slot, authenticEntity], request, response
+            try
+                [match, version, base, uuid, nested] = path.match /(.*)\/(.*)\/(.*)\/(.*)/
+                
+                try if [match, uuid, deeper] = path.match /v1\/hubs\/(.*)\/cache\/(.*)/
+                    return local.routes["/v1/hubs/:uuid:/cache/**/*"].handler [uuid, deeper], request, response
+                
+                try if [match, uuid, deeper] = path.match /v1\/hubs\/(.*)\/tools\/(.*)/
+                    return local.routes["/v1/hubs/:uuid:/tools/**/*"].handler [uuid, deeper, authenticEntity], request, response
+
+                return local.routes["#{version}/#{base}/:uuid:/#{nested}"].handler [uuid], request, response
+            try
+                [match, version, base, uuid] = path.match /(.*)\/(.*)\/(.*)/
+                return local.routes["#{version}/#{base}/:uuid:"].handler [uuid], request, response
+            try
+                [match, version, base] = path.match /(.*)\/(.*)/
+                return local.routes["#{version}/#{base}"].handler [], request, response
+
+            return local.objectNotFound response
 
     server.listen port, address, -> 
         {address, port} = server.address()

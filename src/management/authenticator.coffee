@@ -76,7 +76,7 @@ module.exports.authenticator = (config = {}) ->
                 # * otherwise call onward to the requestHandler
                 # 
 
-                return requestHandler request, response if authenticEntity?
+                return requestHandler authenticEntity, request, response if authenticEntity?
                 requestAuth response
 
         #
@@ -85,7 +85,7 @@ module.exports.authenticator = (config = {}) ->
 
         if username == authentic.username and password == authentic.password
 
-            return requestHandler request, response
+            return requestHandler authentic, request, response
 
         #
         # no. try again!

@@ -2,7 +2,9 @@ testable = undefined
 module.exports._recursor = -> testable
 module.exports.recursor  = (local, type) -> 
 
-    testable = ([uuid, deeper], request, response, statusCode = 200) -> 
+    testable = ([uuid, deeper, authenticEntity], request, response, statusCode = 200) -> 
+
+        # console.log AUTH: authenticEntity
 
         return local.methodNotAllowed response unless request.method == 'GET'
         return local.objectNotFound response unless local.hubContext.hubs[uuid]
