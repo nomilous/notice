@@ -5,6 +5,8 @@ coffee     = require 'coffee-script'
 # {_notifier,notifier} = require '../../lib/notice/notifier'
 {hub,_hub}         = require '../../lib/notice/hub/hub'
 {manager,_manager} = require '../../lib/management/manager'
+# {_middleware}      = require '../../lib/management/middleware'
+{_notifier}        = require '../../lib/notice/notifier'
 {NoticeableClass}  = require '../../lib/tools'
 
 
@@ -668,7 +670,7 @@ describe 'manage', ipso (should, http, https) ->
 
                 it 'at insert', (done) ->
 
-                    client.post 
+                    client.post
 
                         path: '/v1/hubs/2/middlewares/10'
                         'text/javascript': """
@@ -693,7 +695,54 @@ describe 'manage', ipso (should, http, https) ->
 
                 context 'PUT /v1/hubs/:uuid:/middlewares', -> 
 
-                    it 'puts middlware into next free slot'
+                    it '405s', ipso (done) -> 
+
+                        #
+                        # POST is for creating a subordinate entity
+                        # PUT is not
+                        #
+
+                        client.put
+
+                            path: '/v1/hubs/2/middlewares'
+                            'text/coffeescript': ''
+
+                        .then ({statusCode, body}) -> 
+
+                            statusCode.should.equal 405
+                            done()
+
+
+                context 'POST /v1/hubs/:uuid:/middlewares', -> 
+
+                    it 'puts middlware into next free slot', (done) -> 
+
+                        client.post
+
+                            path: '/v1/hubs/2/middlewares'
+                            'text/coffeescript': """
+
+                            title: 'new middleware'
+                            description: 'description'
+                            enabled: true
+                            fn: (next) -> 
+                                next()
+                                return 'moo'
+
+                            """
+
+                        .then ({statusCode, body}) -> 
+
+                            list = _notifier().middleware['Hub Two'].list()
+                            key for key of list
+                            should.exist list[key].slot
+                            list[key].title.should.equal 'new middleware'
+                            list[key].description.should.equal 'description'
+                            list[key].enabled.should.equal true
+                            list[key].fn(->).should.equal 'moo'
+                            done()
+
+
                     it 'responds 200 with the middleware record'
                     it 'errors if slot number is in body'
                     it 'errors if missing title and fn'

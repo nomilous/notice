@@ -115,16 +115,12 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
                     type: errorType || 'Error'
                     message: error.message
 
-
-            console.log MIDDLEWARE: mware
-
-
             #
             # register the middleware onto the hub's bus
             # ------------------------------------------
             # 
 
-            local[ action + 'Middleware'] hub, slot, {}, (err, result) ->
+            local[ action + 'Middleware'] hub, slot, mware, (err, result) ->
 
                 # 
                 # * asynchronous enables persisting middleware registrations
@@ -153,6 +149,16 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
             # * slot argument in body is illegal
             # * PUT is illegal
             # 
+
+            try hub.use 
+                title: middleware.title
+                description: middleware.description
+                enabled: middleware.enabled
+                middleware.fn
+                
+            catch error
+                console.log error
+            #console.log INSERT: middleware
 
             callback()
 

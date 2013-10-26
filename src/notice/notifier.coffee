@@ -63,8 +63,16 @@ module.exports.notifier  = (config = {}) ->
                 "Notifier.create('#{title}') is already defined"
             ) if local.middleware[title]?
 
-
+                                #
+                                # TODO: key on uuid, but ensure unique title
+                                #
             local.middleware[title]        = collection = middleware config
+                                                #
+                                                # the collection of middleware for the 
+                                                # given notifier (hub)
+                                                # 
+
+
             local.notifierMetrics[title]   = nfMetrics = 
 
                 #
