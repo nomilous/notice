@@ -40,7 +40,10 @@ NetworkAlertRouter = notice.hub
             cert: '/path/to/cert'
 
         # 
-        # authenticate: username: 'nomilous', password: '∆'
+        # authenticate: 
+        #     username: 'nomilous'
+        #     password: '∆'
+        #     anything: 'else'
         # 
         # or: 
         # 
@@ -50,7 +53,7 @@ NetworkAlertRouter = notice.hub
             #
             # perform upstream authentication
             # NB: callback null if not authetic
-            # (anthenticatedEntity will likely come in handly later) ##undecided1
+            # (anthenticEntity will likely come in handly later) ##undecided1
             # error is ignored, it just reposts the 401
             # 
 

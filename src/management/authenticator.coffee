@@ -85,7 +85,17 @@ module.exports.authenticator = (config = {}) ->
 
         if username == authentic.username and password == authentic.password
 
-            return requestHandler authentic, request, response
+            #
+            # * authenticEntity includes all but the password from the
+            #   branch at config.manager.authenticate
+            #
+
+            authenticEntity = {}
+            for key of authentic
+                continue if key is 'password'
+                authenticEntity[key] = authentic[key]
+
+            return requestHandler authenticEntity, request, response
 
         #
         # no. try again!

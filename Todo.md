@@ -1,6 +1,6 @@
 #### todo 0.0.12
 
-* get rid of records: [] at /v1/hubs, list by uuid
+* rename config.manager to config.api
 * display middleware function in api
 * PUT, POST, DELETE middleware over api as `text/javascript|coffeescript` hash, including function
 * boomerang capsule (emitter callback/resolve only after full remote hub traversal, throw/reject the same, boomerang is the default, emitters not expecting a result from the remote hub should specify on capsule definition, said emitters receive the callback on hub ack)
