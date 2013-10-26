@@ -51,12 +51,12 @@ module.exports.manager  = (config = {}) ->
             response.end()
 
 
-        middleware: (action, hubuuid, slot, request, response, statusCode) ->
+        middleware: (action, hub, slot, request, response, statusCode) ->
 
-            local[ action + 'Middleware'] uuid, slot, request, response, statusCode
+            local[ action + 'Middleware'] hub, slot, request, response, statusCode
 
 
-        insertMiddleware: (hubuuid, slot, middleware, response, statusCode) -> 
+        insertMiddleware: (hub, slot, middleware, response, statusCode) -> 
 
             # 
             # POST /v1/hubs/:uuid:/middlewares
@@ -70,7 +70,7 @@ module.exports.manager  = (config = {}) ->
             local.respond insert: 'new', 200, response
 
 
-        upsertMiddleware: (hubuuid, slot, middleware, response, statusCode) -> 
+        upsertMiddleware: (hub, slot, middleware, response, statusCode) -> 
 
             #
             # POST or PUT /v1/hubs/:uuid:/middlewares/:slot:
@@ -250,7 +250,9 @@ module.exports.manager  = (config = {}) ->
                 handler: ([hubuuid], request, response, statusCode = 200) -> 
 
                     if request.method == 'POST'
-                        return local.middleware 'insert', hubuuid, null, request, response, statusCode
+                        return local.objectNotFound response unless local.hubContext.hubs[hubuuid]
+                        notifier = local.hubContext.hubs[hubuuid]
+                        return local.middleware 'insert', notifier, null, request, response, statusCode
 
                     return local.methodNotAllowed response unless request.method == 'GET'
                     return local.objectNotFound response unless local.hubContext.hubs[hubuuid]
@@ -269,7 +271,9 @@ module.exports.manager  = (config = {}) ->
                 handler: ([hubuuid,slot], request, response, statusCode = 200) -> 
 
                     if request.method == 'POST' or request.method == 'PUT'
-                        return local.middleware 'upsert', hubuuid, slot, request, response, statusCode
+                        return local.objectNotFound response unless local.hubContext.hubs[hubuuid]
+                        notifier = local.hubContext.hubs[hubuuid]
+                        return local.middleware 'upsert', notifier, slot, request, response, statusCode
 
                     return local.methodNotAllowed response unless request.method == 'GET'
                     return local.objectNotFound response unless local.hubContext.hubs[hubuuid]

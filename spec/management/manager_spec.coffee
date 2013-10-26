@@ -53,6 +53,36 @@ describe 'manage', ipso (should, http, https) ->
                 cert: 'cert'
                 key:  'key'
 
+    
+    context 'middleware', -> 
+
+        beforeEach (done) -> 
+
+            http.createServer = -> listen: -> done()
+            Manager = manager
+                manager:
+                    authenticate: {}
+                    listen: 
+                        port: 9999
+
+            Manager.register 
+
+                hubs: {}
+
+        it 'inserts middleware', (done) -> 
+
+            _manager().insertMiddleware = -> done()
+            _manager().middleware 'insert'
+
+
+        it 'upserts middleware', (done) -> 
+
+            _manager().upsertMiddleware = -> done()
+            _manager().middleware 'upsert'
+
+
+
+
     context 'routes', -> 
 
         hub1 = undefined
