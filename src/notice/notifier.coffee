@@ -29,11 +29,17 @@ module.exports.notifier  = (config = {}) ->
     # --------------------
     # 
     # * $$control - internal events 
+    # * $$delta   - emitted on changed component (##undecided3)
+    #               
+    #               eg. $$delta 'middleware', {authenticEntity:{},context:{},from:{},to:{}}
+    #               where does it go exactly? pertinent: https://github.com/nomilous/phrase/commit/84a1e6e8afc21b58e7c3b1bcccc8d136032692e4
+    # 
     # * $$tick    - configureable ticker
     # * $$health  - periodic process health stats
     #
 
     config.capsule.$$control = {}
+    config.capsule.$$delta   = {}
     config.capsule.$$tick    = {}
     config.capsule.$$health  = 
         before: (done, capsule) -> 

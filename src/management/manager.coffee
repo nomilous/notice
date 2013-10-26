@@ -133,6 +133,9 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
                 # * BUT...
                 #     * `hub.use(...)` equivalent is not able to do the same
                 #     * or at least, not in the same ""direction""...
+                # 
+                # ALSO: ##undecided3
+                # * new middle / changed middleware emits $$delta capsule
                 #
             
                 local.respond {ok: 'good'}, 200, response
