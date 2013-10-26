@@ -73,6 +73,21 @@ module.exports.manager  = (config = {}) ->
 coffeescript
 ============
 
+curl -u user: -H 'Content-Type: text/coffeescript' :20002/v1/hubs/1/middlewares -d '
+
+title: "title"
+fn: (next) -> next()
+
+'
+
+curl -u user: -H 'Content-Type: text/coffeescript' :20002/v1/hubs/1/middlewares -d '
+
+title: "title"
+slot:  1
+fn: (next) -> next()
+
+'
+
 curl -u user: -H 'Content-Type: text/coffeescript' :20002/v1/hubs/1/middlewares/10 -d '
 
 title: "title"
@@ -120,7 +135,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
             # ------------------------------------------
             # 
 
-            local[ action + 'Middleware'] hub, slot, mware, (err, result) ->
+            local[ action + 'Middleware'] hub, slot, mware, (error, result) ->
 
                 # 
                 # * asynchronous enables persisting middleware registrations
@@ -133,6 +148,13 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
                 # ALSO: ##undecided3
                 # * new middle / changed middleware emits $$delta capsule
                 #
+
+                if error?
+                    errorType = try error.constructor.name
+                    return local.badRequest response, error: 
+                        type: errorType || 'Error'
+                        message: error.message
+                        suggestion: error.suggestion
             
                 local.respond result.middleware, result.statusCode, response
 
@@ -149,6 +171,12 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
             # * slot argument in body is illegal
             # * PUT is illegal
             # 
+
+            if middleware.slot?
+
+                error = new Error 'notice: cannot insert middleware with specified slot'
+                error.suggestion = upsert: '[POST,PUT] /v1/hubs/:uuid:/middlewares/:slot:'
+                return callback error
 
             try hub.use 
                 title: middleware.title

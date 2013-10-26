@@ -771,9 +771,37 @@ describe 'manage', ipso (should, http, https) ->
 
                             facto()
 
+                                #409?
+                    it 'responds 400 if slot number is in body', ipso (facto) -> 
 
-                    it 'errors if slot number is in body'
+                        client.post
+
+                            path: '/v1/hubs/2/middlewares'
+                            'text/coffeescript': """
+
+                            title: 'noon moon'
+                            slot:  23
+                            fn: -> 
+
+                            """
+
+                        .then ({statusCode, body}) -> 
+
+                            statusCode.should.equal 400
+                            body.should.eql
+                                error: 
+                                    type: 'Error'
+                                    message: 'notice: cannot insert middleware with specified slot'
+                                    suggestion: 
+                                        upsert: '[POST,PUT] /v1/hubs/:uuid:/middlewares/:slot:'
+
+                            facto()
+
+
+
+
                     it 'errors if missing title and fn'
+                    it 'errors if title already exists on hub'
                     it 'accepts also description and enabled'
                     it 'ignores all other properties (for now)'
                     it 'works!'
@@ -792,140 +820,8 @@ describe 'manage', ipso (should, http, https) ->
                     it 'works!'
 
 
-            #context 'DELETE'
+            context 'delete', -> 
 
-
-
-
-        #     it 'responds 400 on eval failed', (done) -> 
-
-        #         STATUS = undefined
-        #         @writeHead = (statusCode) -> STATUS = statusCode
-                    
-        #         @write = (body) -> 
-        #             STATUS.should.equal 400
-        #             JSON.parse( body ).should.eql 
-        #                 error: 'SyntaxError: Unexpected token )'
-        #             done()
-
-
-        #         Notifier = notifier()
-        #         instance = Notifier.create 'hub name', 1
-        #         instance.use 
-        #             title: 'title'
-        #             (next) -> next()
-
-        #         @serializeHub1 = -> instance.serialize(2)
-        #         @got        = instance.got
-        #         @force      = instance.force
-
-        #         @mockRequest.url = '/v1/hubs/1/middlewares/title/replace'
-        #         @mockRequest.method = 'POST'
-        #         @mockRequest.headers['content-type'] = 'text/javascript'
-        #         @mockRequest.body = """
-
-        #         fn = function )(
-
-        #         """
-        #         _manager().requestHandler @mockRequest, @mockResponse
-
-        #     it 'responds 400 on not a function', (done) -> 
-
-        #         STATUS = undefined
-        #         @writeHead = (statusCode) -> STATUS = statusCode
-                    
-        #         @write = (body) -> 
-        #             STATUS.should.equal 400
-        #             JSON.parse( body ).should.eql 
-        #                 error: 'Error: Requires middleware function'
-        #             done()
-
-
-        #         Notifier = notifier()
-        #         instance = Notifier.create 'hub name', 1
-        #         instance.use 
-        #             title: 'title'
-        #             (next) -> next()
-
-        #         @serializeHub1 = -> instance.serialize(2)
-        #         @got        = instance.got
-        #         @force      = instance.force
-
-        #         @mockRequest.url = '/v1/hubs/1/middlewares/title/replace'
-        #         @mockRequest.method = 'POST'
-        #         @mockRequest.headers['content-type'] = 'text/javascript'
-        #         @mockRequest.body = """
-
-        #         fn = 1
-
-        #         """
-        #         _manager().requestHandler @mockRequest, @mockResponse
-
-
-        #     it 'replaces the middleware', (done) -> 
-
-        #         Notifier = notifier()
-        #         instance = Notifier.create 'hub name', 1
-        #         instance.use 
-        #             title: 'title'
-        #             (next) -> next()
-
-        #         @serializeHub1 = -> instance.serialize(2)
-        #         @got        = instance.got
-        #         @force      = instance.force
-
-        #         @mockRequest.url = '/v1/hubs/1/middlewares/title/replace'
-        #         @mockRequest.method = 'POST'
-        #         @mockRequest.headers['content-type'] = 'text/javascript'
-        #         @mockRequest.body = """
-        #         fn = function() {  throw 'okgood'; }
-        #         """
-        #         _manager().requestHandler @mockRequest, @mockResponse
-
-        #         instance.event (err, capsule) -> 
-
-        #             err.should.equal 'okgood'
-        #             done()
-
-        #     it 'compiles as coffeescript according to content-type', (testDone) -> 
-
-        #         Notifier = notifier()
-        #         instance = Notifier.create 'hub name', 1
-        #         instance.cache = TESTDONE: testDone
-        #         instance.use 
-        #             title: 'title'
-        #             (next) -> next()
-
-        #         @serializeHub1 = -> instance.serialize(2)
-        #         @got        = instance.got
-        #         @force      = instance.force
-
-        #         @mockRequest.url = '/v1/hubs/1/middlewares/title/replace'
-        #         @mockRequest.method = 'POST'
-        #         @mockRequest.headers['content-type'] = 'text/coffeescript'
-        #         @mockRequest.body = """
-
-        #         fn = (next, capsule, {cache}) -> 
-                    
-        #             capsule.$$set
-
-        #                 Done: false
-        #                 watched: (change) -> cache.TESTDONE() if change.to 
-
-        #             next()
-        #         """
-        #         _manager().requestHandler @mockRequest, @mockResponse
-
-        #         instance.event (err, capsule) -> 
-
-        #             #console.log err
-        #             capsule.Done = true
-                    
-
-
-
-        #     # as text/javascript or text/coffee-script 
-        # context 'DELETE /v1/hubs/:uuid:/middlewares/:title:', ->
 
 
         context 'POST /vi/hubs/:uuid:/configure', -> 

@@ -113,6 +113,27 @@ hub = NetworkAlertRouter.create( ...
 }
 ```
 
+```bash
+curl -u user: -H 'Content-Type: text/coffeescript' :20002/v1/hubs/1/middlewares -d '
+
+title: "title"
+slot:  1
+fn: (next) -> next()
+
+'
+```
+```json
+{
+  "error": {
+    "type": "Error",
+    "message": "notice: cannot insert middleware with specified slot",
+    "suggestion": {
+      "upsert": "[POST,PUT] /v1/hubs/:uuid:/middlewares/:slot:"
+    }
+  }
+}
+```
+
 
 **pending consideration**
 
