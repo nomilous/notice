@@ -834,7 +834,7 @@ describe 'manage', ipso (should, http, https) ->
                             path: '/v1/hubs/2/middlewares'
                             'text/coffeescript': """
 
-                            title: 'two the moon'
+                            title: 'three the spin'
                             
                             """
 
