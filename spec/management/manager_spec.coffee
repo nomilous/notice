@@ -147,6 +147,7 @@ describe 'manage', ipso (should, http, https) ->
 
         hub1 = undefined
         hub2 = undefined
+        hub3 = undefined
         client = undefined
 
         before (done) -> 
@@ -170,11 +171,13 @@ describe 'manage', ipso (should, http, https) ->
                             
 
                 -> Hub.create title: 'Hub Two', uuid: 2
+                -> Hub.create title: 'pristine', uuid: 3
 
             ]).then(
                 (hubs) -> 
                     hub1 = hubs[0]
                     hub2 = hubs[1]
+                    hub3 = hubs[2]
 
                     hub2.use slot: 4, title: 'four the geomagnetic shield', (next) -> next()
 
@@ -195,7 +198,16 @@ describe 'manage', ipso (should, http, https) ->
 
                             'text/javascript':
                                 encode: (opts) -> 
-                                    opts.body = opts['text/javascript']
+                                    object = opts['text/javascript']
+                                    if typeof object is 'object'
+
+                                        fn = object.fn
+                                        object.fn = '__SUBSTITUTE__'
+                                        string = JSON.stringify object
+                                        string = string.replace /\"__SUBSTITUTE__\"/, fn.toString()
+                                        opts.body = string
+
+                                    else opts.body = object
                                     opts.headers ||= {}
                                     opts.headers['content-type'] = 'text/javascript'
 
@@ -345,6 +357,24 @@ describe 'manage', ipso (should, http, https) ->
                     '2':
                         title: 'Hub Two'
                         uuid: 2
+                        stats: 
+                            pipeline:
+                                input: 
+                                    count: 0
+                                processing:
+                                    count: 0
+                                output:
+                                    count: 0
+                                error: 
+                                    usr: 0
+                                    sys: 0
+                                cancel:
+                                    usr: 0
+                                    sys: 0
+
+                    '3':
+                        title: 'pristine'
+                        uuid: 3
                         stats: 
                             pipeline:
                                 input: 
@@ -895,7 +925,27 @@ describe 'manage', ipso (should, http, https) ->
                             facto()
 
 
-                    it 'works!'
+                    it 'works!', ipso (facto) -> 
+
+                        client.post
+                            path: '/v1/hubs/3/middlewares'
+                            'text/javascript': 
+
+                                title: 'it works'
+                                fn: (next, capsule) -> 
+
+                                    console.log 'XXXX'
+                                    capsule.it = 'WORKS!'
+                                    next()
+
+                        .then ({statusCode, body}) -> 
+
+                            hub3.event().then (capsule) -> 
+
+                                capsule.should.eql it: 'WORKS!'
+                                facto()
+
+
 
             context 'upsert', -> 
 
