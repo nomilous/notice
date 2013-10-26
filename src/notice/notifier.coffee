@@ -125,6 +125,18 @@ module.exports.notifier  = (config = {}) ->
                 traversal.cache = notifier.cache
                 traversal.tools = notifier.tools
 
+                #
+                # ##undecided3 
+                # 
+                # * middleware access to all local "inprocess" hubs 
+                #      * already have superscope on a common ancestor hub defn
+                #      * per the factory of factories approach employed here
+                # 
+                # * to enable capsule to ""jump"" into a parallel hub's pipeline
+                # * a possible vector to enable phrase tree as hub star without specific client uplinks
+                # 
+                # traversal.hubs = allLocalHubs() # or something
+
 
                 cancelled = false
                 localMetrics.input.count++
