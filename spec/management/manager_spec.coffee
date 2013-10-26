@@ -148,6 +148,21 @@ describe 'manage', ipso (should, http, https) ->
                     hub2 = hubs[1]
 
                     client = Client.create
+
+                        content: 
+
+                            #
+                            # TODO: move this to dinkum as one of the bundled 
+                            #       content-type serailizers
+                            #
+
+                            'text/coffeescript':
+                                encode: (opts) -> 
+                                    opts.body = opts['text/coffeescript']
+                                    opts.headers ||= {}
+                                    opts.headers['content-type'] = 'text/coffeescript'
+
+
                         transport: 'http'
                         port: 40404
                         authenticator:
@@ -618,6 +633,32 @@ describe 'manage', ipso (should, http, https) ->
                         done()
 
 
+            context '400s on compile problems', (done) -> 
+
+                it 'at insert', ipso (done) -> 
+
+                    client.post 
+
+                        path: '/v1/hubs/2/middlewares/10'
+                        'text/coffeescript': 'when'
+
+                    .then ({statusCode, body}) -> 
+
+                        statusCode.should.equal 400
+                        body.should.eql 
+
+                            error: 
+                                type: 'SyntaxError'
+                                message: 'unexpected WHEN'
+                                location: 
+                                    first_line: 0
+                                    first_column: 0
+                                    last_line: 0
+                                    last_column: 3
+
+                        done()
+
+
             context 'PUT', -> 
 
             context 'POST', ->
@@ -626,47 +667,6 @@ describe 'manage', ipso (should, http, https) ->
             #context 'DELETE'
 
 
-
-
-
-
-        # context 'POST /v1/hubs/:uuid:/middlewares/:title:/replace', -> 
-
-        #     it 'accepts only post', (done) -> 
-
-        #         @writeHead = (statusCode) ->
-        #             statusCode.should.equal 405
-        #             done()
-
-        #         @mockRequest.url = '/v1/hubs/1/middlewares/title/replace'
-        #         @mockRequest.method = 'GET'
-        #         _manager().requestHandler @mockRequest, @mockResponse
-
-
-        #     xit 'accepts text/javascript', (done) -> 
-
-        #         @writeHead = (statusCode) ->
-        #             statusCode.should.equal 200
-        #             done()
-
-        #         @mockRequest.url = '/v1/hubs/1/middlewares/title/replace'
-        #         @mockRequest.method = 'POST'
-        #         @mockRequest.headers['content-type'] = 'text/javascript'
-        #         @mockRequest.body = ''
-        #         _manager().requestHandler @mockRequest, @mockResponse
-
-
-        #     xit 'accepts text/coffee-script', (done) ->
-
-        #         @writeHead = (statusCode) ->
-        #             statusCode.should.equal 200
-        #             done()
-
-        #         @mockRequest.url = '/v1/hubs/1/middlewares/title/replace'
-        #         @mockRequest.method = 'POST'
-        #         @mockRequest.headers['content-type'] = 'text/coffeescript'
-        #         @mockRequest.body = ''
-        #         _manager().requestHandler @mockRequest, @mockResponse
 
 
         #     it 'responds 400 on eval failed', (done) -> 

@@ -50,6 +50,11 @@ module.exports.manager  = (config = {}) ->
             response.write body
             response.end()
 
+        badRequest: (response, data) -> 
+
+            local.respond data, 400, response
+
+
 
         middleware: (action, hub, slot, contentType, body, response, statusCode) ->
 
@@ -61,13 +66,16 @@ module.exports.manager  = (config = {}) ->
 
             # curl -u user: -H 'Content-Type: text/coffeescript' :20002/v1/hubs/1/middlewares/10 -d '->'
 
-            mware = if contentType == 'text/coffeescript' 
+            try mware = 
+                if contentType == 'text/coffeescript' then coffee.compile body, bare: true
+                else body
 
-                coffee.compile body, bare: true
+            catch error 
 
-            else body
-
-
+                return local.badRequest response, error: 
+                    type: error.constructor.name
+                    message: error.message
+                    location: error.location 
 
 
             console.log
