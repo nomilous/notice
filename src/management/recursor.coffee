@@ -2,7 +2,7 @@ testable = undefined
 module.exports._recursor = -> testable
 module.exports.recursor  = (local, type) -> 
 
-    testable = ([uuid, deeper, authenticEntity], request, response, statusCode = 200) -> 
+    testable = ([query,uuid, deeper, authenticEntity], request, response, statusCode = 200) -> 
 
         # console.log AUTH: authenticEntity
 

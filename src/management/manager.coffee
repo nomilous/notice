@@ -274,7 +274,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
 
                 description: 'get a hub'
                 methods: ['GET']
-                handler: ([uuid], request, response, statusCode = 200) -> 
+                handler: ([query,uuid], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
                     return local.objectNotFound response unless local.hubContext.hubs[uuid]
@@ -286,7 +286,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
 
                 description: 'get only the hub stats'
                 methods: ['GET']
-                handler: ([uuid], request, response, statusCode = 200) -> 
+                handler: ([query,uuid], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
                     return local.objectNotFound response unless local.hubContext.hubs[uuid]
@@ -302,7 +302,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
 
                 description: 'get only the recent errors'
                 methods: ['GET']
-                handler: ([uuid], request, response, statusCode = 200) -> 
+                handler: ([query,uuid], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
                     return local.objectNotFound response unless local.hubContext.hubs[uuid]
@@ -324,7 +324,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
 
                 description: 'get output from a serailization of the traversal cache'
                 methods: ['GET']
-                handler: ([uuid], request, response, statusCode = 200) -> 
+                handler: ([query,uuid], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
                     return local.objectNotFound response unless local.hubContext.hubs[uuid]
@@ -339,7 +339,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
 
                 description: 'get nested subkey from the cache tree'
                 methods: ['GET'] #, 'POST'] #, 'DELETE']
-                handler: ([uuid, deeper], request, response, statusCode = 200) -> 
+                handler: ([query,uuid,deeper], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
                     return local.objectNotFound response unless local.hubContext.hubs[uuid]
@@ -374,7 +374,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
 
                 description: 'pending'
                 methods: ['GET']
-                handler: ([uuid], request, response, statusCode = 200) -> 
+                handler: ([query,uuid], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
                     return local.objectNotFound response unless local.hubContext.hubs[uuid]
@@ -391,7 +391,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
                 description: 'get only the middlewares'
                 methods: ['GET', 'POST']
                 accepts: ['text/javascript', 'text/coffeescript']
-                handler: ([hubuuid,nothing,authenticEntity], {method, headers, body}, response, statusCode = 200) -> 
+                handler: ([query,hubuuid,nothing,authenticEntity], {method, headers, body}, response, statusCode = 200) -> 
 
                     if method == 'POST'
                         return local.objectNotFound response unless local.hubContext.hubs[hubuuid]
@@ -413,7 +413,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
                 description: 'get or update or delete a middleware'
                 methods: ['GET', 'PUT', 'POST'] # , 'DELETE']
                 accepts: ['text/javascript', 'text/coffeescript']
-                handler: ([hubuuid,slot,authenticEntity], {method, headers, body}, response, statusCode = 200) -> 
+                handler: ([query,hubuuid,slot,authenticEntity], {method, headers, body}, response, statusCode = 200) -> 
 
                     if method == 'POST' or method == 'PUT'
                         return local.objectNotFound response unless local.hubContext.hubs[hubuuid]
@@ -432,7 +432,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
             '/hubs/:uuid:/middlewares/:slot:/disable':
                 description: 'disable a middleware'
                 methods: ['GET']
-                handler: ([uuid,slot,authenticEntity], request, response, statusCode = 200) -> 
+                handler: ([query,uuid,slot,authenticEntity], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
                     return local.objectNotFound response unless local.hubContext.hubs[uuid]
@@ -447,7 +447,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
             '/hubs/:uuid:/middlewares/:slot:/enable':
                 description: 'enable a middleware'
                 methods: ['GET']
-                handler: ([uuid,slot,authenticEntity], request, response, statusCode = 200) -> 
+                handler: ([query,uuid,slot,authenticEntity], request, response, statusCode = 200) -> 
 
                     return local.methodNotAllowed response unless request.method == 'GET'
                     return local.objectNotFound response unless local.hubContext.hubs[uuid]
@@ -569,6 +569,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
 
             request.body = body
             path = request.url
+            try [match,path,query] = path.match /(.*)\?(.*)/
 
             #
             # aliases
@@ -582,6 +583,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
             # /hub/1/mware/1      == /hubs/1/middlewares/1
             # /hub/1/mware      (ignored)
 
+            
             path = path.replace /\/hub\//, '/hubs/'
             path = path.replace /\/middleware\//, '/middlewares/'
             path = path.replace /\/mwares/, '/middlewares'
@@ -594,26 +596,26 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
 
             try 
                 [match, base, uuid, nested, slot, action] = path.match /(.*)\/(.*)\/(.*)\/(.*)\/(.*)/
-                return local.routes["#{base}/:uuid:/#{nested}/:slot:/#{action}"].handler [uuid, slot, authenticEntity], request, response
+                return local.routes["#{base}/:uuid:/#{nested}/:slot:/#{action}"].handler [query, uuid, slot, authenticEntity], request, response
             try
                 [match, base, uuid, nested, slot] = path.match /(.*)\/(.*)\/(.*)\/(.*)/
-                return local.routes["#{base}/:uuid:/#{nested}/:slot:"].handler [uuid, slot, authenticEntity], request, response
+                return local.routes["#{base}/:uuid:/#{nested}/:slot:"].handler [query, uuid, slot, authenticEntity], request, response
             try
                 [match, base, uuid, nested] = path.match /(.*)\/(.*)\/(.*)/
                 
                 try if [match, uuid, deeper] = path.match /\/hubs\/(.*)\/cache\/(.*)/
-                    return local.routes["/hubs/:uuid:/cache/**/*"].handler [uuid, deeper], request, response
+                    return local.routes["/hubs/:uuid:/cache/**/*"].handler [query, uuid, deeper], request, response
                 
                 try if [match, uuid, deeper] = path.match /\/hubs\/(.*)\/tools\/(.*)/
-                    return local.routes["/hubs/:uuid:/tools/**/*"].handler [uuid, deeper, authenticEntity], request, response
+                    return local.routes["/hubs/:uuid:/tools/**/*"].handler [query, uuid, deeper, authenticEntity], request, response
 
-                return local.routes["#{base}/:uuid:/#{nested}"].handler [uuid], request, response
+                return local.routes["#{base}/:uuid:/#{nested}"].handler [query, uuid], request, response
             try
                 [match, base, uuid] = path.match /\/(.*)\/(.*)/
-                return local.routes["/#{base}/:uuid:"].handler [uuid], request, response
+                return local.routes["/#{base}/:uuid:"].handler [query, uuid], request, response
             try
                 [match, base] = path.match /\/(.*)/
-                return local.routes["/#{base}"].handler [], request, response
+                return local.routes["/#{base}"].handler [query], request, response
 
             return local.objectNotFound response
 

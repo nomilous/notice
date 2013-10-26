@@ -3,12 +3,16 @@ should     = require 'should'
 
 describe 'recursor', -> 
 
+    before -> 
+
+        @query = undefined
+
     it 'responds method not allowed unless GET', (done) -> 
 
         instance = recursor
             methodNotAllowed: -> done()
 
-        instance [], method: 'POST'
+        instance [@query], method: 'POST'
 
 
     it 'responds object not found id no notifier / hub at uuid', (done) -> 
@@ -17,7 +21,7 @@ describe 'recursor', ->
             objectNotFound: -> done()
             hubContext: hubs: {}
 
-        instance ['UUID'], { method: 'GET' }
+        instance [@query, 'UUID'], { method: 'GET' }
 
 
     it 'serializes the notifier at level2', (done) -> 
@@ -31,7 +35,7 @@ describe 'recursor', ->
                             done()
                             throw 'go no further'
 
-        try instance ['UUID'], { method: 'GET' }
+        try instance [@query, 'UUID'], { method: 'GET' }
 
 
     it 'responds object not found if searialization[type] does not exist', (done) -> 
@@ -46,7 +50,7 @@ describe 'recursor', ->
 
             'type'
 
-        instance ['UUID'], { method: 'GET' }
+        instance [@query, 'UUID'], { method: 'GET' }
 
 
     it 'responds with 200 and serializeation[type] as JSON string', (done) -> 
@@ -65,7 +69,7 @@ describe 'recursor', ->
 
         STATUS = undefined
         RESULT = undefined
-        instance ['UUID'], { method: 'GET' }, 
+        instance [@query, 'UUID'], { method: 'GET' }, 
 
             writeHead: (statusCode) -> STATUS = statusCode
             write: (result) -> RESULT = result
@@ -100,7 +104,7 @@ describe 'recursor', ->
 
             'type'
 
-        instance ['UUID'], { method: 'GET' }, 
+        instance [@query, 'UUID'], { method: 'GET' }, 
             end: ->
             writeHead: ->
             write: (result) -> 
@@ -134,7 +138,7 @@ describe 'recursor', ->
 
             'type'
 
-        instance ['UUID'], { method: 'GET' }, 
+        instance [@query, 'UUID'], { method: 'GET' }, 
             end: ->
             writeHead: ->
             write: (result) -> 
@@ -167,7 +171,7 @@ describe 'recursor', ->
                                     here: [4,five: 5,6]
             'type'
 
-        instance ['UUID','more/here/1'], { method: 'GET' }, 
+        instance [@query, 'UUID','more/here/1'], { method: 'GET' }, 
             end: ->
             writeHead: ->
             write: (result) -> 
@@ -195,7 +199,7 @@ describe 'recursor', ->
 
             'type'
 
-        instance ['UUID','test/deeper/AND/MORE/tree'], { method: 'GET' }, 
+        instance [@query, 'UUID','test/deeper/AND/MORE/tree'], { method: 'GET' }, 
             end: ->
             writeHead: ->
             write: (result) -> 
@@ -221,7 +225,7 @@ describe 'recursor', ->
 
             'type'
 
-        instance ['UUID','test/deeper2/AND/MORE/tree'], { method: 'GET' }, 
+        instance [@query, 'UUID','test/deeper2/AND/MORE/tree'], { method: 'GET' }, 
             end: ->
             writeHead: ->
             write: (result) -> 
