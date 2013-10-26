@@ -36,7 +36,11 @@ stats
 middleware
 
 * middleware can be inserted at other than slot 1 (to intentionally leave gaps in the sequence, for emergencies)
+
+api
+
 * middleware listed in api `V1/hubs/:uuid:/middlewares`
 * middleware accessable at slot number in api `V1/hubs/:uuid:/middlewares/:slot:`
 * POST /hubs/:uuid:/middlewares to insert middleware onto the pipeline's tail 
 * removed /v1 from api paths
+* config.manager.* moved to config.api.*

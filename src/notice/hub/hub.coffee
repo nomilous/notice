@@ -23,8 +23,8 @@ module.exports.hub  = (config = {}) ->
     # 
 
     config.running ||= {}
-    if config.manager? and not config.running.manager?
-        config.running.manager = manager config
+    if config.api? and not config.running.api?
+        config.running.api = manager config
 
 
     testable = local = 
@@ -118,8 +118,8 @@ module.exports.hub  = (config = {}) ->
     # * LATER manager also has access to the Hub.create()
     # 
 
-    if config.running.manager? 
-        config.running.manager.register local
+    if config.running.api? 
+        config.running.api.register local
 
 
 

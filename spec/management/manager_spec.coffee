@@ -31,15 +31,15 @@ describe 'manage', ipso (should, http, https) ->
 
     it 'throws on missing port', (done) -> 
 
-        try manager manager: listen: {}, authenticate: {}
+        try manager api: listen: {}, authenticate: {}
         catch error
-            error.should.match /manager requires opt config.manager.listen.port/
+            error.should.match /api requires opt config.api.listen.port/
             done()
 
     it 'creates an http server', (done) -> 
 
         http.createServer = -> done(); listen: ->
-        manager manager: 
+        manager api: 
             authenticate: {}
             listen: port: 3210
 
@@ -51,7 +51,7 @@ describe 'manage', ipso (should, http, https) ->
         # 
 
         https.createServer = -> done(); listen: ->
-        manager manager: 
+        manager api: 
             authenticate: {}
             listen:
                 port: 3210
@@ -67,7 +67,7 @@ describe 'manage', ipso (should, http, https) ->
 
             http.createServer = -> listen: -> done()
             Manager = manager
-                manager:
+                api:
                     authenticate: {}
                     listen: 
                         port: 9999
@@ -154,7 +154,7 @@ describe 'manage', ipso (should, http, https) ->
 
             Hub = hub
 
-                manager:
+                api:
                     listen: port: 40404
                     authenticate: 
                         username: 'user'

@@ -21,7 +21,7 @@ describe 'authenticator', ->
     it 'decorates an http request handler', (done) -> 
 
         authenticate = authenticator 
-            manager: 
+            api: 
                 authenticate: -> 
 
         decoratedHandler = authenticate (req, res) -> 
@@ -40,7 +40,7 @@ describe 'authenticator', ->
     it 'responds with 401 if no auth provided', (done) -> 
 
         authenticate = authenticator 
-            manager: 
+            api: 
                 authenticate: -> 
 
         @headers = {}
@@ -57,7 +57,7 @@ describe 'authenticator', ->
     it 'uses configured upstream authorization call', (done) -> 
 
         authenticate = authenticator 
-            manager: 
+            api: 
                 authenticate: (username, password, callback) -> 
                     username.should.equal 'username'
                     password.should.equal 'password'
@@ -71,7 +71,7 @@ describe 'authenticator', ->
     it 'does not call the request handler if not authentic', (done) -> 
 
         authenticate = authenticator 
-            manager: 
+            api: 
                 authenticate: (username, password, callback) -> 
                     callback null, null
                                     #
@@ -89,7 +89,7 @@ describe 'authenticator', ->
     it 'uses configured "hard"coded username and password', (done) -> 
 
         authenticate = authenticator 
-            manager: 
+            api: 
                 authenticate:
                     username: 'username'
                     password: 'password'
@@ -103,7 +103,7 @@ describe 'authenticator', ->
 
         @headers = authorization: 'Basic ' + new Buffer('username:wrongpassword', 'utf8').toString 'base64'
         authenticate = authenticator 
-            manager: 
+            api: 
                 authenticate:
                     username: 'username'
                     password: 'password'

@@ -24,14 +24,14 @@ describe 'hub', ->
             done()
 
 
-        it 'starts a manager if configured and shares it on the definition config', (done) -> 
+        it 'starts a api if configured and shares it on the definition config', (done) -> 
 
             config =
-                manager: 
+                api: 
                     authenticate: {}
                     listen: port: 33333
             hub config
-            should.exist config.running.manager
+            should.exist config.running.api
             should.exist _manager().register
             should.exist _manager().routes
             done()

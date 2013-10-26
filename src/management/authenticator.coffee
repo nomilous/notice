@@ -2,9 +2,9 @@
 
 module.exports.authenticator = (config = {}) -> 
 
-    authentic = try config.manager.authenticate
+    authentic = try config.api.authenticate
     unless authentic?
-        throw missingConfig 'config.manager.authenticate', 'manager'
+        throw missingConfig 'config.api.authenticate', 'manager'
 
 
     requestAuth = (response) -> 
@@ -87,7 +87,7 @@ module.exports.authenticator = (config = {}) ->
 
             #
             # * authenticEntity includes all but the password from the
-            #   branch at config.manager.authenticate
+            #   branch at config.api.authenticate
             #
 
             authenticEntity = {}

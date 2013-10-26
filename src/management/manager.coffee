@@ -10,14 +10,14 @@ testable               = undefined
 module.exports._manager = -> testable
 module.exports.manager  = (config = {}) ->
 
-    try listen    = config.manager.listen
+    try listen    = config.api.listen
     authenticated = authenticator config
 
     unless listen?
-        throw missingConfig 'config.manager.listen', 'manager' 
+        throw missingConfig 'config.api.listen', 'api' 
 
     unless typeof listen.port is 'number'
-        throw missingConfig 'config.manager.listen.port', 'manager'
+        throw missingConfig 'config.api.listen.port', 'api'
 
     testable = local = 
 

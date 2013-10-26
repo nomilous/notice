@@ -32,7 +32,7 @@ NetworkAlertRouter = notice.hub
     # introspection stats by capsule/middleware not yet implemented
     # 
 
-    manager:
+    api:
         listen: 
             # hostname: 'localhost'
             port: 20002
