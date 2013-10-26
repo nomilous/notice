@@ -17,7 +17,7 @@ module.exports.recursor  = (local, type) ->
         object = searialized[type]
         path   = try deeper.split '/'
 
-        recurse request, object, path, {}, (error, result) ->
+        recurse authenticEntity, request, object, path, {}, (error, result) ->
 
             if deeper? 
 
@@ -39,7 +39,7 @@ module.exports.recursor  = (local, type) ->
             response.end()
 
 
-recurse = (request, object, path, result, callback) -> 
+recurse = (authenticEntity, request, object, path, result, callback) -> 
 
     request.$$root     ||= result  # keep original root for termination case beyond async call
     request.$$callback ||= callback
@@ -63,7 +63,7 @@ recurse = (request, object, path, result, callback) ->
             when 'object'
                 
                 result[key] = {}
-                recurse request, object[key], path, result[key]  # huh?? , callback
+                recurse authenticEntity, request, object[key], path, result[key]  # huh?? , callback
 
             when 'number', 'string'
 
@@ -91,17 +91,20 @@ recurse = (request, object, path, result, callback) ->
                     #
 
                     request.$$walking = true
-                    return object[key] {opts: '##undecided1'}, (error, nested) -> 
+                    return object[key] 
+                        authenticEntity: authenticEntity
+                        additional: '##undecided1'
+                        (error, nested) -> 
 
-                        result[key] = nested
+                            result[key] = nested
 
-                        #
-                        # stopping at one jump... (some impendiments on the nesteds)
-                        # recurse request, object[key], path, result[key]
-                        # 
+                            #
+                            # stopping at one jump... (some impendiments on the nesteds)
+                            # recurse request, object[key], path, result[key]
+                            # 
 
-                        request.$$callback null, request.$$root if typeof request.$$callback is 'function' # and path.length == 0
-                        
+                            request.$$callback null, request.$$root if typeof request.$$callback is 'function' # and path.length == 0
+                            
 
 
     #

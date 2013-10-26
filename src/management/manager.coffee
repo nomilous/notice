@@ -62,6 +62,13 @@ module.exports.manager  = (config = {}) ->
 
         middleware: (action, hub, slot, contentType, body, response, statusCode) ->
 
+            #
+            # todo: (##undecided1) consider this as a $$notice api fuction on the middleware collection
+            #       apiFn.$$notice { methods: [allowed, list] }
+            #       complexity: the $$notice api recursive uri walk wants to step right 
+            #                   through the call and into the result tree
+            #
+
             return local.unsupportedMedia response unless (
                 contentType == 'text/javascript' or
                 contentType == 'text/coffeescript'

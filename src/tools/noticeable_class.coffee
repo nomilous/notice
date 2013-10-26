@@ -21,6 +21,8 @@ module.exports = class NoticeableClass
             # 
             # 
             # 
+
+            console.log NOTICE_OPTS: opts
             
             setTimeout (->
 
