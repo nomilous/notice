@@ -1,6 +1,5 @@
 #### todo 0.0.12
 
-* rename config.manager to config.api
 * display middleware function in api
 * PUT, POST, DELETE middleware over api as `text/javascript|coffeescript` hash, including function
 * boomerang capsule (emitter callback/resolve only after full remote hub traversal, throw/reject the same, boomerang is the default, emitters not expecting a result from the remote hub should specify on capsule definition, said emitters receive the callback on hub ack)
@@ -8,6 +7,8 @@
 
 #### todo ___
 
+* transport adaptor TLS   (with client and server certs)
+* (maybe) transport adaptor HTTPS (without sockets)
 * hub cluster
 
 
