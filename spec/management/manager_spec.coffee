@@ -715,14 +715,14 @@ describe 'manage', ipso (should, http, https) ->
 
                 context 'POST /v1/hubs/:uuid:/middlewares', -> 
 
-                    it 'puts middlware into next free slot', (done) -> 
+                    it 'puts middlware into next free slot', ipso (done) -> 
 
                         client.post
 
                             path: '/v1/hubs/2/middlewares'
                             'text/coffeescript': """
 
-                            title: 'new middleware'
+                            title: 'intro'
                             description: 'description'
                             enabled: true
                             fn: (next) -> 
@@ -736,14 +736,42 @@ describe 'manage', ipso (should, http, https) ->
                             list = _notifier().middleware['Hub Two'].list()
                             key for key of list
                             should.exist list[key].slot
-                            list[key].title.should.equal 'new middleware'
+                            list[key].title.should.equal 'intro'
                             list[key].description.should.equal 'description'
+                            list[key].type.should.equal 'usr'
                             list[key].enabled.should.equal true
                             list[key].fn(->).should.equal 'moo'
                             done()
 
 
-                    it 'responds 200 with the middleware record'
+                    it 'responds 201 with the new middleware record', ipso (facto) -> 
+
+                        client.post
+
+                            path: '/v1/hubs/2/middlewares'
+                            'text/coffeescript': """
+
+                            title: 'one the sun'
+                            fn: -> 
+
+                            """
+
+                        .then ({statusCode, body}) -> 
+
+                            list = _notifier().middleware['Hub Two'].list()
+                            key for key of list
+                            slot = list[key].slot
+
+                            statusCode.should.equal 201
+                            body.should.eql 
+                                slot: slot
+                                title: 'one the sun'
+                                type: 'usr'
+                                enabled: true
+
+                            facto()
+
+
                     it 'errors if slot number is in body'
                     it 'errors if missing title and fn'
                     it 'accepts also description and enabled'

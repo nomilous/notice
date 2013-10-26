@@ -134,7 +134,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
                 # * new middle / changed middleware emits $$delta capsule
                 #
             
-                local.respond {ok: 'good'}, 200, response
+                local.respond result.middleware, result.statusCode, response
 
 
 
@@ -155,12 +155,17 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
                 description: middleware.description
                 enabled: middleware.enabled
                 middleware.fn
-                
+
             catch error
                 console.log error
-            #console.log INSERT: middleware
+            
 
-            callback()
+            list = hub.serialize(2).middlewares
+            latest = list[key] for key of list
+
+            callback null, 
+                statusCode: 201
+                middleware: latest
 
 
         upsertMiddleware: (hub, slot, middleware, callback) -> 
