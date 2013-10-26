@@ -176,6 +176,8 @@ describe 'manage', ipso (should, http, https) ->
                     hub1 = hubs[0]
                     hub2 = hubs[1]
 
+                    hub2.use slot: 4, title: 'four the geomagnetic shield', (next) -> next()
+
                     client = Client.create
 
                         content: 
@@ -535,32 +537,31 @@ describe 'manage', ipso (should, http, https) ->
                             done()
 
 
-                it './middlewares', ipso (done) -> 
+            it './middlewares', ipso (done) -> 
 
-                    hub2.use
+                hub2.use
 
-                        title: 'Middleware Title'
-                        description: 'It helps'
-                        (next) -> next()
+                    title: 'Middleware Title'
+                    description: 'It helps'
+                    (next) -> next()
 
-                    hub2.use
+                hub2.use
+                
+                    title: 'Another'
+                    (next) -> next()
+
+
+                client.get 
+                    path: '/v1/hubs/2/middlewares'
                     
-                        title: 'Another'
-                        (next) -> next()
+                .then ({statusCode, body}) ->
+                        count = 0
+                        for key of body
+                            count++ if body[key].title == 'Middleware Title'
+                            count++ if body[key].title == 'Another'
+                            done() if count == 2
 
 
-                    client.get 
-                        path: '/v1/hubs/2/middlewares'
-                        
-                    .then ({statusCode, body}) ->
-
-                            body[1].slot.should.equal 1
-                            body[1].title.should.equal 'Middleware Title'
-                            body[1].type.should.equal 'usr'
-                            body[1].enabled.should.equal true
-
-                            should.exist body[2]
-                            done()
 
 
         context '/v1/hubs/:uuid:/middlewares/:slot:', ->
@@ -843,13 +844,38 @@ describe 'manage', ipso (should, http, https) ->
                             statusCode.should.equal 400
                             should.exist body.error
                             facto todo: 'api error distinctions'
-                                    #
-                                    # missing mech for 'which test' context
-                                    #
+                                # idea: """
+                                # * todo missing mech for 'which test' context
+                                # * perhaps source diff for new todo context
+                                # * how to stop repeat?
+                                # * calling specfile can be discerned
+                                # """
 
-                            
+                    it 'errors if title already exists on hub', ipso (facto) -> 
 
-                    it 'errors if title already exists on hub'
+                        client.post
+
+                            path: '/v1/hubs/2/middlewares'
+                            'text/coffeescript': """
+
+                            title: 'four the geomagnetic shield'
+                            fn: ->
+
+                            """
+
+                        .then ({statusCode, body}) -> 
+
+                            statusCode.should.equal 400
+                            body.should.eql
+                                error:
+                                    type: 'Error'
+                                    message: 'notice: cannot insert middleware without unique title'
+
+                            facto()
+
+
+
+
                     it 'accepts also description and enabled'
                     it 'ignores all other properties (for now)'
                     it 'works!'

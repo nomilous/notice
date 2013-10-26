@@ -182,9 +182,12 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
             # 
 
             if middleware.slot?
-
                 error = new Error 'notice: cannot insert middleware with specified slot'
                 error.suggestion = upsert: '[POST,PUT] /v1/hubs/:uuid:/middlewares/:slot:'
+                return callback error
+
+            if not hub.uniqueTitle middleware.title
+                error = new Error 'notice: cannot insert middleware without unique title'
                 return callback error
 
             try hub.use 
@@ -199,16 +202,15 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
                 # TODO: this displays the error from hub.use (perhaps confuzing)
                 #       create distinction mechanism for restAPI / libAPI
                 #
-                
+
                 return callback error
             
 
-            list = hub.serialize(2).middlewares
-            latest = list[key] for key of list
+            inserted = hub.serialize(2).middlewares[hub.lastSlot]
 
             callback null, 
                 statusCode: 201
-                middleware: latest
+                middleware: inserted
 
 
         upsertMiddleware: (hub, slot, middleware, callback) -> 

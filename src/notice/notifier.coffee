@@ -273,6 +273,23 @@ module.exports.notifier  = (config = {}) ->
                 enumerable: true
                 value:      title
 
+            #
+            # TODO: test these 
+            #
+            Object.defineProperty notifier, 'uniqueTitle',
+                get: -> (title) ->
+                    list = collection.list()
+                    for slot of list
+                        return false if list[slot].title is title
+                    true
+
+            Object.defineProperty notifier, 'lastSlot',
+                get: -> 
+                    list = collection.list()
+                    slot for slot of list
+                    return slot
+
+
             Object.defineProperty notifier, 'serialize',
                 value: (detail = 1) -> 
                     switch detail
