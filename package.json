@@ -16,7 +16,7 @@
     "node-uuid": "~1.4.1",
     "also": "0.0.12",
     "coffee-script": "~1.6.3",
-    "ipso": "0.0.1",
+    "ipso": "0.0.2",
     "dinkum": "0.0.3"
   },
   "devDependencies": {

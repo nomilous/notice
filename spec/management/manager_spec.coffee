@@ -1,6 +1,3 @@
-http       = require 'http'
-https      = require 'https'
-should     = require 'should'
 ipso       = require 'ipso'
 {Client}   = require 'dinkum'
 {parallel} = require 'also'
@@ -10,8 +7,7 @@ ipso       = require 'ipso'
 {NoticeableClass}  = require '../../lib/tools'
 
 
-
-describe 'manage', ->
+describe 'manage', ipso (should, http, https) ->
 
     beforeEach -> 
         @createHttp = http.createServer
