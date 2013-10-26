@@ -11,6 +11,8 @@ module.exports = class NoticeableClass
 
         @apiFunction = (opts, callback) -> 
 
+            # console.log NOTICE_OPTS: opts
+
             #
             # TODO: opts? ##undecided
             # TODO: opts.method (from the http method)
@@ -21,8 +23,6 @@ module.exports = class NoticeableClass
             # 
             # 
             # 
-
-            console.log NOTICE_OPTS: opts
             
             setTimeout (->
 
@@ -41,11 +41,4 @@ module.exports = class NoticeableClass
             'listified'
 
         ]
-
-
-
-Infinity = 
-
-    endlessly: more: 'stuff'
-    with: another: new NoticeableClass 'inside it'
 
