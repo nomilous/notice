@@ -72,7 +72,7 @@ hub = NetworkAlertRouter.create( ...
 ### Hub Introspection and Middleware Performance Metrics
 
 
-`curl -u user: :20002/v1/hubs`
+`curl -u user: :20002/hubs`
 ```json 
 {
   "1": {
@@ -104,7 +104,7 @@ hub = NetworkAlertRouter.create( ...
 ```
 
 
-`curl -u user: :20002/v1/hubs/1/middlewares/1`
+`curl -u user: :20002/hubs/1/middlewares/1`
 ```json 
 {
   "slot": 1,
@@ -116,7 +116,7 @@ hub = NetworkAlertRouter.create( ...
 ```
 
 ```bash
-curl -u user: -H 'Content-Type: text/coffeescript' :20002/v1/hubs/1/middlewares -d '
+curl -u user: -H 'Content-Type: text/coffeescript' :20002/hubs/1/middlewares -d '
 
 title: "title"
 slot:  1
@@ -130,7 +130,7 @@ fn: (next) -> next()
     "type": "Error",
     "message": "notice: cannot insert middleware with specified slot",
     "suggestion": {
-      "upsert": "[POST,PUT] /v1/hubs/:uuid:/middlewares/:slot:"
+      "upsert": "[POST,PUT] /hubs/:uuid:/middlewares/:slot:"
     }
   }
 }

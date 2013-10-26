@@ -80,7 +80,7 @@ module.exports.manager  = (config = {}) ->
 coffeescript
 ============
 
-curl -u user: -H 'Content-Type: text/coffeescript' :20002/v1/hubs/1/middlewares -d '
+curl -u user: -H 'Content-Type: text/coffeescript' :20002/hubs/1/middlewares -d '
 
 title: "title"
 fn: (next, capsule) -> 
@@ -89,7 +89,7 @@ fn: (next, capsule) ->
 
 '
 
-curl -u user: -H 'Content-Type: text/coffeescript' :20002/v1/hubs/1/middlewares -d '
+curl -u user: -H 'Content-Type: text/coffeescript' :20002/hubs/1/middlewares -d '
 
 title: "title"
 slot:  1
@@ -97,7 +97,7 @@ fn: (next) -> next()
 
 '
 
-curl -u user: -H 'Content-Type: text/coffeescript' :20002/v1/hubs/1/middlewares/10 -d '
+curl -u user: -H 'Content-Type: text/coffeescript' :20002/hubs/1/middlewares/10 -d '
 
 title: "title"
 fn: (next) -> next()
@@ -107,7 +107,7 @@ fn: (next) -> next()
 javascript
 ==========
 
-curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10 -d '
+curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d '
 
 { 
     title: "title",
@@ -172,7 +172,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
         insertMiddleware: (hub, slot, middleware, callback) -> 
 
             # 
-            # POST /v1/hubs/:uuid:/middlewares
+            # POST /hubs/:uuid:/middlewares
             # --------------------------------
             # 
             # * inserts a new midleware at the back of the bus
@@ -183,12 +183,12 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
 
             if middleware.slot?
                 error = new Error 'notice: cannot insert middleware with specified slot'
-                error.suggestion = upsert: '[POST,PUT] /v1/hubs/:uuid:/middlewares/:slot:'
+                error.suggestion = upsert: '[POST,PUT] /hubs/:uuid:/middlewares/:slot:'
                 return callback error
 
             if not hub.uniqueTitle middleware.title
                 error = new Error 'notice: cannot insert middleware without unique title'
-                error.suggestion = upsert: '[POST,PUT] /v1/hubs/:uuid:/middlewares/:slot:'
+                error.suggestion = upsert: '[POST,PUT] /hubs/:uuid:/middlewares/:slot:'
                 return callback error
 
             try hub.use 
@@ -217,7 +217,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
         upsertMiddleware: (hub, slot, middleware, callback) -> 
 
             #
-            # POST or PUT /v1/hubs/:uuid:/middlewares/:slot:
+            # POST or PUT /hubs/:uuid:/middlewares/:slot:
             # ----------------------------------------------
             # 
             # * create or update middleware at particular slot
@@ -250,7 +250,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
 
 
 
-            '/v1/hubs': 
+            '/hubs': 
 
                 description: 'list present hubs'
                 methods: ['GET']
@@ -270,7 +270,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
                         statusCode
                         response
 
-            '/v1/hubs/:uuid:': 
+            '/hubs/:uuid:': 
 
                 description: 'get a hub'
                 methods: ['GET']
@@ -282,7 +282,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
                     notifier = local.hubContext.hubs[uuid]
                     local.respond notifier.serialize(2), statusCode, response
 
-            '/v1/hubs/:uuid:/stats': 
+            '/hubs/:uuid:/stats': 
 
                 description: 'get only the hub stats'
                 methods: ['GET']
@@ -298,7 +298,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
                         response
                     )
 
-            '/v1/hubs/:uuid:/errors': 
+            '/hubs/:uuid:/errors': 
 
                 description: 'get only the recent errors'
                 methods: ['GET']
@@ -320,7 +320,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
                         response
                     )
 
-            '/v1/hubs/:uuid:/cache': 
+            '/hubs/:uuid:/cache': 
 
                 description: 'get output from a serailization of the traversal cache'
                 methods: ['GET']
@@ -335,7 +335,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
                         response
                     )
 
-            '/v1/hubs/:uuid:/cache/**/*': 
+            '/hubs/:uuid:/cache/**/*': 
 
                 description: 'get nested subkey from the cache tree'
                 methods: ['GET'] #, 'POST'] #, 'DELETE']
@@ -357,20 +357,20 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
                     )
 
 
-            '/v1/hubs/:uuid:/tools': 
+            '/hubs/:uuid:/tools': 
 
                 description: 'get output from a serailization of the tools tree'
                 methods: ['GET']
                 handler: recursor local, 'tools'
 
-            '/v1/hubs/:uuid:/tools/**/*': 
+            '/hubs/:uuid:/tools/**/*': 
 
                 description: 'get nested subkey from the tools key'
                 methods: ['GET'] 
                 handler: recursor local, 'tools' 
 
 
-            '/v1/hubs/:uuid:/clients': 
+            '/hubs/:uuid:/clients': 
 
                 description: 'pending'
                 methods: ['GET']
@@ -386,7 +386,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
                     )
 
 
-            '/v1/hubs/:uuid:/middlewares': 
+            '/hubs/:uuid:/middlewares': 
 
                 description: 'get only the middlewares'
                 methods: ['GET', 'POST']
@@ -408,7 +408,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
                     )
 
 
-            '/v1/hubs/:uuid:/middlewares/:slot:':
+            '/hubs/:uuid:/middlewares/:slot:':
 
                 description: 'get or update or delete a middleware'
                 methods: ['GET', 'PUT', 'POST'] # , 'DELETE']
@@ -429,7 +429,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
                     objectNotFound response
 
 
-            '/v1/hubs/:uuid:/middlewares/:slot:/disable':
+            '/hubs/:uuid:/middlewares/:slot:/disable':
                 description: 'disable a middleware'
                 methods: ['GET']
                 handler: ([uuid,slot,authenticEntity], request, response, statusCode = 200) -> 
@@ -444,7 +444,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
                     objectNotFound response
 
 
-            '/v1/hubs/:uuid:/middlewares/:slot:/enable':
+            '/hubs/:uuid:/middlewares/:slot:/enable':
                 description: 'enable a middleware'
                 methods: ['GET']
                 handler: ([uuid,slot,authenticEntity], request, response, statusCode = 200) -> 
@@ -459,7 +459,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
                     objectNotFound response
 
 
-            # '/v1/hubs/:uuid:/middlewares/:title:/replace':
+            # '/hubs/:uuid:/middlewares/:title:/replace':
             #     description: 'replace a middleware'
             #     methods: ['POST']
             #     accepts: ['text/javascript', 'text/coffeescript']
@@ -575,28 +575,28 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
                 
             if path[-1..] == '/' then path = path[0..-2]
 
-            try      
-                [match, version, base, uuid, nested, slot, action] = path.match /(.*)\/(.*)\/(.*)\/(.*)\/(.*)\/(.*)/
-                return local.routes["#{version}/#{base}/:uuid:/#{nested}/:slot:/#{action}"].handler [uuid, slot, authenticEntity], request, response
+            try 
+                [match, base, uuid, nested, slot, action] = path.match /(.*)\/(.*)\/(.*)\/(.*)\/(.*)/
+                return local.routes["#{base}/:uuid:/#{nested}/:slot:/#{action}"].handler [uuid, slot, authenticEntity], request, response
             try
-                [match, version, base, uuid, nested, slot] = path.match /(.*)\/(.*)\/(.*)\/(.*)\/(.*)/
-                return local.routes["#{version}/#{base}/:uuid:/#{nested}/:slot:"].handler [uuid, slot, authenticEntity], request, response
+                [match, base, uuid, nested, slot] = path.match /(.*)\/(.*)\/(.*)\/(.*)/
+                return local.routes["#{base}/:uuid:/#{nested}/:slot:"].handler [uuid, slot, authenticEntity], request, response
             try
-                [match, version, base, uuid, nested] = path.match /(.*)\/(.*)\/(.*)\/(.*)/
+                [match, base, uuid, nested] = path.match /(.*)\/(.*)\/(.*)/
                 
-                try if [match, uuid, deeper] = path.match /v1\/hubs\/(.*)\/cache\/(.*)/
-                    return local.routes["/v1/hubs/:uuid:/cache/**/*"].handler [uuid, deeper], request, response
+                try if [match, uuid, deeper] = path.match /\/hubs\/(.*)\/cache\/(.*)/
+                    return local.routes["/hubs/:uuid:/cache/**/*"].handler [uuid, deeper], request, response
                 
-                try if [match, uuid, deeper] = path.match /v1\/hubs\/(.*)\/tools\/(.*)/
-                    return local.routes["/v1/hubs/:uuid:/tools/**/*"].handler [uuid, deeper, authenticEntity], request, response
+                try if [match, uuid, deeper] = path.match /\/hubs\/(.*)\/tools\/(.*)/
+                    return local.routes["/hubs/:uuid:/tools/**/*"].handler [uuid, deeper, authenticEntity], request, response
 
-                return local.routes["#{version}/#{base}/:uuid:/#{nested}"].handler [uuid], request, response
+                return local.routes["#{base}/:uuid:/#{nested}"].handler [uuid], request, response
             try
                 [match, version, base, uuid] = path.match /(.*)\/(.*)\/(.*)/
-                return local.routes["#{version}/#{base}/:uuid:"].handler [uuid], request, response
+                return local.routes["/#{base}/:uuid:"].handler [uuid], request, response
             try
                 [match, version, base] = path.match /(.*)\/(.*)/
-                return local.routes["#{version}/#{base}"].handler [], request, response
+                return local.routes["/#{base}"].handler [], request, response
 
             return local.objectNotFound response
 

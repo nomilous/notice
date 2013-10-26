@@ -263,61 +263,61 @@ describe 'manage', ipso (should, http, https) ->
                             description: "show this"
                             methods: [ "GET" ]
 
-                        "/v1/hubs":
+                        "/hubs":
                             description: "list present hubs"
                             methods: [ "GET" ]
                         
-                        "/v1/hubs/:uuid:":
+                        "/hubs/:uuid:":
                             description: "get a hub"
                             methods: [ "GET" ]
                         
-                        "/v1/hubs/:uuid:/stats":
+                        "/hubs/:uuid:/stats":
                             description: "get only the hub stats"
                             methods: [ "GET" ]
                         
-                        "/v1/hubs/:uuid:/errors": 
+                        "/hubs/:uuid:/errors": 
                             description: "get only the recent errors"
                             methods: [ "GET" ]
                         
-                        "/v1/hubs/:uuid:/cache":
+                        "/hubs/:uuid:/cache":
                             description: "get output from a serailization of the traversal cache"
                             methods: [ "GET" ]
                         
-                        "/v1/hubs/:uuid:/cache/**/*":
+                        "/hubs/:uuid:/cache/**/*":
                             description: "get nested subkey from the cache tree"
                             methods: [ "GET" ]
 
-                        "/v1/hubs/:uuid:/tools":
+                        "/hubs/:uuid:/tools":
                             description: "get output from a serailization of the tools tree"
                             methods: [ "GET" ]
 
-                        "/v1/hubs/:uuid:/tools/**/*":
+                        "/hubs/:uuid:/tools/**/*":
                             description: "get nested subkey from the tools key"
                             methods: [ "GET" ]
 
-                        "/v1/hubs/:uuid:/clients":
+                        "/hubs/:uuid:/clients":
                             description: "pending"
                             methods: [ "GET" ]
 
-                        "/v1/hubs/:uuid:/middlewares":
+                        "/hubs/:uuid:/middlewares":
                             description: "get only the middlewares"
                             methods: [ "GET", 'POST' ]
                             accepts: ['text/javascript', 'text/coffeescript']
                         
-                        "/v1/hubs/:uuid:/middlewares/:slot:":
+                        "/hubs/:uuid:/middlewares/:slot:":
                             description: "get or update or delete a middleware"
                             methods: [ "GET", 'PUT', 'POST']
                             accepts: ['text/javascript', 'text/coffeescript']
 
-                        "/v1/hubs/:uuid:/middlewares/:slot:/disable":
+                        "/hubs/:uuid:/middlewares/:slot:/disable":
                             description: "disable a middleware"
                             methods: [ "GET" ]
 
-                        "/v1/hubs/:uuid:/middlewares/:slot:/enable":
+                        "/hubs/:uuid:/middlewares/:slot:/enable":
                             description: "enable a middleware"
                             methods: [ "GET" ]
 
-                        # "/v1/hubs/:uuid:/middlewares/:title:/replace":
+                        # "/hubs/:uuid:/middlewares/:title:/replace":
                         #     description: "replace a middleware"
                         #     methods: [ "POST" ]
                         #     accepts: [ "text/javascript", "text/coffeescript" ]
@@ -326,10 +326,10 @@ describe 'manage', ipso (should, http, https) ->
             
 
 
-        it 'responds to GET /v1/hubs with a list of records for each hub', ipso (done) -> 
+        it 'responds to GET /hubs with a list of records for each hub', ipso (done) -> 
 
             client.get
-                path: '/v1/hubs'
+                path: '/hubs'
 
             .then ({statusCode, body}) -> 
 
@@ -393,12 +393,12 @@ describe 'manage', ipso (should, http, https) ->
                 done()
 
 
-        context '/v1/hubs/:uuid:/', -> 
+        context '/hubs/:uuid:/', -> 
 
             it 'respods 404 to no such', ipso (done) -> 
 
                 client.get 
-                    path: '/v1/hubs/9'
+                    path: '/hubs/9'
 
                 .then ({statusCode}) ->
 
@@ -409,7 +409,7 @@ describe 'manage', ipso (should, http, https) ->
             it 'responds with specific hub record', ipso (done) -> 
 
                 client.get 
-                    path: '/v1/hubs/1'
+                    path: '/hubs/1'
 
                 .then ({statusCode, body}) ->
 
@@ -426,7 +426,7 @@ describe 'manage', ipso (should, http, https) ->
                     (next) -> next()
 
                 client.get 
-                    path: '/v1/hubs/1'
+                    path: '/hubs/1'
                 
                 .then ({statusCode, body}) ->
 
@@ -437,7 +437,7 @@ describe 'manage', ipso (should, http, https) ->
             it './stats', ipso (done) -> 
 
                 client.get 
-                    path: '/v1/hubs/1/stats'
+                    path: '/hubs/1/stats'
                 
                 .then ({statusCode, body}) ->
 
@@ -448,7 +448,7 @@ describe 'manage', ipso (should, http, https) ->
             it './errors', ipso (done) -> 
 
                 client.get 
-                    path: '/v1/hubs/1/errors'
+                    path: '/hubs/1/errors'
                 
                 .then ({statusCode, body}) ->
 
@@ -471,12 +471,12 @@ describe 'manage', ipso (should, http, https) ->
                 hub1.event().then -> 
 
                     client.get
-                        path: '/v1/hubs/1'
+                        path: '/hubs/1'
                     
                     .then ({statusCode, body}) ->
 
                         client.get 
-                            path: '/v1/hubs/1/cache'
+                            path: '/hubs/1/cache'
                         
                         .then ({statusCode, body}) ->
 
@@ -498,15 +498,16 @@ describe 'manage', ipso (should, http, https) ->
 
                 hub1.event().then -> 
                     client.get 
-                        path: '/v1/hubs/1/cache/key2/nest/some/stuff'
+                        path: '/hubs/1/cache/key2/nest/some/stuff'
                     
                     .then ({statusCode, body}) ->
 
-                            body.here.should.equal 'VALUE'
-                            done()
+                        body.here.should.equal 'VALUE'
+                        done()
 
 
-            xit 'responds to POST /v1/hubs/:uuid:/cache/**/* by replacing the specified key in the hash', (done) -> 
+
+            xit 'responds to POST /hubs/:uuid:/cache/**/* by replacing the specified key in the hash', (done) -> 
 
 
 
@@ -514,7 +515,7 @@ describe 'manage', ipso (should, http, https) ->
             it './tools', ipso (done) ->
 
                 client.get 
-                    path: '/v1/hubs/1/tools'
+                    path: '/hubs/1/tools'
                 
                 .then ({statusCode, body}) ->
 
@@ -527,7 +528,7 @@ describe 'manage', ipso (should, http, https) ->
                 it 'responds with the tool searialization', ipso (done) ->
 
                     client.get 
-                        path: '/v1/hubs/1/tools/toolName'
+                        path: '/hubs/1/tools/toolName'
                     
                     .then ({statusCode, body}) ->
 
@@ -547,7 +548,7 @@ describe 'manage', ipso (should, http, https) ->
                 it 'walks into the tool/apiFunction async result', ipso (done) -> 
 
                     client.get 
-                        path: '/v1/hubs/1/tools/toolName/apiFunction/async/'
+                        path: '/hubs/1/tools/toolName/apiFunction/async/'
                     
                     .then ({statusCode, body}) ->
 
@@ -559,7 +560,7 @@ describe 'manage', ipso (should, http, https) ->
                 it './clients', ipso (done) -> 
 
                     client.get 
-                        path: '/v1/hubs/1/clients'
+                        path: '/hubs/1/clients'
                         
                     .then ({statusCode, body}) ->
 
@@ -582,7 +583,7 @@ describe 'manage', ipso (should, http, https) ->
 
 
                 client.get 
-                    path: '/v1/hubs/2/middlewares'
+                    path: '/hubs/2/middlewares'
                     
                 .then ({statusCode, body}) ->
                         count = 0
@@ -594,7 +595,7 @@ describe 'manage', ipso (should, http, https) ->
 
 
 
-        context '/v1/hubs/:uuid:/middlewares/:slot:', ->
+        context '/hubs/:uuid:/middlewares/:slot:', ->
 
             it 'gets specific middleware details', ipso (done) -> 
 
@@ -606,7 +607,7 @@ describe 'manage', ipso (should, http, https) ->
                     (next) -> next()
 
                 client.get 
-                    path: '/v1/hubs/2/middlewares/1'
+                    path: '/hubs/2/middlewares/1'
                     
                 .then ({statusCode, body}) ->
 
@@ -617,7 +618,7 @@ describe 'manage', ipso (should, http, https) ->
             it '404s', ipso (done) ->
 
                 client.get 
-                    path: '/v1/hubs/2/middlewares/333'
+                    path: '/hubs/2/middlewares/333'
                     
                 .then ({statusCode, body}) ->
 
@@ -626,7 +627,7 @@ describe 'manage', ipso (should, http, https) ->
 
 
 
-            it 'disables middleware with GET /v1/hubs/:uuid:/middlewares/:slot:/disable', ipso (done) -> 
+            it 'disables middleware with GET /hubs/:uuid:/middlewares/:slot:/disable', ipso (done) -> 
 
                 hub2.use
 
@@ -637,7 +638,7 @@ describe 'manage', ipso (should, http, https) ->
 
                 client.get 
 
-                    path: '/v1/hubs/2/middlewares/1/disable'
+                    path: '/hubs/2/middlewares/1/disable'
                 
                 .then ({statusCode, body}) ->
 
@@ -648,7 +649,7 @@ describe 'manage', ipso (should, http, https) ->
 
                 client.get 
 
-                    path: '/v1/hubs/2/middlewares/44/disable'
+                    path: '/hubs/2/middlewares/44/disable'
                 
                 .then  ({statusCode, body}) ->
 
@@ -668,7 +669,7 @@ describe 'manage', ipso (should, http, https) ->
 
                 client.get 
 
-                    path: '/v1/hubs/2/middlewares/1/enable'
+                    path: '/hubs/2/middlewares/1/enable'
                 
                 .then ({statusCode, body}) ->
 
@@ -681,7 +682,7 @@ describe 'manage', ipso (should, http, https) ->
                 it 'at insert', ipso (done) -> 
 
                     client.post 
-                        path: '/v1/hubs/2/middlewares'
+                        path: '/hubs/2/middlewares'
                         'application/json': day: 'tah'
 
                     .then ({statusCode}) -> 
@@ -691,7 +692,7 @@ describe 'manage', ipso (should, http, https) ->
                 it 'at upsert', ipso (done) -> 
 
                     client.post 
-                        path: '/v1/hubs/2/middlewares/21'
+                        path: '/hubs/2/middlewares/21'
                         'application/json': dah: 'tah'
 
                     .then ({statusCode}) -> 
@@ -705,7 +706,7 @@ describe 'manage', ipso (should, http, https) ->
 
                     client.post 
 
-                        path: '/v1/hubs/2/middlewares/10'
+                        path: '/hubs/2/middlewares/10'
                         'text/coffeescript': 'when'
 
                     .then ({statusCode, body}) -> 
@@ -730,7 +731,7 @@ describe 'manage', ipso (should, http, https) ->
 
                     client.post
 
-                        path: '/v1/hubs/2/middlewares/10'
+                        path: '/hubs/2/middlewares/10'
                         'text/javascript': """
 
                             { 
@@ -751,7 +752,7 @@ describe 'manage', ipso (should, http, https) ->
 
             context 'insert', -> 
 
-                context 'PUT /v1/hubs/:uuid:/middlewares', -> 
+                context 'PUT /hubs/:uuid:/middlewares', -> 
 
                     it '405s', ipso (done) -> 
 
@@ -762,7 +763,7 @@ describe 'manage', ipso (should, http, https) ->
 
                         client.put
 
-                            path: '/v1/hubs/2/middlewares'
+                            path: '/hubs/2/middlewares'
                             'text/coffeescript': ''
 
                         .then ({statusCode, body}) -> 
@@ -771,13 +772,13 @@ describe 'manage', ipso (should, http, https) ->
                             done()
 
 
-                context 'POST /v1/hubs/:uuid:/middlewares', -> 
+                context 'POST /hubs/:uuid:/middlewares', -> 
 
                     it 'puts middlware into next free slot', ipso (done) -> 
 
                         client.post
 
-                            path: '/v1/hubs/2/middlewares'
+                            path: '/hubs/2/middlewares'
                             'text/coffeescript': """
 
                             title: 'intro'
@@ -805,7 +806,7 @@ describe 'manage', ipso (should, http, https) ->
 
                         client.post
 
-                            path: '/v1/hubs/2/middlewares'
+                            path: '/hubs/2/middlewares'
                             'text/coffeescript': """
 
                             title: 'one the sun'
@@ -833,7 +834,7 @@ describe 'manage', ipso (should, http, https) ->
 
                         client.post
 
-                            path: '/v1/hubs/2/middlewares'
+                            path: '/hubs/2/middlewares'
                             'text/coffeescript': """
 
                             title: 'two the moon'
@@ -850,7 +851,7 @@ describe 'manage', ipso (should, http, https) ->
                                     type: 'Error'
                                     message: 'notice: cannot insert middleware with specified slot'
                                     suggestion: 
-                                        upsert: '[POST,PUT] /v1/hubs/:uuid:/middlewares/:slot:'
+                                        upsert: '[POST,PUT] /hubs/:uuid:/middlewares/:slot:'
 
                             facto()
 
@@ -861,7 +862,7 @@ describe 'manage', ipso (should, http, https) ->
 
                         client.post
 
-                            path: '/v1/hubs/2/middlewares'
+                            path: '/hubs/2/middlewares'
                             'text/coffeescript': """
 
                             title: 'three the spin'
@@ -884,7 +885,7 @@ describe 'manage', ipso (should, http, https) ->
 
                         client.post
 
-                            path: '/v1/hubs/2/middlewares'
+                            path: '/hubs/2/middlewares'
                             'text/coffeescript': """
 
                             title: 'four the geomagnetic shield'
@@ -900,7 +901,7 @@ describe 'manage', ipso (should, http, https) ->
                                     type: 'Error'
                                     message: 'notice: cannot insert middleware without unique title'
                                     suggestion: 
-                                        upsert: '[POST,PUT] /v1/hubs/:uuid:/middlewares/:slot:'
+                                        upsert: '[POST,PUT] /hubs/:uuid:/middlewares/:slot:'
                             facto()
 
 
@@ -908,7 +909,7 @@ describe 'manage', ipso (should, http, https) ->
 
                         client.post
 
-                            path: '/v1/hubs/2/middlewares'
+                            path: '/hubs/2/middlewares'
                             'text/coffeescript': """
 
                             title: 'five mitosis'
@@ -928,7 +929,7 @@ describe 'manage', ipso (should, http, https) ->
                     it 'works!', ipso (facto) -> 
 
                         client.post
-                            path: '/v1/hubs/3/middlewares'
+                            path: '/hubs/3/middlewares'
                             'text/javascript': 
 
                                 title: 'it works'
@@ -974,7 +975,7 @@ describe 'manage', ipso (should, http, https) ->
 
             context 'upsert', -> 
 
-                context 'PUT or POST /v1/hubs/:uuid:/middlewares/:slot:', -> 
+                context 'PUT or POST /hubs/:uuid:/middlewares/:slot:', -> 
 
                     it 'puts middlware into the specified slot'
                     it 'responds 200 with the middleware record'
@@ -995,7 +996,7 @@ describe 'manage', ipso (should, http, https) ->
             it 'modifies introspection level'
             it 'and possibly other things'
 
-        context 'GET /v1/hubs/:uuid:/reset', -> 
+        context 'GET /hubs/:uuid:/reset', -> 
 
             it 'zeroes all metric counters'
 

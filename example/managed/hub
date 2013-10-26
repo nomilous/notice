@@ -32,12 +32,12 @@ MessageHub.create
         # * this cache, in all middleware, alleviates that problem
         # * also, it can be retreived via the REST api
         # 
-        #         GET /v1/hubs/:uuid:/cache
+        #         GET /hubs/:uuid:/cache
         # 
         # * [PENDING], it can be modified via the REST api
         # 
-        #         POST /v1/hubs/:uuid:/cache/:key:
-        #         DELETE /v1/hubs/:uuid:/cache/:key:
+        #         POST /hubs/:uuid:/cache/:key:
+        #         DELETE /hubs/:uuid:/cache/:key:
         # 
 
         purchases: 0

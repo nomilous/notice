@@ -1,16 +1,16 @@
 
 
-`curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/metrics`
-`curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/errors`
-`curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/middlewares`
-`curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/middlewares/warehouse`
+`curl -ku username:password https://127.0.0.1:44444/hubs/1/metrics`
+`curl -ku username:password https://127.0.0.1:44444/hubs/1/errors`
+`curl -ku username:password https://127.0.0.1:44444/hubs/1/middlewares`
+`curl -ku username:password https://127.0.0.1:44444/hubs/1/middlewares/warehouse`
 
 * inprocess capsules only run through middleware that was enabled at the time they entered the pipeline
-`curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/middlewares/warehouse/enable`
-`curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/middlewares/warehouse/disable`
+`curl -ku username:password https://127.0.0.1:44444/hubs/1/middlewares/warehouse/enable`
+`curl -ku username:password https://127.0.0.1:44444/hubs/1/middlewares/warehouse/disable`
 
 
-`curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/cache`
+`curl -ku username:password https://127.0.0.1:44444/hubs/1/cache`
 ```json
 {
   "purchases": 500
@@ -30,12 +30,12 @@ fn = (next, capsule, {cache}) ->
     cache.total.sales += (capsule.quantity * capsule.unit_price)
     next()
 
-' 'https://127.0.0.1:44444/v1/hubs/1/middlewares/accounts/replace'
+' 'https://127.0.0.1:44444/hubs/1/middlewares/accounts/replace'
 
 ```
-`curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/cache/total/sales`
-`curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/cache/total`
-`curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/cache`
+`curl -ku username:password https://127.0.0.1:44444/hubs/1/cache/total/sales`
+`curl -ku username:password https://127.0.0.1:44444/hubs/1/cache/total`
+`curl -ku username:password https://127.0.0.1:44444/hubs/1/cache`
 ```json
 {
   "purchases": 1212,
@@ -52,10 +52,10 @@ fn = (next, capsule, {cache}) ->
 #
 curl -ku username:password -H 'Content-Type: text/coffeescript' --data '
 fn = (next, capsule, {cache}) ->  throw new Error "Broke Something!!"
-' 'https://127.0.0.1:44444/v1/hubs/1/middlewares/accounts/replace'
+' 'https://127.0.0.1:44444/hubs/1/middlewares/accounts/replace'
 ```
 
-`curl -ku username:password https://127.0.0.1:44444/v1/hubs/1/errors`
+`curl -ku username:password https://127.0.0.1:44444/hubs/1/errors`
 ```json
 {
   "recent": [

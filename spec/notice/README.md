@@ -142,7 +142,7 @@ The next function has some nested functions.
 * has a permanent reference to the `opts.cache` as assigned in `Hub.create(opts)`
 * middlewares can populate this cache at will
 * the same cache object is passed into all middleware traversals
-* the cache content is available for remote veiwing on the REST api `/v1/hubs/:uuid:/cache`
+* the cache content is available for remote veiwing on the REST api `/hubs/:uuid:/cache`
 
 `traversal.peers` **pending consideration**
 
@@ -174,4 +174,4 @@ notice.event().then(
 * The offending error is called back at the emitter.
 * PENDING Errors occuring on a remote hub have the same affect back at the origin emitter.
 * A recent error history is preserved (config.error.keep:N) and available at `hub.serialize(2)`
-* Error history is also available on the REST api `/v1/hubs/:uuid:/errors`
+* Error history is also available on the REST api `/hubs/:uuid:/errors`
