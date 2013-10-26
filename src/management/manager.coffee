@@ -188,6 +188,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/v1/hubs/1/middlewares/10
 
             if not hub.uniqueTitle middleware.title
                 error = new Error 'notice: cannot insert middleware without unique title'
+                error.suggestion = upsert: '[POST,PUT] /v1/hubs/:uuid:/middlewares/:slot:'
                 return callback error
 
             try hub.use 

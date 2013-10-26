@@ -761,14 +761,13 @@ describe 'manage', ipso (should, http, https) ->
 
                         .then ({statusCode, body}) -> 
 
-                            list = _notifier().middleware['Hub Two'].list()
-                            key for key of list
-                            should.exist list[key].slot
-                            list[key].title.should.equal 'intro'
-                            list[key].description.should.equal 'description'
-                            list[key].type.should.equal 'usr'
-                            list[key].enabled.should.equal true
-                            list[key].fn(->).should.equal 'moo'
+                            latest = _notifier().middleware['Hub Two'].list()[hub2.lastSlot]
+                            should.exist latest.slot
+                            latest.title.should.equal 'intro'
+                            latest.description.should.equal 'description'
+                            latest.type.should.equal 'usr'
+                            latest.enabled.should.equal true
+                            latest.fn(->).should.equal 'moo'
                             done()
 
 
@@ -870,14 +869,32 @@ describe 'manage', ipso (should, http, https) ->
                                 error:
                                     type: 'Error'
                                     message: 'notice: cannot insert middleware without unique title'
-
+                                    suggestion: 
+                                        upsert: '[POST,PUT] /v1/hubs/:uuid:/middlewares/:slot:'
                             facto()
 
 
+                    it 'ignores all other properties (for now)', ipso (facto) ->
+
+                        client.post
+
+                            path: '/v1/hubs/2/middlewares'
+                            'text/coffeescript': """
+
+                            title: 'five mitosis'
+                            description: 'description'
+                            palindromic: 'stem-loop'
+                            fn: (previous) -> previous()
+
+                            """
+
+                        .then ({statusCode, body}) -> 
+
+                            latest = _notifier().middleware['Hub Two'].list()[hub2.lastSlot]
+                            should.not.exist latest.palindromic
+                            facto()
 
 
-                    it 'accepts also description and enabled'
-                    it 'ignores all other properties (for now)'
                     it 'works!'
 
             context 'upsert', -> 
