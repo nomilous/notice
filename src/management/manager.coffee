@@ -592,10 +592,10 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
 
                 return local.routes["#{base}/:uuid:/#{nested}"].handler [uuid], request, response
             try
-                [match, version, base, uuid] = path.match /(.*)\/(.*)\/(.*)/
+                [match, base, uuid] = path.match /\/(.*)\/(.*)/
                 return local.routes["/#{base}/:uuid:"].handler [uuid], request, response
             try
-                [match, version, base] = path.match /(.*)\/(.*)/
+                [match, base] = path.match /\/(.*)/
                 return local.routes["/#{base}"].handler [], request, response
 
             return local.objectNotFound response
