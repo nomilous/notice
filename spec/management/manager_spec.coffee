@@ -1,7 +1,8 @@
 http       = require 'http'
 https      = require 'https'
 should     = require 'should'
-request    = require 'request'
+ipso       = require 'ipso'
+{Client}   = require 'dinkum'
 {parallel} = require 'also'
 # {_notifier,notifier} = require '../../lib/notice/notifier'
 {hub,_hub}         = require '../../lib/notice/hub/hub'
@@ -89,18 +90,14 @@ describe 'manage', ->
                     hub1 = hubs[0]
                     hub2 = hubs[1]
 
-                    client = 
-                        get: ({path}, callback) -> 
-                            request.get 'http://localhost:40404' + path,
-                                auth:
-                                    user: 'user'
-                                    pass: 'pass'
-                                    immediately: true
-                                (err, {statusCode}, body) -> 
-                                    
-                                    callback err, 
-                                        statusCode: statusCode
-                                        body: try JSON.parse body
+                    client = Client.create
+                        transport: 'http'
+                        port: 40404
+                        authenticator:
+                            module: 'basic_auth'
+                            username: 'user'
+                            password: 'pass'
+
 
                     done()
 
@@ -115,168 +112,173 @@ describe 'manage', ->
             should.exist client
 
 
-        it 'responds with 404 incase of no route', (done) -> 
+        it 'responds with 404 incase of no route',ipso (done) -> 
 
             client.get
                 path: '/no/route'
-                (err, {statusCode}) -> 
+            
+            .then ({statusCode}) -> 
 
-                    statusCode.should.equal 404
-                    done()
-
-
-        it 'responds to /about', (done) -> 
-
-            client.get 
-                path: '/about'
-                (err, {statusCode, body}) -> 
-
-                    statusCode.should.equal 200
-                    body.should.eql 
-
-                        module: 'notice'
-                        version: '0.0.12'
-                        doc: 'https://github.com/nomilous/notice/tree/master/spec/management'
-                        endpoints: 
-
-                            "/about":
-                                description: "show this"
-                                methods: [ "GET" ]
-
-                            "/v1/hubs":
-                                description: "list present hubs"
-                                methods: [ "GET" ]
-                            
-                            "/v1/hubs/:uuid:":
-                                description: "get a hub"
-                                methods: [ "GET" ]
-                            
-                            "/v1/hubs/:uuid:/stats":
-                                description: "get only the hub stats"
-                                methods: [ "GET" ]
-                            
-                            "/v1/hubs/:uuid:/errors": 
-                                description: "get only the recent errors"
-                                methods: [ "GET" ]
-                            
-                            "/v1/hubs/:uuid:/cache":
-                                description: "get output from a serailization of the traversal cache"
-                                methods: [ "GET" ]
-                            
-                            "/v1/hubs/:uuid:/cache/**/*":
-                                description: "get nested subkey from the cache tree"
-                                methods: [ "GET" ]
-
-                            "/v1/hubs/:uuid:/tools":
-                                description: "get output from a serailization of the tools tree"
-                                methods: [ "GET" ]
-
-                            "/v1/hubs/:uuid:/tools/**/*":
-                                description: "get nested subkey from the tools key"
-                                methods: [ "GET" ]
-
-                            "/v1/hubs/:uuid:/clients":
-                                description: "pending"
-                                methods: [ "GET" ]
-
-                            "/v1/hubs/:uuid:/middlewares":
-                                description: "get only the middlewares"
-                                methods: [ "GET" ]
-                            
-                            "/v1/hubs/:uuid:/middlewares/:slot:":
-                                description: "get or update or delete a middleware"
-                                methods: [ "GET" ]
-
-                            "/v1/hubs/:uuid:/middlewares/:slot:/disable":
-                                description: "disable a middleware"
-                                methods: [ "GET" ]
-
-                            "/v1/hubs/:uuid:/middlewares/:slot:/enable":
-                                description: "enable a middleware"
-                                methods: [ "GET" ]
-
-                            # "/v1/hubs/:uuid:/middlewares/:title:/replace":
-                            #     description: "replace a middleware"
-                            #     methods: [ "POST" ]
-                            #     accepts: [ "text/javascript", "text/coffeescript" ]
-
-                    done()  
-                
+                statusCode.should.equal 404
+                done()
 
 
-        it 'responds to GET /v1/hubs with a list of records for each hub', (done) -> 
+        it 'responds to /about', ipso (done) -> 
 
-            client.get 
-                path: '/v1/hubs' 
-                (err, {statusCode, body}) -> 
+            client.get
+                path: '/about' 
 
-                    statusCode.should.equal 200
-                    body.should.eql 
+            .then ({statusCode, body}) -> 
 
-                        '1': 
-                            title: 'Hub One'
-                            uuid: 1
-                            stats: 
-                                pipeline:
-                                    input: 
-                                        count: 0
-                                    processing:
-                                        count: 0
-                                    output:
-                                        count: 0
-                                    error: 
-                                        usr: 0
-                                        sys: 0
-                                    cancel:
-                                        usr: 0
-                                        sys: 0
+                statusCode.should.equal 200
+                body.should.eql 
 
-                        '2':
-                            title: 'Hub Two'
-                            uuid: 2
-                            stats: 
-                                pipeline:
-                                    input: 
-                                        count: 0
-                                    processing:
-                                        count: 0
-                                    output:
-                                        count: 0
-                                    error: 
-                                        usr: 0
-                                        sys: 0
-                                    cancel:
-                                        usr: 0
-                                        sys: 0
+                    module: 'notice'
+                    version: '0.0.12'
+                    doc: 'https://github.com/nomilous/notice/tree/master/spec/management'
+                    endpoints: 
 
-                    done()
+                        "/about":
+                            description: "show this"
+                            methods: [ "GET" ]
+
+                        "/v1/hubs":
+                            description: "list present hubs"
+                            methods: [ "GET" ]
+                        
+                        "/v1/hubs/:uuid:":
+                            description: "get a hub"
+                            methods: [ "GET" ]
+                        
+                        "/v1/hubs/:uuid:/stats":
+                            description: "get only the hub stats"
+                            methods: [ "GET" ]
+                        
+                        "/v1/hubs/:uuid:/errors": 
+                            description: "get only the recent errors"
+                            methods: [ "GET" ]
+                        
+                        "/v1/hubs/:uuid:/cache":
+                            description: "get output from a serailization of the traversal cache"
+                            methods: [ "GET" ]
+                        
+                        "/v1/hubs/:uuid:/cache/**/*":
+                            description: "get nested subkey from the cache tree"
+                            methods: [ "GET" ]
+
+                        "/v1/hubs/:uuid:/tools":
+                            description: "get output from a serailization of the tools tree"
+                            methods: [ "GET" ]
+
+                        "/v1/hubs/:uuid:/tools/**/*":
+                            description: "get nested subkey from the tools key"
+                            methods: [ "GET" ]
+
+                        "/v1/hubs/:uuid:/clients":
+                            description: "pending"
+                            methods: [ "GET" ]
+
+                        "/v1/hubs/:uuid:/middlewares":
+                            description: "get only the middlewares"
+                            methods: [ "GET" ]
+                        
+                        "/v1/hubs/:uuid:/middlewares/:slot:":
+                            description: "get or update or delete a middleware"
+                            methods: [ "GET" ]
+
+                        "/v1/hubs/:uuid:/middlewares/:slot:/disable":
+                            description: "disable a middleware"
+                            methods: [ "GET" ]
+
+                        "/v1/hubs/:uuid:/middlewares/:slot:/enable":
+                            description: "enable a middleware"
+                            methods: [ "GET" ]
+
+                        # "/v1/hubs/:uuid:/middlewares/:title:/replace":
+                        #     description: "replace a middleware"
+                        #     methods: [ "POST" ]
+                        #     accepts: [ "text/javascript", "text/coffeescript" ]
+
+                done()  
+            
+
+
+        it 'responds to GET /v1/hubs with a list of records for each hub', ipso (done) -> 
+
+            client.get
+                path: '/v1/hubs'
+
+            .then ({statusCode, body}) -> 
+
+                statusCode.should.equal 200
+                body.should.eql 
+
+                    '1': 
+                        title: 'Hub One'
+                        uuid: 1
+                        stats: 
+                            pipeline:
+                                input: 
+                                    count: 0
+                                processing:
+                                    count: 0
+                                output:
+                                    count: 0
+                                error: 
+                                    usr: 0
+                                    sys: 0
+                                cancel:
+                                    usr: 0
+                                    sys: 0
+
+                    '2':
+                        title: 'Hub Two'
+                        uuid: 2
+                        stats: 
+                            pipeline:
+                                input: 
+                                    count: 0
+                                processing:
+                                    count: 0
+                                output:
+                                    count: 0
+                                error: 
+                                    usr: 0
+                                    sys: 0
+                                cancel:
+                                    usr: 0
+                                    sys: 0
+
+                done()
 
 
         context '/v1/hubs/:uuid:/', -> 
 
-            it 'respods 404 to no such', (done) -> 
+            it 'respods 404 to no such', ipso (done) -> 
 
                 client.get 
                     path: '/v1/hubs/9'
-                    (err, {statusCode}) ->
 
-                        statusCode.should.equal 404
-                        done() 
+                .then ({statusCode}) ->
+
+                    statusCode.should.equal 404
+                    done() 
 
 
-            it 'responds with specific hub record', (done) -> 
+            it 'responds with specific hub record', ipso (done) -> 
 
                 client.get 
                     path: '/v1/hubs/1'
-                    (err, {statusCode, body}) ->
 
-                        body.cache.should.eql {}
-                        should.exist body.tools.toolName
-                        body.errors.should.eql recent: []
-                        body.middlewares.should.eql {}
-                        done()
+                .then ({statusCode, body}) ->
 
-            it 'lists middlewares', (done) -> 
+                    body.cache.should.eql {}
+                    should.exist body.tools.toolName
+                    body.errors.should.eql recent: []
+                    body.middlewares.should.eql {}
+                    done()
+
+            it 'lists middlewares', ipso (done) -> 
 
                 hub1.use 
                     title: 'Middleware Title'
@@ -284,34 +286,37 @@ describe 'manage', ->
 
                 client.get 
                     path: '/v1/hubs/1'
-                    (err, {statusCode, body}) ->
+                
+                .then ({statusCode, body}) ->
 
-                        should.exist body.middlewares[1]
-                        done()
+                    should.exist body.middlewares[1]
+                    done()
 
 
-            it './stats', (done) -> 
+            it './stats', ipso (done) -> 
 
                 client.get 
                     path: '/v1/hubs/1/stats'
-                    (err, {statusCode, body}) ->
+                
+                .then ({statusCode, body}) ->
 
-                        should.exist body.pipeline
-                        done()
+                    should.exist body.pipeline
+                    done()
 
 
-            it './errors', (done) -> 
+            it './errors', ipso (done) -> 
 
                 client.get 
                     path: '/v1/hubs/1/errors'
-                    (err, {statusCode, body}) ->
+                
+                .then ({statusCode, body}) ->
 
                         should.exist body.recent
                         done()
 
 
 
-            it './cache', (done) -> 
+            it './cache', ipso (done) -> 
 
                 hub1.use 
                     slot: 1
@@ -326,18 +331,20 @@ describe 'manage', ->
 
                     client.get
                         path: '/v1/hubs/1'
-                        (err, {statusCode, body}) ->
+                    
+                    .then ({statusCode, body}) ->
 
-                    client.get 
-                        path: '/v1/hubs/1/cache'
-                        (err, {statusCode, body}) ->
+                        client.get 
+                            path: '/v1/hubs/1/cache'
+                        
+                        .then ({statusCode, body}) ->
 
-                            body.key.should.equal 'VALUE'
-                            delete hub1.cache.key
-                            done()   
+                                body.key.should.equal 'VALUE'
+                                delete hub1.cache.key
+                                done()   
 
 
-            it './cache/**/*', (done) -> 
+            it './cache/**/*', ipso (done) -> 
 
                 hub1.use 
                     slot: 1
@@ -351,7 +358,8 @@ describe 'manage', ->
                 hub1.event().then -> 
                     client.get 
                         path: '/v1/hubs/1/cache/key2/nest/some/stuff'
-                        (err, {statusCode, body}) ->
+                    
+                    .then ({statusCode, body}) ->
 
                             body.here.should.equal 'VALUE'
                             done()
@@ -362,23 +370,25 @@ describe 'manage', ->
 
 
 
-            it './tools', (done) ->
+            it './tools', ipso (done) ->
 
                 client.get 
                     path: '/v1/hubs/1/tools'
-                    (err, {statusCode, body}) ->
+                
+                .then ({statusCode, body}) ->
 
-                        should.exist body.toolName
-                        done()
+                    should.exist body.toolName
+                    done()
 
 
             context './tools/**/*', ->
 
-                it 'responds with the tool searialization', (done) ->
+                it 'responds with the tool searialization', ipso (done) ->
 
                     client.get 
                         path: '/v1/hubs/1/tools/toolName'
-                        (err, {statusCode, body}) ->
+                    
+                    .then ({statusCode, body}) ->
 
                             body.should.eql 
 
@@ -393,28 +403,30 @@ describe 'manage', ->
                             done()
 
 
-                it 'walks into the tool/apiFunction async result', (done) -> 
+                it 'walks into the tool/apiFunction async result', ipso (done) -> 
 
                     client.get 
                         path: '/v1/hubs/1/tools/toolName/apiFunction/async/'
-                        (err, {statusCode, body}) ->
+                    
+                    .then ({statusCode, body}) ->
 
-                            body.should.eql jump: in: 'path'
-                            done()
+                        body.should.eql jump: in: 'path'
+                        done()
 
 
 
-                it './clients', (done) -> 
+                it './clients', ipso (done) -> 
 
                     client.get 
                         path: '/v1/hubs/1/clients'
-                        (err, {statusCode, body}) ->
+                        
+                    .then ({statusCode, body}) ->
 
                             body.should.equal 'PENDING'
                             done()
 
 
-                it './middlewares', (done) -> 
+                it './middlewares', ipso (done) -> 
 
                     hub2.use
 
@@ -430,7 +442,8 @@ describe 'manage', ->
 
                     client.get 
                         path: '/v1/hubs/2/middlewares'
-                        (err, {statusCode, body}) ->
+                        
+                    .then ({statusCode, body}) ->
 
                             body[1].slot.should.equal 1
                             body[1].title.should.equal 'Middleware Title'
@@ -443,7 +456,7 @@ describe 'manage', ->
 
         context '/v1/hubs/:uuid:/middlewares/:slot:', ->
 
-            it 'gets specific middleware details', (done) -> 
+            it 'gets specific middleware details', ipso (done) -> 
 
                 hub2.use
 
@@ -454,24 +467,26 @@ describe 'manage', ->
 
                 client.get 
                     path: '/v1/hubs/2/middlewares/1'
-                    (err, {statusCode, body}) ->
+                    
+                .then ({statusCode, body}) ->
 
-                        body.title.should.equal 'Middleware Title 1'
-                        done()
+                    body.title.should.equal 'Middleware Title 1'
+                    done()
 
 
-            it '404s', (done) ->
+            it '404s', ipso (done) ->
 
                 client.get 
                     path: '/v1/hubs/2/middlewares/333'
-                    (err, {statusCode, body}) ->
+                    
+                .then ({statusCode, body}) ->
 
-                        statusCode.should.equal 404
-                        done()
+                    statusCode.should.equal 404
+                    done()
 
 
 
-            it 'disables middleware with GET /v1/hubs/:uuid:/middlewares/:slot:/disable', (done) -> 
+            it 'disables middleware with GET /v1/hubs/:uuid:/middlewares/:slot:/disable', ipso (done) -> 
 
                 hub2.use
 
@@ -483,23 +498,25 @@ describe 'manage', ->
                 client.get 
 
                     path: '/v1/hubs/2/middlewares/1/disable'
-                    (err, {statusCode, body}) ->
+                
+                .then ({statusCode, body}) ->
 
-                        body.enabled.should.equal false
-                        done()
+                    body.enabled.should.equal false
+                    done()
 
-            it 'returns 404 on no such middleware', (done) -> 
+            it 'returns 404 on no such middleware', ipso (done) -> 
 
                 client.get 
 
                     path: '/v1/hubs/2/middlewares/44/disable'
-                    (err, {statusCode, body}) ->
+                
+                .then  ({statusCode, body}) ->
 
-                        statusCode.should.equal 404
-                        done()
+                    statusCode.should.equal 404
+                    done()
 
 
-            it 'enables middleware with  GET v1/hubs/:uuid:/middlewares/:slot:/enable', (done) -> 
+            it 'enables middleware with  GET v1/hubs/:uuid:/middlewares/:slot:/enable', ipso (done) -> 
 
                 hub2.use
 
@@ -512,10 +529,11 @@ describe 'manage', ->
                 client.get 
 
                     path: '/v1/hubs/2/middlewares/1/enable'
-                    (err, {statusCode, body}) ->
+                
+                .then ({statusCode, body}) ->
 
-                        body.enabled.should.equal true
-                        done()
+                    body.enabled.should.equal true
+                    done()
 
 
 

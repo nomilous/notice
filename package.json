@@ -15,7 +15,9 @@
     "socket.io-client": "~0.9.16",
     "node-uuid": "~1.4.1",
     "also": "0.0.12",
-    "coffee-script": "~1.6.3"
+    "coffee-script": "~1.6.3",
+    "ipso": "0.0.1",
+    "dinkum": "0.0.3"
   },
   "devDependencies": {
     "nez": "0.0.7",
@@ -23,8 +25,7 @@
     "hound": "~1.0.4",
     "coffee-script": "~1.6.3",
     "mocha": "~1.12.1",
-    "dinkum": "0.0.3",
-    "request": "~2.27.0"
+    "dinkum": "0.0.3"
   },
   "repository": "git@github.com:nomilous/notice.git"
 }
