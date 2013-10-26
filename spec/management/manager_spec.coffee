@@ -955,8 +955,20 @@ describe 'manage', ipso (should, http, https) ->
                                 ok: ' good!'
                                 it: 'WORKS!'
 
-                            facto()
 
+                            facto todo: """
+                                invent nifty way to get the test (`capsule.should.eql`)
+                                to not break the promise chain...
+                                
+                                this could have chained the metric verification as
+                                a second api call
+                                
+                                perhaps: 
+                                
+                                `facto.test capsule.should.eql ...`
+                                
+                                to return the promise necessary to carry the chain
+                            """
 
 
 
