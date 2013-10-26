@@ -92,7 +92,7 @@ recurse = (authenticEntity, request, object, path, result, callback) ->
 
                     request.$$walking = true
                     return object[key] 
-                        authenticEntity: authenticEntity
+                        authentic: authenticEntity
                         additional: '##undecided1'
                         (error, nested) -> 
 

@@ -100,8 +100,24 @@ describe 'manage', ipso (should, http, https) ->
 
         it 'inserts middleware', (done) -> 
 
-            _manager().insertMiddleware = -> done()
-            _manager().middleware 'insert', @hub, null, 'text/javascript', 'body', 
+            _manager().insertMiddleware = (hub, slot, middleware, callback) -> 
+
+                middleware.fn(->).should.equal '∑'
+                done()
+
+            _manager().middleware 'insert', @hub, null, 'text/javascript', """
+                {
+                    title: 'title',
+                    description: 'description',
+                    enabled: true,
+                    fn: function(next) {
+                        next();
+                        return '∑';
+                    }
+
+                }
+            """, 
+
                 writeHead: ->
                 write: ->
                 end: ->
@@ -109,8 +125,19 @@ describe 'manage', ipso (should, http, https) ->
 
         it 'upserts middleware', (done) -> 
 
-            _manager().upsertMiddleware = -> done()
-            _manager().middleware 'upsert', @hub, null, 'text/coffeescript', 'body', 
+            _manager().upsertMiddleware = (hub, slot, middleware, callback) -> 
+
+                slot.should.equal 1
+                middleware.fn(->).should.equal '∑'
+                done()
+
+            slot = 1
+            _manager().middleware 'upsert', @hub, slot, 'text/coffeescript', """
+
+                title: 'title'
+                fn: (next) -> next(); '∑'
+
+            """, 
                 writeHead: ->
                 write: ->
                 end: ->
