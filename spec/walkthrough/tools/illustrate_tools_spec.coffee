@@ -2,18 +2,64 @@
 client = require('../api_client') API_PORT = 3333
 ipso   = require 'ipso'
 
+#
+# NOTE: not letting the test run to its end results in the socket
+#       used by the api to raise with EADDRINUSE
+#
+
+privateCounter = 0
 
 class ExampleTool
+
     constructor: ->
+
+        #
+        # called remotely via notice REST api
+        # -----------------------------------
+        #
+        # * a function that is tagged as $$notice(able)
+        #
+
         @function = (opts, callback) ->
+
+            # 
+            # console.log FUNCTION_OPTS: opts
+            # 
 
             callback null, with: some: thing: gotten: from: 'else where'
 
+        @function.$$notice = {}
+
+
         #
-        # tag the function as $$notice(able)
+        # * this one is tagged invisibly
         #
 
-        @function.$$notice = {}
+        # @['stats()'] = (opts, callback) -> 
+        @stats = (opts, callback) -> 
+            setTimeout (->
+                callback null, count: privateCounter
+            ), 100
+
+        # Object.defineProperty @['stats()'], '$$notice', 
+        Object.defineProperty @stats, '$$notice', 
+            enumerable: false
+            value: {}
+
+
+        #
+        # used in middleware
+        # ------------------
+        # 
+        # * increment the counter (used in middleware)
+        #
+
+        @increment = -> privateCounter++
+
+
+    other: stuff: 'too'
+
+
 
 
 describe 'tools api', -> 
@@ -34,7 +80,7 @@ describe 'tools api', ->
 
             ticks: 
                 onYourMarks:
-                    interval: 1000 # quite high frequency
+                    interval: 1 # quite high frequency
 
         instance = HubDefinition.create
 
@@ -58,7 +104,7 @@ describe 'tools api', ->
 
     it 'starts the above hub and runs this following demo chain', ipso (facto) -> 
 
-        #@timeout(20000)
+        @timeout(20000)
 
         @hub.use 
 
@@ -115,7 +161,7 @@ describe 'tools api', ->
 
         
         # 
-        # POST new middleware onto the "tail" of the pipeline
+        # POST new middleware into the remote hub's pipeline
         #
 
         .then client.post
@@ -126,7 +172,15 @@ describe 'tools api', ->
                 title: 'use tool'
                 fn: (next, capsule, traversal) -> 
 
-                    console.log capsule.key # oh dear...
+                    #
+                    # * this new middleware increments the 
+                    #   counter in the example tool
+                    #
+
+                    eg = traversal.tools.example
+                    eg.increment()
+
+                    # console.log capsule.$$all # oh dear... (nothing!)
                     next()
 
 
@@ -140,11 +194,37 @@ describe 'tools api', ->
             """, body
 
 
+        .then client.get 
+
+            path: '/hubs/1/tools/example/stats'
+
+                                            #
+                                            # path: '/hubs/1/tools/example/stats()'
+                                            # 
+                                            # ##undecided4
+                                            # 
+                                            # * that worked...!
+                                            # * hmmmmmmmmmmmmm! 
+                                            # * thinks: /hubs/1/tools/example/stats( args )
+                                            # * then thinks: /hubs/1/tools/example/stats( args, callback://... )
+                                            # * hmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm! 
+                                            # 
+
+        .then ({statusCode, body}) -> 
+
+            console.log """
+
+            get result from the stats function
+            ----------------------------------
+
+            """, body
 
 
-
-        #facto()
-        
-
+            facto()     # COMMENT THIS - to make the api available for 20 seconds for this:
+                        # 
+                        # 
+                        #    curl -u user:pass localhost:3333/hubs/1/tools/example/stats
+                        # 
+                        # 
 
 
