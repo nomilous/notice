@@ -116,7 +116,15 @@ curl -u user: -H 'Content-Type: text/javascript' localhost:9999/hubs/2/middlewar
     title: "fake workload",
     fn: function(next) {
         setTimeout(function() {
+
+            /*
+             * * The capsule (in this case a tick) does not proceed 
+             *   to the next middleware until this one calls next.
+             * * Next is delayed here for 10 seconds.
+             *    
+             */
             next();
+
         }, 10000);
         
     }
