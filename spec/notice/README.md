@@ -144,9 +144,10 @@ The next function has some nested functions.
 * the same cache object is passed into all middleware traversals
 * the cache content is available for remote veiwing on the REST api `/hubs/:uuid:/cache`
 
-`traversal.peers` **pending consideration**
+`traversal.tools`
 
-* enables hub middleware to route capsules between clients
+* has a permanent reference to the `opts.tools` as assigned in `Hub.create(opts)`
+* available for remote veiwing on the REST api `/hubs/:uuid:/tools`
 
 
 #### throwing errors (or failing to catch them)
