@@ -9,6 +9,10 @@ class ExampleTool
 
             callback null, with: some: thing: gotten: from: 'else where'
 
+        #
+        # tag the function as $$notice(able)
+        #
+
         @function.$$notice = {}
 
 
@@ -46,8 +50,9 @@ describe 'tools api', ->
 
             (err, @hub) => 
 
-                return done() unless err?
-                throw err
+                throw err if err?
+                setInterval (=> @hub.event 'test' ), 100
+                done()
 
 
 
@@ -61,6 +66,10 @@ describe 'tools api', ->
             (next, capsule, traversal) -> 
 
                 #console.log capsule.$$all
+
+                capsule.$$set
+                    key: 'value'
+                    hidden: true 
                 next()
 
 
@@ -117,7 +126,7 @@ describe 'tools api', ->
                 title: 'use tool'
                 fn: (next, capsule, traversal) -> 
 
-                    console.log capsule.$$all # oh dear...
+                    console.log capsule.key # oh dear...
                     next()
 
 
