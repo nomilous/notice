@@ -1,7 +1,5 @@
 #### todo 0.0.12
 
-* ohdear... capsule.$$all not available in hotswapped middleware... (scope/../scope)
-* make fn part of opts in use()
 * upsert PUT, POST middleware over api as `text/javascript|coffeescript` hash, including function
 * boomerang capsule (emitter callback/resolve only after full remote hub traversal, throw/reject the same, boomerang is the default, emitters not expecting a result from the remote hub should specify on capsule definition, said emitters receive the callback on hub ack)
 * boomerang mode - pre / post (configable does the clientside traversal occur after or before the hub traversal)
