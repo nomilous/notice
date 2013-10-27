@@ -44,10 +44,6 @@ Television = notice.hub # a factory
 * **This portion of the api is likely to change WITHOUT DEPRECATION WARNINGS**
 
 
-#### The `ticks` subconfig
-
-...
-
 #### The `instance`
 
 ```coffee
@@ -62,6 +58,10 @@ Television.create
         secret:  'right'
         cert:    __dirname + '/../../cert/develop-cert.pem'
         key:     __dirname + '/../../cert/develop-key.pem'
+
+    ticks:
+        label:
+            interval: 1000
 
     (error, hub) ->
 
@@ -89,15 +89,31 @@ Television.create
 * Otherwise a new http or https server will be created.
 * If specified and present, cert and key files an https server is created for the socket.io listener.
 
+#### The `ticks` subconfig
+
+* Configures an interval timer to repeat emit a `$$tick` capsule into the pipeline
+* It is recommended that ticks are `next()`ed immediately to proceed them to all middleware as close as possible to the time they happened.
+* The `$$tick` capsule contains the configured label and a sequence number.
+
+```coffee
+capsule.$$tick == 'label'
+typeof capsule.seq is 'number'
+```
 
 #### The `cache` subconfig
 
-...
+* Configures a hash (tree) that is accessable to all middleware in the pipeline.
+* Middleware can modify the content of the cache via `traversal.cache`
+* The cache is available via the api at `[GET] /hubs/:uuid:/cache[/**/*]`
+* The cache is not persisted. Restart the hub, and it's gone!
+* Why is there a cache tree? For [middleware scope](../middleware_scope.md).
+
 
 #### The `tools` subconfig
 
-...
+* Similar to the `cache`. But for tools that the middleware may require.
+* Available to middleware via `traversal.tools`
+* Available via the api at `[GET] /hubs/:uuid:/tools[/**/*]`
+* See [here](../tools) for some additional tool functionality.
+* Why is there a tools tree? For [middleware scope](../middleware_scope.md)
 
-#### The `ticks` subconfig
-
-...

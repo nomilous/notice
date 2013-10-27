@@ -366,24 +366,24 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
             '/hubs/:uuid:/tools/**/*': 
 
                 description: 'get nested subkey from the tools key'
-                methods: ['GET'] 
+                methods: ['GET'] #, ['?PUT?', '?POST?']
                 handler: recursor local, 'tools' 
 
 
-            '/hubs/:uuid:/clients': 
+            # '/hubs/:uuid:/clients': 
 
-                description: 'pending'
-                methods: ['GET']
-                handler: ([query,uuid], request, response, statusCode = 200) -> 
+            #     description: 'pending'
+            #     methods: ['GET']
+            #     handler: ([query,uuid], request, response, statusCode = 200) -> 
 
-                    return local.methodNotAllowed response unless request.method == 'GET'
-                    return local.objectNotFound response unless local.hubContext.hubs[uuid]
-                    notifier = local.hubContext.hubs[uuid]
-                    local.respond( 
-                        'PENDING'
-                        statusCode
-                        response
-                    )
+            #         return local.methodNotAllowed response unless request.method == 'GET'
+            #         return local.objectNotFound response unless local.hubContext.hubs[uuid]
+            #         notifier = local.hubContext.hubs[uuid]
+            #         local.respond( 
+            #             'PENDING'
+            #             statusCode
+            #             response
+            #         )
 
 
             '/hubs/:uuid:/middlewares': 
