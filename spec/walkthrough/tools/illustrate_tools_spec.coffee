@@ -1,5 +1,5 @@
-{hub}  = require '../../lib/notice'
-client = require('./api_client') API_PORT = 3333
+{hub}  = require '../../../lib/notice'
+client = require('../api_client') API_PORT = 3333
 ipso   = require 'ipso'
 
 
@@ -30,7 +30,7 @@ describe 'tools api', ->
 
             ticks: 
                 onYourMarks:
-                    interval: 1 # quite high frequency
+                    interval: 1000 # quite high frequency
 
         instance = HubDefinition.create
 
@@ -60,7 +60,7 @@ describe 'tools api', ->
             title: 'Middleware Title'
             (next, capsule, traversal) -> 
 
-                # console.log capsule
+                #console.log capsule.$$all
                 next()
 
 
@@ -104,7 +104,8 @@ describe 'tools api', ->
 
             """, body
 
-        #
+        
+        # 
         # POST new middleware onto the "tail" of the pipeline
         #
 
@@ -116,9 +117,8 @@ describe 'tools api', ->
                 title: 'use tool'
                 fn: (next, capsule, traversal) -> 
 
-                    console.log capsule.$$tick # HUH?
+                    console.log capsule.$$all # oh dear...
                     next()
-
 
 
         .then ({statusCode, body}) -> 
