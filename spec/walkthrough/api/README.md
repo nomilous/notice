@@ -13,7 +13,7 @@ npm install # incase that was not already done
 node_modules/.bin/node-dev spec/walkthrough/api/generic_hub.coffee
 
 ```
-It should have started the API listeing [http://127.0.0.1:9999](http://127.0.0.1:9999) at and 2 hubs at non-specific port numbers.
+It should have started the API listeing at [http://127.0.0.1:9999](http://127.0.0.1:9999) (username is 'user', no password) and 2 hubs at non-specific port numbers.
 ```bash
    info  - socket.io started
    info  - socket.io started
@@ -28,7 +28,7 @@ HUB @ http://127.0.0.1:61486
 ...
 ```
 
-SlowTick is begin logger by the first hub instance in [`./generic_hob.coffee`](./generic_hub.coffee)
+SlowTick is being logged by the first hub instance in [`./generic_hob.coffee`](./generic_hub.coffee)
 
 ### Get the list of running hubs
 
