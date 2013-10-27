@@ -8,21 +8,28 @@ module.exports.capsule  = (config = {}) ->
 
     Testable = factory = 
 
-        create: (opts) ->
+        create: (opts = {}) ->
 
-            testable = instance = 
+            testable = internal = 
 
                 uuid: opts.uuid
 
+            external = {}
 
-
-            Object.defineProperty instance, '$$uuid', 
+            Object.defineProperty external, '$$uuid', 
                 enumarable: false
-                get: -> instance.uuid
+                get: -> internal.uuid
+                set: (value) -> internal.uuid = value unless internal.uuid?
 
+            Object.defineProperty external, '$$set',
+                enumarable: false
+                get: -> (hash) -> 
 
+                    break for firstKey of hash
+                    internal[firstKey] = hash[firstKey]
 
-
+                    Object.defineProperty external, firstKey, 
+                        get: -> internal[firstKey]
 
 
 

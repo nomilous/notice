@@ -3,7 +3,7 @@ should    = require 'should'
 
 describe 'Capsule', -> 
 
-    it.only 'can set the uuid at creation (and it sticks)', (done) -> 
+    it 'can set the uuid at creation (and it sticks)', (done) -> 
 
         Capsule  = capsule()
         instance = Capsule.create uuid: 'assigned'
@@ -15,12 +15,14 @@ describe 'Capsule', ->
     it 'can set the uuid after creation (only once)', (done) -> 
 
         Capsule  = capsule()
-        instance = new Capsule
+        instance = Capsule.create()
         should.not.exist instance.$$uuid
         instance.$$uuid = 'UUID'
         instance.$$uuid = 'assign another uuid'
         instance.$$uuid.should.equal 'UUID'
         done()
+
+
         
 
     context '$$set()', -> 
@@ -28,11 +30,14 @@ describe 'Capsule', ->
         it 'sets a property', (done) -> 
 
             Capsule = capsule()
-            instance = new Capsule
+            instance = Capsule.create()
             instance.$$set property: 'value'
 
             instance.property.should.equal 'value'
             done()
+
+
+        return
 
         context 'all', -> 
 
