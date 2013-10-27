@@ -3,9 +3,10 @@
 * [`./client`](./client) Creating a Notifier Client
 * [`./hub`](./hub) Creating a Notifier Hub
 * [`./capsule`](./capsule) The Capsule
-* then below
-* [`../api`](../api)
-* [`../tools`](../tools)
+* [`#emitting-capsules`] Emitting Capsules
+* [`#using-the-middleware-pipeline`] Using the middleware pipeline
+* [`../api`](../api) Management API
+* [`../tools`](../tools) Tools API
 
 Emitting Capsules
 -----------------
@@ -145,12 +146,12 @@ The next function has some nested functions.
 * has a permanent reference to the `opts.cache` as assigned in `Hub.create(opts)`
 * middlewares can populate this cache at will
 * the same cache object is passed into all middleware traversals
-* the cache content is available for remote veiwing on the REST api `/hubs/:uuid:/cache`
+* the cache content is available for remote veiwing on the Management API `/hubs/:uuid:/cache`
 
 `traversal.tools`
 
 * has a permanent reference to the `opts.tools` as assigned in `Hub.create(opts)`
-* available for remote veiwing on the REST api `/hubs/:uuid:/tools`
+* available for remote veiwing on the Management API `/hubs/:uuid:/tools`
 
 
 #### throwing errors (or failing to catch them)
@@ -178,4 +179,4 @@ notice.event().then(
 * The offending error is called back at the emitter.
 * PENDING Errors occuring on a remote hub have the same affect back at the origin emitter.
 * A recent error history is preserved (config.error.keep:N) and available at `hub.serialize(2)`
-* Error history is also available on the REST api `/hubs/:uuid:/errors`
+* Error history is also available on the Management API `/hubs/:uuid:/errors`
