@@ -1,8 +1,11 @@
-#### Suggested First Readings
+#### Suggested Sequence
 
 * [`./client`](./client) Creating a Notifier Client
 * [`./hub`](./hub) Creating a Notifier Hub
 * [`./capsule`](./capsule) The Capsule
+* then below
+* [`../api`](../api)
+* [`../tools`](../tools)
 
 Emitting Capsules
 -----------------
