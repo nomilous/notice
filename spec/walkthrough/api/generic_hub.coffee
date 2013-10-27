@@ -23,11 +23,11 @@ genericHub1 = GenericHub.create
             console.log err
             process.exit 1
 
-        # hub.use 
-        #     title: 'Middleware 1'
-        #     (next, capsule, traversal) -> 
-        #         console.log capsule
-        #         next()
+        hub.use 
+            title: 'Middleware 1'
+            (next, capsule, traversal) -> 
+                console.log capsule
+                next()
 
 
 genericHub2 = GenericHub.create

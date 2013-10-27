@@ -20,7 +20,15 @@ It should have started the API listeing [http://127.0.0.1:9999](http://127.0.0.1
 API @ http://127.0.0.1:9999
 HUB @ http://127.0.0.1:61485
 HUB @ http://127.0.0.1:61486
+{ '$tick': 'SlowTick', seq: 0 }
+{ '$tick': 'SlowTick', seq: 1 }
+{ '$tick': 'SlowTick', seq: 2 }
+{ '$tick': 'SlowTick', seq: 3 }
+{ '$tick': 'SlowTick', seq: 4 }
+...
 ```
+
+SlowTick is begin logger by the first hub instance in [`./generic_hob.coffee`](./generic_hub.coffee)
 
 ### Get the list of running hubs
 
