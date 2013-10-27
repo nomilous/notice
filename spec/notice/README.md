@@ -3,9 +3,10 @@
 * [`./client`](./client) Creating a Notifier Client
 * [`./hub`](./hub) Creating a Notifier Hub
 * [`./capsule`](./capsule) The Capsule
-* [`#emitting-capsules`](#emitting-capsules) Emitting Capsules
-* [`#using-the-middleware-pipeline`](#using-the-middleware-pipeline) Using the middleware pipeline
+* [`#emitting-capsules`](#emitting-capsules)
+* [`#using-the-middleware-pipeline`](#using-the-middleware-pipeline)
 * [`../api`](../api) Management API
+* [`./middleware_scope.md`](./middleware_scope.md) Middleware Scope
 * [`../tools`](../tools) Tools API
 
 Emitting Capsules
