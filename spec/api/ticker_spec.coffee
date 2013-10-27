@@ -1,4 +1,4 @@
-{ticker, _ticker} = require '../../lib/management/ticker'
+{ticker, _ticker} = require '../../lib/api/ticker'
 should = require 'should'
 
 

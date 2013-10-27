@@ -15,37 +15,37 @@
 
 ```
           notice/• grep -A10 -ri todo src/* 
-src/management/authenticator.coffee:                # TODO: error properly?
-src/management/authenticator.coffee-                # 
-src/management/authenticator.coffee-                # * it re-requests auth on error or no authenticEntity
-src/management/authenticator.coffee-                # * otherwise call onward to the requestHandler
-src/management/authenticator.coffee-                # 
-src/management/authenticator.coffee-
-src/management/authenticator.coffee-                return requestHandler request, response if authenticEntity?
-src/management/authenticator.coffee-                requestAuth response
-src/management/authenticator.coffee-
-src/management/authenticator.coffee-        #
-src/management/authenticator.coffee-        # * use 'hard'coded username and password in config
+src/api/authenticator.coffee:                # TODO: error properly?
+src/api/authenticator.coffee-                # 
+src/api/authenticator.coffee-                # * it re-requests auth on error or no authenticEntity
+src/api/authenticator.coffee-                # * otherwise call onward to the requestHandler
+src/api/authenticator.coffee-                # 
+src/api/authenticator.coffee-
+src/api/authenticator.coffee-                return requestHandler request, response if authenticEntity?
+src/api/authenticator.coffee-                requestAuth response
+src/api/authenticator.coffee-
+src/api/authenticator.coffee-        #
+src/api/authenticator.coffee-        # * use 'hard'coded username and password in config
 --
-src/management/middleware.coffee:            # TODO: * pend reload till signal 
-src/management/middleware.coffee:            # TODO: * emit $$ready 'pack_id'
-src/management/middleware.coffee-            #
-src/management/middleware.coffee-
-src/management/middleware.coffee-            next = if local.active == 'array1' then 'array2' else 'array1'
-src/management/middleware.coffee-
-src/management/middleware.coffee-            sort = []
-src/management/middleware.coffee-            sort[parseInt slot] = slot for slot of local.slots
-src/management/middleware.coffee-
-src/management/middleware.coffee-            array = local[next]
-src/management/middleware.coffee-            array.length = 0
-src/management/middleware.coffee-
+src/api/middleware.coffee:            # TODO: * pend reload till signal 
+src/api/middleware.coffee:            # TODO: * emit $$ready 'pack_id'
+src/api/middleware.coffee-            #
+src/api/middleware.coffee-
+src/api/middleware.coffee-            next = if local.active == 'array1' then 'array2' else 'array1'
+src/api/middleware.coffee-
+src/api/middleware.coffee-            sort = []
+src/api/middleware.coffee-            sort[parseInt slot] = slot for slot of local.slots
+src/api/middleware.coffee-
+src/api/middleware.coffee-            array = local[next]
+src/api/middleware.coffee-            array.length = 0
+src/api/middleware.coffee-
 --
-src/management/ticker.coffee:            # TODO: tick capsule are not sent across the socket
-src/management/ticker.coffee-            #
-src/management/ticker.coffee-
-src/management/ticker.coffee-    api = 
-src/management/ticker.coffee-
-src/management/ticker.coffee-        register: local.register
+src/api/ticker.coffee:            # TODO: tick capsule are not sent across the socket
+src/api/ticker.coffee-            #
+src/api/ticker.coffee-
+src/api/ticker.coffee-    api = 
+src/api/ticker.coffee-
+src/api/ticker.coffee-        register: local.register
 --
 src/notice/capsule/capsule.coffee:                        # TODO: Consider enabling access to all hubs in the process
 src/notice/capsule/capsule.coffee-                        #       to the change watcher callback. (switching / routing)
@@ -359,26 +359,26 @@ src/notice/notifier.coffee-                                                     
 ### ideas...
 
 ```
-src/management/middleware.coffee:                    # ##ideas
-src/management/middleware.coffee-                    # 
-src/management/middleware.coffee-                    # * the middleware, contained in a capsule
-src/management/middleware.coffee-                    #      * provides a change watcher
-src/management/middleware.coffee-                    #      * uuid
-src/management/middleware.coffee-                    # * switching middleware, instruction via the pipeline in addition to the api
-src/management/middleware.coffee-                    # * middleware packs (a contiguous, identifiable set)
-src/management/middleware.coffee-                    #      * hub runs a pack
-src/management/middleware.coffee-                    #      * can switch betweeen packs
-src/management/middleware.coffee:                    #           * nice for preloading an ugrade pending ideal switch moment
-src/management/middleware.coffee-                    #           * switch back if it blows up
-src/management/middleware.coffee-                    #  
-src/management/middleware.coffee-                    #      == suggests sluce ==
-src/management/middleware.coffee-                    #               
-src/management/middleware.coffee-                    #              * a 'first' middleware that queues when activated
-src/management/middleware.coffee-                    #              * and can open the floodgate carefully
-src/management/middleware.coffee-                    #              * to only release a trickle onto the newly upgraded bus
-src/management/middleware.coffee-                    #              * to determine if a rollback (and return to the DrawingBoard) is necessary
-src/management/middleware.coffee-                    # 
-src/management/middleware.coffee-
+src/api/middleware.coffee:                    # ##ideas
+src/api/middleware.coffee-                    # 
+src/api/middleware.coffee-                    # * the middleware, contained in a capsule
+src/api/middleware.coffee-                    #      * provides a change watcher
+src/api/middleware.coffee-                    #      * uuid
+src/api/middleware.coffee-                    # * switching middleware, instruction via the pipeline in addition to the api
+src/api/middleware.coffee-                    # * middleware packs (a contiguous, identifiable set)
+src/api/middleware.coffee-                    #      * hub runs a pack
+src/api/middleware.coffee-                    #      * can switch betweeen packs
+src/api/middleware.coffee:                    #           * nice for preloading an ugrade pending ideal switch moment
+src/api/middleware.coffee-                    #           * switch back if it blows up
+src/api/middleware.coffee-                    #  
+src/api/middleware.coffee-                    #      == suggests sluce ==
+src/api/middleware.coffee-                    #               
+src/api/middleware.coffee-                    #              * a 'first' middleware that queues when activated
+src/api/middleware.coffee-                    #              * and can open the floodgate carefully
+src/api/middleware.coffee-                    #              * to only release a trickle onto the newly upgraded bus
+src/api/middleware.coffee-                    #              * to determine if a rollback (and return to the DrawingBoard) is necessary
+src/api/middleware.coffee-                    # 
+src/api/middleware.coffee-
 ```
 
 

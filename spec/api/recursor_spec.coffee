@@ -1,5 +1,5 @@
 should     = require 'should'
-{recursor} = require '../../lib/management/recursor' 
+{recursor} = require '../../lib/api/recursor' 
 
 describe 'recursor', -> 
 

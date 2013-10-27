@@ -1,6 +1,6 @@
 should            = require 'should'
 {_client, client, connector} = require '../../../lib/notice/client'
-{_ticker} = require '../../../lib/management/ticker'
+{_ticker} = require '../../../lib/api/ticker'
 {_notifier}       = require '../../../lib/notice/notifier'
 {hostname}        = require 'os'
 uuid              = require 'node-uuid' 

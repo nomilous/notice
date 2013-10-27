@@ -2,8 +2,8 @@ should      = require 'should'
 {parallel}  = require 'also'
 {hub, _hub, listener} = require '../../../lib/notice/hub'
 {_Handler, _handler}  = require '../../../lib/notice/hub/hub_handler'
-{_manager}    = require '../../../lib/management/manager'
-{_ticker} = require '../../../lib/management/ticker'
+{_manager}    = require '../../../lib/api/manager'
+{_ticker} = require '../../../lib/api/ticker'
 {_notifier} = require '../../../lib/notice/notifier'
 
 

@@ -2,7 +2,7 @@ PROTOCOL_VERSION = 1
 
 {hostname} = require 'os'
 {deferred} = require 'also'
-{ticker}   = require '../../management/ticker'
+{ticker}   = require '../../api/ticker'
 notifier   = require '../notifier'
 Connector  = require './connector'
 {

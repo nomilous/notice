@@ -2,8 +2,8 @@
 listener    = require './listener'
 {handler}   = require './hub_handler'
 {notifier}  = require '../notifier'
-{manager}   = require '../../management/manager'
-{ticker}    = require '../../management/ticker'
+{manager}   = require '../../api/manager'
+{ticker}    = require '../../api/ticker'
 {v1}        = require 'node-uuid'
 
 {

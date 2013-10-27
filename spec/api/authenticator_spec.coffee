@@ -1,5 +1,5 @@
 should          = require 'should'
-{authenticator} = require '../../lib/management/authenticator'
+{authenticator} = require '../../lib/api/authenticator'
 
 describe 'authenticator', -> 
 

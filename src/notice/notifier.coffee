@@ -1,7 +1,7 @@
 {pipeline, deferred} = require 'also'
 {lifecycle}          = require './capsule/lifecycle'
-{health}             = require '../management/health'
-{middleware}         = require '../management/middleware'
+{health}             = require '../api/health'
+{middleware}         = require '../api/middleware'
 {v1}                 = require 'node-uuid'
 
 {undefinedArg, invalidAction} = require './errors'

@@ -1,4 +1,4 @@
-{middleware,_middleware} = require '../../lib/management/middleware'
+{middleware,_middleware} = require '../../lib/api/middleware'
 should = require 'should'
 
 describe 'middleware', -> 
