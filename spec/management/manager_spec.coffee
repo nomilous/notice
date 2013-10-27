@@ -317,10 +317,9 @@ describe 'manage', ipso (should, http, https) ->
                             description: "enable a middleware"
                             methods: [ "GET" ]
 
-                        # "/hubs/:uuid:/middlewares/:title:/replace":
-                        #     description: "replace a middleware"
-                        #     methods: [ "POST" ]
-                        #     accepts: [ "text/javascript", "text/coffeescript" ]
+                        "/hubs/:uuid:/middlewares/:slot:/fn":
+                            description: 'show middleware function'
+                            methods: ['GET']
 
                 done()  
             

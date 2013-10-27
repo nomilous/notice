@@ -429,6 +429,25 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
                     objectNotFound response
 
 
+            '/hubs/:uuid:/middlewares/:slot:/fn':
+                description: 'show middleware function'
+                methods: ['GET']
+                handler: ([query,uuid,slot,authenticEntity], request, response, statusCode = 200) -> 
+
+                    return local.methodNotAllowed response unless request.method == 'GET'
+                    return local.objectNotFound response unless local.hubContext.hubs[uuid]
+
+                    notifier = local.hubContext.hubs[uuid]
+                    middlewares = notifier.serialize(2).middlewares
+                    if middlewares[slot]
+                        fnString = middlewares[slot].fn.toString()
+                        response.writeHead 200,
+                            'Content-Type': 'text/javascript'
+                            'Content-Length': fnString.length
+                        return response.end fnString
+                    objectNotFound response
+
+
             '/hubs/:uuid:/middlewares/:slot:/disable':
                 description: 'disable a middleware'
                 methods: ['GET']
@@ -582,7 +601,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
             # /hub/1/mwares       == /hubs/1/middlewares
             # /hub/1/mware/1      == /hubs/1/middlewares/1
             # /hub/1/mware      (ignored)
-
+            #
             
             path = path.replace /\/hub\//, '/hubs/'
             path = path.replace /\/middleware\//, '/middlewares/'
