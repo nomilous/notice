@@ -63,6 +63,9 @@ Television.create
         label:
             interval: 1000
 
+    cache: {}
+    tools: {}
+
     (error, hub) ->
 
         #
@@ -73,6 +76,9 @@ Television.create
             
             title: 'middleware title'
             (next, capsule, traversal) -> 
+
+                # traversal.cache
+                # traveral.tools
 
                 console.log traversal.origin
                 next()
