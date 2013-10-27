@@ -20,7 +20,7 @@ notice
 ### Quick Faqts
 
 * all examples use coffee-script
-* docs + walkthrough @ [`./spec/notice`](./spec/notice)
+* docs + walkthrough @ [`./spec`](./spec)
 
 ### Also, Important
 
