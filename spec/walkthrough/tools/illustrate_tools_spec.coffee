@@ -87,6 +87,11 @@ describe 'tools api', ->
                 # setInterval (=> @hub.event 'test', data: 1 ), 100
                 # 
 
+                @hub.use 
+                    title: 'first'
+                    (next) -> next()
+
+
                 done()
 
 

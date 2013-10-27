@@ -140,6 +140,11 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
                     type: errorType || 'Error'
                     message: error.message
 
+            if mware? and ( mware.title is 'first' or mware.title is 'last' )
+                return local.badRequest response, error: 
+                    type: errorType || 'Error'
+                    message: 'notice: first and last are reserved middleware titles'
+
             #
             # register the middleware onto the hub's bus
             # ------------------------------------------

@@ -1157,8 +1157,47 @@ describe 'manage', ipso (should, http, https) ->
 
 
                     it 'accepts title, description, enabled and fn in body'
-                    it 'cannot modify type'
-                    it 'cannot upsert a middleware titled first or last'
+                    it 'cannot modify type', ipso (facto) ->
+
+                        hub2.use 
+                            slot: 111
+                            title: 'previous title'
+                            description: 'previous description'
+                            enabled: true
+                            (next) -> next()
+
+
+                        client.post
+                            path: '/hubs/2/middlewares/111'
+                            javascript: """ 
+                                
+                            { type: 'other' }
+
+                            """
+
+                        .then ({statusCode, body}) -> 
+
+                            body.type.should.equal 'usr'
+                            facto()
+
+                    it 'cannot upsert a middleware titled first or last', ipso (facto) ->
+
+                        client.post
+                            path: '/hubs/2/middlewares/1'
+                            javascript: 
+                                title: 'first'
+                                description: 'A description'
+                                fn: (next) -> next()
+
+                        .then ({statusCode, body}) -> 
+
+                            body.should.eql 
+                                error: 
+                                    type: 'Error'
+                                    message: 'notice: first and last are reserved middleware titles'
+                            facto()
+
+
                     it 'ignores all other properties (for now)'
                     it 'works!'
 
