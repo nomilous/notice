@@ -65,7 +65,7 @@ module.exports.handler  = (config = {}) ->
                         # * TODO: ensure this does not go to the client
                         # 
 
-                        hubNotifier.$$control 'suspend', 
+                        hubNotifier.$control 'suspend', 
                             _socket_id: id
 
 
@@ -131,11 +131,11 @@ module.exports.handler  = (config = {}) ->
                             assign[property] = payload[property]
                             assign.hidden    = true if hidden[property]
                             assign.protected = true if tected[property]
-                            capsule.$$set assign
+                            capsule.$set assign
 
                         capsule._socket_id = id
 
-                        hubNotifier.$$raw capsule
+                        hubNotifier.$raw capsule
 
 
                 handshake: (socket) -> 
@@ -252,7 +252,7 @@ module.exports.handler  = (config = {}) ->
                     # * TODO: ensure this does not go to the client
                     # 
 
-                    hubNotifier.$$control startOrResume, 
+                    hubNotifier.$control startOrResume, 
                         _socket_id: id
                     
                     hubContext.name2id[originTitle] = id

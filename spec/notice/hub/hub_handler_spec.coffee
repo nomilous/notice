@@ -24,7 +24,7 @@ describe 'handler', ->
 
             hubName     = 'hubname'
             hubNotifier = 
-                $$raw: ->
+                $raw: ->
                 use: ->
 
         )
@@ -44,7 +44,7 @@ describe 'handler', ->
 
                 hubName     = 'hubname'
                 hubNotifier = 
-                    $$raw: ->
+                    $raw: ->
                     use: (opts, fn) ->
 
                         if opts.title == 'inbound socket interface'
@@ -64,7 +64,7 @@ describe 'handler', ->
                 instance = HandlerClass.create(
                     hubName     = 'hubname'
                     hubNotifier = 
-                        $$raw: ->
+                        $raw: ->
                         use: (opts, fn) => if opts.first then @inbound = fn
 
                     @hubContext  = 
@@ -113,7 +113,7 @@ describe 'handler', ->
             instance = Handler.create(
                 hubName = 'hubName'
                 hubNotifier = 
-                    $$control: -> 
+                    $control: -> 
                     use: ->
                 hubContext  = 
                     clients: {}
@@ -153,7 +153,7 @@ describe 'handler', ->
                 
                 hubName      = 'hubname'
                 @hubNotifier = 
-                    $$control: -> 
+                    $control: -> 
                     use: ->
                 @hubContext  = 
                     clients: 
@@ -197,8 +197,8 @@ describe 'handler', ->
 
                 hubName      = 'hubname'
                 @hubNotifier = 
-                    $$control: -> 
-                    $$raw: (@capsule) => 
+                    $control: -> 
+                    $raw: (@capsule) => 
                     use: ->
 
                 @hubContext  = 
@@ -263,7 +263,7 @@ describe 'handler', ->
                     protectedKey: 'pValue'
             )
 
-            @capsule.$$uuid       .should.equal 'UUID'
+            @capsule.$uuid       .should.equal 'UUID'
             @capsule.key         .should.equal 'value'
             @capsule.hiddenKey   .should.equal 'hValue' 
             @capsule.protectedKey = 'kfdlkmsdfdsfqoknojk'
@@ -301,7 +301,7 @@ describe 'handler', ->
 
                 hubName      = 'hubname'
                 @hubNotifier = 
-                    $$control: -> 
+                    $control: -> 
                     use: ->
                 @hubContext  = 
                     clients: {}
@@ -438,7 +438,7 @@ describe 'handler', ->
 
                 hubName      = 'hubname'
                 @hubNotifier = 
-                    $$control: ->
+                    $control: ->
                     use: ->
                 @hubContext  = 
                     clients: {}

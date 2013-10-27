@@ -147,7 +147,7 @@ describe 'client', ->
                     capsule:
                         event: 
                             before: (done, capsule) -> 
-                                capsule.$$uuid = 'testable'
+                                capsule.$uuid = 'testable'
                                 done()
                 socket = 
                     on: (event, handler) => 
@@ -187,7 +187,7 @@ describe 'client', ->
                     @client.use
                         title: 'middleware to setup test'
                         (next, capsule) -> 
-                            capsule.$$set
+                            capsule.$set
                                 routingCode: 'x'
                                 protected: true
                                 hidden: true
@@ -222,11 +222,11 @@ describe 'client', ->
                         type: 'event'
                         uuid: 'testable' 
                         protected: 
-                            $$type: 1
+                            $type: 1
                             event: 1
                             routingCode: 1
                         hidden: 
-                            $$type: 1
+                            $type: 1
                             routingCode: 1
                     done()
 
@@ -238,7 +238,7 @@ describe 'client', ->
 
                     @EMITTED.capsule.payload.should.eql
 
-                        $$type: 'event'
+                        $type: 'event'
                         event: 'test event 1'
                         routingCode: 'x'
                         
@@ -257,7 +257,7 @@ describe 'client', ->
                         console.log @EMITTED.capsule.payload
                         @EMITTED.capsule.payload.should.eql
 
-                            $$type: 'event'
+                            $type: 'event'
                             event: 'test event 2'
                             routingCode: 'x'
                             more: 'stuff'

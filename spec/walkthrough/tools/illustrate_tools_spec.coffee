@@ -17,7 +17,7 @@ class ExampleTool
         # called remotely via notice REST api
         # -----------------------------------
         #
-        # * a function that is tagged as $$notice(able)
+        # * a function that is tagged as $notice(able)
         #
 
         @function = (opts, callback) ->
@@ -28,7 +28,7 @@ class ExampleTool
 
             callback null, with: some: thing: gotten: from: 'else where'
 
-        @function.$$notice = {}
+        @function.$notice = {}
 
 
         #
@@ -41,8 +41,8 @@ class ExampleTool
                 callback null, count: privateCounter
             ), 100
 
-        # Object.defineProperty @['stats()'], '$$notice', 
-        Object.defineProperty @stats, '$$notice', 
+        # Object.defineProperty @['stats()'], '$notice', 
+        Object.defineProperty @stats, '$notice', 
             enumerable: false
             value: {}
 
@@ -100,9 +100,9 @@ describe 'tools api', ->
             title: 'Middleware Title'
             (next, capsule, traversal) -> 
 
-                #console.log capsule.$$all
+                #console.log capsule.$all
 
-                capsule.$$set
+                capsule.$set
                     key: 'value'
                     hidden: true 
                 next()
@@ -175,9 +175,17 @@ describe 'tools api', ->
                     eg = traversal.tools.example
                     eg.increment()
 
-                    # console.log BUG_1_INSIDE: capsule.$$all # oh dear... (nothing!)
+                    console.log BUG_1_INSIDE: capsule.$all # oh dear... (nothing!)
                     next()
 
+        .then client.get
+
+            path: '/hubs/1/middlewares/2/fn'
+
+        .then ({statusCode, body}) -> 
+
+            # console.log NEW_MIDDLEWARE_FN: body
+            -> 'noop'
 
         .then ({statusCode, body}) -> 
 
@@ -234,6 +242,6 @@ describe 'tools api', ->
 
             """
             
-            #facto()
+            facto()
 
 

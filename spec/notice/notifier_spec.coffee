@@ -47,14 +47,14 @@ describe 'notifier', ->
             Notifier = notifier capsule: userDefinedMessage: {}
             instance = Notifier.create 'title'
             instance.userDefinedMessage.should.be.an.instanceof Function
-            instance.$$control.should.be.an.instanceof Function
+            instance.$control.should.be.an.instanceof Function
             done()
 
         it 'creates a builtin tick capsule emitter', (done) -> 
 
             Notifier = notifier()
             instance = Notifier.create 'title', 'uuid'
-            instance.$$tick.should.be.an.instanceof Function
+            instance.$tick.should.be.an.instanceof Function
             done()
 
 
@@ -106,7 +106,7 @@ describe 'notifier', ->
                             #
 
                             capsule.id        = 'new database record id'
-                            # or capsule.$$uuid = 'if you want it the same'
+                            # or capsule.$uuid = 'if you want it the same'
                             capsule.createdAt = Date.now() 
                             done()
 
@@ -297,7 +297,7 @@ describe 'notifier', ->
                     done()
 
 
-            mix.$$raw 'VALUE'
+            mix.$raw 'VALUE'
 
         #DUPLICATE
         it 'rejects the middleware traversal (promise) on throw', (done) -> 

@@ -14,8 +14,8 @@ module.exports.lifecycle  = (type, config = {}) ->
         create: deferred ({resolve, reject}, properties = {}) -> 
 
             cap = local.Capsule.create()
-            cap.$$set 
-                $$type: type
+            cap.$set 
+                $type: type
                 protected: true
                 hidden: true
 
@@ -28,7 +28,7 @@ module.exports.lifecycle  = (type, config = {}) ->
                 assign[key]      = properties[key]
                 assign.protected = true
                 assign.hidden    = true if local.config.nondescript 
-                cap.$$set assign
+                cap.$set assign
 
             unless cap[type]?
 
@@ -36,12 +36,12 @@ module.exports.lifecycle  = (type, config = {}) ->
                 assign[type] = true
                 assign.protected = true
                 assign.hidden    = true
-                cap.$$set assign
+                cap.$set assign
 
             try if local.config.before
 
                 done = -> 
-                    cap.$$uuid = v1() unless cap.$$uuid?
+                    cap.$uuid = v1() unless cap.$uuid?
                     resolve cap
 
                 try 
@@ -50,5 +50,5 @@ module.exports.lifecycle  = (type, config = {}) ->
                     return reject error
 
 
-            cap.$$uuid = v1() unless cap._uuid?
+            cap.$uuid = v1() unless cap._uuid?
             return resolve cap

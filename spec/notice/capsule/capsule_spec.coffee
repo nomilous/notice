@@ -7,31 +7,31 @@ describe 'Capsule', ->
 
         Capsule  = capsule()
         instance = Capsule.create uuid: 'assigned'
-        instance.$$uuid.should.equal 'assigned'
-        instance.$$uuid = 'erg2q3'
-        instance.$$uuid.should.equal 'assigned'
+        instance.$uuid.should.equal 'assigned'
+        instance.$uuid = 'erg2q3'
+        instance.$uuid.should.equal 'assigned'
         done()
 
     it 'can set the uuid after creation (only once)', (done) -> 
 
         Capsule  = capsule()
         instance = Capsule.create()
-        should.not.exist instance.$$uuid
-        instance.$$uuid = 'UUID'
-        instance.$$uuid = 'assign another uuid'
-        instance.$$uuid.should.equal 'UUID'
+        should.not.exist instance.$uuid
+        instance.$uuid = 'UUID'
+        instance.$uuid = 'assign another uuid'
+        instance.$uuid.should.equal 'UUID'
         done()
 
 
         
 
-    context '$$set()', -> 
+    context '$set()', -> 
 
         it 'sets a property', (done) -> 
 
             Capsule = capsule()
             instance = Capsule.create()
-            instance.$$set property: 'value'
+            instance.$set property: 'value'
 
             instance.property.should.equal 'value'
             done()
@@ -43,15 +43,15 @@ describe 'Capsule', ->
 
                 Capsule = capsule()
                 instance = Capsule.create()
-                instance.$$set property:  'value'
-                instance.$$set secret:    'hiden value', hidden: true
-                instance.$$set readonly:  'protected value', protected: true
+                instance.$set property:  'value'
+                instance.$set secret:    'hiden value', hidden: true
+                instance.$set readonly:  'protected value', protected: true
 
                 instance.should.eql
                     property: 'value'
                     readonly: 'protected value'
 
-                instance.$$all.should.eql 
+                instance.$all.should.eql 
                     property: 'value'
                     secret:   'hiden value'
                     readonly: 'protected value'
@@ -67,7 +67,7 @@ describe 'Capsule', ->
 
                 Capsule = capsule()
                 instance = Capsule.create()
-                instance.$$set 
+                instance.$set 
                     property: 'original'
                     protected: true
                     
@@ -83,12 +83,12 @@ describe 'Capsule', ->
                 Capsule = capsule()
                 instance = Capsule.create()
 
-                instance.$$set 
+                instance.$set 
                     property: 'original'
                     protected: true
                     
 
-                instance.$$set 
+                instance.$set 
                     property: 'changed'
                     protected: false
                     
@@ -105,11 +105,11 @@ describe 'Capsule', ->
                 Capsule = capsule()
                 instance = Capsule.create()
 
-                instance.$$set 
+                instance.$set 
                     property: 'original'
                     protected: true
 
-                instance.$$protected.should.eql property: 1
+                instance.$protected.should.eql property: 1
                 done()
 
 
@@ -119,7 +119,7 @@ describe 'Capsule', ->
 
                 Capsule = capsule()
                 instance = Capsule.create()
-                instance.$$set 
+                instance.$set 
                     property: 'value'
                     hidden: true
                     
@@ -133,14 +133,14 @@ describe 'Capsule', ->
                 Capsule = capsule()
                 instance = Capsule.create()
                 
-                instance.$$set 
+                instance.$set 
                     property: 'value'
                     hidden: true
                     
 
                 instance.should.eql {}
 
-                instance.$$set 
+                instance.$set 
                     property: instance.property
                     hidden: false
                     
@@ -152,35 +152,35 @@ describe 'Capsule', ->
 
                 Capsule = capsule()
                 instance = Capsule.create()
-                instance.$$hidden.should.eql {}
+                instance.$hidden.should.eql {}
                 done()
 
             it 'adds to the list when a property is set hidden', (done) -> 
 
                 Capsule = capsule()
                 instance = Capsule.create()
-                instance.$$set
+                instance.$set
                     property: 'value'
                     hidden: true
 
-                instance.$$hidden.should.eql property: 1
+                instance.$hidden.should.eql property: 1
                 done()
 
             it 'removes from the list if a property is unhidden', (done) -> 
 
                 Capsule = capsule()
                 instance = Capsule.create()
-                instance.$$set
+                instance.$set
                     property: 'value'
                     hidden: true
 
-                instance.$$hidden.should.eql property: 1
+                instance.$hidden.should.eql property: 1
                 instance.should.eql {}
-                instance.$$set
+                instance.$set
                     property: 'new value'
                     hidden: false
 
-                instance.$$hidden.should.eql {}
+                instance.$hidden.should.eql {}
                 instance.should.eql property: 'new value'
                 done()
 
@@ -188,7 +188,7 @@ describe 'Capsule', ->
 
             Capsule = capsule()
             instance = Capsule.create()
-            instance.$$set 
+            instance.$set 
                 property: 'original'
                 hidden: true
                 protected: true
@@ -208,7 +208,7 @@ describe 'Capsule', ->
                 CHANGES = []
                 Capsule = capsule()
                 instance = Capsule.create()
-                instance.$$set
+                instance.$set
                     thing: 'one'
                     watched: (change) -> 
                         CHANGES.push change
@@ -233,7 +233,7 @@ describe 'Capsule', ->
 
                 Capsule = capsule()
                 instance = Capsule.create()
-                instance.$$set
+                instance.$set
                     thing: 'one'
                     protected: true
                     watched: (property, change, obj) -> 
@@ -241,11 +241,27 @@ describe 'Capsule', ->
 
 
 
+    context 'through eval', -> 
 
+        it 'still has builtin properties', (done) -> 
 
+            Capsule = capsule()
+            instance = Capsule.create()
 
+            instance.$set
+                key: 'value'
 
+            eval """
 
+                fn = function(capsule){ 
+                    //console.log( { XXX: capsule.$all });
+                    return capsule.$all;
+                }
+
+            """
+
+            fn(instance).should.eql key: 'value'
+            done()
 
 
 

@@ -67,7 +67,7 @@ module.exports.hub  = (config = {}) ->
 
 
                 seq = 0
-                setInterval (-> hub.$$health seq: seq++ ), 60000
+                setInterval (-> hub.$health seq: seq++ ), 60000
 
 
             catch error

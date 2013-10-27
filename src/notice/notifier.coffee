@@ -28,20 +28,20 @@ module.exports.notifier  = (config = {}) ->
     # for builtin capsules
     # --------------------
     # 
-    # * $$control - internal events 
-    # * $$delta   - emitted on changed component (##undecided3)
+    # * $control - internal events 
+    # * $delta   - emitted on changed component (##undecided3)
     #               
-    #               eg. $$delta 'middleware', {authenticEntity:{},context:{},from:{},to:{}}
+    #               eg. $delta 'middleware', {authenticEntity:{},context:{},from:{},to:{}}
     #               where does it go exactly? pertinent: https://github.com/nomilous/phrase/commit/84a1e6e8afc21b58e7c3b1bcccc8d136032692e4
     # 
-    # * $$tick    - configureable ticker
-    # * $$health  - periodic process health stats
+    # * $tick    - configureable ticker
+    # * $health  - periodic process health stats
     #
 
-    config.capsule.$$control = {}
-    config.capsule.$$delta   = {}
-    config.capsule.$$tick    = {}
-    config.capsule.$$health  = 
+    config.capsule.$control = {}
+    config.capsule.$delta   = {}
+    config.capsule.$tick    = {}
+    config.capsule.$health  = 
         before: (done, capsule) -> 
             health capsule, -> done()
 
@@ -212,7 +212,7 @@ module.exports.notifier  = (config = {}) ->
 
                             try 
 
-                                # console.log BUG_1_JUST_BEFORE capsule.$$all
+                                # console.log BUG_1_JUST_BEFORE capsule.$all
 
                                 fn next, capsule, traversal
                                 if title == 'last' and not cancelled
@@ -326,7 +326,7 @@ module.exports.notifier  = (config = {}) ->
             #   capsualizes it appropriately.
             #
 
-            Object.defineProperty notifier, '$$raw', 
+            Object.defineProperty notifier, '$raw', 
                 #enumerated: false
                 get: -> (payload) -> traverse payload
 

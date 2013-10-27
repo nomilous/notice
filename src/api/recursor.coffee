@@ -41,8 +41,8 @@ module.exports.recursor  = (local, type) ->
 
 recurse = (authenticEntity, request, object, path, result, callback) -> 
 
-    request.$$root     ||= result  # keep original root for termination case beyond async call
-    request.$$callback ||= callback
+    request.$root     ||= result  # keep original root for termination case beyond async call
+    request.$callback ||= callback
 
     try next = path.shift()
     for key of object
@@ -72,12 +72,12 @@ recurse = (authenticEntity, request, object, path, result, callback) ->
             when 'function'
 
                 #
-                # * only list functions with nested $$notice property
+                # * only list functions with nested $notice property
                 # * these come up in the api tree as {}
                 # * indestinguishable from properties (for now)
                 # 
 
-                if object[key].$$notice?
+                if object[key].$notice?
 
                     unless next?
                         result[key] = {} 
@@ -87,10 +87,10 @@ recurse = (authenticEntity, request, object, path, result, callback) ->
                     # run the function if the 'deeper' path was provided 
                     # 
                     # ie. lazyloadable has been activated by directly 
-                    #     calling a path through a $$notice function
+                    #     calling a path through a $notice function
                     #
 
-                    request.$$walking = true
+                    request.$walking = true
                     return object[key] 
                         authentic: authenticEntity
                         additional: '##undecided1'
@@ -103,7 +103,7 @@ recurse = (authenticEntity, request, object, path, result, callback) ->
                             # recurse request, object[key], path, result[key]
                             # 
 
-                            request.$$callback null, request.$$root if typeof request.$$callback is 'function' # and path.length == 0
+                            request.$callback null, request.$root if typeof request.$callback is 'function' # and path.length == 0
                             
 
 
@@ -111,5 +111,5 @@ recurse = (authenticEntity, request, object, path, result, callback) ->
     # flat case termination, no async lazyload
     #
     
-    callback null, result if not request.$$walking? and typeof callback is 'function'
+    callback null, result if not request.$walking? and typeof callback is 'function'
 

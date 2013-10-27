@@ -106,7 +106,7 @@ module.exports.middleware = (config = {}) ->
 
             #
             # TODO: * pend reload till signal 
-            # TODO: * emit $$ready 'pack_id'
+            # TODO: * emit $ready 'pack_id'
             #
 
             next = if local.active == 'array1' then 'array2' else 'array1'

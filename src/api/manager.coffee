@@ -63,9 +63,9 @@ module.exports.manager  = (config = {}) ->
         middleware: (action, hub, slot, contentType, body, response, statusCode) ->
 
             #
-            # todo: (##undecided1) consider this as a $$notice api fuction on the middleware collection
-            #       apiFn.$$notice { methods: [allowed, list] }
-            #       complexity: the $$notice api recursive uri walk wants to step right 
+            # todo: (##undecided1) consider this as a $notice api fuction on the middleware collection
+            #       apiFn.$notice { methods: [allowed, list] }
+            #       complexity: the $notice api recursive uri walk wants to step right 
             #                   through the call and into the result tree
             #
 
@@ -84,7 +84,7 @@ curl -u user: -H 'Content-Type: text/coffeescript' :20002/hubs/1/middlewares -d 
 
 title: "title"
 fn: (next, capsule) -> 
-    console.log capsule.$$all()
+    console.log capsule.$all()
     next()
 
 '
@@ -155,7 +155,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
                 #     * or at least, not in the same ""direction""...
                 # 
                 # ALSO: ##undecided3
-                # * new middle / changed middleware emits $$delta capsule
+                # * new middle / changed middleware emits $delta capsule
                 #
 
                 if error?
@@ -543,7 +543,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
         # 
         ##
         ## * keep in mind (for later) the posibility of an inbound request body containing a stream 
-        ##   of notable size, and the posibility that a $$notice api plugin might ALSO prefer:
+        ##   of notable size, and the posibility that a $notice api plugin might ALSO prefer:
         ##      * to receive it in chunks
         ##      * that this decoder did not also decode it
         ## 
@@ -573,13 +573,13 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
             ##
             ##
             # * nice thing aboud pub sub is more than one pub can be subbing
-            # * $$notice api function could be provided with the request's EventEmitter
+            # * $notice api function could be provided with the request's EventEmitter
             #       * complexity arises on the question around who makes the response
             #       * which is what makes the connect stack such a masterstroke, 
             #       * makes that a question of sequence, 
             #       * early bird gets the wormhole,
             #       * and closes it.
-            # * ?ways? for a $$notice apiFunction to inform this decoder not to load
+            # * ?ways? for a $notice apiFunction to inform this decoder not to load
             #          an inbound stream into memory
             #
             # * and the path

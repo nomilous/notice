@@ -99,12 +99,12 @@ Television.create
 
 #### The `ticks` subconfig
 
-* Configures an interval timer to repeat emit a `$$tick` capsule into the pipeline
+* Configures an interval timer to repeat emit a `$tick` capsule into the pipeline
 * It is recommended that ticks are `next()`ed immediately to proceed them to all middleware as close as possible to the time they happened.
-* The `$$tick` capsule contains the configured label and a sequence number.
+* The `$tick` capsule contains the configured label and a sequence number.
 
 ```coffee
-capsule.$$tick == 'label'
+capsule.$tick == 'label'
 typeof capsule.seq is 'number'
 ```
 

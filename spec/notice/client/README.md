@@ -22,7 +22,7 @@ TelevisionRemote = notice.client
 #### The `capsule` subconfig
 
 * Capsules are created asynchronously.
-* Each **capsule is assigned a `capsule.$$uuid` when it is created**. 
+* Each **capsule is assigned a `capsule.$uuid` when it is created**. 
 * The uuid will be available to all local and remote middleware functions that receive this capsule as it traverses the system.
 * The uuid is hidden from serializers and protected from changes once created.
 * The creation sequence passes the capsule through a before hook (if defined).
@@ -42,7 +42,7 @@ module.exports.TelevisionRemote = notice.client
                 # onto the middleware pipeline
                 # 
 
-                play.$$uuid = 'my own uuid'
+                play.$uuid = 'my own uuid'
                 done()
         ...
 
@@ -72,7 +72,7 @@ stogage_client.user_account 'this invisible', {theuser: 'object'}, (err, capsule
         # TODO: the precise behaviours when creating a capsule using another
         #       as input are not fully ironed out.
         # 
-        #       * capsule.$$type might not have become the new type
+        #       * capsule.$type might not have become the new type
         #       * capsule.user_account should not exist in the second 
         #         because of the nondescript flag
         #

@@ -31,7 +31,7 @@ module.exports = class NoticeableClass
             ), 400
 
 
-        @apiFunction.$$notice = {}
+        @apiFunction.$notice = {}
 
 
         @array = [

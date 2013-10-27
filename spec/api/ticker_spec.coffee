@@ -8,7 +8,7 @@ describe 'ticker', ->
 
         @notifier = 
             title: 'NOTIFIER'
-            $$tick: => @tick.apply null, arguments
+            $tick: => @tick.apply null, arguments
             
 
     beforeEach ->
@@ -51,7 +51,7 @@ describe 'ticker', ->
         done()
 
 
-    it 'calls notifier.$$tick with the code', (done) -> 
+    it 'calls notifier.$tick with the code', (done) -> 
 
         instance = ticker()
         instance.register @notifier,

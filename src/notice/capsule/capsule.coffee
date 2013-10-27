@@ -20,13 +20,13 @@ module.exports.capsule  = (config = {}) ->
             external = {}
 
 
-            Object.defineProperty external, '$$uuid', 
+            Object.defineProperty external, '$uuid', 
                 enumarable: false
                 get: -> internal.uuid
                 set: (value) -> internal.uuid = value unless internal.uuid?
 
 
-            Object.defineProperty external, '$$set',
+            Object.defineProperty external, '$set',
                 enumarable: false
                 get: -> (hash) -> 
 
@@ -69,8 +69,7 @@ module.exports.capsule  = (config = {}) ->
                             writable: not hash.protected
 
 
-
-            Object.defineProperty external, '$$all',
+            Object.defineProperty external, '$all',
                 enumarable: false
                 get: -> 
                     all = {}
@@ -85,12 +84,12 @@ module.exports.capsule  = (config = {}) ->
                     all
 
 
-            Object.defineProperty external, '$$protected',
+            Object.defineProperty external, '$protected',
                 enumerable: false
                 get: -> internal.protected
 
 
-            Object.defineProperty external, '$$hidden',
+            Object.defineProperty external, '$hidden',
                 enumerable: false
                 get: -> internal.hidden
 

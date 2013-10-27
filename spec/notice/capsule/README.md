@@ -5,10 +5,10 @@ The Capsule
 
 ### Quick Faqts
 
-* The **first** `key:'value'` passed to `capsule.$$set()` is the one that sets the property.
+* The **first** `key:'value'` passed to `capsule.$set()` is the one that sets the property.
 * A property cannot be watched AND protected. (Does it even make sense to want that?)
-* `caspule.$$all` enumerates all properties, **including hidden ones**.
-* `capsule.$$all` does not enumerate in created order.
+* `caspule.$all` enumerates all properties, **including hidden ones**.
+* `capsule.$all` does not enumerate in created order.
 
 
 ### Watched properties
@@ -25,7 +25,7 @@ notifier.use
     title: 'resaver'
     (next, capsule) -> 
 
-        capsule.$$set
+        capsule.$set
 
             needsSave: false
             hidden:    true
@@ -113,7 +113,7 @@ notifier.use
     title: 'nosey middleware'
     (next, capsule) -> 
 
-        console.log key, capsule[key] for key of capsule.$$hidden
+        console.log key, capsule[key] for key of capsule.$hidden
         next()
 
 ```
@@ -126,7 +126,7 @@ notifier.use
     title: 'snowsey middleware'
     (next, capsule) -> 
 
-        capsule.$$set 
+        capsule.$set 
             secret: capsule.secret
             hidden: false
 
@@ -153,7 +153,7 @@ notifier.use
         # and then...
         # 
 
-        capsule.$$set routingCode: '™i', protected: true
+        capsule.$set routingCode: '™i', protected: true
         next()
 
 

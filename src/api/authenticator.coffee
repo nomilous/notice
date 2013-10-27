@@ -66,7 +66,7 @@ module.exports.authenticator = (config = {}) ->
                                                             #
                                                             # ##undecided1 
                                                             # 
-                                                            # * authentic entity into $$notice api function
+                                                            # * authentic entity into $notice api function
                                                             #
 
                 #

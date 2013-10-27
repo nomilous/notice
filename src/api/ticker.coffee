@@ -31,7 +31,7 @@ module.exports.ticker  = (config = {}) ->
                         interval: tick.interval
                         timer: setInterval ( ->
 
-                            notifier.$$tick key, seq: tick.seq++
+                            notifier.$tick key, seq: tick.seq++
 
                         ), tick.interval
 

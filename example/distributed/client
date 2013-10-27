@@ -45,7 +45,7 @@ TelevisionRemote = notice.client(
         # 
         # theRemote.volume 'up', amount: 3, (err, capsule) -> 
         #     return console.log 'ERROR', err if err?
-        #     console.log capsule.$$all
+        #     console.log capsule.$all
         #     console.log capsule
 
 
@@ -58,7 +58,7 @@ TelevisionRemote = notice.client(
 
             theRemote.volume( 'up', amount: 3 ).then(
 
-                (capsule) -> #console.log 'Hub acknowledged', capsule.$$uuid
+                (capsule) -> #console.log 'Hub acknowledged', capsule.$uuid
                 (error)   -> console.log error
                 (notify)  -> #console.log 'Notify', notify 
 

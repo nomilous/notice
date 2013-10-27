@@ -90,7 +90,7 @@ module.exports.client  = (config = {}) ->
                 last:  true
                 (next, capsule) -> 
 
-                    return if capsule.$$tick?
+                    return if capsule.$tick?
 
                     ### grep PROTOCOL1 encode ###
 
@@ -107,12 +107,12 @@ module.exports.client  = (config = {}) ->
                     # 
 
                     control = 
-                        type:      capsule.$$type
-                        uuid:      capsule.$$uuid
-                        protected: capsule.$$protected
-                        hidden:    capsule.$$hidden
+                        type:      capsule.$type
+                        uuid:      capsule.$uuid
+                        protected: capsule.$protected
+                        hidden:    capsule.$hidden
 
-                    socket.emit 'capsule', header, control, capsule.$$all
+                    socket.emit 'capsule', header, control, capsule.$all
                     
                     #
                     # TODO: transit collection needs limits set, it is conceivable
@@ -125,7 +125,7 @@ module.exports.client  = (config = {}) ->
                     #   from the hub
                     #
 
-                    transit[capsule.$$uuid] = next: next
+                    transit[capsule.$uuid] = next: next
 
                     # 
                     # * Send notification of the transmission to the promise notifier
@@ -137,8 +137,8 @@ module.exports.client  = (config = {}) ->
                     # 
 
                     process.nextTick -> next.notify
-                        $$type:    'control'
-                        $$control: 'transmitted'
+                        $type:    'control'
+                        $control: 'transmitted'
                         capsule:   capsule
 
 
@@ -163,9 +163,9 @@ module.exports.client  = (config = {}) ->
                     assign[property] = payload[property]
                     assign.hidden    = true if hidden[property]
                     assign.protected = true if tected[property]
-                    capsule.$$set assign
+                    capsule.$set assign
 
-                client.$$raw capsule
+                client.$raw capsule
 
             #
             # TODO: no ack or nak ever arrives, entries remain in transit 

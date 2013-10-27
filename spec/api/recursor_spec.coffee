@@ -83,10 +83,10 @@ describe 'recursor', ->
                 done()
 
 
-    it 'includes any functions marked with $$notice', (done) -> 
+    it 'includes any functions marked with $notice', (done) -> 
 
         fn = (opts, callback) -> 
-        fn.$$notice = {}
+        fn.$notice = {}
 
         instance = recursor
             hubContext: 
@@ -124,7 +124,7 @@ describe 'recursor', ->
     it '((for now)) it listifies arrays', (done) -> 
 
         fn = (opts, callback) -> 
-        fn.$$notice = {}
+        fn.$notice = {}
 
         instance = recursor
             hubContext: 
@@ -186,7 +186,7 @@ describe 'recursor', ->
             #console.log huh: 1
             callback null, AND: MORE: tree: here: 'too'
 
-        fn.$$notice = {}
+        fn.$notice = {}
 
         instance = recursor
             hubContext: 
@@ -210,7 +210,7 @@ describe 'recursor', ->
     it 'supports more than sidebyside 1 function on "deeper" path', (done) -> 
 
         fn = (opts, callback) -> callback null, AND: MORE: tree: here: 'too'
-        fn.$$notice = {}
+        fn.$notice = {}
 
         instance = recursor
             hubContext: 
