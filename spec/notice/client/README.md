@@ -2,12 +2,12 @@
 
 **next:** Creating a Notifier Hub [`../hub`](../hub)
 
-#### The `Definition`
+### The `Definition` Factory
 
 ```coffee
 
 notice = require 'notice'
-TelevisionRemote = notice.client # a factory
+TelevisionRemote = notice.client
 
     capsule: 
 
@@ -80,7 +80,7 @@ stogage_client.user_account 'this invisible', {theuser: 'object'}, (err, capsule
 
 
 
-#### The `instance`
+### The `instance`
 
 ```coffee
 {TelevisionRemote} = require './the/definition/from/above'

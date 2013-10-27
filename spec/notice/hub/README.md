@@ -2,12 +2,12 @@
 
 **next:** The Capsule [`../capsule`](../capsule)
 
-#### The `Definition`
+### The `Definition` Factory
 
 ```coffee
 
 notice = require 'notice'
-Television = notice.hub # a factory
+Television = notice.hub
     
     client: 
         capsule: 
@@ -44,7 +44,7 @@ Television = notice.hub # a factory
 * **This portion of the api is likely to change WITHOUT DEPRECATION WARNINGS**
 
 
-#### The `instance`
+### The `instance`
 
 ```coffee
 
