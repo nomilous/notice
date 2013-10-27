@@ -19,7 +19,7 @@ node_modules/.bin/cake dev
 # * or eg.
 # 
 
-touch spec/walkthrough/
+touch spec/walkthrough/tools/illustrate_tools_spec.coffee
 
 
 ```

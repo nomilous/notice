@@ -7,7 +7,7 @@ Tools API
 * Undocumented. 
 * Design incomplete.
 * `grep -B2 -A20 -r '##undecided' src/* spec/*`
-* Illustrated: [`../walkthrough/tools`](../walkthrough/tools).
+* Illustrated: [`../walkthrough`](../walkthrough)/tools.
 * The idea `has!` juice! (imho)
 
 
