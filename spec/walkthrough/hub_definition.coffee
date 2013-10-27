@@ -14,4 +14,4 @@ module.exports = (port) -> return hub
 
     ticks: 
         onYourMarks:
-            interval: 1000 # quite high frequency
+            interval: 1 # quite high frequency

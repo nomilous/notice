@@ -84,9 +84,9 @@ describe 'tools api', ->
 
                 #
                 # console.log HUB_LISTENING_AT: @hub.listening
-                #
+                # setInterval (=> @hub.event 'test', data: 1 ), 100
+                # 
 
-                setInterval (=> @hub.event 'test' ), 100
                 done()
 
 
@@ -100,11 +100,13 @@ describe 'tools api', ->
             title: 'Middleware Title'
             (next, capsule, traversal) -> 
 
-                #console.log capsule.$all
+                # 
+                # capsule.$set
+                #     key: 'value'
+                #     hidden: true
+                #     protected: true
+                # 
 
-                capsule.$set
-                    key: 'value'
-                    hidden: true 
                 next()
 
 
@@ -168,24 +170,18 @@ describe 'tools api', ->
                 fn: (next, capsule, traversal) -> 
 
                     #
+                    # console.log capsule.$all
+                    # console.log capsule.$uuid
+                    # 
+
+                    #
                     # * this new middleware increments the 
                     #   counter in the example tool
                     #
 
                     eg = traversal.tools.example
                     eg.increment()
-
-                    console.log BUG_1_INSIDE: capsule.$all # oh dear... (nothing!)
                     next()
-
-        .then client.get
-
-            path: '/hubs/1/middlewares/2/fn'
-
-        .then ({statusCode, body}) -> 
-
-            # console.log NEW_MIDDLEWARE_FN: body
-            -> 'noop'
 
         .then ({statusCode, body}) -> 
 
@@ -208,6 +204,12 @@ describe 'tools api', ->
 
             """, body
 
+        #
+        # .then client.get
+        #     path: '/hubs/1/middlewares/2/fn'
+        # .then ({statusCode, body}) -> 
+        #     console.log NEW_MIDDLEWARE_FN: body
+        #
 
         .then client.get 
 
