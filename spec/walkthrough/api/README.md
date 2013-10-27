@@ -159,7 +159,30 @@ curl -u user: localhost:9999/hubs/2/middlewares/1/disable
 
 curl -u user: localhost:9999/hubs/2/middlewares/1/enable
 
+
+### Moonwalk the Tree
+
+```shell
+
+curl -u user: localhost:9999/hubs/2/middlewares/1/fn
+
+#
+
+curl -u user: localhost:9999/hubs/2/middlewares/1
+
+# 
+
+curl -u user: localhost:9999/hubs/2/middlewares
+
+# 
+
+curl -u user: localhost:9999/hubs/2
+
+#
+
 ```
+
+
 
 
 
