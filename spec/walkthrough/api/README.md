@@ -131,6 +131,33 @@ curl -u user: -H 'Content-Type: text/javascript' localhost:9999/hubs/2/middlewar
 }
 '
 
+```
+
+Response from the insert.
+
+```json
+{
+  "slot": 1,
+  "title": "fake workload",
+  "type": "usr",
+  "enabled": true
+}
+
+```
+
+### Disable the new middleware
+
+Using the slot number from the insert result above, send instruction to disable the newly inserted middleware. The processing count should fall back down to zero over the course of 10 seconds. 
+
+Once it reaches 0 the input and output counts should once again match up.
+
+```bash
+
+curl -u user: localhost:9999/hubs/2/middlewares/1/disable
+
+#
+
+curl -u user: localhost:9999/hubs/2/middlewares/1/enable
 
 ```
 
