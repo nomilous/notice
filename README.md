@@ -5,7 +5,6 @@
 <br\>
 
 A communicator. Also for other stuff.
-
 notice
 ======
 
