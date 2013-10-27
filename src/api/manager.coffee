@@ -603,10 +603,10 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
             # /hub/1/mware      (ignored)
             #
             
-            path = path.replace /\/hub\//, '/hubs/'
-            path = path.replace /\/middleware\//, '/middlewares/'
-            path = path.replace /\/mwares/, '/middlewares'
-            path = path.replace /\/mware\//, '/middlewares/'
+            # path = path.replace /\/hub\//, '/hubs/'
+            # path = path.replace /\/middleware\//, '/middlewares/'
+            # path = path.replace /\/mwares/, '/middlewares'
+            # path = path.replace /\/mware\//, '/middlewares/'
 
             if path == '/about' or path == '/'
                 return local.routes["/about"].handler [], request, response

@@ -86,7 +86,7 @@ describe 'tools api', ->
 
             title: 'Hub Title'
             uuid:  1
-            listen: port: 4444
+            listen: {} # port: 4444
 
             tools:
                 #
@@ -97,6 +97,11 @@ describe 'tools api', ->
             (err, @hub) => 
 
                 throw err if err?
+
+                #
+                # console.log HUB_LISTENING_AT: @hub.listening
+                #
+
                 setInterval (=> @hub.event 'test' ), 100
                 done()
 
@@ -121,13 +126,15 @@ describe 'tools api', ->
 
         client.get 
 
-            path: '/hub/1/tools/example'
+            path: '/hubs/1/tools/example'
 
         .then ({body}) -> 
 
             console.log """.
 
             api exposes tools 
+            =================
+            curl -u user:pass localhost:3333/hubs/1/tools/example
             -----------------
 
             """, body
@@ -135,20 +142,22 @@ describe 'tools api', ->
 
         .then client.get 
 
-            path: '/hub/1/tools/example/function'
+            path: '/hubs/1/tools/example/function'
 
         .then ({statusCode, body}) -> 
 
             console.log """
 
             api provides access to the funcion callback results
+            ===================================================
+            curl -u user:pass localhost:3333/hubs/1/tools/example/function
             ---------------------------------------------------
 
             """, body
 
         .then client.get
 
-            path: '/hub/1/tools/example/function/with/some/thing/gotten'
+            path: '/hubs/1/tools/example/function/with/some/thing/gotten'
 
         .then ({statusCode, body}) -> 
 
@@ -188,8 +197,20 @@ describe 'tools api', ->
 
             console.log """
 
-            inserted new middleware - details:
-            ----------------------------------
+            insert new middleware - details
+            ===============================
+            curl -u user:pass -H 'Content-Type: text/coffeescript' localhost:3333/hubs/1/middlewares --data '
+
+            title: "new middleware"
+            fn: (next, capsule) -> 
+                console.log capsule
+                next()
+
+            '
+
+            curl -u user:pass localhost:3333/hubs/1/middlewares/3/disable
+            curl -u user:pass localhost:3333/hubs/1/middlewares/3/enable
+            -------------------------------
 
             """, body
 
@@ -215,16 +236,18 @@ describe 'tools api', ->
             console.log """
 
             get result from the stats function
+            ==================================
+            curl -u user:pass localhost:3333/hubs/1/tools/example/stats
             ----------------------------------
 
             """, body
 
+            console.log """
 
-            facto()     # COMMENT THIS - to make the api available for 20 seconds for this:
-                        # 
-                        # 
-                        #    curl -u user:pass localhost:3333/hubs/1/tools/example/stats
-                        # 
-                        # 
+            comment # facto() # to make the test run for longer
+
+            """
+            
+            facto()
 
 
