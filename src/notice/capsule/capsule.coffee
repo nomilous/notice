@@ -13,13 +13,17 @@ module.exports.capsule  = (config = {}) ->
             testable = internal = 
 
                 uuid: opts.uuid
+                hidden: {}
+
 
             external = {}
+
 
             Object.defineProperty external, '$$uuid', 
                 enumarable: false
                 get: -> internal.uuid
                 set: (value) -> internal.uuid = value unless internal.uuid?
+
 
             Object.defineProperty external, '$$set',
                 enumarable: false
@@ -28,8 +32,32 @@ module.exports.capsule  = (config = {}) ->
                     break for firstKey of hash
                     internal[firstKey] = hash[firstKey]
 
-                    Object.defineProperty external, firstKey, 
-                        get: -> internal[firstKey]
+
+
+
+
+                    external[firstKey] = internal[firstKey]
+
+                    if hash.hidden?
+                        if hash.hidden then internal.hidden[firstKey] = 1
+                        else delete internal.hidden[firstKey]
+                        Object.defineProperty external, firstKey, 
+                            enumerable: not hash.hidden
+
+
+            Object.defineProperty external, '$$all',
+                enumarable: false
+                get: -> 
+                    all = {}
+                    all[key] = internal[key] for key in (
+                        for key of internal.hidden
+                            continue if typeof internal[key] is 'function'
+                            key 
+                    ).concat( for key of external
+                        continue if typeof external[key] is 'function'
+                        key
+                    )
+                    all
 
 
 

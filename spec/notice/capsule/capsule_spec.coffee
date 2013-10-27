@@ -37,14 +37,12 @@ describe 'Capsule', ->
             done()
 
 
-        return
-
         context 'all', -> 
 
             it 'lists all properties including hidden ones', (done) -> 
 
                 Capsule = capsule()
-                instance = new Capsule
+                instance = Capsule.create()
                 instance.$$set property:  'value'
                 instance.$$set secret:    'hiden value', hidden: true
                 instance.$$set readonly:  'protected value', protected: true
@@ -59,6 +57,8 @@ describe 'Capsule', ->
                     readonly: 'protected value'
 
                 done()
+
+        return
 
 
         context 'protected', -> 
