@@ -203,7 +203,7 @@ describe 'Capsule', ->
 
         context 'watched()', -> 
 
-            it.only 'sets a property to watched', (done) -> 
+            it 'sets a property to watched', (done) -> 
 
                 CHANGES = []
                 Capsule = capsule()
@@ -218,7 +218,7 @@ describe 'Capsule', ->
                 instance.anotherProperty = 2
 
                 CHANGES.should.eql [
-                    { property: 'thing', from: undefined, to: 'one', capsule: { thing: 'two', anotherProperty: 2 } }
+                    # { property: 'thing', to: 'one', capsule: { thing: 'two', anotherProperty: 2 } }
                     { property: 'thing', from: 'one',     to: 'two', capsule: { thing: 'two', anotherProperty: 2 } }
                 ]
                 done()
