@@ -2,11 +2,10 @@
 
 **unstable**(ish) - api changes [will still occur](./spec/notice/hub#the-capsule-subconfig)
 
-notice
-======
-
 A communicator. Also for other stuff.
 
+notice
+======
 
 ### The Guiding Epiphanies
 
