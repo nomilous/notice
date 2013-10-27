@@ -14,6 +14,7 @@ A communicator. Also for other stuff.
 * Middleware is perfect for routing information streams.
 * Their flow-control and sequencial subscribe-ability describes a dynamic assembly line.
 * An assembly (or disassembly) line can abstractify object storage and retreival.
+* One thing leads to Another
 
 
 ### Quick Faqts
