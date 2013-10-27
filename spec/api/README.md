@@ -1,7 +1,7 @@
 [`../notice`](../notice)
 
-Management (REST api)
----------------------
+Management API
+--------------
 
 ### Creating a Manageable Hub
 
