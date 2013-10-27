@@ -42,6 +42,7 @@ api
 * middleware listed in api `V1/hubs/:uuid:/middlewares`
 * middleware accessable at slot number in api `V1/hubs/:uuid:/middlewares/:slot:`
 * POST /hubs/:uuid:/middlewares to insert middleware onto the pipeline's tail 
+* POST or PUT /hubs/:uuid:/middlewares/:slot: to upsert into a specific position in the sequence
 * removed /v1 from api paths
 * config.manager.* moved to config.api.*
 * alias /hub/:uuid:/mware/:slot: is /hubs/:uuid:/middlewares/:slot:
