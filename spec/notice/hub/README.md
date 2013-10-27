@@ -77,10 +77,12 @@ Television.create
             title: 'middleware title'
             (next, capsule, traversal) -> 
 
+                #
                 # traversal.cache
                 # traveral.tools
+                # traversal.origin
+                #
 
-                console.log traversal.origin
                 next()
 
 
