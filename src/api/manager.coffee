@@ -228,6 +228,10 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
             # 
 
             slot = parseInt slot
+
+            if middleware.slot? and slot isnt middleware.slot
+                return callback new Error 'notice: slot mismatch request.body vs url'
+
             statusCode = if hub.emptySlot(slot) then 201 else 200
 
             try hub.use 

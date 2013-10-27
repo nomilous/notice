@@ -57,16 +57,16 @@ module.exports.middleware = (config = {}) ->
             slot ?= local.nextSlot()
 
             unless typeof slot is 'number'
-                throw argumentException 'opts.slot', 'notice.use(opts, fn)', 'as whole number'
+                throw argumentException 'opts.slot', 'notice.use()', 'as positive whole number'
 
             unless Math.floor(slot) == slot
-                throw argumentException 'opts.slot', 'notice.use(opts, fn)', 'as whole number'
+                throw argumentException 'opts.slot', 'notice.use()', 'as positive whole number'
 
             unless slot > 0
-                throw argumentException 'opts.slot', 'notice.use(opts, fn)', 'as positive number'
+                throw argumentException 'opts.slot', 'notice.use()', 'as positive whole number'
 
             unless title? and fn?
-                throw argumentException 'opts.title and fn', 'notice.use(opts, fn)'
+                throw argumentException 'opts.title and fn', 'notice.use()'
 
             unless typeof fn is 'function'
                 throw argumentException 'fn', 'notice.use(opts, fn)', 'as function'

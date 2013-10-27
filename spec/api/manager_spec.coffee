@@ -1064,7 +1064,7 @@ describe 'manage', ipso (should, http, https) ->
                             should.exist body.error
 
                         .then client.post
-                        
+
                             path: '/hubs/2/middlewares/i'
                             javascript: 
                                 title: 'A title'
@@ -1077,12 +1077,32 @@ describe 'manage', ipso (should, http, https) ->
                             body.should.eql
                                 error:
                                     type: 'Error'
-                                    message: 'notice: expected notice.use(opts, fn) with opts.slot as whole number'
+                                    message: 'notice: expected notice.use() with opts.slot as positive whole number'
 
-                            facto todo: 'more to the error distinctions api / lib'
+                            facto()
+
+                        #.then (->), done
 
 
-                    it 'errors if slot number in body does not match :slot:'
+                    it 'errors if slot number in body does not match :slot:', ipso (facto) -> 
+
+                        client.post
+                            path: '/hubs/2/middlewares/1'
+                            javascript: 
+                                title: 'A title'
+                                slot: 11
+                                description: 'A description'
+                                fn: (next) -> next()
+
+                        .then ({statusCode, body}) -> 
+                            statusCode.should.equal 400
+                            body.should.eql 
+                                error: 
+                                    type: 'Error'
+                                    message: 'notice: slot mismatch request.body vs url'
+                            facto()
+
+
                     it 'errors if missing title and fn on PUT'
                     it 'modifies just the POSTed subrecords (key) on POST'
                     it 'accepts title, description, enabled and fn in body'
