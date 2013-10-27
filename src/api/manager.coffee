@@ -75,6 +75,7 @@ module.exports.manager  = (config = {}) ->
             )
 
 
+
             ### 
 
 coffeescript
@@ -235,6 +236,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
             statusCode = if hub.emptySlot(slot) then 201 else 200
 
             try hub.use 
+                update: statusCode is 200
                 slot: slot
                 title: middleware.title
                 description: middleware.description

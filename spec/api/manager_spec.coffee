@@ -924,6 +924,8 @@ describe 'manage', ipso (should, http, https) ->
                             should.not.exist latest.palindromic
                             facto()
 
+                    it 'cannot upsert a middleware titled first or last'
+
                     it 'cannot set type'
 
                     it 'works!', ipso (facto) -> 
@@ -1103,10 +1105,60 @@ describe 'manage', ipso (should, http, https) ->
                             facto()
 
 
-                    it 'errors if missing title and fn on PUT'
-                    it 'modifies just the POSTed subrecords (key) on POST'
+                    it 'errors if missing title and fn on inserting', ipso (facto) -> 
+
+                        client.put # or post
+                            path: '/hubs/2/middlewares/42'
+                            javascript: 
+                                description: 'Slartibartfast'
+                                fn: (next) -> next()
+
+                        .then ({statusCode, body}) -> 
+
+                            body.should.eql
+                                error: 
+                                    type: 'Error'
+                                    message: 'notice: use() requires arg opts.title and fn'
+
+                            facto()
+
+
+                    it 'modifies just the POSTed subrecords (key) on upsert', ipso (facto) -> 
+
+
+                        hub2.use 
+                            slot: 111
+                            title: 'previous title'
+                            description: 'previous description'
+                            enabled: true
+                            (next) -> next()
+
+
+                        client.post
+                            path: '/hubs/2/middlewares/111'
+                            javascript: """ 
+                                
+                            { description: 'RETIRED', enabled: false }
+
+                            """
+
+                        .then ({statusCode, body}) -> 
+
+                            body.should.eql 
+
+                                slot: 111
+                                title: 'previous title'
+                                description: 'RETIRED'
+                                type: 'usr'
+                                enabled: false
+
+                            facto()
+
+
+
                     it 'accepts title, description, enabled and fn in body'
                     it 'cannot modify type'
+                    it 'cannot upsert a middleware titled first or last'
                     it 'ignores all other properties (for now)'
                     it 'works!'
 

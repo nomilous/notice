@@ -239,7 +239,7 @@ module.exports.notifier  = (config = {}) ->
                     opts.enabled ?= true
 
                     throw undefinedArg( 
-                        'opts.title and fn', 'use(opts, middlewareFn)'
+                        'opts.title and fn', 'use()'
                     ) unless ( 
                         opts? and opts.title? and 
                         fn? and typeof fn == 'function'
