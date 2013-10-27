@@ -125,7 +125,7 @@ module.exports.handler  = (config = {}) ->
                         try tected  = control.protected
                         try hidden  = control.hidden
 
-                        capsule = new Capsule uuid: uuid
+                        capsule = Capsule.create uuid: uuid
                         for property of payload
                             assign = {}
                             assign[property] = payload[property]

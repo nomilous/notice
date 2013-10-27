@@ -211,6 +211,9 @@ module.exports.notifier  = (config = {}) ->
                                         capsule:    capsule
 
                             try 
+
+                                # console.log BUG_1_JUST_BEFORE capsule.$$all
+
                                 fn next, capsule, traversal
                                 if title == 'last' and not cancelled
                                     localMetrics.output.count++ 

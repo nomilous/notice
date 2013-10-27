@@ -254,7 +254,7 @@ describe 'client', ->
                             much:
                                 much: 'more stuff'
                     => 
-                        # console.log @EMITTED.capsule.payload
+                        console.log @EMITTED.capsule.payload
                         @EMITTED.capsule.payload.should.eql
 
                             $$type: 'event'

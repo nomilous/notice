@@ -35,8 +35,6 @@ module.exports.capsule  = (config = {}) ->
                     return if firstKey is 'hidden'
                     return if firstKey is 'protected'
 
-                    internal[firstKey] = hash[firstKey]
-
                     if hash.watched? 
                         hash.watched.count = 0
                         if hash.protected
@@ -57,7 +55,7 @@ module.exports.capsule  = (config = {}) ->
                                             capsule:  external
                                     hash.watched.count++
 
-                    external[firstKey] = internal[firstKey]
+                    external[firstKey] = hash[firstKey]
 
                     if hash.hidden?
                         if hash.hidden then internal.hidden[firstKey] = 1
@@ -76,7 +74,7 @@ module.exports.capsule  = (config = {}) ->
                 enumarable: false
                 get: -> 
                     all = {}
-                    all[key] = internal[key] for key in (
+                    all[key] = external[key] for key in (
                         for key of internal.hidden
                             continue if typeof internal[key] is 'function'
                             key 

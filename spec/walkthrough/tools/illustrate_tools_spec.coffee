@@ -175,7 +175,7 @@ describe 'tools api', ->
                     eg = traversal.tools.example
                     eg.increment()
 
-                    console.log MC: capsule # oh dear... (nothing!)
+                    # console.log BUG_1_INSIDE: capsule.$$all # oh dear... (nothing!)
                     next()
 
 

@@ -1,6 +1,5 @@
 should      = require 'should'
 {lifecycle} = require '../../../lib/notice/capsule/lifecycle'
-{_Capsule}  = require '../../../lib/notice/capsule/capsule'
 
 describe 'lifecycle', -> 
 
@@ -21,7 +20,7 @@ describe 'lifecycle', ->
 
             ls = lifecycle 'event', {}
             ls.create().then (capsule) -> 
-                capsule.should.be.an.instanceof _Capsule()
+                should.exist capsule.$$all
                 done()
 
 

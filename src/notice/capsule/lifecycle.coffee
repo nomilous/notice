@@ -13,7 +13,7 @@ module.exports.lifecycle  = (type, config = {}) ->
 
         create: deferred ({resolve, reject}, properties = {}) -> 
 
-            cap = new local.Capsule
+            cap = local.Capsule.create()
             cap.$$set 
                 $$type: type
                 protected: true
