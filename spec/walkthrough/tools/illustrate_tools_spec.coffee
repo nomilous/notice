@@ -93,7 +93,7 @@ describe 'tools api', ->
 
     it 'starts the above hub and runs this following demo chain', ipso (facto) -> 
 
-        @timeout(5000)
+        @timeout(20000)
 
         @hub.use 
 

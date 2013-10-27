@@ -186,19 +186,21 @@ describe 'manage', ipso (should, http, https) ->
                         content: 
 
                             #
+                            # custom encoders
+                            # 
                             # TODO: move this to dinkum as one of the bundled 
                             #       content-type serailizers
                             #
 
-                            'text/coffeescript':
+                            coffeescript:
                                 encode: (opts) -> 
-                                    opts.body = opts['text/coffeescript']
+                                    opts.body = opts.coffeescript
                                     opts.headers ||= {}
                                     opts.headers['content-type'] = 'text/coffeescript'
 
-                            'text/javascript':
+                            javascript:
                                 encode: (opts) -> 
-                                    object = opts['text/javascript']
+                                    object = opts.javascript
                                     if typeof object is 'object'
 
                                         fn = object.fn
@@ -706,7 +708,7 @@ describe 'manage', ipso (should, http, https) ->
                     client.post 
 
                         path: '/hubs/2/middlewares/10'
-                        'text/coffeescript': 'when'
+                        coffeescript: 'when'
 
                     .then ({statusCode, body}) -> 
 
@@ -731,7 +733,7 @@ describe 'manage', ipso (should, http, https) ->
                     client.post
 
                         path: '/hubs/2/middlewares/10'
-                        'text/javascript': """
+                        javascript: """
 
                             { 
                                 "val" : i 
@@ -763,7 +765,7 @@ describe 'manage', ipso (should, http, https) ->
                         client.put
 
                             path: '/hubs/2/middlewares'
-                            'text/coffeescript': ''
+                            coffeescript: ''
 
                         .then ({statusCode, body}) -> 
 
@@ -778,7 +780,7 @@ describe 'manage', ipso (should, http, https) ->
                         client.post
 
                             path: '/hubs/2/middlewares'
-                            'text/coffeescript': """
+                            coffeescript: """
 
                             title: 'intro'
                             description: 'description'
@@ -806,7 +808,7 @@ describe 'manage', ipso (should, http, https) ->
                         client.post
 
                             path: '/hubs/2/middlewares'
-                            'text/coffeescript': """
+                            coffeescript: """
 
                             title: 'one the sun'
                             fn: -> 
@@ -834,7 +836,7 @@ describe 'manage', ipso (should, http, https) ->
                         client.post
 
                             path: '/hubs/2/middlewares'
-                            'text/coffeescript': """
+                            coffeescript: """
 
                             title: 'two the moon'
                             slot:  23
@@ -848,7 +850,7 @@ describe 'manage', ipso (should, http, https) ->
                             body.should.eql
                                 error: 
                                     type: 'Error'
-                                    message: 'notice: cannot insert middleware with specified slot'
+                                    message: 'notice: cannot insert middleware with already specified slot'
                                     suggestion: 
                                         upsert: '[POST,PUT] /hubs/:uuid:/middlewares/:slot:'
 
@@ -862,7 +864,7 @@ describe 'manage', ipso (should, http, https) ->
                         client.post
 
                             path: '/hubs/2/middlewares'
-                            'text/coffeescript': """
+                            coffeescript: """
 
                             title: 'three the spin'
                             
@@ -885,7 +887,7 @@ describe 'manage', ipso (should, http, https) ->
                         client.post
 
                             path: '/hubs/2/middlewares'
-                            'text/coffeescript': """
+                            coffeescript: """
 
                             title: 'four the geomagnetic shield'
                             fn: ->
@@ -909,7 +911,7 @@ describe 'manage', ipso (should, http, https) ->
                         client.post
 
                             path: '/hubs/2/middlewares'
-                            'text/coffeescript': """
+                            coffeescript: """
 
                             title: 'five mitosis'
                             description: 'description'
@@ -930,7 +932,7 @@ describe 'manage', ipso (should, http, https) ->
 
                         client.post
                             path: '/hubs/3/middlewares'
-                            'text/javascript': 
+                            javascript: 
 
                                 title: 'it works'
                                 fn: (next, capsule) -> 
@@ -971,9 +973,44 @@ describe 'manage', ipso (should, http, https) ->
 
                 context 'PUT or POST /hubs/:uuid:/middlewares/:slot:', -> 
 
-                    it 'puts middlware into the specified slot'
-                    it 'responds 200 with the middleware record'
-                    it 'errors if slot number does not match :slot:'
+                    it.only 'puts middlware into the specified slot', ipso (facto) -> 
+
+                        client.post
+
+                            path: '/hubs/2/middlewares/1'
+                            javascript: 
+
+                                title: 'A title'
+                                description: 'A description'
+                                fn: (next) -> next()
+
+                        .then ({statusCode, body}) -> 
+
+                            -> 'noop'
+
+                        .then -> client.get
+
+                            path: '/hubs/2/middlewares/1'
+
+                        .then ({statusCode, body}) -> 
+
+                            statusCode.should.equal 200
+                            body.should.eql
+
+                                slot: 1
+                                title: 'A title'
+                                description: 'A description'
+                                type: 'usr'
+                                enabled: true
+
+                            facto()
+
+
+
+                    it 'responds 200 with the middleware record if updated'
+                    it 'responds 201 with the middleware record if inserted'
+                    it 'errors if slot is not a positive whole number'
+                    it 'errors if slot number in body does not match :slot:'
                     it 'errors if missing title and fn on PUT'
                     it 'modifies just the POSTed subrecords (key) on POST'
                     it 'accepts title, description, enabled and fn in body'

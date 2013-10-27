@@ -182,7 +182,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
             # 
 
             if middleware.slot?
-                error = new Error 'notice: cannot insert middleware with specified slot'
+                error = new Error 'notice: cannot insert middleware with already specified slot'
                 error.suggestion = upsert: '[POST,PUT] /hubs/:uuid:/middlewares/:slot:'
                 return callback error
 
@@ -216,6 +216,10 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
 
         upsertMiddleware: (hub, slot, middleware, callback) -> 
 
+
+            slot = parseInt slot
+
+
             #
             # POST or PUT /hubs/:uuid:/middlewares/:slot:
             # ----------------------------------------------
@@ -227,7 +231,21 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
             # * respond 201 on created
             # 
 
-            callback()
+            try hub.use 
+                slot: slot
+                title: middleware.title
+                description: middleware.description
+                enabled: middleware.enabled
+                middleware.fn
+
+            catch error
+
+                return callback error
+
+            inserted = hub.serialize(2).middlewares[slot]
+            callback null, 
+                statusCode: 200
+                middleware: inserted
 
 
     local.routes =

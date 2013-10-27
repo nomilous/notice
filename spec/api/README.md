@@ -120,7 +120,7 @@ fn: (next) -> next()
 {
   "error": {
     "type": "Error",
-    "message": "notice: cannot insert middleware with specified slot",
+    "message": "notice: cannot insert middleware already specified slot",
     "suggestion": {
       "upsert": "[POST,PUT] /hubs/:uuid:/middlewares/:slot:"
     }

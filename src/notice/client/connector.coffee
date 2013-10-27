@@ -5,6 +5,7 @@ module.exports.connect = (opts) ->
 
     #
     # TODO: adaptor plugin ability
+    #       capacity for more that one inprocess client
     #
     
     # opts.adaptor ||= 'socket.io'
