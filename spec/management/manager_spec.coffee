@@ -982,18 +982,13 @@ describe 'manage', ipso (should, http, https) ->
                     it 'works!'
 
 
-            context 'delete', -> 
-
-
-
-        context 'POST /hubs/:uuid:/configure', -> 
-
-            it 'modifies introspection level'
-            it 'and possibly other things'
-
-        context 'GET /hubs/:uuid:/reset', -> 
-
-            it 'zeroes all metric counters'
+        #     context 'delete', -> 
+        # context 'POST /hubs/:uuid:/ticks', ->
+        # context 'POST /hubs/:uuid:/configure', -> 
+        #     it 'modifies introspection level'
+        #     it 'and possibly other things'
+        # context 'GET /hubs/:uuid:/reset', -> 
+        #     it 'zeroes all metric counters'
 
 
 
