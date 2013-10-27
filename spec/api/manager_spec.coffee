@@ -307,7 +307,7 @@ describe 'manage', ipso (should, http, https) ->
                             accepts: ['text/javascript', 'text/coffeescript']
                         
                         "/hubs/:uuid:/middlewares/:slot:":
-                            description: "get or update or delete a middleware"
+                            description: "get or upsert a middleware definition"
                             methods: [ "GET", 'PUT', 'POST']
                             accepts: ['text/javascript', 'text/coffeescript']
 

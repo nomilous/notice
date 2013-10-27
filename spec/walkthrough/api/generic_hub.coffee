@@ -10,7 +10,7 @@ GenericHub = notice.hub
 
 genericHub1 = GenericHub.create
 
-    title: 'Hub 1'
+    title: 'Bus 1'
     uuid:  1
 
     ticks: 
@@ -32,7 +32,7 @@ genericHub1 = GenericHub.create
 
 genericHub2 = GenericHub.create
 
-    title: 'Hub 2'
+    title: 'Bus 2'
     uuid:  2
 
     ticks: 

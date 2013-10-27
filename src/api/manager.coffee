@@ -438,7 +438,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
 
             '/hubs/:uuid:/middlewares/:slot:':
 
-                description: 'get or update or delete a middleware'
+                description: 'get or upsert a middleware definition'
                 methods: ['GET', 'PUT', 'POST'] # , 'DELETE']
                 accepts: ['text/javascript', 'text/coffeescript']
                 handler: ([query,hubuuid,slot,authenticEntity], {method, headers, body}, response, statusCode = 200) -> 

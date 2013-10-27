@@ -32,3 +32,64 @@ SlowTick is being logged by the first hub instance in [`./generic_hob.coffee`](.
 
 ### Get the list of running hubs
 
+```bash
+
+curl -u user: localhost:9999/hubs
+
+```
+```json
+{
+  "1": {
+    "title": "Bus 1",
+    "uuid": 1,
+    "stats": {
+      "pipeline": {
+        "input": {
+          "count": 50    <---------- The number of capsules that have been 
+        },                           inserted into the middleware pipeline.
+        "processing": {
+          "count": 0     <---------- The number of capsules currently
+        },                           traversing the pipeline.
+        "output": {
+          "count": 50    <---------- The number that have ^^successfully^^
+        },                           completed their traversal.
+        "error": {
+          "usr": 0,
+          "sys": 0
+        },
+        "cancel": {
+          "usr": 0,
+          "sys": 0
+        }
+      }
+    }
+  },
+  "2": {
+    "title": "Bus 2",
+    "uuid": 2,
+    "stats": {
+      "pipeline": {
+        "input": {
+          "count": 34240  <--------- Bigger number. There is a faster ticker
+        },                           configured on Bus 2.
+        "processing": {
+          "count": 0
+        },
+        "output": {
+          "count": 34240
+        },
+        "error": {
+          "usr": 0,
+          "sys": 0
+        },
+        "cancel": {
+          "usr": 0,
+          "sys": 0
+        }
+      }
+    }
+  }
+}
+
+```
+
