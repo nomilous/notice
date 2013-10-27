@@ -1,5 +1,5 @@
-{hub}  = require '../../../lib/notice'
 client = require('../api_client') API_PORT = 3333
+HubDefinition = require('../hub_definition') API_PORT
 ipso   = require 'ipso'
 
 #
@@ -66,22 +66,6 @@ describe 'tools api', ->
 
     before (done) -> 
 
-        HubDefinition = hub
-
-            api: 
-                listen: port: API_PORT
-                authenticate: (user, pass, callback) ->
-                    #
-                    # insert async auth step here
-                    #
-                    callback null, 
-                        username: user
-                        roles: ['pretend']
-
-            ticks: 
-                onYourMarks:
-                    interval: 1 # quite high frequency
-
         instance = HubDefinition.create
 
             title: 'Hub Title'
@@ -109,7 +93,7 @@ describe 'tools api', ->
 
     it 'starts the above hub and runs this following demo chain', ipso (facto) -> 
 
-        @timeout(20000)
+        @timeout(5000)
 
         @hub.use 
 
@@ -191,7 +175,7 @@ describe 'tools api', ->
                     eg = traversal.tools.example
                     eg.increment()
 
-                    # console.log capsule.$$all # oh dear... (nothing!)
+                    console.log MC: capsule # oh dear... (nothing!)
                     next()
 
 
@@ -250,6 +234,6 @@ describe 'tools api', ->
 
             """
             
-            facto()
+            #facto()
 
 

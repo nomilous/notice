@@ -1,5 +1,5 @@
 {Client}       = require 'dinkum'
-module.exports = (port) -> Client.create
+module.exports = (port) -> return Client.create
 
     transport: 'http'
     port: port
@@ -17,7 +17,7 @@ module.exports = (port) -> Client.create
 
         middleware: 
             encode: (req) -> 
-                object = req.customMedia1
+                object = req.middleware
                 fn = object.fn
                 object.fn = '__SUBSTITUTE_THE_FUNCTION__'
                 body = JSON.stringify object

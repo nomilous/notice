@@ -1,5 +1,7 @@
 [`../notice`](../notice)
 
+rough docs:
+
 Management API
 --------------
 
