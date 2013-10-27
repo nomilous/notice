@@ -297,6 +297,7 @@ module.exports.notifier  = (config = {}) ->
                     list = collection.list()
                     for got of list
                         return false if slot is parseInt got
+                        ### note: throws if not int ###
                     return true
 
 

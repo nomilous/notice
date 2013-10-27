@@ -857,8 +857,6 @@ describe 'manage', ipso (should, http, https) ->
                             facto()
 
 
-
-
                     it 'errors if missing title and fn', ipso (facto) -> 
 
                         client.post
@@ -1051,7 +1049,39 @@ describe 'manage', ipso (should, http, https) ->
 
 
 
-                    it 'errors if slot is not a positive whole number'
+                    it 'errors if slot is not a positive whole number', ipso (facto) -> 
+
+                        client.post
+                            path: '/hubs/2/middlewares/0'
+                            javascript: 
+                                title: 'A title'
+                                description: 'A description'
+                                fn: (next) -> next()
+
+                        .then ({statusCode, body}) -> 
+
+                            statusCode.should.equal 400
+                            should.exist body.error
+
+                        .then client.post
+                        
+                            path: '/hubs/2/middlewares/i'
+                            javascript: 
+                                title: 'A title'
+                                description: 'A description'
+                                fn: (next) -> next()
+
+                        .then ({statusCode, body}) -> 
+
+                            statusCode.should.equal 400
+                            body.should.eql
+                                error:
+                                    type: 'Error'
+                                    message: 'notice: expected notice.use(opts, fn) with opts.slot as whole number'
+
+                            facto todo: 'more to the error distinctions api / lib'
+
+
                     it 'errors if slot number in body does not match :slot:'
                     it 'errors if missing title and fn on PUT'
                     it 'modifies just the POSTed subrecords (key) on POST'
