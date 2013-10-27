@@ -93,3 +93,39 @@ curl -u user: localhost:9999/hubs
 
 ```
 
+### Drill into the stats for hub 2 in a watch loop
+
+```bash
+
+watch -n 1 curl -su user: localhost:9999/hubs/2/stats
+
+#
+# perhaps leave that running while you create a fake workload
+#
+
+```
+
+### Create a fake workload on Bus 2
+
+This posts a new middleware that pretends to take a short while to do it's job.
+
+```bash
+
+curl -u user: -H 'Content-Type: text/javascript' localhost:9999/hubs/2/middlewares -d '
+{ 
+    title: "fake workload",
+    fn: function(next) {
+        setTimeout(function() {
+            next();
+        }, 10000);
+        
+    }
+}
+'
+
+
+```
+
+
+
+
