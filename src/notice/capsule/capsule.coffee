@@ -14,6 +14,7 @@ module.exports.capsule  = (config = {}) ->
 
                 uuid: opts.uuid
                 hidden: {}
+                protected: {}
 
 
             external = {}
@@ -44,6 +45,12 @@ module.exports.capsule  = (config = {}) ->
                         Object.defineProperty external, firstKey, 
                             enumerable: not hash.hidden
 
+                    if hash.protected?
+                        if hash.protected then internal.protected[firstKey] = 1
+                        Object.defineProperty external, firstKey, 
+                            writable: not hash.protected
+
+
 
             Object.defineProperty external, '$$all',
                 enumarable: false
@@ -58,6 +65,17 @@ module.exports.capsule  = (config = {}) ->
                         key
                     )
                     all
+
+
+            Object.defineProperty external, '$$protected',
+                enumerable: false
+                get: -> internal.protected
+
+
+            Object.defineProperty external, '$$hidden',
+                enumerable: false
+                get: -> internal.hidden
+
 
 
 

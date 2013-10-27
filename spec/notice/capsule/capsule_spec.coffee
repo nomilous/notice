@@ -58,7 +58,7 @@ describe 'Capsule', ->
 
                 done()
 
-        return
+        
 
 
         context 'protected', -> 
@@ -66,7 +66,7 @@ describe 'Capsule', ->
             it 'sets a property to readonly', (done) -> 
 
                 Capsule = capsule()
-                instance = new Capsule
+                instance = Capsule.create()
                 instance.$$set 
                     property: 'original'
                     protected: true
@@ -77,10 +77,11 @@ describe 'Capsule', ->
                 done()
 
 
+
             it 'does not allow reset of protected', (done) -> 
 
                 Capsule = capsule()
-                instance = new Capsule
+                instance = Capsule.create()
 
                 instance.$$set 
                     property: 'original'
@@ -102,7 +103,7 @@ describe 'Capsule', ->
             it 'maintains a list of protected properties', (done) -> 
 
                 Capsule = capsule()
-                instance = new Capsule
+                instance = Capsule.create()
 
                 instance.$$set 
                     property: 'original'
@@ -117,7 +118,7 @@ describe 'Capsule', ->
             it 'sets a property to invisible', (done) -> 
 
                 Capsule = capsule()
-                instance = new Capsule
+                instance = Capsule.create()
                 instance.$$set 
                     property: 'value'
                     hidden: true
@@ -130,7 +131,7 @@ describe 'Capsule', ->
             it 'allows reset of hidden', (done) -> 
 
                 Capsule = capsule()
-                instance = new Capsule
+                instance = Capsule.create()
                 
                 instance.$$set 
                     property: 'value'
@@ -150,14 +151,14 @@ describe 'Capsule', ->
             it 'has array to store list hidden properties in _hidden', (done) -> 
 
                 Capsule = capsule()
-                instance = new Capsule
+                instance = Capsule.create()
                 instance.$$hidden.should.eql {}
                 done()
 
             it 'adds to the list when a property is set hidden', (done) -> 
 
                 Capsule = capsule()
-                instance = new Capsule
+                instance = Capsule.create()
                 instance.$$set
                     property: 'value'
                     hidden: true
@@ -168,7 +169,7 @@ describe 'Capsule', ->
             it 'removes from the list if a property is unhidden', (done) -> 
 
                 Capsule = capsule()
-                instance = new Capsule
+                instance = Capsule.create()
                 instance.$$set
                     property: 'value'
                     hidden: true
@@ -186,7 +187,7 @@ describe 'Capsule', ->
         it 'can do hidden and protected', (done) -> 
 
             Capsule = capsule()
-            instance = new Capsule
+            instance = Capsule.create()
             instance.$$set 
                 property: 'original'
                 hidden: true
@@ -202,11 +203,11 @@ describe 'Capsule', ->
 
         context 'watched()', -> 
 
-            it 'sets a property to watched', (done) -> 
+            it.only 'sets a property to watched', (done) -> 
 
                 CHANGES = []
                 Capsule = capsule()
-                instance = new Capsule
+                instance = Capsule.create()
                 instance.$$set
                     thing: 'one'
                     watched: (change) -> 
@@ -231,7 +232,7 @@ describe 'Capsule', ->
                     done()
 
                 Capsule = capsule()
-                instance = new Capsule
+                instance = Capsule.create()
                 instance.$$set
                     thing: 'one'
                     protected: true
