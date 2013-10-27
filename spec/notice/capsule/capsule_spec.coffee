@@ -3,10 +3,10 @@ should    = require 'should'
 
 describe 'Capsule', -> 
 
-    it 'can set the uuid at creation (and it sticks)', (done) -> 
+    it.only 'can set the uuid at creation (and it sticks)', (done) -> 
 
         Capsule  = capsule()
-        instance = new Capsule uuid: 'assigned'
+        instance = Capsule.create uuid: 'assigned'
         instance.$$uuid.should.equal 'assigned'
         instance.$$uuid = 'erg2q3'
         instance.$$uuid.should.equal 'assigned'

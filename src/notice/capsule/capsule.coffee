@@ -5,6 +5,69 @@ module.exports._capsule = -> testable
 
 module.exports.capsule  = (config = {}) ->
 
+
+    Testable = factory = 
+
+        create: (opts) ->
+
+            testable = instance = 
+
+                uuid: opts.uuid
+
+
+
+            Object.defineProperty instance, '$$uuid', 
+                enumarable: false
+                get: -> instance.uuid
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    return factoryApi = 
+
+        create: factory.create
+
+
+    #
+    # re-implement as configged enclosure instead of coffee class
+    # to fix bug1
+    # 
+
+
+
     Testable = class Capsule   # latest Definition available for testing
 
         #
