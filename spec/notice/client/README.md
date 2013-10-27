@@ -54,28 +54,32 @@ module.exports.TelevisionRemote = notice.client
 
 ```coffee
 
-StorageBusClient = notice.client
+Emitter = notice.client
     capsule:
-        user_account:
+        ObjectType:
             nondescript: true
-        add_role: {}
 
 #
-# will hide the capsule.user_account property but not the capsule.add_role property
+# will 'hide' the capsule.ObjectType property on emitted capsules
 # 
 
-stogage_client.user_account 'this invisible', {theuser: 'object'}, (err, capsule) ->
-    
-    stogage_client.add_role 'admin', capsule, (err, capsule) -> 
+emitter = Emitter.create(...)
 
-        #
-        # TODO: the precise behaviours when creating a capsule using another
-        #       as input are not fully ironed out.
-        # 
-        #       * capsule.$type might not have become the new type
-        #       * capsule.user_account should not exist in the second 
-        #         because of the nondescript flag
-        #
+emitter.ObjectType 'type1', {key: 'value'}, (err, capsule) ->
+
+    console.log capsule
+    
+    #
+    # => {key: 'value'} 
+    #
+
+    console.log capsule.ObjectType
+
+    #
+    # => 'type1'
+    #
+
+
 ```
 
 
