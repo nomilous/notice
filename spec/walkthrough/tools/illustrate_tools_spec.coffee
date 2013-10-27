@@ -164,6 +164,8 @@ describe 'tools api', ->
             console.log """
 
             the results can be drilled into
+            ===============================
+            curl -u user:pass localhost:3333/hubs/1/tools/example/function/with/some/thing/gotten
             -------------------------------
 
             """, body
@@ -176,7 +178,7 @@ describe 'tools api', ->
         .then client.post
 
             path: '/hubs/1/middlewares'
-            customMedia1: 
+            middleware: 
                 
                 title: 'use tool'
                 fn: (next, capsule, traversal) -> 

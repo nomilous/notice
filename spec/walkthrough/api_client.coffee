@@ -12,10 +12,10 @@ module.exports = (port) -> Client.create
     content:
 
         #
-        # a custom media to encode the middleware
+        # a custom media to encode middleware inserts/upserts
         #
 
-        customMedia1: 
+        middleware: 
             encode: (req) -> 
                 object = req.customMedia1
                 fn = object.fn

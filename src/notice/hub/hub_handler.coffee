@@ -11,7 +11,7 @@ module.exports.handler  = (config = {}) ->
     #       not doing so becomes necessary later.
     #
 
-    Capsule = require('../capsule/capsule').capsule()
+    Capsule = require('../capsule/capsule').capsule()  # bug1 (candidate)
 
     Testable = Handler =
 
