@@ -20,8 +20,7 @@ A communicator. Also for other stuff.
 ### Quick Faqts
 
 * all examples use coffee-script
-* docs @ [`./spec/notice`](./spec/notice)
-* MOVE TO LOCAL (spec/walkthroughs example walkthrough @ [`../notice-example`](../notice-example)
+* docs + walkthrough @ [`./spec/notice`](./spec/notice)
 
 ### Also, Important
 

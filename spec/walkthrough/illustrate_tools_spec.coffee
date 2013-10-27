@@ -1,6 +1,6 @@
-{hub}    = require '../../lib/notice'
-{client} = require './api_client'
-ipso     = require 'ipso'
+{hub}  = require '../../lib/notice'
+client = require('./api_client') API_PORT = 3333
+ipso   = require 'ipso'
 
 
 class ExampleTool
@@ -19,7 +19,7 @@ describe 'tools api', ->
         HubDefinition = hub
 
             api: 
-                listen: port: 3333
+                listen: port: API_PORT
                 authenticate: (user, pass, callback) ->
                     #
                     # insert async auth step here
@@ -29,7 +29,7 @@ describe 'tools api', ->
                         roles: ['pretend']
 
             ticks: 
-                noop:
+                onYourMarks:
                     interval: 1 # quite high frequency
 
         instance = HubDefinition.create
@@ -51,7 +51,7 @@ describe 'tools api', ->
 
 
 
-    it 'starts the above hub and pulls the following demo chain', ipso (facto) -> 
+    it 'starts the above hub and runs this following demo chain', ipso (facto) -> 
 
         #@timeout(20000)
 
@@ -116,8 +116,10 @@ describe 'tools api', ->
                 title: 'use tool'
                 fn: (next, capsule, traversal) -> 
 
-                    #console.log capsule
+                    console.log capsule.$$tick # HUH?
                     next()
+
+
 
         .then ({statusCode, body}) -> 
 
