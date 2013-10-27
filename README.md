@@ -21,7 +21,7 @@ A communicator. Also for other stuff.
 
 * all examples use coffee-script
 * docs @ [`./spec/notice`](./spec/notice)
-* example walkthrough @ [`../notice-example`](../notice-example)
+* MOVE TO LOCAL (spec/walkthroughs example walkthrough @ [`../notice-example`](../notice-example)
 
 ### Also, Important
 

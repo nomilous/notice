@@ -295,9 +295,9 @@ describe 'manage', ipso (should, http, https) ->
                             description: "get nested subkey from the tools key"
                             methods: [ "GET" ]
 
-                        "/hubs/:uuid:/clients":
-                            description: "pending"
-                            methods: [ "GET" ]
+                        # "/hubs/:uuid:/clients":
+                        #     description: "pending"
+                        #     methods: [ "GET" ]
 
                         "/hubs/:uuid:/middlewares":
                             description: "get only the middlewares"
@@ -556,15 +556,15 @@ describe 'manage', ipso (should, http, https) ->
 
 
 
-                it './clients', ipso (done) -> 
+                # it './clients', ipso (done) -> 
 
-                    client.get 
-                        path: '/hubs/1/clients'
+                #     client.get 
+                #         path: '/hubs/1/clients'
                         
-                    .then ({statusCode, body}) ->
+                #     .then ({statusCode, body}) ->
 
-                            body.should.equal 'PENDING'
-                            done()
+                #             body.should.equal 'PENDING'
+                #             done()
 
 
             it './middlewares', ipso (done) -> 

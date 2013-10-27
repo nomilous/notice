@@ -1,6 +1,15 @@
 {hub}    = require '../../lib/notice'
-{Client} = require 'dinkum'
+{client} = require './api_client'
 ipso     = require 'ipso'
+
+
+class ExampleTool
+    constructor: ->
+        @function = (opts, callback) ->
+
+            callback null, with: some: thing: gotten: from: 'else where'
+
+        @function.$$notice = {}
 
 
 describe 'tools api', -> 
@@ -12,30 +21,119 @@ describe 'tools api', ->
             api: 
                 listen: port: 3333
                 authenticate: (user, pass, callback) ->
-
                     #
                     # insert async auth step here
                     #
-
                     callback null, 
                         username: user
                         roles: ['pretend']
 
             ticks: 
                 noop:
-                    interval: 1
+                    interval: 1 # quite high frequency
 
-        @hubInstance = HubDefinition.create
+        instance = HubDefinition.create
 
             title: 'Hub Title'
             uuid:  1
             listen: port: 4444
 
-            (err, hub) -> 
+            tools:
+                #
+                # assign an instance of example tool 
+                #
+                example: new ExampleTool
+
+            (err, @hub) => 
 
                 return done() unless err?
                 throw err
 
 
 
-    it ''
+    it 'starts the above hub and pulls the following demo chain', ipso (facto) -> 
+
+        #@timeout(20000)
+
+        @hub.use 
+
+            title: 'Middleware Title'
+            (next, capsule, traversal) -> 
+
+                # console.log capsule
+                next()
+
+
+        client.get 
+
+            path: '/hub/1/tools/example'
+
+        .then ({body}) -> 
+
+            console.log """.
+
+            api exposes tools 
+            -----------------
+
+            """, body
+
+
+        .then client.get 
+
+            path: '/hub/1/tools/example/function'
+
+        .then ({statusCode, body}) -> 
+
+            console.log """
+
+            api provides access to the funcion callback results
+            ---------------------------------------------------
+
+            """, body
+
+        .then client.get
+
+            path: '/hub/1/tools/example/function/with/some/thing/gotten'
+
+        .then ({statusCode, body}) -> 
+
+            console.log """
+
+            the results can be drilled into
+            -------------------------------
+
+            """, body
+
+        #
+        # POST new middleware onto the "tail" of the pipeline
+        #
+
+        .then client.post
+
+            path: '/hubs/1/middlewares'
+            customMedia1: 
+                
+                title: 'use tool'
+                fn: (next, capsule, traversal) -> 
+
+                    #console.log capsule
+                    next()
+
+        .then ({statusCode, body}) -> 
+
+            console.log """
+
+            inserted new middleware - details:
+            ----------------------------------
+
+            """, body
+
+
+
+
+
+        #facto()
+        
+
+
+
