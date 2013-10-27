@@ -44,6 +44,10 @@ Television = notice.hub # a factory
 * **This portion of the api is likely to change WITHOUT DEPRECATION WARNINGS**
 
 
+#### The `ticks` subconfig
+
+...
+
 #### The `instance`
 
 ```coffee
@@ -85,3 +89,15 @@ Television.create
 * Otherwise a new http or https server will be created.
 * If specified and present, cert and key files an https server is created for the socket.io listener.
 
+
+#### The `cache` subconfig
+
+...
+
+#### The `tools` subconfig
+
+...
+
+#### The `ticks` subconfig
+
+...

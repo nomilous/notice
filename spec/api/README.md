@@ -12,32 +12,13 @@ NetworkAlertRouter = notice.hub
 
     ... # other config
 
-    
-    error:
-        keep: 10  # oldest first
-
-        #
-        # TODO: 
-        # 
-        # proceed: true  (capsule keeps going despite errors)
-        # notify:  true  (error notified back to the emitter promise.notify)
-        # append:  true  (error appended into casule, bus.uuid, mware.title and .description included)
-        # 
-
-    #
-    # introspector:
-    #     level: 0  # none
-    #     level: 1  # not none
-    # 
-    # introspection stats by capsule/middleware not yet implemented
-    # 
-
     api:
         listen: 
             # hostname: 'localhost'
             port: 20002
-            key:  '/path/to/key'
-            cert: '/path/to/cert'
+            # key:  '/path/to/key'
+            # cert: '/path/to/cert'
+            # recommend nginx for this
 
         # 
         # authenticate: 
@@ -51,10 +32,12 @@ NetworkAlertRouter = notice.hub
         authenticate: (username, password, callback) -> 
 
             #
-            # perform upstream authentication (and probably role collection)
-            # NB: callback null if not authetic
-            # (anthenticEntity will likely come in handly later) ##undecided1
-            # error is ignored, it just reposts the 401
+            # * perform upstream authentication (and probably role collection)
+            # * NB: callback null if not authetic
+            #   (anthenticEntity will likely come in handly later) ##undecided1
+            # * error is ignored, it just reposts the 401
+            # * each request is required to provide authentication, 
+            #   no session support yet
             # 
 
             callback null, 
@@ -62,12 +45,19 @@ NetworkAlertRouter = notice.hub
                 roles: ['bedtime story teller']
 
 
+    #
+    # introspector:
+    #     level: 0  # none
+    #     level: 1  # not none
+    # 
+    # introspection stats by capsule/middleware not yet implemented
+    # 
+
+
+
 hub = NetworkAlertRouter.create( ...
 
 ```
-
-
-
 
 ### Hub Introspection and Middleware Performance Metrics
 

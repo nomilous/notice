@@ -636,6 +636,10 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
                 [match, base] = path.match /\/(.*)/
                 return local.routes["/#{base}"].handler [query], request, response
 
+            #
+            # TODO: Confirm restify can do all the necessaries here. And switch.
+            #
+
             return local.objectNotFound response
 
     server.listen port, address, -> 
