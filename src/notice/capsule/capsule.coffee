@@ -31,10 +31,11 @@ module.exports.capsule  = (config = {}) ->
                 get: -> (hash) -> 
 
                     break for firstKey of hash
+                    return if firstKey is 'uuid'
+                    return if firstKey is 'hidden'
+                    return if firstKey is 'protected'
+
                     internal[firstKey] = hash[firstKey]
-
-
-
 
 
                     external[firstKey] = internal[firstKey]
