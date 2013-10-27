@@ -292,6 +292,13 @@ module.exports.notifier  = (config = {}) ->
                     slot for slot of list
                     return slot
 
+            Object.defineProperty notifier, 'emptySlot',
+                get: -> (slot) ->
+                    list = collection.list()
+                    for got of list
+                        return false if slot is parseInt got
+                    return true
+
 
             Object.defineProperty notifier, 'serialize',
                 value: (detail = 1) -> 

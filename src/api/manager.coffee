@@ -216,10 +216,6 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
 
         upsertMiddleware: (hub, slot, middleware, callback) -> 
 
-
-            slot = parseInt slot
-
-
             #
             # POST or PUT /hubs/:uuid:/middlewares/:slot:
             # ----------------------------------------------
@@ -230,6 +226,9 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
             # * respond 200 on updated
             # * respond 201 on created
             # 
+
+            slot = parseInt slot
+            statusCode = if hub.emptySlot(slot) then 201 else 200
 
             try hub.use 
                 slot: slot
@@ -242,10 +241,10 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
 
                 return callback error
 
-            inserted = hub.serialize(2).middlewares[slot]
+            upserted = hub.serialize(2).middlewares[slot]
             callback null, 
-                statusCode: 200
-                middleware: inserted
+                statusCode: statusCode
+                middleware: upserted
 
 
     local.routes =

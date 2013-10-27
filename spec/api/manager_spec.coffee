@@ -973,7 +973,7 @@ describe 'manage', ipso (should, http, https) ->
 
                 context 'PUT or POST /hubs/:uuid:/middlewares/:slot:', -> 
 
-                    it.only 'puts middlware into the specified slot', ipso (facto) -> 
+                    it 'puts middlware into the specified slot', ipso (facto) -> 
 
                         client.post
 
@@ -988,7 +988,7 @@ describe 'manage', ipso (should, http, https) ->
 
                             -> 'noop'
 
-                        .then -> client.get
+                        .then -> client.get 
 
                             path: '/hubs/2/middlewares/1'
 
@@ -1007,8 +1007,50 @@ describe 'manage', ipso (should, http, https) ->
 
 
 
-                    it 'responds 200 with the middleware record if updated'
-                    it 'responds 201 with the middleware record if inserted'
+                    it 'responds 200 with the middleware record if updated', ipso (facto) ->
+
+                        hub2.use 
+                            slot: 1
+                            title: 'already'
+                            (next) -> next()
+
+                        client.post
+                            path: '/hubs/2/middlewares/1'
+                            javascript: 
+                                title: 'A title'
+                                description: 'A description'
+                                fn: (next) -> next()
+
+                        .then ({statusCode, body}) -> 
+
+                            statusCode.should.equal 200
+                            facto()
+
+
+                    it 'responds 201 with the middleware record if inserted', ipso (facto) ->
+
+                        client.post
+                            path: '/hubs/2/middlewares/99'
+                            javascript: 
+                                title: 'A title'
+                                description: 'A description'
+                                fn: (next) -> next()
+
+                        .then ({statusCode, body}) -> 
+
+                            statusCode.should.equal 201
+                            facto()
+
+                        # .then client.get
+                        #     path: '/hubs/2/middlewares'
+                        # .then ({statusCode, body}) -> 
+                        #     console.log body
+                        #     facto()
+
+
+
+
+
                     it 'errors if slot is not a positive whole number'
                     it 'errors if slot number in body does not match :slot:'
                     it 'errors if missing title and fn on PUT'
