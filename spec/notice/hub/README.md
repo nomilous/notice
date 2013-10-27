@@ -120,6 +120,6 @@ typeof capsule.seq is 'number'
 * Similar to the `cache`. But for tools that the middleware may require.
 * Available to middleware via `traversal.tools`
 * Available via the api at `[GET] /hubs/:uuid:/tools[/**/*]`
-* See [here](../tools) for some additional tool functionality.
+* See [here](../../tools) for some additional tool functionality.
 * Why is there a tools tree? For [middleware scope](../middleware_scope.md)
 
