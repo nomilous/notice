@@ -21,12 +21,31 @@ Hub = notice.hub
         # hubs: {}  # forbidden
                     #
 
-        thing: {}
+
+        # thing: {}
+        # 
+        #
+        # curl -u user: :8888
+        # 
+        #    {
+        #      "thing": {}
+        #    }
+        # 
+
+
+        core: new class
+
+            constructor: ->
+
+                ( @function = (opts, callback) -> ).$notice = {}
 
         #
         # curl -u user: :8888
-        # {
-        #   "thing": {}
-        # }
-        # 
+        #    
+        #    {
+        #      "core": {
+        #        "function": {}
+        #      }
+        #    }
+        #    
 
