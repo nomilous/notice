@@ -1,5 +1,7 @@
 #### todo 0.0.12
 
+* display error count on middleware records (running total, recent 5min total, recent 1m total)
+    * or leave this up to ""middlewares plugins"" (on the pending 'backbus')
 * boomerang capsule (emitter callback/resolve only after full remote hub traversal, throw/reject the same, boomerang is the default, emitters not expecting a result from the remote hub should specify on capsule definition, said emitters receive the callback on hub ack)
 * boomerang mode - pre / post (configable does the clientside traversal occur after or before the hub traversal)
     * this may be more likely a bus global configable, but it woul be most idea if it was a per capsule type configable

@@ -182,7 +182,7 @@ curl -u user: localhost:9999/hubs/2
 ```bash
 curl -w "\n%{http_code}" -u user: -H 'Content-Type: text/javascript' localhost:9999/hubs/2/middlewares -d '
 { 
-    title: "Does not evaluate an Javascript",
+    title: "Does not evaluate as Javascript",
     fn: function(next) {
         ;)
     }
@@ -202,7 +202,7 @@ curl -w "\n%{http_code}" -u user: -H 'Content-Type: text/javascript' localhost:9
 ### Post broken middleware (runtime error)
 
 ```bash
-curl -w "\n%{http_code}" -u user: -H 'Content-Type: text/javascript' localhost:9999/hubs/2/middlewares -d '
+curl -u user: -H 'Content-Type: text/javascript' localhost:9999/hubs/2/middlewares -d '
 { 
     title: "Broken Middleware Title",
     fn: function(next) {
@@ -245,6 +245,15 @@ curl -su user: localhost:9999/hubs/2/errors | head -n 20
 * The accumulated errors cannot be flushed (orsomesuchthing, yet). They remain present for as long as the process remains running.
 
 
+### Delete the broken middleware
+
+Not possible. 
+
+Disable both in preparation for the next step.
+
+```bash
+
+```
 
 
 
