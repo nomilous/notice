@@ -123,7 +123,7 @@ This posts a new middleware that pretends to take a short while to do it's job.
 
 ```bash
 
-curl -u user: -H 'Content-Type: text/javascript' localhost:9999/hubs/2/middlewares -d '
+curl -w "\n%{http_code}" -u user: -H 'Content-Type: text/javascript' localhost:9999/hubs/2/middlewares -d '
 { 
     title: "fake workload",
     fn: function(next) {
@@ -156,6 +156,7 @@ Response from the insert.
   "type": "usr",
   "enabled": true
 }
+201  <-------- 201 (CREATED)
 ```
 
 ### Disable the new middleware
@@ -207,30 +208,4 @@ curl -w "\n%{http_code}" -u user: -H 'Content-Type: text/javascript' localhost:9
 }
 400
 ```
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#### Regarding the StatusCodes
-
-* 200 is returned on a successful insert
-* 
-* 
-* 
-* 
 
