@@ -252,7 +252,9 @@ Not possible.
 Disable both in preparation for the next step.
 
 ```bash
-
+curl -u user: localhost:9999/hubs/2/middlewares/1/disable
+curl -u user: localhost:9999/hubs/2/middlewares/2/disable
+curl -u user: localhost:9999/hubs/2/middlewares # all be disable
 ```
 
 
