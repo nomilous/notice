@@ -22,24 +22,6 @@ setTimeout (->
 
         root: routes = 
 
-            core: new class
-
-                constructor: -> 
-
-                    ( @function = (opts, callback) -> 
-
-                            callback null, 
-                                tree: 
-                                    of: 'stuff' ).$notice = {}
-
-                            #
-                            # curl -u user: :8888/core/function/tree
-                            #  
-                            #  {
-                            #    "of": "stuff"
-                            #  }
-                            #
-
             tree:
 
                 users: (opts, callback) -> 
@@ -64,10 +46,32 @@ setTimeout (->
 
                     ]
 
+            core:
+
+                hub:
+
+                    create: (opts, callback) -> 
+
+                        try
+
+                            opts.root.hubContext.create
+
+                                title: 'title'
+
+                                (err, hub) -> 
+
+                                    if err? then return callback err
+
+                                    callback null, hub
+
+                       
+
+
 
 
 
         routes.tree.users.$notice = {}
+        routes.core.hub.create.$notice = {}
 
 
 

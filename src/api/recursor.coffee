@@ -81,6 +81,23 @@ module.exports.recursor  = (local, type) ->
 
         recurse opts, request, object, path, {}, (error, result) ->
 
+            if error? 
+
+                body = {}
+                body.error = 
+                    type: try error.constructor.name
+                    message: error.message
+
+                body = JSON.stringify body, null, 2
+
+                response.writeHead 400,
+                    'Content-Type': 'application/json'
+                    'Content-Length': body.length
+                response.write body
+                response.end()
+                return
+
+
             if deeper? 
 
                 #
@@ -154,6 +171,8 @@ recurse = (opts, request, object, path, result, callback) ->
 
                     request.$walking = true
                     return object[key] opts, (error, nested) -> 
+
+                        if error? then return request.$callback error
 
                         result[key] = nested
 
