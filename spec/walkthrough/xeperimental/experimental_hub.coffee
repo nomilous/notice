@@ -20,7 +20,7 @@ setTimeout (->
                     username: username
                     roles: groups: otherThings: whatever: 'this is async'
 
-        root: 
+        root: routes = 
 
             core: new class
 
@@ -40,7 +40,34 @@ setTimeout (->
                             #  }
                             #
 
+            tree:
 
+                users: (opts, callback) -> 
+
+                    #
+                    # curl -u user: :8888/tree/users
+                    #
+
+                    callback null, [
+
+                        { name: 'The Angry Pixie'  ,type: 'admin' }
+                        { name: 'Silky the Fairy'  ,type: 'admin' }
+                        { name: 'Mr.Watzisname'    ,type: 'admin' }
+                        { name: 'Dame Washalot'    ,type: 'admin' }
+                        { name: 'Moonface'         ,type: 'admin' }
+                        { name: 'The Saucepan Man' ,type: 'admin' }
+                        { name: 'Dame Slap'        ,type: 'admin' }
+
+                        { name: 'Jo'               ,type: 'guest' }
+                        { name: 'Bessie'           ,type: 'guest' }
+                        { name: 'Fanny'            ,type: 'guest' }
+
+                    ]
+
+
+
+
+        routes.tree.users.$notice = {}
 
 
 
