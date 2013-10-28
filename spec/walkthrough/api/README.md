@@ -167,9 +167,6 @@ Once it reaches 0 the input and output counts should once again match up.
 ```bash
 
 curl -u user: localhost:9999/hubs/2/middlewares/1/disable
-
-#
-
 curl -u user: localhost:9999/hubs/2/middlewares/1/enable
 
 ```
@@ -179,20 +176,9 @@ curl -u user: localhost:9999/hubs/2/middlewares/1/enable
 ```shell
 
 curl -u user: localhost:9999/hubs/2/middlewares/1/fn
-
-#
-
 curl -u user: localhost:9999/hubs/2/middlewares/1
-
-# 
-
 curl -u user: localhost:9999/hubs/2/middlewares
-
-# 
-
 curl -u user: localhost:9999/hubs/2
-
-#
 
 ```
 
