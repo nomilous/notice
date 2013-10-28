@@ -54,8 +54,14 @@ curl -u user: localhost:9999/hubs
           "count": 50    <---------- The number that have ^^successfully^^
         },                           completed their traversal.
         "error": {
-          "usr": 0,
-          "sys": 0
+          "term": {      <---------- Errors that terminated the traversal.
+            "usr": 0,                (all errors currenly do)
+            "sys": 0
+          }
+          "pass": { 
+            "usr": 0,
+            "sys": 0
+          }
         },
         "cancel": {
           "usr": 0,
@@ -79,8 +85,14 @@ curl -u user: localhost:9999/hubs
           "count": 34240
         },
         "error": {
-          "usr": 0,
-          "sys": 0
+          "term": {
+            "usr": 0,
+            "sys": 0
+          },
+          "pass": {
+            "usr": 0,
+            "sys": 0
+          }
         },
         "cancel": {
           "usr": 0,

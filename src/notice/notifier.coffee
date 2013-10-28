@@ -88,8 +88,12 @@ module.exports.notifier  = (config = {}) ->
                     output:   
                         count: 0     # capsules out (transmitted)
                     error:
-                        usr: 0      # exception in user   middleware
-                        sys: 0      # exception in system middleware
+                        term:
+                            usr: 0      # terminal exception in user   middleware
+                            sys: 0      # terminal exception in system middleware
+                        pass:
+                            usr: 0      # ignored (per config, pending)
+                            sys: 0
                     cancel:
                         usr: 0      # cancel    in user   middleware
                         sys: 0      # cancel    in system middleware
@@ -184,8 +188,8 @@ module.exports.notifier  = (config = {}) ->
 
                                 keepErrors title, type, error
                                 localMetrics.processing.count--
-                                localMetrics.error.usr++ if type == 'usr'
-                                localMetrics.error.sys++ if type == 'sys'
+                                localMetrics.error.term.usr++ if type == 'usr'
+                                localMetrics.error.term.sys++ if type == 'sys'
                                             # 3 
                                 process.nextTick -> reject error
                             
@@ -221,8 +225,8 @@ module.exports.notifier  = (config = {}) ->
 
                             catch error
                                 keepErrors title, type, error
-                                localMetrics.error.usr++ if type == 'usr'
-                                localMetrics.error.sys++ if type == 'sys'
+                                localMetrics.error.term.usr++ if type == 'usr'
+                                localMetrics.error.term.sys++ if type == 'sys'
                                 localMetrics.processing.count--
                                 reject error
 

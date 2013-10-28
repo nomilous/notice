@@ -462,8 +462,12 @@ describe 'notifier', ->
                             output:
                                 count: 0
                             error: 
-                                usr: 0
-                                sys: 0
+                                term:
+                                    usr: 0
+                                    sys: 0
+                                pass:
+                                    usr: 0
+                                    sys: 0
                             cancel: 
                                 usr: 0
                                 sys: 0
@@ -519,16 +523,16 @@ describe 'notifier', ->
                     DURING.input.count.should.equal 1
                     DURING.processing.count.should.equal 1
                     DURING.output.count.should.equal 0
-                    DURING.error.usr.should.equal 0
-                    DURING.error.sys.should.equal 0
+                    DURING.error.term.usr.should.equal 0
+                    DURING.error.term.sys.should.equal 0
                     DURING.cancel.usr.should.equal 0
                     DURING.cancel.sys.should.equal 0
 
                     AFTER.input.count.should.equal 1
                     AFTER.processing.count.should.equal 0
                     AFTER.output.count.should.equal 1
-                    AFTER.error.usr.should.equal 0
-                    AFTER.error.sys.should.equal 0
+                    AFTER.error.term.usr.should.equal 0
+                    AFTER.error.term.sys.should.equal 0
                     AFTER.cancel.usr.should.equal 0
                     AFTER.cancel.sys.should.equal 0
 
@@ -561,16 +565,16 @@ describe 'notifier', ->
                 DURING.input.count.should.equal 1
                 DURING.processing.count.should.equal 1
                 DURING.output.count.should.equal 0
-                DURING.error.usr.should.equal 0
-                DURING.error.sys.should.equal 0
+                DURING.error.term.usr.should.equal 0
+                DURING.error.term.sys.should.equal 0
                 DURING.cancel.usr.should.equal 0
                 DURING.cancel.sys.should.equal 0
 
                 AFTER.input.count.should.equal 1
                 AFTER.processing.count.should.equal 0
                 AFTER.output.count.should.equal 0
-                AFTER.error.usr.should.equal 1
-                AFTER.error.sys.should.equal 0
+                AFTER.error.term.usr.should.equal 1
+                AFTER.error.term.sys.should.equal 0
                 AFTER.cancel.usr.should.equal 0
                 AFTER.cancel.sys.should.equal 0
 
@@ -610,16 +614,16 @@ describe 'notifier', ->
                 DURING.input.count.should.equal 1
                 DURING.processing.count.should.equal 1
                 DURING.output.count.should.equal 0
-                DURING.error.usr.should.equal 0
-                DURING.error.sys.should.equal 0
+                DURING.error.term.usr.should.equal 0
+                DURING.error.term.sys.should.equal 0
                 DURING.cancel.usr.should.equal 0
                 DURING.cancel.sys.should.equal 0
 
                 AFTER.input.count.should.equal 1
                 AFTER.processing.count.should.equal 0
                 AFTER.output.count.should.equal 0
-                AFTER.error.usr.should.equal 0
-                AFTER.error.sys.should.equal 1
+                AFTER.error.term.usr.should.equal 0
+                AFTER.error.term.sys.should.equal 1
                 AFTER.cancel.usr.should.equal 0
                 AFTER.cancel.sys.should.equal 0
 
@@ -654,16 +658,16 @@ describe 'notifier', ->
                 DURING.input.count.should.equal 1
                 DURING.processing.count.should.equal 1
                 DURING.output.count.should.equal 0
-                DURING.error.usr.should.equal 0
-                DURING.error.sys.should.equal 0
+                DURING.error.term.usr.should.equal 0
+                DURING.error.term.sys.should.equal 0
                 DURING.cancel.usr.should.equal 0
                 DURING.cancel.sys.should.equal 0
 
                 AFTER.input.count.should.equal 1
                 AFTER.processing.count.should.equal 0
                 AFTER.output.count.should.equal 0
-                AFTER.error.usr.should.equal 0
-                AFTER.error.sys.should.equal 0
+                AFTER.error.term.usr.should.equal 0
+                AFTER.error.term.sys.should.equal 0
                 AFTER.cancel.usr.should.equal 0
                 AFTER.cancel.sys.should.equal 1
 
@@ -698,16 +702,16 @@ describe 'notifier', ->
                 DURING.input.count.should.equal 1
                 DURING.processing.count.should.equal 1
                 DURING.output.count.should.equal 0
-                DURING.error.usr.should.equal 0
-                DURING.error.sys.should.equal 0
+                DURING.error.term.usr.should.equal 0
+                DURING.error.term.sys.should.equal 0
                 DURING.cancel.usr.should.equal 0
                 DURING.cancel.sys.should.equal 0
 
                 AFTER.input.count.should.equal 1
                 AFTER.processing.count.should.equal 0
                 AFTER.output.count.should.equal 0
-                AFTER.error.usr.should.equal 0
-                AFTER.error.sys.should.equal 0
+                AFTER.error.term.usr.should.equal 0
+                AFTER.error.term.sys.should.equal 0
                 AFTER.cancel.usr.should.equal 1
                 AFTER.cancel.sys.should.equal 0
 
