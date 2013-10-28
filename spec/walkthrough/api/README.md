@@ -1,5 +1,5 @@
-Api Walkthrough
----------------
+REST Api Walkthrough
+--------------------
 
 ### Start the GenericHub
 
