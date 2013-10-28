@@ -10,6 +10,9 @@ testable               = undefined
 module.exports._manager = -> testable
 module.exports.manager  = (config = {}) ->
 
+    if config.root.hubs?
+        throw new Error 'notice: config.root.hubs forbidden' 
+
     try listen    = config.api.listen
     authenticated = authenticator config
 
@@ -20,6 +23,8 @@ module.exports.manager  = (config = {}) ->
         throw missingConfig 'config.api.listen.port', 'api'
 
     testable = local = 
+
+        root: config.root
 
         hubContext: undefined
         register: (hubContext) -> local.hubContext = hubContext
@@ -259,6 +264,10 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
 
 
     local.routes =
+
+            '/':
+                description: 'EXPERIMENTAL'
+                handler: recursor local, 'root'
 
             '/about': 
 
@@ -626,7 +635,10 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
             # path = path.replace /\/mwares/, '/middlewares'
             # path = path.replace /\/mware\//, '/middlewares/'
 
-            if path == '/about' or path == '/'
+            if path == '/'
+                return local.routes['/'].handler [opts], request, response
+
+            if path == '/about'
                 return local.routes["/about"].handler [], request, response
                 
             if path[-1..] == '/' then path = path[0..-2]

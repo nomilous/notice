@@ -4,7 +4,7 @@ module.exports.recursor  = (local, type) ->
 
     testable = ([opts, uuid, deeper], request, response, statusCode = 200) -> 
 
-        if type == 'tools'
+        if type == 'tools' or type == 'root'
 
 #            
 #                    
@@ -59,15 +59,21 @@ module.exports.recursor  = (local, type) ->
 
             return local.methodNotAllowed response unless request.method == 'GET'
 
-        return local.objectNotFound response unless local.hubContext.hubs[uuid]
+        if type == 'root'
 
-        notifier    = local.hubContext.hubs[uuid]
-        searialized = notifier.serialize(2)
+            object = local.root
 
-        return local.objectNotFound response unless searialized[type]?
+        else
 
-        object = searialized[type]
-        path   = try deeper.split '/'
+            return local.objectNotFound response unless local.hubContext.hubs[uuid]
+
+            notifier    = local.hubContext.hubs[uuid]
+            searialized = notifier.serialize(2)
+
+            return local.objectNotFound response unless searialized[type]?
+
+            object = searialized[type]
+            path   = try deeper.split '/'
 
         recurse opts, request, object, path, {}, (error, result) ->
 
