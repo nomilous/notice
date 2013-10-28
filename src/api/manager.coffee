@@ -314,17 +314,16 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
 
                 description: 'get only the hub stats'
                 methods: ['GET']
-                handler: ([query,uuid], request, response, statusCode = 200) -> 
+                handler: recursor local, 'stats'
 
-                    return local.methodNotAllowed response unless request.method == 'GET'
-                    return local.objectNotFound response unless local.hubContext.hubs[uuid]
 
-                    notifier = local.hubContext.hubs[uuid]
-                    local.respond(
-                        notifier.serialize(2).stats
-                        statusCode
-                        response
-                    )
+            '/hubs/:uuid:/stats/**/*': 
+
+                description: 'get nested subkey from the stats tree'
+                methods: ['GET']
+                handler: recursor local, 'stats'
+
+
 
             '/hubs/:uuid:/errors': 
 
@@ -348,41 +347,19 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
                         response
                     )
 
+
             '/hubs/:uuid:/cache': 
 
                 description: 'get output from a serailization of the traversal cache'
                 methods: ['GET']
-                handler: ([query,uuid], request, response, statusCode = 200) -> 
+                handler: recursor local, 'cache'
 
-                    return local.methodNotAllowed response unless request.method == 'GET'
-                    return local.objectNotFound response unless local.hubContext.hubs[uuid]
-                    notifier = local.hubContext.hubs[uuid]
-                    local.respond( 
-                        notifier.serialize(2).cache
-                        statusCode
-                        response
-                    )
 
             '/hubs/:uuid:/cache/**/*': 
 
                 description: 'get nested subkey from the cache tree'
                 methods: ['GET'] #, 'POST'] #, 'DELETE']
-                handler: ([query,uuid,deeper], request, response, statusCode = 200) -> 
-
-                    return local.methodNotAllowed response unless request.method == 'GET'
-                    return local.objectNotFound response unless local.hubContext.hubs[uuid]
-                    notifier = local.hubContext.hubs[uuid]
-                    cache = notifier.serialize(2).cache
-
-                    deeper.split('/').map (key) -> 
-                        key = decodeURIComponent key
-                        cache = cache[key]
-
-                    local.respond( 
-                        cache
-                        statusCode
-                        response
-                    )
+                handler: recursor local, 'cache'
 
 
             '/hubs/:uuid:/tools': 
@@ -390,6 +367,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
                 description: 'get output from a serailization of the tools tree'
                 methods: ['GET']
                 handler: recursor local, 'tools'
+
 
             '/hubs/:uuid:/tools/**/*': 
 
@@ -649,9 +627,12 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
                 return local.routes["#{base}/:uuid:/#{nested}/:slot:"].handler [query, uuid, slot, authenticEntity], request, response
             try
                 [match, base, uuid, nested] = path.match /(.*)\/(.*)\/(.*)/
+
+                try if [match, uuid, deeper] = path.match /\/hubs\/(.*)\/stats\/(.*)/
+                    return local.routes["/hubs/:uuid:/stats/**/*"].handler [query, uuid, deeper, hub: '##undecided'], request, response
                 
                 try if [match, uuid, deeper] = path.match /\/hubs\/(.*)\/cache\/(.*)/
-                    return local.routes["/hubs/:uuid:/cache/**/*"].handler [query, uuid, deeper], request, response
+                    return local.routes["/hubs/:uuid:/cache/**/*"].handler [query, uuid, deeper, hub: '##undecided'], request, response
                 
                 try if [match, uuid, deeper] = path.match /\/hubs\/(.*)\/tools\/(.*)/
                     return local.routes["/hubs/:uuid:/tools/**/*"].handler [query, uuid, deeper, authenticEntity], request, response

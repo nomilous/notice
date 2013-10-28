@@ -171,7 +171,7 @@ describe 'manage', ipso (should, http, https) ->
                             
 
                 -> Hub.create title: 'Hub Two', uuid: 2
-                -> Hub.create title: 'pristine', uuid: 3
+                -> Hub.create title: 'pristine', uuid: 3, tools: toolName: new NoticeableClass
 
             ]).then(
                 (hubs) -> 
@@ -276,6 +276,10 @@ describe 'manage', ipso (should, http, https) ->
                         "/hubs/:uuid:/stats":
                             description: "get only the hub stats"
                             methods: [ "GET" ]
+
+                        "/hubs/:uuid:/stats/**/*":
+                            description: "get nested subkey from the stats tree"
+                            methods: [ "GET" ]
                         
                         "/hubs/:uuid:/errors": 
                             description: "get only the recent errors"
@@ -296,10 +300,6 @@ describe 'manage', ipso (should, http, https) ->
                         "/hubs/:uuid:/tools/**/*":
                             description: "get nested subkey from the tools key"
                             methods: [ "GET" ]
-
-                        # "/hubs/:uuid:/clients":
-                        #     description: "pending"
-                        #     methods: [ "GET" ]
 
                         "/hubs/:uuid:/middlewares":
                             description: "get only the middlewares"
@@ -349,8 +349,12 @@ describe 'manage', ipso (should, http, https) ->
                                 output:
                                     count: 0
                                 error: 
-                                    usr: 0
-                                    sys: 0
+                                    term:
+                                        usr: 0
+                                        sys: 0
+                                    pass:
+                                        usr: 0
+                                        sys: 0
                                 cancel:
                                     usr: 0
                                     sys: 0
@@ -367,8 +371,12 @@ describe 'manage', ipso (should, http, https) ->
                                 output:
                                     count: 0
                                 error: 
-                                    usr: 0
-                                    sys: 0
+                                    term:
+                                        usr: 0
+                                        sys: 0
+                                    pass:
+                                        usr: 0
+                                        sys: 0
                                 cancel:
                                     usr: 0
                                     sys: 0
@@ -385,8 +393,12 @@ describe 'manage', ipso (should, http, https) ->
                                 output:
                                     count: 0
                                 error: 
-                                    usr: 0
-                                    sys: 0
+                                    term:
+                                        usr: 0
+                                        sys: 0
+                                    pass:
+                                        usr: 0
+                                        sys: 0
                                 cancel:
                                     usr: 0
                                     sys: 0
@@ -416,7 +428,7 @@ describe 'manage', ipso (should, http, https) ->
 
                     body.cache.should.eql {}
                     should.exist body.tools.toolName
-                    body.errors.should.eql recent: []
+                    body.errors.should.eql term: recent: []
                     body.middlewares.should.eql {}
                     done()
 
@@ -453,7 +465,7 @@ describe 'manage', ipso (should, http, https) ->
                 
                 .then ({statusCode, body}) ->
 
-                        should.exist body.recent
+                        should.exist body.term.recent
                         done()
 
 
@@ -950,7 +962,9 @@ describe 'manage', ipso (should, http, https) ->
                                     input:      count: 1
                                     processing: count: 0
                                     output:     count: 1
-                                    error:      usr: 0, sys: 0
+                                    error:      
+                                        term: usr: 0, sys: 0
+                                        pass: usr: 0, sys: 0
                                     cancel:     usr: 0, sys: 0
 
                             capsule.should.eql
@@ -1209,6 +1223,45 @@ describe 'manage', ipso (should, http, https) ->
         #     it 'and possibly other things'
         # context 'GET /hubs/:uuid:/reset', -> 
         #     it 'zeroes all metric counters'
+
+
+        context 'advanced use of cache', -> 
+
+            #
+            # NOTE!! possibly not permanent functionalities follow here
+            #
+
+            it 'can do $notice(able) functions', ipso (facto) -> 
+
+                hub3.use 
+                    title: 'cache function'
+                    (next, capsule, {cache}) -> 
+
+                        cache.key = 'value'
+
+                        unless cache.tool?
+
+                            cache.tool = 
+
+                                fn: (opts, callback) -> 
+
+                                    #console.log OPTS: opts
+                                    callback null, this: 1
+
+                            cache.tool.fn.$notice = {}
+
+                        next()
+
+                hub3.event()
+
+                .then client.get
+
+                    path: '/hubs/3/cache/tool/fn'
+
+                .then ({statusCode, body}) -> 
+
+                    body.this.should.equal 1
+                    facto()
 
 
 
