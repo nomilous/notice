@@ -103,13 +103,14 @@ module.exports.notifier  = (config = {}) ->
                 #
 
                 errors: localErrors = 
-                    recent: []
+                    term: 
+                        recent: []
 
 
-            tooManyErrorsToKeep = -> localErrors.recent.length > config.error.keep
+            tooManyErrorsToKeep = -> localErrors.term.recent.length > config.error.keep
             keepErrors = (title, type, error) -> 
 
-                localErrors.recent.push
+                localErrors.term.recent.push
 
                     timestamp: new Date
                     error: error.toString()
@@ -117,7 +118,7 @@ module.exports.notifier  = (config = {}) ->
                         title: title
                         type:  type
 
-                localErrors.recent.shift() while tooManyErrorsToKeep()
+                localErrors.term.recent.shift() while tooManyErrorsToKeep()
 
 
             traverse = (capsule) -> 

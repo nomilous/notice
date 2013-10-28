@@ -8,6 +8,9 @@ GenericHub = notice.hub
             username: 'user'
             password: ''
 
+    error:
+        keep: 7
+
 genericHub1 = GenericHub.create
 
     title: 'Bus 1'

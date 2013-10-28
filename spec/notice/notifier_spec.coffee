@@ -488,7 +488,7 @@ describe 'notifier', ->
                     (next) -> next()
                 
                 result = mix.serialize(2)
-                result.errors.should.eql recent: []
+                result.errors.term.should.eql recent: []
                 should.exist result.middlewares[1]
                 should.not.exist result.middlewares[6]
                 should.exist result.middlewares[7]
@@ -732,7 +732,7 @@ describe 'notifier', ->
             mix.event() for i in [0..19]
             setTimeout (->
         
-                recent = mix.serialize(2).errors.recent
+                recent = mix.serialize(2).errors.term.recent
                 recent[0].middleware.should.eql
                     title: 'middleware title'
                     type:  'usr'

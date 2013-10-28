@@ -124,7 +124,7 @@ This posts a new middleware that pretends to take a short while to do it's job.
 ```bash
 curl -w "\n%{http_code}" -u user: -H 'Content-Type: text/javascript' localhost:9999/hubs/2/middlewares -d '
 { 
-    title: "fake workload",
+    title: "Fake workload middleware",
     fn: function(next) {
         setTimeout(function() {
 
@@ -182,7 +182,7 @@ curl -u user: localhost:9999/hubs/2
 ```bash
 curl -w "\n%{http_code}" -u user: -H 'Content-Type: text/javascript' localhost:9999/hubs/2/middlewares -d '
 { 
-    title: "fake workload",
+    title: "Does not evaluate an Javascript",
     fn: function(next) {
         ;)
     }
@@ -198,4 +198,52 @@ curl -w "\n%{http_code}" -u user: -H 'Content-Type: text/javascript' localhost:9
 }
 400
 ```
+
+### Post broken middleware (runtime error)
+
+```bash
+curl -w "\n%{http_code}" -u user: -H 'Content-Type: text/javascript' localhost:9999/hubs/2/middlewares -d '
+{ 
+    title: "Broken Middleware Title",
+    fn: function(next) {
+        erm++;
+    }
+}
+'
+```
+
+### View the recent error history
+
+```bash
+curl -su user: localhost:9999/hubs/2/errors | head -n 20
+```
+```json
+{
+  "term": {
+    "recent": [
+      {
+        "timestamp": "2013-10-28T17:31:04.824Z",
+        "error": "ReferenceError: erm is not defined",
+        "middleware": {
+          "title": "Broken Middleware Title",
+          "type": "usr"
+        }
+      },
+      {
+        "timestamp": "2013-10-28T17:31:04.826Z",
+        "error": "ReferenceError: erm is not defined",
+        "middleware": {
+          "title": "Broken Middleware Title",
+          "type": "usr"
+        }
+      },
+      {
+```
+* The watch loop on http://localhost:9999/hubs/2/stats should also begin accumulating the error count
+* See `config.error.keep` in the hub definition.
+* If the "Fake workload middleware" is active the errors would not have begin to appear for 10 seconds.
+* The accumulated errors cannot be flushed (orsomesuchthing, yet). They remain present for as long as the process remains running.
+
+
+
 
