@@ -61,7 +61,8 @@ module.exports.hub  = (config = {}) ->
                 hub  = local.Notifier.create hubName, uuid
                 hub.cache = opts.cache or {}
                 hub.tools = opts.tools or {}
-                local.hubs[uuid]   = hub
+                local.hubs[uuid]     = hub
+                local.names[hubName] = 1
                 #local.uuids[opts.uuid] = hub
                 local.tickers.register hub, opts
 

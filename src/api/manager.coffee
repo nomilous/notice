@@ -603,7 +603,7 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
 
             request.body = body
             path = request.url
-            try [match,path,query] = path.match /(.*)\?(.*)/
+            try [path,query] = path.split '?', 2
 
             opts =                
                                                     #

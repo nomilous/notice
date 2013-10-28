@@ -1,4 +1,5 @@
 notice = require '../../../lib/notice'
+querystring = require 'querystring'
 
 WAIT_FOR_COMPILE = 1000
 console.log grace: WAIT_FOR_COMPILE
@@ -52,26 +53,28 @@ setTimeout (->
 
                     create: (opts, callback) -> 
 
+                        config = querystring.parse opts.query
+
                         try
 
                             opts.root.hubContext.create
 
-                                title: 'title'
+                                title:  config.title || 'DEFAULT HUB NAME'
+                                uuid:   config.uuid
+                                listen: port: config.port
 
                                 (err, hub) -> 
 
                                     if err? then return callback err
-
                                     callback null, hub
 
                        
 
 
 
-
-
         routes.tree.users.$notice = {}
         routes.core.hub.create.$notice = {}
+
 
 
 
