@@ -1231,7 +1231,7 @@ describe 'manage', ipso (should, http, https) ->
             # NOTE!! possibly not permanent functionalities follow here
             #
 
-            it 'can do $notice(able) functions', ipso (facto) -> 
+            it.only 'can do $notice(able) functions', ipso (facto) -> 
 
                 hub3.use 
                     title: 'cache function'
@@ -1245,7 +1245,7 @@ describe 'manage', ipso (should, http, https) ->
 
                                 fn: (opts, callback) -> 
 
-                                    #console.log OPTS: opts
+                                    console.log OPTS: opts
                                     callback null, this: 1
 
                             cache.tool.fn.$notice = {}
@@ -1256,7 +1256,7 @@ describe 'manage', ipso (should, http, https) ->
 
                 .then client.get
 
-                    path: '/hubs/3/cache/tool/fn'
+                    path: '/hubs/3/cache/tool/fn?query=value'
 
                 .then ({statusCode, body}) -> 
 

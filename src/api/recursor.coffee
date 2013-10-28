@@ -2,11 +2,63 @@ testable = undefined
 module.exports._recursor = -> testable
 module.exports.recursor  = (local, type) -> 
 
-    testable = ([query,uuid, deeper, authenticEntity], request, response, statusCode = 200) -> 
+    testable = ([opts, uuid, deeper], request, response, statusCode = 200) -> 
 
-        # console.log AUTH: authenticEntity
+        if type == 'tools'
 
-        return local.methodNotAllowed response unless request.method == 'GET'
+#            
+#                    
+#                        EXPERIMENTAL X EXPERIMENTAL X EXPERIMENTAL
+#                        ==========================================
+#
+#                                 Open wide for API tools
+#                                 -----------------------
+#
+#                                       TAKE NOTE!
+#                                       ==========
+#                    
+#                          This exposes INTERNAL structures that
+#                                         
+#                                       **WILL**
+#                               
+#                              be changed without warning
+#
+#                  ...(ecau.e this fr...wo.k is stil und.. constru)....
+#                    
+#
+#                    
+#                    The **ENTIRE** api context is exposed at opts.root
+#                    into $notice(able) FUNCTIONS nested into the tools 
+#                    tree in of a running hub instance. 
+#
+#                         These FUNCTIONS are callable via the API 
+#
+#                                /hubs/:uuid:/tools/**/*
+#                    
+#                        
+#
+#                         The url path walker is currently only
+#                        capable of traversing ONE callback tier.
+#
+#                                        i.e.
+#
+#            /hubs/:uuid:/tools/thing/FUNCTION1/callback-tree/more/FUNCTION2
+#
+#                                  is not accessable  
+#
+#
+#
+
+            
+
+            opts.root = local
+
+
+
+        else
+
+            return local.methodNotAllowed response unless request.method == 'GET'
+
         return local.objectNotFound response unless local.hubContext.hubs[uuid]
 
         notifier    = local.hubContext.hubs[uuid]
@@ -17,7 +69,7 @@ module.exports.recursor  = (local, type) ->
         object = searialized[type]
         path   = try deeper.split '/'
 
-        recurse authenticEntity, request, object, path, {}, (error, result) ->
+        recurse opts, request, object, path, {}, (error, result) ->
 
             if deeper? 
 
@@ -30,7 +82,7 @@ module.exports.recursor  = (local, type) ->
 
 
             body = JSON.stringify result, null, 2
-            
+
             response.writeHead statusCode,
                 'Content-Type': 'application/json'
                 'Content-Length': body.length
@@ -39,7 +91,7 @@ module.exports.recursor  = (local, type) ->
             response.end()
 
 
-recurse = (authenticEntity, request, object, path, result, callback) -> 
+recurse = (opts, request, object, path, result, callback) -> 
 
     request.$root     ||= result  # keep original root for termination case beyond async call
     request.$callback ||= callback
@@ -63,7 +115,7 @@ recurse = (authenticEntity, request, object, path, result, callback) ->
             when 'object'
                 
                 result[key] = {}
-                recurse authenticEntity, request, object[key], path, result[key]  # huh?? , callback
+                recurse opts, request, object[key], path, result[key]  # huh?? , callback
 
             when 'number', 'string'
 
@@ -91,20 +143,17 @@ recurse = (authenticEntity, request, object, path, result, callback) ->
                     #
 
                     request.$walking = true
-                    return object[key] 
-                        authentic: authenticEntity
-                        additional: '##undecided1'
-                        (error, nested) -> 
+                    return object[key] opts, (error, nested) -> 
 
-                            result[key] = nested
+                        result[key] = nested
 
-                            #
-                            # stopping at one jump... (some impendiments on the nesteds)
-                            # recurse request, object[key], path, result[key]
-                            # 
+                        #
+                        # stopping at one jump... (some impendiments on the nesteds)
+                        # recurse request, object[key], path, result[key]
+                        # 
 
-                            request.$callback null, request.$root if typeof request.$callback is 'function' # and path.length == 0
-                            
+                        request.$callback null, request.$root if typeof request.$callback is 'function' # and path.length == 0
+                        
 
 
     #

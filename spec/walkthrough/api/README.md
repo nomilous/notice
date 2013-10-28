@@ -268,6 +268,15 @@ title: "Cache Loader"
 fn: (next, capsule, traversal) -> 
   
     traversal.cache.arbitraryKeyName = "Arbitrary Value (#{capsule.seq})"
+
+    traversal.cache.array = moo: [
+
+      'one'
+      'two'
+      'three'
+
+    ]
+
     next()
 
     #
