@@ -62,10 +62,12 @@ module.exports.recursor  = (local, type) ->
 
         if type == 'root'
 
+            return local.objectNotFound response if opts.path == '/'
             object = local.root
             deeper = try opts.path[1..]
             path   = try opts.path.split( '/' )
             path.shift()
+
 
         else
 

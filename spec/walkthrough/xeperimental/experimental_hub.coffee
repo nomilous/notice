@@ -1,36 +1,47 @@
 notice = require '../../../lib/notice'
 
-Hub = notice.hub
-    api: 
-        listen: port: 8888
-        authenticate: (username, password, callback) ->
+WAIT_FOR_COMPILE = 1000
+console.log grace: WAIT_FOR_COMPILE
+setTimeout (-> 
 
-            #
-            # no native session capacity
-            # --------------------------
-            # 
-            # * each hit at localhost:8888 makes this call
-            #
+    Hub = notice.hub
+        api: 
+            listen: port: 8888
+            authenticate: (username, password, callback) ->
 
-            callback null, 
-                username: username
-                roles: groups: otherThings: whatever: 'this is async'
+                #
+                # no native session capacity
+                # --------------------------
+                # 
+                # * each hit at localhost:8888 makes this call
+                #
 
-    root: 
+                callback null, 
+                    username: username
+                    roles: groups: otherThings: whatever: 'this is async'
 
-        core: new class
+        root: 
 
-            constructor: -> 
+            core: new class
 
-                ( @function = (opts, callback) -> 
-                        callback null, 
-                            tree: 
-                                of: 'stuff' ).$notice = {}
+                constructor: -> 
 
-        #
-        # curl -u user: :8888/core/function/tree
-        #  
-        #  {
-        #    "of": "stuff"
-        #  }
-        #
+                    ( @function = (opts, callback) -> 
+
+                            callback null, 
+                                tree: 
+                                    of: 'stuff' ).$notice = {}
+
+                            #
+                            # curl -u user: :8888/core/function/tree
+                            #  
+                            #  {
+                            #    "of": "stuff"
+                            #  }
+                            #
+
+
+
+
+
+), WAIT_FOR_COMPILE
