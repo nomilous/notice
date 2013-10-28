@@ -130,11 +130,13 @@ curl -u user: -H 'Content-Type: text/javascript' localhost:9999/hubs/2/middlewar
         setTimeout(function() {
 
             /*
-             * * The capsule (in this case a tick) does not proceed 
-             *   to the next middleware until this one calls next.
-             * * Next is delayed here for 10 seconds.
+             *  The capsule (in this case a tick) does not proceed 
+             *  to the next middleware until this one calls next.
+             # 
+             *  Next is delayed here for 10 seconds.
              *    
              */
+
             next();
 
         }, 10000);
@@ -192,6 +194,32 @@ curl -u user: localhost:9999/hubs/2
 
 #
 
+```
+
+### Post broken middleware (syntax error)
+
+```bash
+
+curl -w "\n%{http_code}" -u user: -H 'Content-Type: text/javascript' localhost:9999/hubs/2/middlewares -d '
+{ 
+    title: "fake workload",
+    fn: function(next) {
+        
+        ;)
+
+    }
+}
+'
+
+```
+```json
+{
+  "error": {
+    "type": "SyntaxError",
+    "message": "Unexpected token )"
+  }
+}
+400
 ```
 
 
