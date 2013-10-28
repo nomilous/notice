@@ -257,6 +257,38 @@ curl -u user: localhost:9999/hubs/2/middlewares/2/disable
 curl -u user: localhost:9999/hubs/2/middlewares # all be disable
 ```
 
+### Create a middleware that uses the shared `traversal.cache`
+
+Switching to coffeescript.
+
+```bash
+curl -u user: -H 'Content-Type: text/coffeescript' localhost:9999/hubs/2/middlewares -d '
+
+title: "Cache Loader"
+fn: (next, capsule, traversal) -> 
+  
+    traversal.cache.arbitraryKeyName = "Arbitrary Value (#{capsule.seq})"
+    next()
+
+    #
+    # NOTE: capsule.seq is only present if capsule.$tick?
+    #
+
+'
+```
+
+Observe the current cache content
+
+```bash
+curl -u user: localhost:9999/hubs/2/cache
+```
+```json
+{
+  "arbitraryKeyName": "Arbitrary Value (5137)"
+}
+```
+
+
 
 
 
