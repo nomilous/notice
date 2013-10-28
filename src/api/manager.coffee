@@ -10,8 +10,8 @@ testable               = undefined
 module.exports._manager = -> testable
 module.exports.manager  = (config = {}) ->
 
-    if config.root.hubs?
-        throw new Error 'notice: config.root.hubs forbidden' 
+    try if config.root.hubs?
+        process.stderr.write 'notice: api config.root.hubs overwrites hub api path\n'
 
     try listen    = config.api.listen
     authenticated = authenticator config
@@ -635,11 +635,12 @@ curl -u user: -H 'Content-Type: text/javascript' :20002/hubs/1/middlewares/10 -d
             # path = path.replace /\/mwares/, '/middlewares'
             # path = path.replace /\/mware\//, '/middlewares/'
 
-            if path == '/'
-                return local.routes['/'].handler [opts], request, response
-
             if path == '/about'
                 return local.routes["/about"].handler [], request, response
+
+            if path == '/' or not path.match /^\/hubs/
+                return local.routes['/'].handler [opts], request, response
+
                 
             if path[-1..] == '/' then path = path[0..-2]
 

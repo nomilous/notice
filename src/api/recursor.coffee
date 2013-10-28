@@ -59,21 +59,23 @@ module.exports.recursor  = (local, type) ->
 
             return local.methodNotAllowed response unless request.method == 'GET'
 
+
         if type == 'root'
 
             object = local.root
+            deeper = try opts.path[1..]
+            path   = try opts.path.split( '/' )
+            path.shift()
 
         else
 
             return local.objectNotFound response unless local.hubContext.hubs[uuid]
-
             notifier    = local.hubContext.hubs[uuid]
             searialized = notifier.serialize(2)
-
             return local.objectNotFound response unless searialized[type]?
-
             object = searialized[type]
             path   = try deeper.split '/'
+
 
         recurse opts, request, object, path, {}, (error, result) ->
 

@@ -17,35 +17,20 @@ Hub = notice.hub
                 roles: groups: otherThings: whatever: 'this is async'
 
     root: 
-                    #
-        # hubs: {}  # forbidden
-                    #
-
-
-        # thing: {}
-        # 
-        #
-        # curl -u user: :8888
-        # 
-        #    {
-        #      "thing": {}
-        #    }
-        # 
-
 
         core: new class
 
-            constructor: ->
+            constructor: -> 
 
-                ( @function = (opts, callback) -> ).$notice = {}
+                ( @function = (opts, callback) -> 
+                        callback null, 
+                            tree: 
+                                of: 'stuff' ).$notice = {}
 
         #
-        # curl -u user: :8888
-        #    
-        #    {
-        #      "core": {
-        #        "function": {}
-        #      }
-        #    }
-        #    
-
+        # curl -u user: :8888/core/function/tree
+        #  
+        #  {
+        #    "of": "stuff"
+        #  }
+        #
