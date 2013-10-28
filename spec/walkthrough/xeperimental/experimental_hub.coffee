@@ -53,6 +53,10 @@ setTimeout (->
 
                     create: (opts, callback) -> 
 
+                        #
+                        # curl -u user: ':8888/core/hub/create?title=New%20Hub%20Title&port=3001'
+                        #
+
                         config = querystring.parse opts.query
 
                         try
