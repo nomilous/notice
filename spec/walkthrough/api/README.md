@@ -122,7 +122,6 @@ watch -n 1 curl -su user: localhost:9999/hubs/2/stats
 This posts a new middleware that pretends to take a short while to do it's job.
 
 ```bash
-
 curl -w "\n%{http_code}" -u user: -H 'Content-Type: text/javascript' localhost:9999/hubs/2/middlewares -d '
 { 
     title: "fake workload",
@@ -138,17 +137,12 @@ curl -w "\n%{http_code}" -u user: -H 'Content-Type: text/javascript' localhost:9
              */
 
             next();
-
         }, 10000);
-        
     }
 }
 '
 
 ```
-
-Response from the insert.
-
 ```json
 {
   "slot": 1,
@@ -156,14 +150,14 @@ Response from the insert.
   "type": "usr",
   "enabled": true
 }
-201  <-------- 201 (CREATED)
+201  <-------- (CREATED)
 ```
 
 ### Disable the new middleware
 
-Using the slot number from the insert result above, send instruction to disable the newly inserted middleware. The processing count should fall back down to zero over the course of 10 seconds. 
+Using the slot number from the insert result above, send instruction to disable the newly inserted middleware. The processing count should fall back down to zero over the course of ten seconds. 
 
-Once it reaches 0 the input and output counts should once again match up.
+Once it reaches zero the input and output counts should once again match up.
 
 ```bash
 
@@ -186,18 +180,14 @@ curl -u user: localhost:9999/hubs/2
 ### Post broken middleware (syntax error)
 
 ```bash
-
 curl -w "\n%{http_code}" -u user: -H 'Content-Type: text/javascript' localhost:9999/hubs/2/middlewares -d '
 { 
     title: "fake workload",
     fn: function(next) {
-        
         ;)
-
     }
 }
 '
-
 ```
 ```json
 {
