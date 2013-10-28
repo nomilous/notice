@@ -241,8 +241,10 @@ curl -su user: localhost:9999/hubs/2/errors | head -n 20
 ```
 * The watch loop on http://localhost:9999/hubs/2/stats should also begin accumulating the error count
 * See `config.error.keep` in the hub definition.
-* If the "Fake workload middleware" is active the errors would not have begin to appear for 10 seconds.
+* If the **Fake workload middleware is active** the errors would not have begun to appear for ten seconds.
 * The accumulated errors cannot be flushed (orsomesuchthing, yet). They remain present for as long as the process remains running.
+
+
 
 
 
