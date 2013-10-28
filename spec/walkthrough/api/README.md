@@ -142,7 +142,6 @@ Response from the insert.
   "type": "usr",
   "enabled": true
 }
-
 ```
 
 ### Disable the new middleware
@@ -187,4 +186,25 @@ curl -u user: localhost:9999/hubs/2
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#### Regarding the StatusCodes
+
+* 200 is returned on a successful insert
+* 
+* 
+* 
+* 
 
