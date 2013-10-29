@@ -8,6 +8,13 @@ WAIT_FOR_COMPILE = 1000
 console.log grace: WAIT_FOR_COMPILE
 setTimeout ( -> 
 
+    #
+    # quick hac - validation exercise 
+    # verify hub as suitable core for realize
+    # https://github.com/nomilous/realize/tree/develop
+    # for the first use case (specs)
+    #
+
     
     Hub = notice.hub 
 
@@ -19,11 +26,7 @@ setTimeout ( ->
 
             specs: 
 
-                #
-                # curl -u user: :8888/specs/list
-                # 
-
-                list: (opts, callback) -> 
+                load: (opts, callback) -> 
 
                     result  = {}
                     recurse = (base, result, files) -> 
@@ -45,51 +48,68 @@ setTimeout ( ->
 
                                 spec     = {}
                                 place    = spec
-                                describe = (subject, test) -> 
 
-                                    b4             = place
-                                    place = place[subject] = {}
-                                    test()
-                                    place = b4
+                                #
+                                # define functions used in the "specs"
+                                # ------------------------------------
+                                # 
+                                # * a sort of push() pop() recursor
+                                # 
 
-                                context  = (descrip) -> 
+                                describe = context = it = (descr, fn) -> 
 
-                                    console.log context: descrip
-                                    place[descrip] = {}
+                                    if fn?
 
-                                eval js
-                                result[name] = spec
+                                        b4    = place
+                                        place = place[descr] = {}
+                                        fn()
+                                        place = b4
+
+                                    else place[descr] = 'pending'
+                                
+                                #
+                                # "load" the "specs"
+                                # ------------------
+                                #
+
+                                result[name] = eval js
+
+
+                                #
+                                # curl -u user: :8888/specs/load
+                                # 
 
                                 # {
                                 #   "dir": {
                                 #     "also": {
                                 #       "Also": {
                                 #         "when first": {},
-                                #         "when in the middle": {},
+                                #         "when in the middle": {
+                                #           "does one thing": {},
+                                #           "does another": "pending"
+                                #         },
                                 #         "when last": {}
                                 #       }
                                 #     },
                                 #     "another_thing": {
-                                #       "AnotherThing": {}
+                                #       "AnotherThing": {
+                                #         "not defined yet": "pending"
+                                #       }
                                 #     }
                                 #   },
                                 #   "some_thing": {
-                                #     "SomeThing": {}
+                                #     "SomeThing": {
+                                #       "is": {
+                                #         "entirely": {
+                                #           "recursive": "pending"
+                                #         }
+                                #       }
+                                #     }
                                 #   }
                                 # }
 
-                                # curl -u user: :8888/specs/list/dir/also/Also
-                                # 
-                                #  {
-                                #    "when first": {},
-                                #    "when in the middle": {},
-                                #    "when last": {}
-                                #  }
 
-
-                            
-
-                    # path = __dirname + '/../../../spec'
+                    #path = __dirname + '/../../../spec'
                     path = __dirname + '/spec'
                     recurse path, result, readdirSync path
                     callback null, result
@@ -97,7 +117,7 @@ setTimeout ( ->
                     
 
 
-        routes.specs.list.$notice = {}
+        routes.specs.load.$notice = {}
 
 
 ), WAIT_FOR_COMPILE
