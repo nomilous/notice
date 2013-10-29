@@ -25,14 +25,14 @@ setTimeout ( ->
                 # {
                 #   "dir": {
                 #     "also": {
-                #       "test": "one"
+                #       "subject": "Also"
                 #     },
                 #     "another_thing": {
-                #       "test": "two"
+                #       "subject": "AnotherThing"
                 #     }
                 #   },
                 #   "some_thing": {
-                #     "test": "three"
+                #     "subject": "SomeThing"
                 #   }
                 # }
                 # 
@@ -52,17 +52,19 @@ setTimeout ( ->
                                 recurse path, result[file], readdirSync path
                                 continue
 
-                            if name = file.match(/(.*)_spec\.coffee/)[1]
+                            try if name = file.match(/(.*)_spec\.coffee/)[1]
 
                                 script = readFileSync( path ).toString()
                                 js     = compile script, bare: true
-                                test   = eval "#{js}"
 
-                                result[name] = test
+                                describe = (subject) -> subject: subject
+
+                                result[name] = eval js
+                                
                                 
                             
 
-                    # path = __dirname + '/../../../spec'
+                    path = __dirname + '/../../../spec'
                     path = __dirname + '/spec'
                     recurse path, result, readdirSync path
                     callback null, result

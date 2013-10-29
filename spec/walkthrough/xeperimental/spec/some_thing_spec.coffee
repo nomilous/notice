@@ -1,1 +1,1 @@
-test: 'three'
+describe 'SomeThing', -> 
