@@ -47,7 +47,19 @@ MessageHub.create
         port:      12121
         secret:    'secret'
 
-    (err, hub) -> 
+    (err, proxy) -> 
 
         return process.stdout.write err.toString() if err?
+
+
+        proxy.use 
+
+            title: 'Object1 Router'
+            (next, capsule, traversal) -> 
+
+                return next() unless capsule.Object1?
+
+                console.log Object1: capsule
+                next()
+
 
