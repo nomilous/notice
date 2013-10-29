@@ -414,11 +414,11 @@ describe 'handler', ->
                 should.not.exist @hubContext.clients.OLD_SOCKET_ID
                 updatedContext = @hubContext.clients.SOCKET_ID.context
                 
-                updatedContext.should.eql
-                    accumulated: 'STUFF from BEFORE'
-                    hostname: 'new.host.name'
-                    pid: 'new pid'
-                    willRefresh: 'new this'
+                updatedContext.accumulated.should.equal 'STUFF from BEFORE'
+                updatedContext.hostname.should.equal 'new.host.name'
+                updatedContext.pid.should.equal 'new pid'
+                updatedContext.willRefresh.should.equal 'new this'
+                should.exist updatedContext.firstConnect
 
                 @hubContext.name2id['origin title'].should.not.equal 'OLD_SOCKET_ID'
                 @hubContext.name2id['origin title'].should.equal 'SOCKET_ID'

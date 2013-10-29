@@ -13,6 +13,7 @@ MessageHub = notice.hub
         
         #
         # curl -u user: :5555/clients
+        # curl -u user: :5555/clients/Y-YN02Nh7Od0j5oVITRB/connection
         # 
         # {
         #   "Y-YN02Nh7Od0j5oVITRB": {
@@ -38,7 +39,7 @@ routes.clients.$notice = {}
     
 MessageHub.create
 
-    title: 'Remote Pipeline'
+    title: 'Proxy Pipeline'
     uuid:  1
 
     listen: 

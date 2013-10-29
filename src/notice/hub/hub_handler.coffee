@@ -189,6 +189,10 @@ module.exports.handler  = (config = {}) ->
                         # identical to on connect (for now)
                         #
 
+                        #
+                        # TODO: key clients on uuid not title! 
+                        #
+
                         if previousID = hubContext.name2id[originTitle]
 
                             return handler.handleExisting 'resume', socket, previousID, originTitle, context 
@@ -243,6 +247,17 @@ module.exports.handler  = (config = {}) ->
 
                     for key of newContext
                         client.context[key] = newContext[key]
+
+                    #
+                    # * For as long as the hub remains running knowledge
+                    #   of the first ever connection date from a client is 
+                    #   maintained.
+                    # 
+                    #
+
+                    try unless client.context.firstConnect?
+
+                        client.context.firstConnect = new Date
 
                     #
                     # emit control 'start' or 'resume'
