@@ -59,11 +59,30 @@ describe 'Capsule', ->
                 done()
 
         
-        context 'boomerang', -> 
+        context '$wait (boomerang)', -> 
 
-            xit 'if true sets capsule.$wait to true', (done) -> 
+            it 'defaults to true', (done) -> 
+
+                Capsule = capsule()
+                instance = Capsule.create()
+                instance.$wait.should.equal true
+                done()
+
+            it 'can be set', (done) -> 
+
+                Capsule = capsule()
+                instance = Capsule.create wait: false
+                instance.$wait.should.equal false
+                done()
 
 
+            it 'cannot be reset', (done) -> 
+
+                Capsule = capsule()
+                instance = Capsule.create wait: true
+                instance.$wait = false
+                instance.$wait.should.equal true
+                done()
 
 
         context 'protected', -> 

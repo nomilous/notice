@@ -14,6 +14,7 @@ module.exports.capsule  = (config = {}) ->
                 uuid: opts.uuid
                 hidden: {}
                 protected: {}
+                wait: if opts.wait? then opts.wait else true
 
 
             external = {}
@@ -24,6 +25,9 @@ module.exports.capsule  = (config = {}) ->
                 get: -> internal.uuid
                 set: (value) -> internal.uuid = value unless internal.uuid?
 
+            Object.defineProperty external, '$wait', 
+                enumerable: false
+                get: -> internal.wait
 
             Object.defineProperty external, '$set',
                 enumarable: false

@@ -249,10 +249,11 @@ module.exports.handler  = (config = {}) ->
                         client.context[key] = newContext[key]
 
                     #
-                    # * For as long as the hub remains running knowledge
+                    # * For as long as the hub remains running, knowledge
                     #   of the first ever connection date from a client is 
                     #   maintained.
                     # 
+                    # * currently keyed of client title, (TODO uuid instead)
                     #
 
                     try unless client.context.firstConnect?

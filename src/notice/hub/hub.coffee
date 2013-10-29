@@ -39,6 +39,7 @@ module.exports.hub  = (config = {}) ->
         clients: {}
         name2id: {} # client name to socket.io id mapping
                     # TODO: key clients on uuid not title! 
+                    # used in persisting context across client restarts
 
         create: deferred ({reject, resolve, notify}, opts = {}, callback) ->
 
