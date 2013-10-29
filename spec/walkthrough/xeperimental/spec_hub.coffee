@@ -2,6 +2,7 @@ notice = require '../../../lib/notice'
 {readdirSync,lstatSync,readFileSync} = require 'fs'
 {compile} = require 'coffee-script'
 {sep} = require 'path'
+{all} = require 'when'
 WAIT_FOR_COMPILE = 1000
 
 
@@ -26,9 +27,17 @@ setTimeout ( ->
 
             load: (opts, callback) -> 
 
-                result  = {}
-                nodes   = []
-                recurse = (base, result, files) -> 
+                #
+                # initialize the spec tree
+                # ------------------------
+                # 
+                # curl -u user: :8888/load
+                # 
+
+                result   = {}
+                nodes    = []
+                promises = []
+                recurse  = (base, result, files) -> 
 
                     for file in files
 
@@ -65,8 +74,13 @@ setTimeout ( ->
                                     nodes.push descr
                                     b4    = place
                                     place = place[descr] = {}
-                                    console.log nodes
-                                    fn() if fn?
+
+                                    promises.push Hub.create 
+                                        title: nodes.join '/'
+                                        
+                                        -> # fn() if fn?
+
+
                                     place = b4
                                     nodes.pop()
 
@@ -89,46 +103,19 @@ setTimeout ( ->
 
                             nodes.pop()
 
-                            #
-                            # curl -u user: :8888/load
-                            # 
-
-                            # {
-                            #   "dir": {
-                            #     "also": {
-                            #       "Also": {
-                            #         "when first": {},
-                            #         "when in the middle": {
-                            #           "does one thing": {},
-                            #           "does another": "pending"
-                            #         },
-                            #         "when last": {}
-                            #       }
-                            #     },
-                            #     "another_thing": {
-                            #       "AnotherThing": {
-                            #         "not defined yet": "pending"
-                            #       }
-                            #     }
-                            #   },
-                            #   "some_thing": {
-                            #     "SomeThing": {
-                            #       "is": {
-                            #         "entirely": {
-                            #           "recursive": "pending"
-                            #         }
-                            #       }
-                            #     }
-                            #   }
-                            # }
-
-
-
 
                 #path = __dirname + '/../../../spec'
                 path = __dirname + '/spec'
                 recurse path, result, readdirSync path
-                callback null, result
+
+                all( promises ).then(
+
+                    -> callback null, result
+                    (error) -> callback error
+
+                )
+
+                
 
                 
 
