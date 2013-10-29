@@ -3,7 +3,7 @@ notice = require '../../../lib/notice'
 {compile} = require 'coffee-script'
 {sep} = require 'path'
 {all} = require 'when'
-WAIT_FOR_COMPILE = 1000
+WAIT_FOR_COMPILE = 2500
 
 
 console.log grace: WAIT_FOR_COMPILE
@@ -34,6 +34,7 @@ setTimeout ( ->
                 # curl -u user: :8888/load
                 # 
 
+                seq      = 0
                 result   = {}
                 nodes    = []
                 promises = []
@@ -118,6 +119,7 @@ setTimeout ( ->
                                     promises.push Hub.create 
 
                                         title: nodes.join '/'
+                                        uuid:  ++seq
                                         
                                         -> # fn() if fn?
 
@@ -151,7 +153,16 @@ setTimeout ( ->
 
                 all( promises ).then(
 
-                    -> callback null, result
+                    (hubs)  -> 
+
+                        response = tree: result, hubs: {}
+                        response.hubs[hub.uuid] = hub for hub in hubs
+                        callback null, response
+
+                        #
+                        # curl -u user: :8888/hubs
+                        #
+
                     (error) -> callback error
 
                 )

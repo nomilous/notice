@@ -42,17 +42,10 @@ describe 'hub', ->
         it 'requires hubName', (done) -> 
 
             Hub = hub()
-            Hub.create undefined, {}, (error) -> 
+            Hub.create {}, (error) -> 
 
                 error.should.match /requires arg hubName/
                 done()
-
-        it 'falls back to opts.title if no hubName', (done) -> 
-
-            Hub = hub()
-            Hub.create title: 'Title', uuid: 1
-            should.exist _hub().hubs[1]
-            done()
 
         it 'generates a uuid for the notifier', (done) -> 
 
@@ -74,7 +67,7 @@ describe 'hub', ->
         it 'calls back with a hub instance', (done) -> 
 
             Hub = hub()
-            Hub.create 'hub name', uuid: 1, (error, hub) -> 
+            Hub.create title: 'hub name', uuid: 1, (error, hub) -> 
 
                 _hub().hubs[1].should.equal hub
                 done()
@@ -82,7 +75,7 @@ describe 'hub', ->
         it 'resolves with the new hub as notifier instance', (done) -> 
 
             Hub = hub()
-            Hub.create( 'hub name', uuid: 1).then (hub) -> 
+            Hub.create(  title: 'hub name', uuid: 1).then (hub) -> 
 
                 hub.should.equal _notifier().notifiers['hub name']
                 _hub().hubs[1].should.equal hub
@@ -91,7 +84,7 @@ describe 'hub', ->
         it 'provides a hub cache for userdefined usage', (done) -> 
 
             Hub = hub()
-            Hub.create( 'hub name' ).then (hub) -> 
+            Hub.create(  title: 'hub name' ).then (hub) -> 
 
                 should.exist hub.cache
                 done()
@@ -111,9 +104,9 @@ describe 'hub', ->
 
             Hub = hub()
             parallel([
-                -> Hub.create 'hub1', uuid: 1
-                -> Hub.create 'hub2', uuid: 2
-                -> Hub.create 'hub3', uuid: 3
+                -> Hub.create title: 'hub1', uuid: 1
+                -> Hub.create title: 'hub2', uuid: 2
+                -> Hub.create title: 'hub3', uuid: 3
             ])
             .then ([hub1, hub2, hub3]) ->
                 
@@ -126,8 +119,8 @@ describe 'hub', ->
 
             Hub = hub()
             parallel([
-                -> Hub.create 'hub1'
-                -> Hub.create 'hub1'
+                -> Hub.create title: 'hub1'
+                -> Hub.create title: 'hub1'
             ])
             .then (->), (error) -> 
 
@@ -148,7 +141,8 @@ describe 'hub', ->
                 on: ->
 
             Hub = hub()
-            Hub.create 'hub1', 
+            Hub.create 
+                title: 'hub1'
                 listen: 
                     loglevel: 'LOGLEVEL'
                     address:  'ADDRESS'
@@ -163,7 +157,7 @@ describe 'hub', ->
                 on: ->
 
             Hub = hub()
-            Hub.create 'hub1', {}, (err, hub) -> 
+            Hub.create title: 'hub1', (err, hub) -> 
 
                 hub.listening.should.equal 'ADDRESS'
                 done()
@@ -175,7 +169,7 @@ describe 'hub', ->
 
                 
                 Hub = hub()
-                Hub.create 'hub1', {}, (err, hub) -> 
+                Hub.create title: 'hub1', (err, hub) -> 
 
                 should.exist _ticker().timers.hub1
                 done()
@@ -203,7 +197,7 @@ describe 'hub', ->
             it 'on connection assigns handler.handshake to handle handshake', (done) -> 
 
                 Hub = hub()
-                Hub.create 'hub1', listen: secret: 'rightsecret'
+                Hub.create title: 'hub1', listen: secret: 'rightsecret'
                 _handler().handshake = (socket) -> 
 
                     #
@@ -229,7 +223,7 @@ describe 'hub', ->
             it 'on connection assigns handler.resume to handle resume', (done) -> 
 
                 Hub = hub()
-                Hub.create 'hub1', listen: secret: 'rightsecret'
+                Hub.create title: 'hub1', listen: secret: 'rightsecret'
                 _handler().resume = (socket) -> 
                     socket.id.should.equal 'SOCKET_ID'  
                     -> 'RESUME HANDLER'
@@ -244,7 +238,7 @@ describe 'hub', ->
             it 'on connection assigns handler.disconnect to handle disconnect', (done) -> 
 
                 Hub = hub()
-                Hub.create 'hub1', listen: secret: 'rightsecret'
+                Hub.create title: 'hub1', listen: secret: 'rightsecret'
                 _handler().disconnect = (socket) -> 
                     socket.id.should.equal 'SOCKET_ID'  
                     -> 'DISCONNECT HANDLER'
@@ -259,7 +253,7 @@ describe 'hub', ->
             it 'on connection assigns handler.capsule to handle capsule', (done) -> 
 
                 Hub = hub()
-                Hub.create 'hub1', listen: secret: 'rightsecret'
+                Hub.create title: 'hub1', listen: secret: 'rightsecret'
                 _handler().capsule = (socket) -> 
                     socket.id.should.equal 'SOCKET_ID'  
                     -> 'CAPSULE HANDLER'

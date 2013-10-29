@@ -89,7 +89,9 @@ emitter.ObjectType 'type1', {key: 'value'}, (err, capsule) ->
 ```coffee
 {TelevisionRemote} = require './the/definition/from/above'
 
-TelevisionRemote.create 'Family Room',
+TelevisionRemote.create 
+
+    title: 'Family Room'
 
     context: 
         supremeAuthority: 'Mother' unless Grandfather? or Saturday?

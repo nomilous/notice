@@ -50,6 +50,8 @@ Television = notice.hub
 
 Television.create
 
+    title: 'Hoffman Colorcaster'
+
     listen:  
         adaptor: 'socket.io'
         # server:  existingHttpServer

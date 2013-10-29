@@ -36,24 +36,15 @@ module.exports.hub  = (config = {}) ->
         hubs:    {}
         names:   {}
         clients: {}
-        # name2id: {} # same client on multiple hubs? later...
-        # uuids:   {} # taken list for hubs
 
-        create: deferred ({reject, resolve, notify}, hubName, opts = {}, callback) ->
-
-            opts.uuid ||= v1()
+        create: deferred ({reject, resolve, notify}, opts = {}, callback) ->
 
             try 
 
-                if typeof hubName is 'object'
+                hubName = opts.title
+                uuid    = opts.uuid || v1()
 
-                    callback = opts
-                    opts = hubName
-                    hubName = hubName.title
-
-                uuid = opts.uuid
-
-                throw undefinedArg 'hubName' unless typeof hubName is 'string'
+                throw undefinedArg   'hubName'  unless typeof hubName is 'string'
                 throw alreadyDefined 'hubName', hubName if local.names[hubName]?
                 throw alreadyDefined 'hubUUID', uuid if local.hubs[uuid]?
 
@@ -63,7 +54,6 @@ module.exports.hub  = (config = {}) ->
                 hub.tools = opts.tools or {}
                 local.hubs[uuid]     = hub
                 local.names[hubName] = 1
-                #local.uuids[opts.uuid] = hub
                 local.tickers.register hub, opts
 
 

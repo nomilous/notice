@@ -18,7 +18,9 @@ MessageHub = notice.hub
         #     callback null, true
 
 
-MessageHub.create 'hub 1 name', {
+MessageHub.create 
+
+    title: 'hub 1 name'
 
     uuid: 1
 
@@ -31,98 +33,98 @@ MessageHub.create 'hub 1 name', {
         secret:  'right'
         cert:    __dirname + '/../../cert/develop-cert.pem'
         key:     __dirname + '/../../cert/develop-key.pem'
+    
+    (err, hub) -> 
 
-} , (err, hub) -> 
+        return process.stdout.write err.toString() if err?
 
-    return process.stdout.write err.toString() if err?
+        seq = 0
 
-    seq = 0
+        hub.use
 
-    hub.use
+            #
+            # register middleware (title is required)
+            #
 
-        #
-        # register middleware (title is required)
-        #
+            title: 'middleware 1'
+            description: 'optional description, nice for UIs tho'
+            (next, capsule, traversal) -> 
 
-        title: 'middleware 1'
-        description: 'optional description, nice for UIs tho'
-        (next, capsule, traversal) -> 
-
-            # if capsule._type == 'control'
-            #     console.log "[#{capsule.control}]", 
-            #         traversal.origin.title
-            #         hostname: traversal.origin.context.hostname
-            #         pid: traversal.origin.context.pid
-            #     return next()
+                # if capsule._type == 'control'
+                #     console.log "[#{capsule.control}]", 
+                #         traversal.origin.title
+                #         hostname: traversal.origin.context.hostname
+                #         pid: traversal.origin.context.pid
+                #     return next()
 
 
-            capsule.seq = seq++
+                capsule.seq = seq++
+                next()
+
+        hub.use( 
+            title: 'middleware ' + i
+            (next, capsule, {origin}) -> next() 
+
+        ) for i in [2..3] 
+
+        # hub.use title: 'middleware 02', (next, capsule, {origin}) -> next()
+        # hub.use title: 'middleware 03', (next, capsule, {origin}) -> next()
+        # hub.use title: 'middleware 04', (next, capsule, {origin}) -> next()
+        # hub.use title: 'middleware 05', (next, capsule, {origin}) -> next()
+        # hub.use title: 'middleware 06', (next, capsule, {origin}) -> next()
+        # hub.use title: 'middleware 07', (next, capsule, {origin}) -> next()
+        # hub.use title: 'middleware 08', (next, capsule, {origin}) -> next()
+        # hub.use title: 'middleware 09', (next, capsule, {origin}) -> next()
+        # hub.use title: 'middleware 10', (next, capsule, {origin}) -> next()
+
+
+
+
+        process.on 'SIGINT', -> 
+            console.log '\n', seq, avg_rate: Math.floor( sequence / ( Date.now() - start ) * 100000 ) / 100
+            process.exit()
+
+        start    = undefined
+        time     = undefined
+        count    = 0
+        sequence = 0
+
+
+        console.log '\tper sec\t\tmem MB\theap MB' if sequence is 0
+        console.log 'seq\tcapsules\trss\ttot\tused' if sequence is 0
+
+        setInterval (->
+
+            deltaC = sequence - count
+            deltaT = Date.now() - time
+            time   = Date.now()
+            count  = sequence
+
+            perSecond = Math.floor( deltaC / deltaT * 100000 ) / 100
+            {rss, heapTotal, heapUsed} = memoryUsage()
+            rss = Math.floor(rss / 1024 / 1024 * 100) / 100
+            heapTotal = Math.floor(heapTotal / 1024 / 1024 * 100) / 100
+            heapUsed = Math.floor(heapUsed / 1024 / 1024 * 100) / 100
+            console.log "#{sequence}\t#{perSecond}\t\t#{rss}\t#{heapTotal}\t#{heapUsed}"
+
+        ), 1000
+
+        hub.use title: 'count', (next) -> 
+
+            start    = Date.now() unless start?
+            time     = start      unless time?
+            sequence++
             next()
 
-    hub.use( 
-        title: 'middleware ' + i
-        (next, capsule, {origin}) -> next() 
+        hub.use title: 'thrower', (next) -> 
 
-    ) for i in [2..3] 
+            #
+            # randomize introspection load
+            #
 
-    # hub.use title: 'middleware 02', (next, capsule, {origin}) -> next()
-    # hub.use title: 'middleware 03', (next, capsule, {origin}) -> next()
-    # hub.use title: 'middleware 04', (next, capsule, {origin}) -> next()
-    # hub.use title: 'middleware 05', (next, capsule, {origin}) -> next()
-    # hub.use title: 'middleware 06', (next, capsule, {origin}) -> next()
-    # hub.use title: 'middleware 07', (next, capsule, {origin}) -> next()
-    # hub.use title: 'middleware 08', (next, capsule, {origin}) -> next()
-    # hub.use title: 'middleware 09', (next, capsule, {origin}) -> next()
-    # hub.use title: 'middleware 10', (next, capsule, {origin}) -> next()
-
-
-
-
-    process.on 'SIGINT', -> 
-        console.log '\n', seq, avg_rate: Math.floor( sequence / ( Date.now() - start ) * 100000 ) / 100
-        process.exit()
-
-    start    = undefined
-    time     = undefined
-    count    = 0
-    sequence = 0
-
-
-    console.log '\tper sec\t\tmem MB\theap MB' if sequence is 0
-    console.log 'seq\tcapsules\trss\ttot\tused' if sequence is 0
-
-    setInterval (->
-
-        deltaC = sequence - count
-        deltaT = Date.now() - time
-        time   = Date.now()
-        count  = sequence
-
-        perSecond = Math.floor( deltaC / deltaT * 100000 ) / 100
-        {rss, heapTotal, heapUsed} = memoryUsage()
-        rss = Math.floor(rss / 1024 / 1024 * 100) / 100
-        heapTotal = Math.floor(heapTotal / 1024 / 1024 * 100) / 100
-        heapUsed = Math.floor(heapUsed / 1024 / 1024 * 100) / 100
-        console.log "#{sequence}\t#{perSecond}\t\t#{rss}\t#{heapTotal}\t#{heapUsed}"
-
-    ), 1000
-
-    hub.use title: 'count', (next) -> 
-
-        start    = Date.now() unless start?
-        time     = start      unless time?
-        sequence++
-        next()
-
-    hub.use title: 'thrower', (next) -> 
-
-        #
-        # randomize introspection load
-        #
-
-        throw new Error 'darn' if Math.random() < 0.05
-        next.cancel() if Math.random() < 0.05
-        setTimeout next, Math.floor Math.random() * 10000 # random lag to accumulate into processing
+            throw new Error 'darn' if Math.random() < 0.05
+            next.cancel() if Math.random() < 0.05
+            setTimeout next, Math.floor Math.random() * 10000 # random lag to accumulate into processing
 
 
 
