@@ -1,4 +1,5 @@
 should      = require 'should'
+ipso        = require 'ipso'
 {lifecycle} = require '../../../lib/notice/capsule/lifecycle'
 
 describe 'lifecycle', -> 
@@ -104,6 +105,30 @@ describe 'lifecycle', ->
 
 
             ls.create key: 'value'
+
+
+        it 'assigns capsule.$wait according to config.capsule.name.boomerang', ipso (facto) -> 
+
+            ls = lifecycle 'event', 
+                capsule: 
+                    event: 
+                        boomerang: false
+
+            ls.create( key: 'value' ).then (capsule) ->
+
+                capsule.$wait.should.equal false
+                facto()
+
+        it 'defaults capsule.$wait to true', ipso (facto) -> 
+
+            ls = lifecycle 'event', 
+                capsule: 
+                    event: {}
+
+            ls.create( key: 'value' ).then (capsule) ->
+
+                capsule.$wait.should.equal true
+                facto()
 
 
         it 'assigns the typevalue as true if unspecified', (done) -> 

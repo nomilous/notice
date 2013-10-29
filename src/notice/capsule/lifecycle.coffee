@@ -13,7 +13,7 @@ module.exports.lifecycle  = (type, config = {}) ->
 
         create: deferred ({resolve, reject}, properties = {}) -> 
 
-            cap = local.Capsule.create()
+            cap = local.Capsule.create wait: try local.config.boomerang
             cap.$set 
                 $type: type
                 protected: true
