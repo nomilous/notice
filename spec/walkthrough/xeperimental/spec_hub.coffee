@@ -22,20 +22,6 @@ setTimeout ( ->
                 #
                 # curl -u user: :8888/specs/list
                 # 
-                # {
-                #   "dir": {
-                #     "also": {
-                #       "subject": "Also"
-                #     },
-                #     "another_thing": {
-                #       "subject": "AnotherThing"
-                #     }
-                #   },
-                #   "some_thing": {
-                #     "subject": "SomeThing"
-                #   }
-                # }
-                # 
 
                 list: (opts, callback) -> 
 
@@ -57,14 +43,29 @@ setTimeout ( ->
                                 script = readFileSync( path ).toString()
                                 js     = compile script, bare: true
 
-                                describe = (subject) -> subject: subject
+                                spec     = {}
+                                describe = (subject) -> 
+                                    spec[subject] = {}
 
-                                result[name] = eval js
-                                
-                                
+                                eval js
+                                result[name] = spec
+
+                                # {
+                                #   "dir": {
+                                #     "also": {
+                                #       "Also": {}
+                                #     },
+                                #     "another_thing": {
+                                #       "AnotherThing": {}
+                                #     }
+                                #   },
+                                #   "some_thing": {
+                                #     "SomeThing": {}
+                                #   }
+                                # }
                             
 
-                    path = __dirname + '/../../../spec'
+                    # path = __dirname + '/../../../spec'
                     path = __dirname + '/spec'
                     recurse path, result, readdirSync path
                     callback null, result
