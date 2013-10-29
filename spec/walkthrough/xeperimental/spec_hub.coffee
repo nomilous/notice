@@ -44,8 +44,18 @@ setTimeout ( ->
                                 js     = compile script, bare: true
 
                                 spec     = {}
-                                describe = (subject) -> 
-                                    spec[subject] = {}
+                                place    = spec
+                                describe = (subject, test) -> 
+
+                                    b4             = place
+                                    place = place[subject] = {}
+                                    test()
+                                    place = b4
+
+                                context  = (descrip) -> 
+
+                                    console.log context: descrip
+                                    place[descrip] = {}
 
                                 eval js
                                 result[name] = spec
@@ -53,7 +63,11 @@ setTimeout ( ->
                                 # {
                                 #   "dir": {
                                 #     "also": {
-                                #       "Also": {}
+                                #       "Also": {
+                                #         "when first": {},
+                                #         "when in the middle": {},
+                                #         "when last": {}
+                                #       }
                                 #     },
                                 #     "another_thing": {
                                 #       "AnotherThing": {}
@@ -63,6 +77,16 @@ setTimeout ( ->
                                 #     "SomeThing": {}
                                 #   }
                                 # }
+
+                                # curl -u user: :8888/specs/list/dir/also/Also
+                                # 
+                                #  {
+                                #    "when first": {},
+                                #    "when in the middle": {},
+                                #    "when last": {}
+                                #  }
+
+
                             
 
                     # path = __dirname + '/../../../spec'
