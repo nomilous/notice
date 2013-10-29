@@ -14,7 +14,9 @@ TelevisionRemote = notice.client(
 
         # uuid: -> 'override uuid generator'
 
-).create "Television Remote #{process.env.NAME}",
+).create 
+
+    title: "Television Remote #{process.env.NAME}"
 
     context: 
         supremeAuthority: 'Mother' unless Grandfather? or Saturday?
@@ -22,7 +24,7 @@ TelevisionRemote = notice.client(
 
     connect: 
         adaptor:            'socket.io'
-        url:                'https:/localhost:10101'
+        url:                'https://localhost:10101'
         secret:             process.env.NODE_SECRET
         errorWait:          1000
         rejectUnauthorized: false # tolerate self sighned cert on serverside

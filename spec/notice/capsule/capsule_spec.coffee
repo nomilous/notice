@@ -59,6 +59,11 @@ describe 'Capsule', ->
                 done()
 
         
+        context 'boomerang', -> 
+
+            xit 'if true sets capsule.$wait to true', (done) -> 
+
+
 
 
         context 'protected', -> 

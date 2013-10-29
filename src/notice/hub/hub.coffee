@@ -35,7 +35,9 @@ module.exports.hub  = (config = {}) ->
 
         hubs:    {}
         names:   {}
+
         clients: {}
+        name2id: {} # client name to socket.io id mapping
 
         create: deferred ({reject, resolve, notify}, opts = {}, callback) ->
 

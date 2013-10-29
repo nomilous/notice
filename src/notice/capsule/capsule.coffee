@@ -5,7 +5,6 @@ module.exports._capsule = -> testable
 
 module.exports.capsule  = (config = {}) ->
 
-
     Testable = factory = 
 
         create: (opts = {}) ->

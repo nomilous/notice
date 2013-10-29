@@ -157,7 +157,7 @@ module.exports.handler  = (config = {}) ->
                         # 
 
                         #
-                        # TODO: consider letting the middleware if the client should
+                        # TODO: consider letting the middleware decide if the client should
                         #       be accepted
                         #
 

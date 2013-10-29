@@ -59,8 +59,8 @@ MessageHub.create
 
                 {cache, origin} = traversal
 
-                if capsule.control?
-                    console.log capsule.control, origin.context.account
+                if capsule.$control?
+                    console.log capsule.$control, origin.context.account
                     return next.cancel()
 
                 return next() unless capsule.purchase?

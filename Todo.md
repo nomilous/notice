@@ -1,7 +1,6 @@
 #### todo 0.0.12
 
-* properly recursable stats
-* properly recursable cache
+
 * display error count on middleware records (running total, recent 5min total, recent 1m total)
     * or leave this up to ""middlewares plugins"" (on the pending 'backbus')
 * boomerang capsule (emitter callback/resolve only after full remote hub traversal, throw/reject the same, boomerang is the default, emitters not expecting a result from the remote hub should specify on capsule definition, said emitters receive the callback on hub ack)
