@@ -47,24 +47,24 @@ MessageHub.create
         port:      12121
         secret:    'secret'
 
-    #ticks: 
-    #    #
-    #    # dequeue ticks
-    #    # 
-    #    # lifo: interval: 100
-    #    fifo: interval: 100
-    #        #
-    #        # TODO: got some scheduler issues under heavy loading
-    #        #       is anything can be done? (using setInterval)
-    #        # 
-    #        #       pipeline uses 3 nextTick calls 
-    #        #       (that might not be necessary)
-    #        # 
-    #        #       @ 2500 capsules/second 
-    #        #       scheduler starts wedging at 300 in process
-    #        #       stopping the client ""demonstrates"" a recovery with no losses
-    #        #                                     (per the stats api, unconfirmed)
-    #        #       
+    ticks: 
+       #
+       # dequeue ticks
+       # 
+       # lifo: interval: 100
+       fifo: interval: 1000
+           #
+           # TODO: got some scheduler issues under heavy loading
+           #       is anything can be done? (using setInterval)
+           # 
+           #       pipeline uses 3 nextTick calls 
+           #       (that might not be necessary)
+           # 
+           #       @ 2500 capsules/second 
+           #       scheduler starts wedging at 300 in process
+           #       stopping the client ""demonstrates"" a recovery with no losses
+           #                                     (per the stats api, unconfirmed)
+           #       
 
 
     (err, proxy) -> 
@@ -84,7 +84,7 @@ MessageHub.create
                 #
 
                 return next() unless capsule.Object1?
-                #console.log Object1: capsule
+                console.log Object1: capsule, wait: capsule.$wait
                 next()
 
 
@@ -93,11 +93,11 @@ MessageHub.create
             (next, capsule, traversal) -> 
 
                 #
-                # destination online? / queue somewhere (?redis)
+                # destination online?: dequeue
                 #
 
                 return next() unless capsule.$tick is 'fifo'
-                console.log FIFO: capsule
+                #console.log FIFO: capsule
                 next()
 
 
@@ -106,7 +106,7 @@ MessageHub.create
             (next, capsule, traversal) -> 
 
                 return next() unless capsule.Object2?
-                #console.log Object2: capsule
+                console.log Object2: capsule, wait: capsule.$wait
                 next()
 
 

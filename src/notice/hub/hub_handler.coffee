@@ -78,8 +78,8 @@ module.exports.handler  = (config = {}) ->
                 
                     (header, control, payload) -> 
 
-                        [version] = header
-                        uuid      = control.uuid
+                        [version, wait] = header
+                        uuid            = control.uuid
 
                         unless version == PROTOCOL_VERSION
 
@@ -125,7 +125,7 @@ module.exports.handler  = (config = {}) ->
                         try tected  = control.protected
                         try hidden  = control.hidden
 
-                        capsule = Capsule.create uuid: uuid
+                        capsule = Capsule.create uuid: uuid, wait: wait is 1
                         for property of payload
                             assign = {}
                             assign[property] = payload[property]

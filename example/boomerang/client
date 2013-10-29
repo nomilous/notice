@@ -55,7 +55,7 @@ Tosser.create
                 # * this callback fires when the hub acks
                 # 
 
-                #console.log ACK: capsule
+                console.log 'hub acknowledged', capsule
 
 
 
@@ -66,7 +66,7 @@ Tosser.create
                 # * this callback fires when the hub acks
                 # 
 
-                #console.log ACK: capsule
+                console.log 'hub returned final capsule', capsule
 
         #     #
         #     # AMPLIFY LOADING
@@ -76,7 +76,7 @@ Tosser.create
         #     emit.Object2 please: 'get something', (err, capsule) -> 
         # ), 1
 
-        ), 100
+        ), 1000
 
 
         seq = 0

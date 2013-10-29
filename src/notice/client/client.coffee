@@ -99,7 +99,9 @@ module.exports.client  = (config = {}) ->
                     #       what happens when sending on not 
                     #
                     # 
-                    header = [PROTOCOL_VERSION]
+
+                    wait   = if capsule.$wait then 1 else 0
+                    header = [PROTOCOL_VERSION, wait]
 
                     #
                     # TODO: much room for optimization here
@@ -125,7 +127,10 @@ module.exports.client  = (config = {}) ->
                     #   from the hub
                     #
 
-                    transit[capsule.$uuid] = next: next
+                    transit[capsule.$uuid] = 
+                        next:    next
+                        wait:    capsule.$wait
+                        capsule: capsule
 
                     # 
                     # * Send notification of the transmission to the promise notifier
@@ -138,7 +143,7 @@ module.exports.client  = (config = {}) ->
 
                     process.nextTick -> next.notify
                         $type:    'control'
-                        $control: 'transmitted'
+                        $control: 'tx'
                         capsule:   capsule
 
 
@@ -177,8 +182,34 @@ module.exports.client  = (config = {}) ->
 
                 try 
                     {uuid} = control
-                    {next} = transit[uuid]
-                    try delete transit[uuid]
+                    {next, wait, capsule} = transit[uuid]
+
+                    unless wait 
+
+                        #
+                        # * not boomerang, destroy reference to the
+                        #   transmitted capsule
+                        # 
+
+                        delete transit[uuid]
+
+                        #
+                        # * final next() from the local pipeline resolves the 
+                        #   capsule into the emitters waiting promise / callback
+                        #
+
+                        return next()
+
+                    #
+                    # * is boomerang - keep waiting! But inform the promise 
+                    #   at the waiting emitter of the ACK from hub
+                    #
+
+                    return process.nextTick -> next.notify
+                        $type:    'control'
+                        $control: 'ack'
+                        capsule:   capsule
+
 
                 catch error
                     process.stderr.write 'notice: invalid or unexpected ACK ' + uuid + '\n'
@@ -189,7 +220,7 @@ module.exports.client  = (config = {}) ->
                 #   at the time of sending the capsule to the hub.
                 #
 
-                next()
+                
 
 
             socket.on 'nak', (control) -> 
