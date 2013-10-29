@@ -178,14 +178,13 @@ describe 'handler', ->
 
         it 'sets the client to disconnected', (done) -> 
 
-            Date.now = -> 2
+            # Date.now = -> 2
             handle = @instance.disconnect id: 'SOCKET_ID'
             handle()
 
             connection = @hubContext.clients.SOCKET_ID.connection
-            connection.should.eql 
-                state: 'disconnected'
-                stateAt: 2
+            connection.state.should.equal 'disconnected'
+            should.exist connection.stateAt
             done()
 
     context 'capsule', -> 
@@ -334,9 +333,8 @@ describe 'handler', ->
 
             handle 'origin name', 'secret', 'origin context'
             connection = @hubContext.clients.SOCKET_ID.connection
-            connection.should.eql 
-                state: 'connected'
-                stateAt: 2
+            connection.state.should.equal 'connected'
+            should.exist connection.stateAt
             done()
 
 

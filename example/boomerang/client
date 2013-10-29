@@ -1,0 +1,37 @@
+#! /usr/bin/env coffee
+
+notice = require '../../lib/notice'
+
+Tosser = notice.client
+
+    capsule: 
+
+        Object1: 
+
+            #
+            # * does not wait for remote pipeline traversal
+            # * once emitted, capsule never returns to the client
+            #
+
+            boomerang: false
+
+            #
+            # * boomerang defaults to true
+            # * Object2 will return after the hubside traversal
+            #
+
+        Object2: {}
+
+
+Tosser.create 
+
+    title: 'Arm'
+    connect: 
+        adaptor:   'socket.io'
+        url:       'http://localhost:12121'
+        secret:    'secret'
+
+    (err, local) -> 
+
+        return console.log err if err?
+

@@ -1,0 +1,52 @@
+#! /usr/bin/env coffee
+
+notice = require '../../lib/notice'
+
+MessageHub = notice.hub
+    api: 
+        listen: port: 5555
+        authenticate: username: 'user', password: ''
+
+    root: routes = 
+        
+        clients: ({root}, callback) -> callback null, root.hubContext.clients
+        
+        #
+        # curl -u user: :5555/clients
+        # 
+        # {
+        #   "Y-YN02Nh7Od0j5oVITRB": {
+        #     "title": "Arm",
+        #     "context": {
+        #       "hostname": "***********.local",
+        #       "pid": 20917
+        #     },
+        #     "hub": "Remote Pipeline",
+        #     "connection": {
+        #       "state": "connected",
+        #       "stateAt": "2013-10-29T21:31:51.224Z"
+        #     }
+        #   }
+        # }
+        # 
+        # TODO: consider client UUID insted of socketio id in clients hash
+        # 
+
+
+
+routes.clients.$notice = {} 
+    
+MessageHub.create
+
+    title: 'Remote Pipeline'
+    uuid:  1
+
+    listen: 
+        adaptor:   'socket.io'
+        port:      12121
+        secret:    'secret'
+
+    (err, hub) -> 
+
+        return process.stdout.write err.toString() if err?
+

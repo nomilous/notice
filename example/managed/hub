@@ -9,7 +9,7 @@ MessageHub = notice.hub
         keep: 2
 
 
-    manager: 
+    api: 
         listen: 
             port: 44444
             cert: __dirname + '/../../cert/develop-cert.pem'

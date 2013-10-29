@@ -6,7 +6,7 @@ MessageHub = notice.hub
     
     error:
         keep: 2
-    manager: 
+    api: 
         listen: 
             port: 30303
             cert: __dirname + '/../../cert/develop-cert.pem'

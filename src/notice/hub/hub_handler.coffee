@@ -55,7 +55,7 @@ module.exports.handler  = (config = {}) ->
 
                         client.connection ||= {}
                         client.connection.state    = 'disconnected'
-                        client.connection.stateAt  = Date.now()
+                        client.connection.stateAt  = new Date
 
                         #
                         # emit control 'suspend'
@@ -203,7 +203,7 @@ module.exports.handler  = (config = {}) ->
                     hubContext.clients[id] = client
                     client.connection ||= {}
                     client.connection.state    = 'connected'
-                    client.connection.stateAt  = Date.now()
+                    client.connection.stateAt  = new Date
 
                     #
                     # create hubside clientbound capsule emitters
