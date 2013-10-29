@@ -60,6 +60,11 @@ MessageHub.create
     #        #       pipeline uses 3 nextTick calls 
     #        #       (that might not be necessary)
     #        # 
+    #        #       @ 2500 capsules/second 
+    #        #       scheduler starts wedging at 300 in process
+    #        #       stopping the client ""demonstrates"" a recovery with no losses
+    #        #                                     (per the stats api, unconfirmed)
+    #        #       
 
 
     (err, proxy) -> 
