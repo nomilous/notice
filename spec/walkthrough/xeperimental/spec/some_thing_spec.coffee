@@ -1,4 +1,5 @@
 describe 'SomeThing', -> 
-    context 'is', -> 
-        context 'entirely', -> 
-            context 'recursive'
+    
+    context 'SLA', -> 
+        
+        it 'should have at least "7" elevators operational', ->

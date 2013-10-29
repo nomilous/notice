@@ -1,3 +1,8 @@
 describe 'AnotherThing', -> 
 
-    context 'not defined yet'
+    context 'config', -> 
+
+        context 'users', -> 
+
+            it 'should have a user named "The Angry Pixie"', -> 
+
