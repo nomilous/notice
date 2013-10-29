@@ -8,6 +8,7 @@
 
 ./node_modules/.bin/node-dev spec/walkthrough/xeperimental/experimental_hub.coffee
 
+./node_modules/.bin/node-dev spec/walkthrough/xeperimental/spec_hub.coffee
 
 ```
 
