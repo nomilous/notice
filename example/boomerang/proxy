@@ -47,19 +47,63 @@ MessageHub.create
         port:      12121
         secret:    'secret'
 
+    #ticks: 
+    #    #
+    #    # dequeue ticks
+    #    # 
+    #    # lifo: interval: 100
+    #    fifo: interval: 100
+    #        #
+    #        # TODO: got some scheduler issues under heavy loading
+    #        #       is anything can be done? (using setInterval)
+    #        # 
+    #        #       pipeline uses 3 nextTick calls 
+    #        #       (that might not be necessary)
+    #        # 
+
+
     (err, proxy) -> 
 
         return process.stdout.write err.toString() if err?
 
+        #
+        # watch -n 1 curl -su user: :5555/hubs/1/stats/pipeline
+        # 
 
         proxy.use 
-
             title: 'Object1 Router'
             (next, capsule, traversal) -> 
 
-                return next() unless capsule.Object1?
+                #
+                # destination online? / queue somewhere (?redis)
+                #
 
-                console.log Object1: capsule
+                return next() unless capsule.Object1?
+                #console.log Object1: capsule
                 next()
+
+
+        proxy.use 
+            title: 'Object1 Dequeue'
+            (next, capsule, traversal) -> 
+
+                #
+                # destination online? / queue somewhere (?redis)
+                #
+
+                return next() unless capsule.$tick is 'fifo'
+                console.log FIFO: capsule
+                next()
+
+
+        proxy.use 
+            title: 'Object2 Router'
+            (next, capsule, traversal) -> 
+
+                return next() unless capsule.Object2?
+                #console.log Object2: capsule
+                next()
+
+
 
 
