@@ -24,100 +24,116 @@ setTimeout ( ->
 
         root: routes = 
 
-            specs: 
+            load: (opts, callback) -> 
 
-                load: (opts, callback) -> 
+                result  = {}
+                nodes   = []
+                recurse = (base, result, files) -> 
 
-                    result  = {}
-                    recurse = (base, result, files) -> 
+                    for file in files
 
-                        for file in files
+                        path = base + sep + file
+                        stat = lstatSync path
 
-                            path = base + sep + file
-                            stat = lstatSync path
+                        if stat.isDirectory()
 
-                            if stat.isDirectory()
-                                result[file] = {}
-                                recurse path, result[file], readdirSync path
-                                continue
+                            nodes.push file
+                            result[file] = {}
+                            recurse path, result[file], readdirSync path
+                            nodes.pop()
+                            continue
 
-                            try if name = file.match(/(.*)_spec\.coffee/)[1]
+                        try if name = file.match(/(.*)_spec\.coffee/)[1]
 
-                                script = readFileSync( path ).toString()
-                                js     = compile script, bare: true
+                            nodes.push name
+                            script   = readFileSync( path ).toString()
+                            js       = compile script, bare: true
+                            spec     = {}
+                            place    = spec
 
-                                spec     = {}
-                                place    = spec
+                            #
+                            # define functions used in the "specs"
+                            # ------------------------------------
+                            # 
+                            # * a sort of push() pop() recursor
+                            # 
 
-                                #
-                                # define functions used in the "specs"
-                                # ------------------------------------
-                                # 
-                                # * a sort of push() pop() recursor
-                                # 
+                            describe = context = (descr, fn) -> 
 
-                                describe = context = it = (descr, fn) -> 
+                                if fn?
 
-                                    if fn?
+                                    nodes.push descr
+                                    b4    = place
+                                    place = place[descr] = {}
+                                    console.log nodes
+                                    fn() if fn?
+                                    place = b4
+                                    nodes.pop()
 
-                                        b4    = place
-                                        place = place[descr] = {}
-                                        fn()
-                                        place = b4
-
-                                    else place[descr] = 'pending'
-                                
-                                #
-                                # "load" the "specs"
-                                # ------------------
-                                #
-
-                                result[name] = eval js
+                                else place[descr] = 'pending'
 
 
-                                #
-                                # curl -u user: :8888/specs/load
-                                # 
+                            it = (test, fn) ->
 
-                                # {
-                                #   "dir": {
-                                #     "also": {
-                                #       "Also": {
-                                #         "when first": {},
-                                #         "when in the middle": {
-                                #           "does one thing": {},
-                                #           "does another": "pending"
-                                #         },
-                                #         "when last": {}
-                                #       }
-                                #     },
-                                #     "another_thing": {
-                                #       "AnotherThing": {
-                                #         "not defined yet": "pending"
-                                #       }
-                                #     }
-                                #   },
-                                #   "some_thing": {
-                                #     "SomeThing": {
-                                #       "is": {
-                                #         "entirely": {
-                                #           "recursive": "pending"
-                                #         }
-                                #       }
-                                #     }
-                                #   }
-                                # }
+                                nodes.push test
+                                console.log nodes
+                                nodes.pop()
+
+                            
+                            #
+                            # "load" the "specs"
+                            # ------------------
+                            #
+
+                            result[name] = eval js
+
+                            nodes.pop()
+
+                            #
+                            # curl -u user: :8888/load
+                            # 
+
+                            # {
+                            #   "dir": {
+                            #     "also": {
+                            #       "Also": {
+                            #         "when first": {},
+                            #         "when in the middle": {
+                            #           "does one thing": {},
+                            #           "does another": "pending"
+                            #         },
+                            #         "when last": {}
+                            #       }
+                            #     },
+                            #     "another_thing": {
+                            #       "AnotherThing": {
+                            #         "not defined yet": "pending"
+                            #       }
+                            #     }
+                            #   },
+                            #   "some_thing": {
+                            #     "SomeThing": {
+                            #       "is": {
+                            #         "entirely": {
+                            #           "recursive": "pending"
+                            #         }
+                            #       }
+                            #     }
+                            #   }
+                            # }
 
 
-                    #path = __dirname + '/../../../spec'
-                    path = __dirname + '/spec'
-                    recurse path, result, readdirSync path
-                    callback null, result
-
-                    
 
 
-        routes.specs.load.$notice = {}
+                #path = __dirname + '/../../../spec'
+                path = __dirname + '/spec'
+                recurse path, result, readdirSync path
+                callback null, result
+
+                
+
+
+        routes.load.$notice = {}
 
 
 ), WAIT_FOR_COMPILE

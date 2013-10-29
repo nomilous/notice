@@ -1,4 +1,4 @@
 describe 'SomeThing', -> 
-    it 'is', -> 
-        it 'entirely', -> 
-            it 'recursive'
+    context 'is', -> 
+        context 'entirely', -> 
+            context 'recursive'
